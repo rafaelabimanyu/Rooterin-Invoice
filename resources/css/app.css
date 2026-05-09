@@ -4,59 +4,107 @@
 
 @layer base {
     body {
-        @apply font-inter antialiased bg-[#fcfdfe] text-slate-900 dark:bg-slate-950 dark:text-slate-100;
-        letter-spacing: -0.01em;
+        @apply font-sans antialiased bg-[#fcfdfe] text-slate-900 dark:bg-premium-950 dark:text-slate-100;
+        letter-spacing: -0.015em;
     }
 
     h1, h2, h3, h4, h5, h6 {
-        @apply font-outfit tracking-tight;
+        @apply font-jakarta tracking-tight;
+    }
+
+    /* Custom Selection Color */
+    ::selection {
+        @apply bg-indigo-100 text-indigo-900 dark:bg-indigo-500/30 dark:text-indigo-100;
     }
 }
 
 @layer components {
+    /* Premium Glassmorphism */
+    .glass-panel {
+        @apply bg-white/70 dark:bg-premium-900/60 backdrop-blur-xl border border-slate-200/50 dark:border-white/5;
+    }
+
     .glass-card {
-        @apply bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 rounded-xl shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] transition-all duration-200;
+        @apply bg-white dark:bg-premium-900 border border-slate-200/60 dark:border-white/5 rounded-2xl shadow-premium transition-all duration-300;
     }
 
     .glass-card-hover {
-        @apply hover:shadow-[0_4px_12px_0_rgba(0,0,0,0.05)] hover:border-slate-300 dark:hover:border-slate-700;
+        @apply hover:shadow-2xl hover:-translate-y-1 hover:border-slate-300 dark:hover:border-white/10;
     }
 
+    /* Buttons */
     .btn-premium {
-        @apply px-4 py-2 bg-slate-900 dark:bg-indigo-600 text-white rounded-lg font-semibold text-[13px] transition-all duration-200 active:scale-[0.97] hover:bg-slate-800 dark:hover:bg-indigo-700 shadow-sm flex items-center justify-center gap-2;
+        @apply px-5 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-950 rounded-xl font-bold text-[13px] transition-all duration-300 active:scale-[0.96] hover:bg-slate-800 dark:hover:bg-slate-100 shadow-lg shadow-slate-900/5 dark:shadow-white/5 flex items-center justify-center gap-2;
     }
 
     .btn-secondary {
-        @apply px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 rounded-lg font-semibold text-[13px] transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-800 shadow-sm flex items-center justify-center gap-2;
+        @apply px-5 py-2.5 bg-white dark:bg-premium-800 border border-slate-200 dark:border-white/5 text-slate-700 dark:text-slate-300 rounded-xl font-bold text-[13px] transition-all duration-300 hover:bg-slate-50 dark:hover:bg-premium-700 shadow-sm flex items-center justify-center gap-2;
     }
 
-    .btn-danger {
-        @apply px-4 py-2 bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/20 text-rose-600 dark:text-rose-400 rounded-lg font-semibold text-[13px] transition-all duration-200 hover:bg-rose-100 dark:hover:bg-rose-500/20 shadow-sm flex items-center justify-center gap-2;
+    .btn-ghost {
+        @apply px-4 py-2 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 rounded-xl transition-all duration-200;
+    }
+
+    /* Tables */
+    .table-container {
+        @apply glass-card overflow-hidden;
+    }
+
+    .table-header {
+        @apply text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 bg-slate-50/50 dark:bg-white/5 px-8 py-4 border-b border-slate-100 dark:border-white/5;
     }
 
     .table-row-premium {
-        @apply hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors duration-150;
+        @apply hover:bg-slate-50/80 dark:hover:bg-white/[0.02] transition-colors duration-200;
     }
 
-    .badge-enterprise {
-        @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[10px] font-bold border uppercase tracking-wider;
+    /* Animations */
+    .shimmer {
+        @apply relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent;
     }
 
-    .status-dot {
-        @apply w-1.5 h-1.5 rounded-full;
+    @keyframes shimmer {
+        100% {
+            transform: translateX(100%);
+        }
+    }
+
+    .animate-float {
+        animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
     }
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbar Premium */
 ::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
+    width: 6px;
+    height: 6px;
 }
 ::-webkit-scrollbar-track {
-    background: transparent;
+    @apply bg-transparent;
 }
 ::-webkit-scrollbar-thumb {
-    @apply bg-slate-200 dark:bg-slate-800 rounded-full;
+    @apply bg-slate-200/80 dark:bg-white/10 rounded-full hover:bg-slate-300 dark:hover:bg-white/20 transition-colors;
+}
+
+/* Page Transitions */
+.page-fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 [x-cloak] { display: none !important; }
+
+/* Dashboard Card Gradients */
+.grad-indigo { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); }
+.grad-emerald { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+.grad-rose { background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%); }
+.grad-amber { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }

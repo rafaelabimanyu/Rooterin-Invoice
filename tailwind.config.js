@@ -14,11 +14,18 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                inter: ['Inter', ...defaultTheme.fontFamily.sans],
-                outfit: ['Outfit', ...defaultTheme.fontFamily.sans],
                 sans: ['Inter', ...defaultTheme.fontFamily.sans],
+                inter: ['Inter', ...defaultTheme.fontFamily.sans],
+                jakarta: ['Plus Jakarta Sans', ...defaultTheme.fontFamily.sans],
+                outfit: ['Outfit', ...defaultTheme.fontFamily.sans],
             },
             colors: {
+                slate: {
+                    950: '#020617',
+                    900: '#0f172a',
+                    800: '#1e293b',
+                    // ... existing slate colors are default from tailwind
+                },
                 indigo: {
                     50: '#f5f7ff',
                     100: '#ebf0fe',
@@ -32,7 +39,34 @@ export default {
                     900: '#242f59',
                     950: '#12172d',
                 },
+                electric: {
+                    50: '#f0f7ff',
+                    100: '#e0effe',
+                    200: '#bae0fd',
+                    300: '#7cc7fb',
+                    400: '#38aaf7',
+                    500: '#0e8ee9',
+                    600: '#0270c7',
+                    700: '#0359a1',
+                    800: '#074c85',
+                    900: '#0c406e',
+                    950: '#082949',
+                },
+                premium: {
+                    950: '#0a0d14',
+                    900: '#0f131d',
+                    800: '#1a202c',
+                }
             },
+            borderRadius: {
+                '2xl': '1rem',
+                '3xl': '1.5rem',
+                '4xl': '2rem',
+            },
+            boxShadow: {
+                'premium': '0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025)',
+                'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
+            }
         },
     },
 

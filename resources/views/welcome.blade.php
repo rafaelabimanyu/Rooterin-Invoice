@@ -9,6 +9,7 @@
     <style>
         .gradient-text { background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .hero-glow { position: absolute; top: -100px; left: 50%; transform: translateX(-50%); width: 800px; height: 400px; background: radial-gradient(circle, rgba(79, 70, 229, 0.15) 0%, rgba(255,255,255,0) 70%); z-index: -1; }
+        html { scroll-behavior: smooth; }
     </style>
 </head>
 <body class="bg-white font-inter text-slate-900 antialiased overflow-x-hidden">
@@ -25,7 +26,7 @@
                 <a href="#features" class="text-sm font-semibold text-slate-500 hover:text-indigo-600 transition-colors">Features</a>
                 <a href="#solutions" class="text-sm font-semibold text-slate-500 hover:text-indigo-600 transition-colors">Solutions</a>
                 <a href="{{ route('login') }}" class="text-sm font-bold text-slate-900">Sign In</a>
-                <a href="{{ route('login') }}" class="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-bold text-sm shadow-xl shadow-indigo-600/20 hover:scale-105 transition-all">Get Started</a>
+                <a href="{{ route('register') }}" class="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-bold text-sm shadow-xl shadow-indigo-600/20 hover:scale-105 transition-all">Get Started</a>
             </div>
         </div>
     </nav>
@@ -48,18 +49,21 @@
                 Empower your technical services business with high-fidelity invoicing, automated payment tracking, and professional B2B quotations.
             </p>
             <div class="flex flex-col md:flex-row items-center justify-center gap-4">
-                <a href="{{ route('login') }}" class="w-full md:w-auto px-10 py-4 bg-slate-900 text-white rounded-2xl font-bold shadow-2xl shadow-slate-900/20 hover:-translate-y-1 transition-all">Start Your Workspace</a>
-                <a href="#" class="w-full md:w-auto px-10 py-4 bg-white border border-slate-200 text-slate-900 rounded-2xl font-bold hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play-circle"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
-                    Watch Demo
+                <a href="{{ route('register') }}" class="w-full md:w-auto px-10 py-4 bg-slate-900 text-white rounded-2xl font-bold shadow-2xl shadow-slate-900/20 hover:-translate-y-1 transition-all">Start Your Workspace</a>
+                <a href="#features" class="w-full md:w-auto px-10 py-4 bg-white border border-slate-200 text-slate-900 rounded-2xl font-bold hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
+                    Learn More
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- Features Grid -->
-    <section id="features" class="py-32 bg-slate-50">
+    <!-- Features Section -->
+    <section id="features" class="py-32 bg-slate-50 scroll-mt-20">
         <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20">
+                <h2 class="text-4xl font-black font-outfit mb-4">Powerful Features</h2>
+                <p class="text-slate-500">Everything you need to manage your business billing cycle.</p>
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
                 <div class="bg-white p-10 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl transition-all">
                     <div class="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 mb-8">
@@ -86,8 +90,36 @@
         </div>
     </section>
 
+    <!-- Solutions Section -->
+    <section id="solutions" class="py-32 bg-white scroll-mt-20">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20">
+                <h2 class="text-4xl font-black font-outfit mb-4">Industry Solutions</h2>
+                <p class="text-slate-500">Tailored billing experiences for diverse technical service sectors.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="p-8 rounded-3xl bg-slate-50 border border-slate-100 group hover:bg-indigo-600 transition-all duration-500">
+                    <h4 class="text-lg font-bold font-outfit group-hover:text-white mb-2">Plumbing</h4>
+                    <p class="text-xs text-slate-500 group-hover:text-indigo-100 leading-relaxed">Leak fixing, pipe installation, and emergency maintenance billing.</p>
+                </div>
+                <div class="p-8 rounded-3xl bg-slate-50 border border-slate-100 group hover:bg-indigo-600 transition-all duration-500">
+                    <h4 class="text-lg font-bold font-outfit group-hover:text-white mb-2">Contractors</h4>
+                    <p class="text-xs text-slate-500 group-hover:text-indigo-100 leading-relaxed">Multi-stage project billing with deposit tracking and milestones.</p>
+                </div>
+                <div class="p-8 rounded-3xl bg-slate-50 border border-slate-100 group hover:bg-indigo-600 transition-all duration-500">
+                    <h4 class="text-lg font-bold font-outfit group-hover:text-white mb-2">Technicians</h4>
+                    <p class="text-xs text-slate-500 group-hover:text-indigo-100 leading-relaxed">Quick service invoicing for electrical, HVAC, and mechanical repairs.</p>
+                </div>
+                <div class="p-8 rounded-3xl bg-slate-50 border border-slate-100 group hover:bg-indigo-600 transition-all duration-500">
+                    <h4 class="text-lg font-bold font-outfit group-hover:text-white mb-2">Renovation</h4>
+                    <p class="text-xs text-slate-500 group-hover:text-indigo-100 leading-relaxed">Detailed material and labor breakdown for interior & exterior works.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
-    <footer class="py-20 border-t border-slate-100 text-center">
+    <footer class="py-20 border-t border-slate-100 text-center bg-slate-50">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex items-center justify-center gap-2 mb-6">
                 <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white">
@@ -95,7 +127,12 @@
                 </div>
                 <span class="text-lg font-black font-outfit tracking-tight">Rooterin.</span>
             </div>
-            <p class="text-xs text-slate-400">© 2026 Rooterin Enterprise System. All rights reserved.</p>
+            <div class="flex items-center justify-center gap-8 mb-10">
+                <a href="#features" class="text-xs font-bold text-slate-400 hover:text-indigo-600">Features</a>
+                <a href="#solutions" class="text-xs font-bold text-slate-400 hover:text-indigo-600">Solutions</a>
+                <a href="{{ route('login') }}" class="text-xs font-bold text-slate-400 hover:text-indigo-600">Privacy Policy</a>
+            </div>
+            <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">© 2026 Rooterin Enterprise System. All rights reserved.</p>
         </div>
     </footer>
 </body>

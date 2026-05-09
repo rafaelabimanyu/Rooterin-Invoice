@@ -1,12 +1,12 @@
 <x-app-layout>
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
-            <h1 class="text-3xl font-bold text-slate-900 dark:text-white font-outfit">Clients</h1>
+            <h1 class="text-3xl font-bold text-slate-900 dark:text-white font-outfit">{{ __('ui.clients') }}</h1>
             <p class="text-slate-500 dark:text-slate-400">Manage your customers and their details</p>
         </div>
-        <a href="{{ route('clients.create') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold transition-all shadow-lg shadow-indigo-600/20">
-            <i data-lucide="plus" class="w-5 h-5"></i>
-            Add New Client
+        <a href="{{ route('clients.create') }}" class="btn-premium">
+            <i data-lucide="plus" class="w-5 h-5 mr-2"></i>
+            {{ __('ui.add_client') }}
         </a>
     </div>
 

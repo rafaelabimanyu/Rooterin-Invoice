@@ -57,7 +57,13 @@
                     </div>
 
                     <div class="flex items-center gap-5">
-                        <!-- Notifications Placeholder -->
+                        <!-- Language Switcher -->
+                        <div class="flex items-center bg-slate-100 dark:bg-slate-800 rounded-lg p-1 border border-slate-200/50 dark:border-slate-800/50">
+                            <a href="{{ route('lang.switch', 'id') }}" class="px-2 py-1 text-[10px] font-bold rounded-md transition-all {{ App::getLocale() == 'id' ? 'bg-white dark:bg-slate-700 text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600' }}">ID</a>
+                            <a href="{{ route('lang.switch', 'en') }}" class="px-2 py-1 text-[10px] font-bold rounded-md transition-all {{ App::getLocale() == 'en' ? 'bg-white dark:bg-slate-700 text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600' }}">EN</a>
+                        </div>
+
+                        <!-- Notifications -->
                         <button class="p-2 text-slate-400 hover:text-slate-900 transition-colors relative">
                             <i data-lucide="bell" class="w-5 h-5"></i>
                             <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full border-2 border-white dark:border-slate-900"></span>

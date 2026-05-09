@@ -25,30 +25,46 @@
         <script src="https://unpkg.com/lucide@latest"></script>
         <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     </head>
-    <body class="h-full bg-[#f8fafc] dark:bg-slate-950 font-inter antialiased overflow-hidden">
-        <div class="flex h-full" x-data="{ sidebarCollapsed: $persist(false).as('sidebar-collapsed') }">
+    <body class="h-full bg-[#f8fafc] dark:bg-slate-950 font-inter antialiased overflow-x-hidden">
+        <div class="flex min-h-screen" x-data="{ sidebarCollapsed: $persist(false).as('sidebar-collapsed'), mobileSidebarOpen: false }">
             <!-- Sidebar -->
             <x-sidebar />
+
+            <!-- Mobile Sidebar Backdrop -->
+            <div 
+                x-show="mobileSidebarOpen" 
+                @click="mobileSidebarOpen = false"
+                x-transition:enter="transition-opacity ease-linear duration-300"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="transition-opacity ease-linear duration-300"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 lg:hidden"
+                x-cloak
+            ></div>
 
             <!-- Main Shell -->
             <div 
                 class="flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out"
-                :class="sidebarCollapsed ? 'lg:pl-[72px]' : 'lg:pl-64'"
+                :class="sidebarCollapsed ? 'lg:ml-[72px]' : 'lg:ml-64'"
             >
                 <!-- Header / Navbar -->
-                <header class="h-16 flex items-center justify-between px-8 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-800/60 sticky top-0 z-40">
-                    <div class="flex items-center gap-6">
-                        <button @click="$dispatch('toggle-sidebar')" class="hidden lg:flex p-1.5 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+                <header class="h-16 flex items-center justify-between px-6 md:px-8 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-800/60 sticky top-0 z-40">
+                    <div class="flex items-center gap-4 md:gap-6">
+                        <!-- Desktop Toggle -->
+                        <button @click="sidebarCollapsed = !sidebarCollapsed" class="hidden lg:flex p-1.5 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
                             <i data-lucide="menu" class="w-5 h-5"></i>
                         </button>
-                        <button @click="$dispatch('toggle-mobile-sidebar')" class="lg:hidden p-1.5 text-slate-400 hover:text-slate-900 transition-colors">
+                        <!-- Mobile Toggle -->
+                        <button @click="mobileSidebarOpen = true" class="lg:hidden p-1.5 text-slate-400 hover:text-slate-900 transition-colors">
                             <i data-lucide="menu" class="w-5 h-5"></i>
                         </button>
                         
                         <div class="h-4 w-px bg-slate-200 dark:bg-slate-800"></div>
                         
                         <div class="hidden sm:flex flex-col">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-tight">System Status</span>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-tight">{{ __('ui.system_live') }}</span>
                             <div class="flex items-center gap-1.5">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                                 <span class="text-[11px] font-semibold text-slate-700 dark:text-slate-300">Operational</span>
@@ -115,8 +131,8 @@
                 </header>
 
                 <!-- Content Area -->
-                <main class="flex-1 overflow-y-auto custom-scrollbar bg-[#fcfdfe] dark:bg-slate-950">
-                    <div class="max-w-[1600px] mx-auto p-10 lg:p-12">
+                <main class="flex-1 bg-[#fcfdfe] dark:bg-slate-950">
+                    <div class="max-w-[1600px] mx-auto p-4 md:p-8 lg:p-12">
                         {{ $slot }}
                     </div>
                 </main>

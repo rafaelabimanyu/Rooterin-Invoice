@@ -52,6 +52,11 @@ class Invoice extends Model
         return $this->hasMany(Payment::class);
     }
 
+    public function attachments(): HasMany
+    {
+        return $this->hasMany(InvoiceAttachment::class);
+    }
+
     public function getAmountPaidAttribute()
     {
         return $this->payments()->sum('amount');

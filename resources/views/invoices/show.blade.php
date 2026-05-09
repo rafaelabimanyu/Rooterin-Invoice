@@ -15,7 +15,7 @@
             <button class="p-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-500 hover:text-slate-900 transition-all shadow-sm">
                 <i data-lucide="printer" class="w-4 h-4"></i>
             </button>
-            <button class="p-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-500 hover:text-slate-900 transition-all shadow-sm">
+            <a href="{{ route('invoices.pdf', $invoice) }}" class="p-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-500 hover:text-indigo-600 transition-all shadow-sm">
                 <i data-lucide="download" class="w-4 h-4"></i>
             </button>
             <button class="px-5 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-bold hover:bg-indigo-700 transition-all shadow-sm flex items-center gap-2">

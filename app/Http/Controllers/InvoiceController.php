@@ -90,9 +90,19 @@ class InvoiceController extends Controller
                 ]);
             }
 
+            // Handle Attachments
+            if ($request->hasFile('attachments')) {
+                foreach ($request->file('attachments') as $file) {
+                    $path = $file->store('invoice_attachments', 'public');
+                    $invoice->attachments()->create([
+                        'file_path' => $path,
+                    ]);
+                }
+            }
+
             DB::commit();
             
-            \App\Models\ActivityLog::log('created_invoice', "Issued new invoice #{$invoice->invoice_number}", $invoice);
+            \App\Models\ActivityLog::log('created_invoice', "Issued new invoice #{$invoice->invoice_number} with documentation", $invoice);
             
             return redirect()->route('invoices.index')->with('success', 'Invoice created successfully.');
         } catch (\Exception $e) {
@@ -168,6 +178,13 @@ class InvoiceController extends Controller
             DB::rollBack();
             return back()->with('error', 'Something went wrong: ' . $e->getMessage());
         }
+    }
+
+    public function downloadPdf(Invoice $invoice)
+    {
+        $invoice->load(['client', 'items', 'payments']);
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('invoices.pdf', compact('invoice'));
+        return $pdf->download("Invoice-{$invoice->invoice_number}.pdf");
     }
 
     public function destroy(Invoice $invoice)

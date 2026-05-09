@@ -15,6 +15,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/lang/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'id'])) {
+        session()->put('locale', $locale);
+    }
+    return redirect()->back();
+})->name('lang.switch');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     
     // All Roles (Owner, Admin, Staff)
@@ -23,9 +30,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         
         // Clients (Show/Index/Create/Edit)
         Route::resource('clients', ClientController::class);
+        Route::post('api/clients', [\App\Http\Controllers\Api\ClientController::class, 'store'])->name('api.clients.store');
         
         // Invoices
         Route::resource('invoices', InvoiceController::class);
+        Route::get('invoices/{invoice}/pdf', [InvoiceController::class, 'downloadPdf'])->name('invoices.pdf');
         Route::post('payments', [PaymentController::class, 'store'])->name('payments.store');
         Route::delete('payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy');
 

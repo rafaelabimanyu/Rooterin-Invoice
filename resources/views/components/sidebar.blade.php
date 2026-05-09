@@ -30,8 +30,8 @@
         <div>
             <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-600">Overview</p>
             <nav class="space-y-1.5">
-                <x-nav-link-premium href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')" icon="layout-grid" label="Dashboard" />
-                <x-nav-link-premium href="{{ route('clients.index') }}" :active="request()->routeIs('clients.*')" icon="users" label="Client Accounts" />
+                <x-nav-link-premium href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')" icon="layout-grid" :label="__('ui.dashboard')" />
+                <x-nav-link-premium href="{{ route('clients.index') }}" :active="request()->routeIs('clients.*')" icon="users" :label="__('ui.clients')" />
             </nav>
         </div>
 
@@ -39,8 +39,8 @@
         <div>
             <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-600">Billing Lifecycle</p>
             <nav class="space-y-1.5">
-                <x-nav-link-premium href="{{ route('quotations.index') }}" :active="request()->routeIs('quotations.*')" icon="file-spreadsheet" label="Quotations" />
-                <x-nav-link-premium href="{{ route('invoices.index') }}" :active="request()->routeIs('invoices.*')" icon="file-text" label="Invoices Ledger" />
+                <x-nav-link-premium href="{{ route('quotations.index') }}" :active="request()->routeIs('quotations.*')" icon="file-spreadsheet" :label="__('ui.quotations')" />
+                <x-nav-link-premium href="{{ route('invoices.index') }}" :active="request()->routeIs('invoices.*')" icon="file-text" :label="__('ui.invoices')" />
             </nav>
         </div>
 
@@ -48,7 +48,7 @@
         <div>
             <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-600">Intelligence</p>
             <nav class="space-y-1.5">
-                <x-nav-link-premium href="{{ route('reports.index') }}" :active="request()->routeIs('reports.*')" icon="bar-chart-2" label="Revenue Reports" />
+                <x-nav-link-premium href="{{ route('reports.index') }}" :active="request()->routeIs('reports.*')" icon="bar-chart-2" :label="__('ui.reports')" />
             </nav>
         </div>
 
@@ -57,19 +57,24 @@
             <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-600">Administration</p>
             <nav class="space-y-1.5">
                 @if(Auth::user()->role !== 'staff')
-                    <x-nav-link-premium href="{{ route('users.index') }}" :active="request()->routeIs('users.*')" icon="user-cog" label="Team Management" />
+                    <x-nav-link-premium href="{{ route('users.index') }}" :active="request()->routeIs('users.*')" icon="user-cog" :label="__('ui.users')" />
                 @endif
-                <x-nav-link-premium href="{{ route('settings.index') }}" :active="request()->routeIs('settings.*')" icon="settings" label="System Settings" />
+                <x-nav-link-premium href="{{ route('settings.index') }}" :active="request()->routeIs('settings.*')" icon="settings" :label="__('ui.settings')" />
             </nav>
         </div>
     </div>
 
-    <!-- Upgrade / Status Card -->
+    <!-- Language & Status -->
     <div x-show="!collapsed" class="px-6 py-6 mx-3 mb-6 bg-slate-800/40 rounded-xl border border-slate-700/50">
-        <p class="text-[10px] font-bold text-white mb-2 flex items-center gap-2">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> System Live
-        </p>
-        <p class="text-[10px] text-slate-500 leading-relaxed mb-4">Enterprise Edition — v1.2.0</p>
+        <div class="flex items-center justify-between mb-4">
+            <p class="text-[10px] font-bold text-white flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> {{ __('ui.system_live') }}
+            </p>
+            <div class="flex gap-2">
+                <a href="{{ route('lang.switch', 'id') }}" class="text-[9px] font-bold {{ App::getLocale() == 'id' ? 'text-indigo-400' : 'text-slate-500' }}">ID</a>
+                <a href="{{ route('lang.switch', 'en') }}" class="text-[9px] font-bold {{ App::getLocale() == 'en' ? 'text-indigo-400' : 'text-slate-500' }}">EN</a>
+            </div>
+        </div>
         <div class="h-1 bg-slate-700 rounded-full overflow-hidden">
             <div class="bg-emerald-500 h-full w-full"></div>
         </div>

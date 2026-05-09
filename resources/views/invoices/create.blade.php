@@ -16,22 +16,26 @@
         </div>
     </div>
 
-    <form action="{{ route('invoices.store') }}" method="POST" x-data="invoiceForm()">
+    <form action="{{ route('invoices.store') }}" method="POST" x-data="invoiceForm()" enctype="multipart/form-data">
         @csrf
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
-            <!-- Left Side: Main Form -->
-            <div class="lg:col-span-8 space-y-10">
-                <!-- Customer Selection -->
+            <!-- Left Side -->
+            <div class="lg:col-span-8 space-y-8">
                 <div class="bg-white dark:bg-slate-900 p-10 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
-                    <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-widest mb-8 pb-4 border-b border-slate-100 dark:border-slate-800">1. Customer Information</h3>
+                    <div class="flex items-center justify-between mb-8 pb-4 border-b border-slate-50 dark:border-slate-800">
+                        <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-widest">1. Client & Dates</h3>
+                        <button type="button" @click="$dispatch('open-modal', 'quick-client')" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1.5">
+                            <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Add New Client
+                        </button>
+                    </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div class="space-y-2">
-                            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Select Client Account</label>
-                            <select name="client_id" required class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none text-sm text-slate-900 dark:text-white transition-all">
+                            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Client Account</label>
+                            <select name="client_id" id="client_select" required class="w-full px-4 py-2.5 bg-slate-50/50 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500/10 transition-all">
                                 <option value="">Choose a client...</option>
                                 @foreach($clients as $client)
-                                    <option value="{{ $client->id }}">{{ $client->nama_client }} — {{ $client->nama_perusahaan }}</option>
+                                    <option value="{{ $client->id }}">{{ $client->nama_client }} ({{ $client->nama_perusahaan }})</option>
                                 @endforeach
                             </select>
                         </div>
@@ -91,6 +95,22 @@
                     </div>
                 </div>
 
+                <!-- Documentation Section -->
+                <div class="bg-white dark:bg-slate-900 p-10 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-widest mb-8 pb-4 border-b border-slate-50 dark:border-slate-800 flex items-center gap-2">
+                        <i data-lucide="image" class="w-4 h-4 text-indigo-500"></i>
+                        3. Job Documentation
+                    </h3>
+                    <div class="space-y-4">
+                        <p class="text-xs text-slate-500">Upload work evidence or job site documentation. Support multiple files.</p>
+                        <div class="relative group cursor-pointer border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl p-8 hover:border-indigo-500 transition-all flex flex-col items-center justify-center bg-slate-50/50 dark:bg-slate-900/50">
+                            <input type="file" name="attachments[]" multiple class="absolute inset-0 opacity-0 cursor-pointer">
+                            <i data-lucide="upload-cloud" class="w-8 h-8 text-slate-400 group-hover:text-indigo-500 mb-2"></i>
+                            <p class="text-[11px] font-bold text-slate-400 group-hover:text-indigo-500 uppercase tracking-widest">Select Images</p>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Terms & Memo -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                     <div class="bg-white dark:bg-slate-900 p-8 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
@@ -142,40 +162,114 @@
         </div>
     </form>
 
+    <!-- Quick Client Modal -->
+    <x-modal name="quick-client" :show="false">
+        <div class="p-10" x-data="quickClientForm()">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white font-outfit mb-2">Add New Client</h3>
+            <p class="text-sm text-slate-500 mb-8">Register a new client account directly to the system ledger.</p>
+            
+            <form @submit.prevent="submitForm" class="space-y-6">
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Full Name</label>
+                        <input type="text" x-model="form.nama_client" required class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Company Name</label>
+                        <input type="text" x-model="form.nama_perusahaan" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Email Address</label>
+                        <input type="email" x-model="form.email" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">WhatsApp / Phone</label>
+                        <input type="text" x-model="form.no_hp" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm outline-none">
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Primary Address</label>
+                    <textarea x-model="form.alamat" rows="2" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm outline-none"></textarea>
+                </div>
+
+                <div class="pt-6 flex items-center justify-end gap-3">
+                    <button type="button" @click="$dispatch('close-modal', 'quick-client')" class="px-5 py-2.5 text-sm font-bold text-slate-500">Cancel</button>
+                    <button type="submit" :disabled="loading" class="px-8 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-bold shadow-lg shadow-indigo-600/20 disabled:opacity-50">
+                        <span x-show="!loading">Register & Select</span>
+                        <span x-show="loading">Processing...</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </x-modal>
+
     <script>
+        function quickClientForm() {
+            return {
+                form: {
+                    nama_client: '',
+                    nama_perusahaan: '',
+                    email: '',
+                    no_hp: '',
+                    alamat: '',
+                    status: 'aktif'
+                },
+                loading: false,
+                async submitForm() {
+                    this.loading = true;
+                    try {
+                        const response = await fetch('{{ route('api.clients.store') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify(this.form)
+                        });
+                        const data = await response.json();
+                        if (data.success) {
+                            const select = document.getElementById('client_select');
+                            const option = new Option(`${data.client.nama_client} (${data.client.nama_perusahaan || 'Individual'})`, data.client.id, true, true);
+                            select.add(option);
+                            this.$dispatch('close-modal', 'quick-client');
+                            this.form = { nama_client: '', nama_perusahaan: '', email: '', no_hp: '', alamat: '', status: 'aktif' };
+                        }
+                    } catch (error) {
+                        alert('Failed to register client. Please check your data.');
+                    } finally {
+                        this.loading = false;
+                    }
+                }
+            }
+        }
+
         function invoiceForm() {
             return {
-                items: [
-                    { deskripsi: '', qty: 1, harga: 0 }
-                ],
+                items: [{ deskripsi: '', qty: 1, harga: 0 }],
                 subtotal: 0,
-                tax_percent: 0,
+                tax_percent: 11,
                 discount_percent: 0,
                 total: 0,
-                
                 addItem() {
                     this.items.push({ deskripsi: '', qty: 1, harga: 0 });
                     this.$nextTick(() => lucide.createIcons());
                 },
-                
                 removeItem(index) {
                     this.items.splice(index, 1);
                     this.calculateTotal();
                 },
-                
                 calculateTotal() {
                     this.subtotal = this.items.reduce((acc, item) => acc + (item.qty * Math.max(0, item.harga)), 0);
                     let taxAmount = this.subtotal * (this.tax_percent / 100);
                     let discountAmount = this.subtotal * (this.discount_percent / 100);
                     this.total = this.subtotal + taxAmount - discountAmount;
                 },
-
                 formatCurrency(value) {
-                    return new Intl.NumberFormat('id-ID', {
-                        style: 'currency',
-                        currency: 'IDR',
-                        minimumFractionDigits: 0
-                    }).format(value);
+                    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value);
                 }
             }
         }

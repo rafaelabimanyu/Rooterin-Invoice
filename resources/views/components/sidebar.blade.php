@@ -52,6 +52,14 @@
             </nav>
         </div>
 
+        <!-- Support -->
+        <div>
+            <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-600">Support & Manual</p>
+            <nav class="space-y-1.5">
+                <x-nav-link-premium href="{{ route('guide.index') }}" :active="request()->routeIs('guide.index')" icon="book-open" label="Rooterin Guide" />
+            </nav>
+        </div>
+
         <!-- Tools -->
         <div>
             <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-600">Administration</p>

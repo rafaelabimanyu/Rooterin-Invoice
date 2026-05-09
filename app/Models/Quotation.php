@@ -8,15 +8,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Invoice extends Model
+class Quotation extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'invoice_number',
+        'quotation_number',
         'client_id',
-        'tanggal_invoice',
-        'due_date',
+        'tanggal_quotation',
+        'expiry_date',
         'status',
         'subtotal',
         'tax_percent',
@@ -28,8 +28,8 @@ class Invoice extends Model
     ];
 
     protected $casts = [
-        'tanggal_invoice' => 'date',
-        'due_date' => 'date',
+        'tanggal_quotation' => 'date',
+        'expiry_date' => 'date',
     ];
 
     public function client(): BelongsTo
@@ -39,7 +39,7 @@ class Invoice extends Model
 
     public function items(): HasMany
     {
-        return $this->hasMany(InvoiceItem::class);
+        return $this->hasMany(QuotationItem::class);
     }
 
     public function creator(): BelongsTo
@@ -47,28 +47,10 @@ class Invoice extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function payments(): HasMany
-    {
-        return $this->hasMany(Payment::class);
-    }
-
-    public function getAmountPaidAttribute()
-    {
-        return $this->payments()->sum('amount');
-    }
-
-    public function getAmountDueAttribute()
-    {
-        return $this->total - $this->amount_paid;
-    }
-
-    /**
-     * Generate unique invoice number (ROOT-INV-0001, etc.)
-     */
     public static function generateNumber(): string
     {
-        $lastInvoice = self::withTrashed()->orderBy('id', 'desc')->first();
-        $number = $lastInvoice ? ((int) substr($lastInvoice->invoice_number, 9)) + 1 : 1;
-        return 'ROOT-INV-' . str_pad($number, 4, '0', STR_PAD_LEFT);
+        $lastQuotation = self::withTrashed()->orderBy('id', 'desc')->first();
+        $number = $lastQuotation ? ((int) substr($lastQuotation->quotation_number, 9)) + 1 : 1;
+        return 'ROOT-QUO-' . str_pad($number, 4, '0', STR_PAD_LEFT);
     }
 }

@@ -30,6 +30,11 @@ class Client extends Model
         return $this->hasMany(Invoice::class);
     }
 
+    public function quotations(): HasMany
+    {
+        return $this->hasMany(Quotation::class);
+    }
+
     /**
      * Generate unique client code (CLI-0001, etc.)
      */

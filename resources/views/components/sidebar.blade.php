@@ -19,7 +19,7 @@
             </div>
             <div x-show="!collapsed" x-transition.opacity class="flex flex-col">
                 <span class="text-base font-black text-white tracking-tight font-outfit leading-none">Rooterin<span class="text-indigo-400">.</span></span>
-                <span class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">Enterprise</span>
+                <span class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">Enterprise System</span>
             </div>
         </div>
     </div>
@@ -31,17 +31,24 @@
             <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-600">Overview</p>
             <nav class="space-y-1.5">
                 <x-nav-link-premium href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')" icon="layout-grid" label="Dashboard" />
-                <x-nav-link-premium href="{{ route('invoices.index') }}" :active="request()->routeIs('invoices.*')" icon="file-text" label="Billing Ledger" />
                 <x-nav-link-premium href="{{ route('clients.index') }}" :active="request()->routeIs('clients.*')" icon="users" label="Client Accounts" />
             </nav>
         </div>
 
-        <!-- Management -->
+        <!-- Billing -->
+        <div>
+            <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-600">Billing Lifecycle</p>
+            <nav class="space-y-1.5">
+                <x-nav-link-premium href="{{ route('quotations.index') }}" :active="request()->routeIs('quotations.*')" icon="file-spreadsheet" label="Quotations" />
+                <x-nav-link-premium href="{{ route('invoices.index') }}" :active="request()->routeIs('invoices.*')" icon="file-text" label="Invoices Ledger" />
+            </nav>
+        </div>
+
+        <!-- Intelligence -->
         <div>
             <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-600">Intelligence</p>
             <nav class="space-y-1.5">
-                <x-nav-link-premium href="#" :active="false" icon="bar-chart-2" label="Revenue Reports" />
-                <x-nav-link-premium href="#" :active="false" icon="pie-chart" label="Tax Summary" />
+                <x-nav-link-premium href="{{ route('reports.index') }}" :active="request()->routeIs('reports.*')" icon="bar-chart-2" label="Revenue Reports" />
             </nav>
         </div>
 
@@ -49,8 +56,10 @@
         <div>
             <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-600">Administration</p>
             <nav class="space-y-1.5">
-                <x-nav-link-premium href="#" :active="false" icon="settings" label="System Settings" />
-                <x-nav-link-premium href="#" :active="false" icon="life-buoy" label="Support Center" />
+                @if(Auth::user()->role !== 'staff')
+                    <x-nav-link-premium href="{{ route('users.index') }}" :active="request()->routeIs('users.*')" icon="user-cog" label="Team Management" />
+                @endif
+                <x-nav-link-premium href="{{ route('settings.index') }}" :active="request()->routeIs('settings.*')" icon="settings" label="System Settings" />
             </nav>
         </div>
     </div>
@@ -58,39 +67,25 @@
     <!-- Upgrade / Status Card -->
     <div x-show="!collapsed" class="px-6 py-6 mx-3 mb-6 bg-slate-800/40 rounded-xl border border-slate-700/50">
         <p class="text-[10px] font-bold text-white mb-2 flex items-center gap-2">
-            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span> Pro License
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> System Live
         </p>
-        <p class="text-[10px] text-slate-500 leading-relaxed mb-4">You are currently using the enterprise license.</p>
+        <p class="text-[10px] text-slate-500 leading-relaxed mb-4">Enterprise Edition — v1.2.0</p>
         <div class="h-1 bg-slate-700 rounded-full overflow-hidden">
-            <div class="bg-indigo-500 h-full w-3/4"></div>
+            <div class="bg-emerald-500 h-full w-full"></div>
         </div>
     </div>
 
     <!-- User Section Slim -->
     <div class="p-4 border-t border-slate-800/50 bg-slate-900/50">
-        <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-800 transition-colors cursor-pointer group">
+        <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-800 transition-colors cursor-pointer group" onclick="window.location='{{ route('profile.edit') }}'">
             <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-400 group-hover:text-white transition-colors">
-                <i data-lucide="user" class="w-4 h-4"></i>
+                {{ substr(Auth::user()->name, 0, 1) }}
             </div>
             <div x-show="!collapsed" class="flex-1 overflow-hidden">
                 <p class="text-xs font-bold text-white truncate">{{ Auth::user()->name }}</p>
-                <p class="text-[10px] text-slate-500 truncate">Administrator</p>
+                <p class="text-[10px] text-slate-500 truncate capitalize">{{ Auth::user()->role }} Account</p>
             </div>
-            <i x-show="!collapsed" data-lucide="chevron-up" class="w-3 h-3 text-slate-600"></i>
+            <i x-show="!collapsed" data-lucide="chevron-right" class="w-3 h-3 text-slate-600"></i>
         </div>
     </div>
 </aside>
-
-<!-- Mobile Overlay -->
-<div 
-    x-show="mobileOpen" 
-    x-transition:enter="transition ease-out duration-300"
-    x-transition:enter-start="opacity-0"
-    x-transition:enter-end="opacity-100"
-    x-transition:leave="transition ease-in duration-200"
-    x-transition:leave-start="opacity-100"
-    x-transition:leave-end="opacity-0"
-    @click="mobileOpen = false"
-    class="fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-sm lg:hidden"
-    x-cloak
-></div>

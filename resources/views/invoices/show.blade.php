@@ -103,7 +103,39 @@
             </table>
 
             <!-- Calculation Summary -->
-            <div class="mt-12 flex justify-end">
+        <div class="p-16 bg-slate-50/20 dark:bg-slate-800/20 border-t border-slate-100 dark:border-slate-800">
+            <div class="flex flex-col md:flex-row justify-between gap-12">
+                <div class="max-w-md space-y-8">
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Terms & Conditions</p>
+                        <p class="text-[11px] text-slate-500 leading-relaxed">{{ $invoice->terms_condition }}</p>
+                    </div>
+                    
+                    <!-- Payment History Section -->
+                    @if($invoice->payments->count() > 0)
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Payment History</p>
+                        <div class="space-y-3">
+                            @foreach($invoice->payments as $payment)
+                            <div class="flex items-center justify-between p-3 bg-white dark:bg-slate-900 border border-slate-200/60 rounded-lg">
+                                <div class="flex flex-col">
+                                    <span class="text-[11px] font-bold text-slate-900 dark:text-white">{{ $payment->payment_date->format('M d, Y') }}</span>
+                                    <span class="text-[9px] text-slate-400 uppercase">{{ $payment->payment_method }}</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-[12px] font-black text-emerald-600">Rp {{ number_format($payment->amount, 0, ',', '.') }}</span>
+                                    <form action="{{ route('payments.destroy', $payment) }}" method="POST" onsubmit="return confirm('Delete this payment record?')">
+                                        @csrf @method('DELETE')
+                                        <button class="text-slate-300 hover:text-rose-500 transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                                    </form>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
+                </div>
+                
                 <div class="w-full md:w-80 space-y-4">
                     <div class="flex justify-between text-sm">
                         <span class="text-slate-500 font-medium">Subtotal</span>
@@ -117,13 +149,64 @@
                         <span class="text-slate-500 font-medium">Adjustment</span>
                         <span class="font-bold text-rose-500">- Rp {{ number_format($invoice->subtotal * ($invoice->discount_percent / 100), 0, ',', '.') }}</span>
                     </div>
-                    <div class="pt-6 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center">
-                        <span class="text-base font-black text-slate-900 dark:text-white uppercase tracking-tighter">Total Due</span>
+                    <div class="pt-6 border-t border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                        <span class="text-lg font-black text-slate-900 dark:text-white uppercase tracking-tighter">Total Due</span>
                         <span class="text-3xl font-black text-indigo-600 dark:text-indigo-400 font-outfit">Rp {{ number_format($invoice->total, 0, ',', '.') }}</span>
                     </div>
+                    
+                    @if($invoice->status !== 'paid')
+                    <button @click="$dispatch('open-modal', 'record-payment')" class="w-full py-4 bg-[#0f172a] text-white rounded-lg font-bold text-[12px] uppercase tracking-widest hover:bg-slate-800 transition-all mt-6 shadow-xl shadow-slate-900/10">
+                        Record Payment
+                    </button>
+                    @endif
                 </div>
             </div>
         </div>
+
+        <!-- Payment Modal -->
+        <x-modal name="record-payment" :show="false">
+            <div class="p-10">
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white font-outfit mb-2">Record Payment</h3>
+                <p class="text-sm text-slate-500 mb-8">Enter the amount received for this invoice.</p>
+                
+                <form action="{{ route('payments.store') }}" method="POST" class="space-y-6">
+                    @csrf
+                    <input type="hidden" name="invoice_id" value="{{ $invoice->id }}">
+                    
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Amount Received (IDR)</label>
+                        <input type="number" name="amount" value="{{ $invoice->amount_due }}" required class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-lg font-black text-indigo-600 outline-none">
+                        <p class="text-[10px] text-slate-400 font-medium italic">Remaining balance: Rp {{ number_format($invoice->amount_due, 0, ',', '.') }}</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Payment Date</label>
+                            <input type="date" name="payment_date" value="{{ date('Y-m-d') }}" required class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white outline-none">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Method</label>
+                            <select name="payment_method" required class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white outline-none">
+                                <option value="Transfer Bank">Transfer Bank</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Credit Card">Credit Card</option>
+                                <option value="E-Wallet">E-Wallet</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Reference / Transaction ID</label>
+                        <input type="text" name="reference_number" placeholder="e.g. TRX-123456" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white outline-none">
+                    </div>
+
+                    <div class="pt-6 flex items-center justify-end gap-3">
+                        <button type="button" @click="$dispatch('close-modal', 'record-payment')" class="px-5 py-2.5 text-sm font-bold text-slate-500 hover:text-slate-800">Cancel</button>
+                        <button type="submit" class="px-8 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-bold shadow-lg shadow-indigo-600/20">Save Payment</button>
+                    </div>
+                </form>
+            </div>
+        </x-modal>
 
         <!-- Footer -->
         <div class="px-16 py-10 bg-slate-50 dark:bg-slate-800/20 border-t border-slate-100 dark:border-slate-800">

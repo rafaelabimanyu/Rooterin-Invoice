@@ -1,58 +1,155 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Rooterin-Invoice
+### Smart Invoice & Business Management System
+[![Laravel Version](https://img.shields.io/badge/Laravel-11.x-red.svg)](https://laravel.com)
+[![PHP Version](https://img.shields.io/badge/PHP-8.2+-blue.svg)](https://php.net)
+[![License](https://img.shields.io/badge/License-Proprietary-black.svg)](#)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**Rooterin-Invoice** adalah platform manajemen keuangan dan penagihan tingkat perusahaan (Enterprise-Grade) yang dirancang khusus untuk sektor jasa teknis, kontraktor, dan pemeliharaan properti. Sistem ini mengubah alur kerja manual menjadi ekosistem digital yang efisien, transparan, dan profesional.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Overview
+Rooterin-Invoice bukan sekadar aplikasi pembuat invoice. Ini adalah solusi **Business Intelligence** yang membantu pemilik bisnis mengelola siklus hidup pembayaran dari penawaran harga (*Quotation*) hingga laporan pendapatan (*Revenue Reports*). Terinspirasi oleh standar SaaS global seperti Stripe dan QuickBooks, Rooterin menghadirkan estetika korporat yang mewah ke dalam operasional harian Anda.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Target Users:
+*   👷 **Contractors** (Konstruksi & Renovasi)
+*   🚰 **Plumbing Services**
+*   ⚡ **Technical & Electrical Engineers**
+*   🛠️ **Maintenance Companies**
+*   🏢 **SME Businesses** (UMKM Profesional)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## ✨ Key Features
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 💎 Core Business Modules
+*   **Client Ledger**: Manajemen database klien dengan riwayat penagihan yang komprehensif.
+*   **Smart Invoicing**: Pembuatan invoice dengan kalkulasi otomatis (Subtotal, PPN, Diskon).
+*   **Quotation System**: Proposalkan harga ke klien dan konversi menjadi invoice dalam satu klik.
+*   **Payment Tracking**: Pencatatan termin pembayaran (DP, Partial, Full Payment) secara presisi.
+*   **Advanced Reporting**: Visualisasi performa bisnis dan arus kas masuk secara *real-time*.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 🛠️ Enterprise Capabilities
+*   **PDF Generation**: Dokumen invoice B2B profesional siap kirim.
+*   **Job Documentation**: Lampirkan foto bukti pekerjaan langsung di dalam invoice.
+*   **Role-Based Access Control (RBAC)**: Pembatasan akses aman untuk Owner, Admin, dan Staff.
+*   **Multi-Language Support**: Antarmuka dalam Bahasa Indonesia dan English.
+*   **In-App Guide**: Sistem panduan internal untuk mempercepat proses *onboarding* tim.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+---
 
-## Agentic Development
+## 💻 Tech Stack
+Sistem dibangun menggunakan teknologi modern untuk memastikan performa yang stabil dan aman:
+*   **Framework**: [Laravel 11](https://laravel.com)
+*   **Frontend**: Tailwind CSS v3 & Alpine.js
+*   **Icons**: Lucide Icons
+*   **Database**: MySQL / MariaDB
+*   **PDF Engine**: DomPDF
+*   **Design System**: Bespoke Corporate SaaS Design
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+---
 
-```bash
-composer require laravel/boost --dev
+## 🛠️ Installation Guide
 
-php artisan boost:install
+### Prerequisites
+*   PHP >= 8.2
+*   Composer
+*   Node.js & NPM
+*   MySQL Server
+
+### Step-by-Step Setup
+1.  **Clone the Repository**
+    ```bash
+    git clone https://github.com/rafaelabimanyu/Rooterin-Invoice.git
+    cd Rooterin-Invoice
+    ```
+
+2.  **Install Dependencies**
+    ```bash
+    composer install
+    npm install
+    ```
+
+3.  **Environment Configuration**
+    ```bash
+    cp .env.example .env
+    php artisan key:generate
+    ```
+
+4.  **Database Setup**
+    Configure your `.env` with your database credentials, then run:
+    ```bash
+    php artisan migrate --seed
+    ```
+    *Note: Seeder ini akan membuat data dummy realistis (Owner, Admin, Clients, Invoices) untuk keperluan demo.*
+
+5.  **Launch Application**
+    ```bash
+    php artisan serve
+    npm run dev
+    ```
+
+---
+
+## 👥 User Roles & Permissions
+| Feature | Owner | Admin | Staff |
+| :--- | :---: | :---: | :---: |
+| Dashboard & Analytics | ✅ | ✅ | ✅ |
+| Client & Invoicing | ✅ | ✅ | ✅ |
+| Team Management | ✅ | ✅ | ❌ |
+| System Settings | ✅ | ✅ | ❌ |
+| Activity Logs | ✅ | ❌ | ❌ |
+
+---
+
+## 📈 Business Workflow
+Alur kerja standar dalam ekosistem Rooterin:
+1.  **Lead to Quote**: Daftarkan klien dan buat penawaran harga (*Quotation*).
+2.  **Agreement**: Klien menyetujui penawaran.
+3.  **Invoice Issuance**: Konversi Quotation menjadi **Invoice**.
+4.  **Work Documentation**: Unggah foto bukti pengerjaan ke invoice.
+5.  **Payment Collection**: Catat pembayaran (DP atau Pelunasan).
+6.  **Reporting**: Pantau pertumbuhan pendapatan di halaman laporan.
+
+---
+
+## 🗺️ Future Roadmap
+*   [ ] **WhatsApp Integration**: Kirim invoice langsung via WA API.
+*   [ ] **Email Notifications**: Pengingat otomatis untuk invoice yang hampir jatuh tempo.
+*   [ ] **Payment Gateway**: Integrasi Midtrans/Xendit untuk pembayaran otomatis.
+*   [ ] **Multi-Company Support**: Kelola banyak perusahaan dalam satu dashboard.
+*   [ ] **Client Portal**: Akses khusus untuk klien melihat riwayat tagihan mereka sendiri.
+
+---
+
+## 📂 Project Structure (Overview)
+```text
+app/
+ ├── Http/Controllers/   # Business Logic
+ ├── Models/             # Database Entities
+ ├── Middleware/         # Security & Role Logic
+database/
+ ├── migrations/         # Schema Definitions
+ ├── seeders/            # Realistic Demo Data
+resources/
+ ├── views/              # Blade Templates (Premium UI)
+ ├── lang/               # Localization (EN/ID)
+routes/
+ ├── web.php             # Application Routes
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+---
 
-## Contributing
+## 📄 License
+**Proprietary Software**. Project ini dikembangkan sebagai sistem internal perusahaan Rooterin. Penggunaan, modifikasi, atau distribusi tanpa izin tertulis dari pihak Rooterin sangat dilarang.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## 📞 Contact & Support
+**Rooterin Enterprise System**
+*   **Website**: [www.rooterin.com](https://www.rooterin.com)
+*   **Support**: support@rooterin.com
+*   **Developer**: [Fajar / Antigravity AI]
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+*Created with passion for professional business operations.*

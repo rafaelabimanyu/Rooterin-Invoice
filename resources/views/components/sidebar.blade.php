@@ -26,8 +26,8 @@
     <!-- Navigation -->
     <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto custom-scrollbar">
         <x-nav-link-premium href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')" icon="layout-dashboard" label="Dashboard" />
-        <x-nav-link-premium href="#" :active="false" icon="users" label="Clients" />
-        <x-nav-link-premium href="#" :active="false" icon="file-text" label="Invoices" />
+        <x-nav-link-premium href="{{ route('clients.index') }}" :active="request()->routeIs('clients.*')" icon="users" label="Clients" />
+        <x-nav-link-premium href="{{ route('invoices.index') }}" :active="request()->routeIs('invoices.*')" icon="file-text" label="Invoices" />
         <x-nav-link-premium href="#" :active="false" icon="package" label="Products" />
         <x-nav-link-premium href="#" :active="false" icon="settings" label="Settings" />
     </nav>

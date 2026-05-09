@@ -60,6 +60,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Settings
         Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
         Route::post('/settings', [SettingController::class, 'update'])->name('settings.update');
+
+        // Owner KPI Dashboard
+        Route::get('/owner-kpi', [\App\Http\Controllers\OwnerKpiController::class, 'index'])->name('owner.kpi');
     });
 });
 

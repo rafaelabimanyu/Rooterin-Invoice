@@ -48,6 +48,9 @@
         <div>
             <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-600">Intelligence</p>
             <nav class="space-y-1.5">
+                @if(auth()->user()->role !== 'staff')
+                    <x-nav-link-premium href="{{ route('owner.kpi') }}" :active="request()->routeIs('owner.kpi')" icon="trending-up" label="Owner KPI" />
+                @endif
                 <x-nav-link-premium href="{{ route('reports.index') }}" :active="request()->routeIs('reports.*')" icon="bar-chart-2" :label="__('ui.reports')" />
             </nav>
         </div>

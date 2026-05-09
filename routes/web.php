@@ -16,34 +16,41 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
-    // Clients
-    Route::resource('clients', ClientController::class);
-    
-    // Invoices
-    Route::resource('invoices', InvoiceController::class);
-    Route::post('payments', [PaymentController::class, 'store'])->name('payments.store');
-    Route::delete('payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy');
+    // All Roles (Owner, Admin, Staff)
+    Route::middleware(['role:owner,admin,staff'])->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        
+        // Clients (Show/Index/Create/Edit)
+        Route::resource('clients', ClientController::class);
+        
+        // Invoices
+        Route::resource('invoices', InvoiceController::class);
+        Route::post('payments', [PaymentController::class, 'store'])->name('payments.store');
+        Route::delete('payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy');
 
-    // Quotations
-    Route::resource('quotations', QuotationController::class);
-    Route::post('quotations/{quotation}/convert', [QuotationController::class, 'convertToInvoice'])->name('quotations.convert');
+        // Quotations
+        Route::resource('quotations', QuotationController::class);
+        Route::post('quotations/{quotation}/convert', [QuotationController::class, 'convertToInvoice'])->name('quotations.convert');
 
-    // Reports
-    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+        // Reports
+        Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+        
+        // Profile
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    });
 
-    // User Management
-    Route::resource('users', UserManagementController::class);
+    // Elevated Roles (Owner, Admin)
+    Route::middleware(['role:owner,admin'])->group(function () {
+        // User Management
+        Route::resource('users', UserManagementController::class);
 
-    // Settings
-    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
-    Route::post('/settings', [SettingController::class, 'update'])->name('settings.update');
-
-    // Profile
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+        // Settings
+        Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+        Route::post('/settings', [SettingController::class, 'update'])->name('settings.update');
+    });
 });
 
 require __DIR__.'/auth.php';

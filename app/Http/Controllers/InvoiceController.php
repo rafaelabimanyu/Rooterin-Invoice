@@ -91,6 +91,9 @@ class InvoiceController extends Controller
             }
 
             DB::commit();
+            
+            \App\Models\ActivityLog::log('created_invoice', "Issued new invoice #{$invoice->invoice_number}", $invoice);
+            
             return redirect()->route('invoices.index')->with('success', 'Invoice created successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -169,7 +172,11 @@ class InvoiceController extends Controller
 
     public function destroy(Invoice $invoice)
     {
+        $num = $invoice->invoice_number;
         $invoice->delete();
+        
+        \App\Models\ActivityLog::log('deleted_invoice', "Deleted invoice #{$num}");
+        
         return redirect()->route('invoices.index')->with('success', 'Invoice deleted successfully.');
     }
 }

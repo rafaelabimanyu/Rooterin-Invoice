@@ -90,8 +90,14 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5">
-                                <x-empty-state-table />
+                            <td colspan="5" class="px-8 py-20 text-center">
+                                <x-empty-state 
+                                    icon="users" 
+                                    title="No client accounts detected" 
+                                    description="Start by adding your first business client to begin the invoicing process."
+                                    :action="route('clients.create')"
+                                    actionLabel="Register New Client"
+                                />
                             </td>
                         </tr>
                     @endforelse

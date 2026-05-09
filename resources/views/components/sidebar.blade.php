@@ -1,20 +1,21 @@
 @props(['collapsed' => false])
 
 <aside 
-    x-data="{ 
-        collapsed: $persist(false).as('sidebar-collapsed'),
-        mobileOpen: false 
-    }"
     @toggle-sidebar.window="collapsed = !collapsed"
     @toggle-mobile-sidebar.window="mobileOpen = !mobileOpen"
-    class="fixed inset-y-0 left-0 z-[70] flex flex-col bg-white dark:bg-premium-900 transition-all duration-500 ease-in-out border-r border-slate-200/50 dark:border-white/[0.05] shadow-2xl"
-    x-bind:class="collapsed ? 'w-[72px]' : 'w-72'"
+    class="fixed inset-y-0 left-0 z-[70] flex flex-col bg-white dark:bg-premium-900 transition-all duration-300 ease-in-out border-r border-slate-200/50 dark:border-white/[0.05] shadow-2xl"
+    x-bind:class="{ 
+        'w-[72px]': collapsed, 
+        'w-72': !collapsed,
+        '-translate-x-full lg:translate-x-0': !mobileOpen,
+        'translate-x-0 shadow-2xl': mobileOpen
+    }"
     x-cloak
 >
     <!-- Brand Area -->
     <div class="flex items-center h-16 px-6 mb-6">
         <div class="flex items-center gap-4 group cursor-pointer" onclick="window.location='{{ route('dashboard') }}'">
-            <div class="w-10 h-10 rounded-2xl bg-slate-900 dark:bg-white flex items-center justify-center text-white dark:text-slate-950 shrink-0 shadow-xl shadow-slate-900/10 dark:shadow-white/5 group-hover:rotate-12 transition-transform duration-500">
+            <div class="w-10 h-10 rounded-2xl bg-slate-900 dark:bg-white flex items-center justify-center text-white dark:text-slate-950 shrink-0 shadow-xl shadow-slate-900/10 dark:shadow-white/5 group-hover:rotate-12 transition-transform duration-300">
                 <i data-lucide="zap" class="w-6 h-6 fill-current"></i>
             </div>
             <div x-show="!collapsed" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-x-4" x-transition:enter-end="opacity-100 translate-x-0" class="flex flex-col">

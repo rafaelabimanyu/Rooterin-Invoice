@@ -1,4 +1,4 @@
-@props(['collapsed' => false])
+
 
 <aside 
     x-data="{ 
@@ -8,7 +8,7 @@
     @toggle-sidebar.window="collapsed = !collapsed"
     @toggle-mobile-sidebar.window="mobileOpen = !mobileOpen"
     class="fixed inset-y-0 left-0 z-[70] flex flex-col bg-white dark:bg-premium-900 transition-all duration-500 ease-in-out border-r border-slate-200/50 dark:border-white/[0.05] shadow-2xl"
-    :class="collapsed ? 'w-[72px]' : 'w-72'"
+    x-bind:class="collapsed ? 'w-[72px]' : 'w-72'"
     x-cloak
 >
     <!-- Brand Area -->
@@ -30,8 +30,8 @@
         <div>
             <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-400/80">Terminal</p>
             <nav class="space-y-1">
-                <x-sidebar-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')" icon="layout-grid" :label="__('ui.dashboard')" :collapsed="collapsed" />
-                <x-sidebar-link href="{{ route('clients.index') }}" :active="request()->routeIs('clients.*')" icon="users" :label="__('ui.clients')" :collapsed="collapsed" />
+                <x-sidebar-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')" icon="layout-grid" :label="__('ui.dashboard')" />
+                <x-sidebar-link href="{{ route('clients.index') }}" :active="request()->routeIs('clients.*')" icon="users" :label="__('ui.clients')" />
             </nav>
         </div>
 
@@ -39,8 +39,8 @@
         <div>
             <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-400/80">Lifecycle</p>
             <nav class="space-y-1">
-                <x-sidebar-link href="{{ route('quotations.index') }}" :active="request()->routeIs('quotations.*')" icon="file-spreadsheet" :label="__('ui.quotations')" :collapsed="collapsed" />
-                <x-sidebar-link href="{{ route('invoices.index') }}" :active="request()->routeIs('invoices.*')" icon="file-text" :label="__('ui.invoices')" :collapsed="collapsed" />
+                <x-sidebar-link href="{{ route('quotations.index') }}" :active="request()->routeIs('quotations.*')" icon="file-spreadsheet" :label="__('ui.quotations')" />
+                <x-sidebar-link href="{{ route('invoices.index') }}" :active="request()->routeIs('invoices.*')" icon="file-text" :label="__('ui.invoices')" />
             </nav>
         </div>
 
@@ -49,9 +49,9 @@
             <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-400/80">Intelligence</p>
             <nav class="space-y-1">
                 @if(auth()->user()->role !== 'staff')
-                    <x-sidebar-link href="{{ route('owner.kpi') }}" :active="request()->routeIs('owner.kpi')" icon="trending-up" label="Owner KPI" :collapsed="collapsed" />
+                    <x-sidebar-link href="{{ route('owner.kpi') }}" :active="request()->routeIs('owner.kpi')" icon="trending-up" label="Owner KPI" />
                 @endif
-                <x-sidebar-link href="{{ route('reports.index') }}" :active="request()->routeIs('reports.*')" icon="pie-chart" :label="__('ui.reports')" :collapsed="collapsed" />
+                <x-sidebar-link href="{{ route('reports.index') }}" :active="request()->routeIs('reports.*')" icon="pie-chart" :label="__('ui.reports')" />
             </nav>
         </div>
 
@@ -60,10 +60,10 @@
             <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-400/80">Control</p>
             <nav class="space-y-1">
                 @if(Auth::user()->role !== 'staff')
-                    <x-sidebar-link href="{{ route('users.index') }}" :active="request()->routeIs('users.*')" icon="shield-check" :label="__('ui.users')" :collapsed="collapsed" />
+                    <x-sidebar-link href="{{ route('users.index') }}" :active="request()->routeIs('users.*')" icon="shield-check" :label="__('ui.users')" />
                 @endif
-                <x-sidebar-link href="{{ route('settings.index') }}" :active="request()->routeIs('settings.*')" icon="sliders" :label="__('ui.settings')" :collapsed="collapsed" />
-                <x-sidebar-link href="{{ route('guide.index') }}" :active="request()->routeIs('guide.index')" icon="book-open" label="Documentation" :collapsed="collapsed" />
+                <x-sidebar-link href="{{ route('settings.index') }}" :active="request()->routeIs('settings.*')" icon="sliders" :label="__('ui.settings')" />
+                <x-sidebar-link href="{{ route('guide.index') }}" :active="request()->routeIs('guide.index')" icon="book-open" label="Documentation" />
             </nav>
         </div>
     </div>

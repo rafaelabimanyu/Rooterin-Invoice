@@ -1,12 +1,12 @@
-@props(['href', 'active', 'icon', 'label', 'collapsed' => false])
+@props(['href', 'active', 'icon', 'label'])
 
 <a 
     href="{{ $href }}" 
     {{ $attributes->merge(['class' => 'group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative ' . ($active ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-950 shadow-lg shadow-slate-900/10 dark:shadow-white/5' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white')]) }}
 >
     <!-- Indicator Dot (only for active) -->
-    @if($active && !$collapsed)
-        <span class="absolute left-0 w-1 h-4 bg-indigo-500 rounded-r-full shadow-[0_0_8px_rgba(79,70,229,0.8)]"></span>
+    @if($active)
+        <span x-show="!collapsed" class="absolute left-0 w-1 h-4 bg-indigo-500 rounded-r-full shadow-[0_0_8px_rgba(79,70,229,0.8)]"></span>
     @endif
 
     <div class="shrink-0 transition-transform duration-300 group-hover:scale-110">

@@ -47,7 +47,7 @@
             <!-- Main Shell -->
             <div 
                 class="flex-1 flex flex-col min-w-0 transition-all duration-500 ease-in-out"
-                :class="sidebarCollapsed ? 'lg:ml-[72px]' : 'lg:ml-72'"
+                x-bind:class="sidebarCollapsed ? 'lg:ml-[72px]' : 'lg:ml-72'"
             >
                 <!-- Header / Navbar -->
                 <header class="h-16 flex items-center justify-between px-6 md:px-10 bg-white/70 dark:bg-premium-900/70 backdrop-blur-2xl border-b border-slate-200/50 dark:border-white/[0.05] sticky top-0 z-50">

@@ -202,6 +202,18 @@ class ReceiptController extends Controller
         }
     }
 
+    public function downloadPdf(Request $request, Receipt $receipt)
+    {
+        $locale = $request->get('lang', config('app.locale'));
+        if (in_array($locale, ['en', 'id'])) {
+            \Illuminate\Support\Facades\App::setLocale($locale);
+        }
+
+        $receipt->load(['client', 'items']);
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('receipts.pdf', compact('receipt'));
+        return $pdf->download("Receipt-{$receipt->receipt_number}.pdf");
+    }
+
     public function destroy(Receipt $receipt)
     {
         $receipt->delete();

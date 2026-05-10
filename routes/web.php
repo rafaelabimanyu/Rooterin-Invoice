@@ -18,6 +18,9 @@ Route::get('/', function () {
 Route::get('/lang/{locale}', function ($locale) {
     if (in_array($locale, ['en', 'id'])) {
         session()->put('locale', $locale);
+        if (auth()->check()) {
+            auth()->user()->update(['locale' => $locale]);
+        }
     }
     return redirect()->back();
 })->name('lang.switch');
@@ -34,15 +37,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('api/clients', [\App\Http\Controllers\Api\ClientController::class, 'store'])->name('api.clients.store');
         
         // Invoices
-        Route::resource('invoices', InvoiceController::class);
         Route::get('invoices/{invoice}/pdf', [InvoiceController::class, 'downloadPdf'])->name('invoices.pdf');
+        Route::resource('invoices', InvoiceController::class);
         Route::post('payments', [PaymentController::class, 'store'])->name('payments.store');
         Route::delete('payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy');
 
 
         // Receipts
-        Route::resource('receipts', ReceiptController::class);
+        Route::get('receipts/{receipt}/download', [ReceiptController::class, 'downloadPdf'])->name('receipts.download');
         Route::post('receipts/{receipt}/convert', [ReceiptController::class, 'convertToInvoice'])->name('receipts.convert');
+        Route::resource('receipts', ReceiptController::class);
 
 
         

@@ -19,8 +19,8 @@ class DashboardController extends Controller
         $totalRevenue = Invoice::where('status', 'paid')->sum('total');
         $pendingRevenue = Invoice::whereIn('status', ['sent', 'pending', 'dp'])->sum('total');
         
-        $totalQuotations = \App\Models\Quotation::count();
-        $pendingQuotations = \App\Models\Quotation::where('status', 'sent')->count();
+        $totalReceipts = \App\Models\Receipt::count();
+        $pendingReceipts = \App\Models\Receipt::where('status', 'sent')->count();
 
         $monthlyRevenue = Invoice::where('status', 'paid')
             ->whereMonth('tanggal_invoice', Carbon::now()->month)
@@ -38,8 +38,8 @@ class DashboardController extends Controller
             'pendingRevenue',
             'monthlyRevenue',
             'recentInvoices',
-            'totalQuotations',
-            'pendingQuotations'
+            'totalReceipts',
+            'pendingReceipts'
         ));
     }
 }

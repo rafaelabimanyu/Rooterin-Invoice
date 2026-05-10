@@ -4,13 +4,13 @@
             <div class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
                 <a href="{{ route('invoices.index') }}" class="hover:text-indigo-600 transition-colors">Invoices</a>
                 <i data-lucide="chevron-right" class="w-3 h-3"></i>
-                <span class="text-slate-900 dark:text-white">New Invoice</span>
+                <span class="text-slate-900">New Invoice</span>
             </div>
-            <h1 class="text-3xl font-bold text-slate-900 dark:text-white font-outfit leading-tight">Create Invoice</h1>
-            <p class="text-slate-500 dark:text-slate-400 mt-1">Configure billing details and items for your client.</p>
+            <h1 class="text-3xl font-bold text-slate-900 font-outfit leading-tight">Create Invoice</h1>
+            <p class="text-slate-500 mt-1">Configure billing details and items for your client.</p>
         </div>
         <div class="flex items-center gap-3">
-            <a href="{{ route('invoices.index') }}" class="px-5 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 transition-all">
+            <a href="{{ route('invoices.index') }}" class="px-5 py-2.5 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-all">
                 Discard
             </a>
         </div>
@@ -21,9 +21,9 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
             <!-- Left Side -->
             <div class="lg:col-span-8 space-y-8">
-                <div class="bg-white dark:bg-slate-900 p-10 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
-                    <div class="flex items-center justify-between mb-8 pb-4 border-b border-slate-50 dark:border-slate-800">
-                        <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-widest">1. Client & Dates</h3>
+                <div class="bg-white p-10 rounded-xl border border-slate-200 shadow-sm">
+                    <div class="flex items-center justify-between mb-8 pb-4 border-b border-slate-50">
+                        <h3 class="text-sm font-bold text-slate-900 uppercase tracking-widest">1. Client & Dates</h3>
                         <button type="button" @click="$dispatch('open-modal', 'quick-client')" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1.5">
                             <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Add New Client
                         </button>
@@ -32,7 +32,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Client Account</label>
-                            <select name="client_id" id="client_select" required class="w-full px-4 py-2.5 bg-slate-50/50 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500/10 transition-all">
+                            <select name="client_id" id="client_select" required class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200/60 rounded-lg text-sm text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500/10 transition-all">
                                 <option value="">Choose a client...</option>
                                 @foreach($clients as $client)
                                     <option value="{{ $client->id }}">{{ $client->nama_client }} ({{ $client->nama_perusahaan }})</option>
@@ -41,26 +41,26 @@
                         </div>
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Invoice Identifier</label>
-                            <input type="text" name="invoice_number" value="{{ $invoice_number }}" readonly class="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-500 font-mono cursor-not-allowed">
+                            <input type="text" name="invoice_number" value="{{ $invoice_number }}" readonly class="w-full px-4 py-2.5 bg-slate-100 border border-slate-200 rounded-lg text-sm text-slate-500 font-mono cursor-not-allowed">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Issuance Date</label>
-                            <input type="date" name="tanggal_invoice" value="{{ date('Y-m-d') }}" required class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none text-sm text-slate-900 dark:text-white transition-all">
+                            <input type="date" name="tanggal_invoice" value="{{ date('Y-m-d') }}" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none text-sm text-slate-900 transition-all">
                         </div>
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Due Date</label>
-                            <input type="date" name="due_date" value="{{ date('Y-m-d', strtotime('+7 days')) }}" required class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none text-sm text-slate-900 dark:text-white transition-all">
+                            <input type="date" name="due_date" value="{{ date('Y-m-d', strtotime('+7 days')) }}" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none text-sm text-slate-900 transition-all">
                         </div>
                     </div>
                 </div>
 
                 <!-- Billing Items -->
-                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm overflow-hidden">
-                    <div class="px-10 py-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                        <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-widest">2. Billing Items</h3>
+                <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+                    <div class="px-10 py-6 border-b border-slate-100 flex items-center justify-between">
+                        <h3 class="text-sm font-bold text-slate-900 uppercase tracking-widest">2. Billing Items</h3>
                         <button type="button" @click="addItem" class="text-[12px] font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1.5 transition-colors">
                             <i data-lucide="plus" class="w-4 h-4"></i>
                             Append Line Item
@@ -69,22 +69,22 @@
                     
                     <div class="p-10 space-y-6">
                         <template x-for="(item, index) in items" :key="index">
-                            <div class="relative grid grid-cols-1 md:grid-cols-12 gap-6 pb-6 border-b border-slate-50 dark:border-slate-800 last:border-0 last:pb-0 group">
+                            <div class="relative grid grid-cols-1 md:grid-cols-12 gap-6 pb-6 border-b border-slate-50 last:border-0 last:pb-0 group">
                                 <div class="md:col-span-6 space-y-2">
                                     <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Description</label>
-                                    <input type="text" :name="`items[${index}][deskripsi]`" x-model="item.deskripsi" required placeholder="Service or product description..." class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-900 dark:text-white font-semibold">
+                                    <input type="text" :name="`items[${index}][deskripsi]`" x-model="item.deskripsi" required placeholder="Service or product description..." class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-900 font-semibold">
                                 </div>
                                 <div class="md:col-span-1 space-y-2">
                                     <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center block">Qty</label>
-                                    <input type="number" step="0.01" :name="`items[${index}][qty]`" x-model="item.qty" @input="calculateTotal()" required class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-900 dark:text-white font-semibold text-center">
+                                    <input type="number" step="0.01" :name="`items[${index}][qty]`" x-model="item.qty" @input="calculateTotal()" required class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-900 font-semibold text-center">
                                 </div>
                                 <div class="md:col-span-2 space-y-2 text-right">
                                     <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Rate</label>
-                                    <input type="number" :name="`items[${index}][harga]`" x-model="item.harga" @input="calculateTotal()" required class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-900 dark:text-white font-semibold text-right">
+                                    <input type="number" :name="`items[${index}][harga]`" x-model="item.harga" @input="calculateTotal()" required class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-900 font-semibold text-right">
                                 </div>
                                 <div class="md:col-span-3 space-y-2 text-right">
                                     <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Line Total</label>
-                                    <div class="text-[13px] font-black text-slate-900 dark:text-white py-0" x-text="formatCurrency(item.qty * item.harga)"></div>
+                                    <div class="text-[13px] font-black text-slate-900 py-0" x-text="formatCurrency(item.qty * item.harga)"></div>
                                 </div>
                                 
                                 <button type="button" @click="removeItem(index)" x-show="items.length > 1" class="absolute -right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all p-1 text-rose-500 hover:bg-rose-50 rounded">
@@ -96,14 +96,14 @@
                 </div>
 
                 <!-- Documentation Section -->
-                <div class="bg-white dark:bg-slate-900 p-10 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
-                    <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-widest mb-8 pb-4 border-b border-slate-50 dark:border-slate-800 flex items-center gap-2">
+                <div class="bg-white p-10 rounded-xl border border-slate-200 shadow-sm">
+                    <h3 class="text-sm font-bold text-slate-900 uppercase tracking-widest mb-8 pb-4 border-b border-slate-50 flex items-center gap-2">
                         <i data-lucide="image" class="w-4 h-4 text-indigo-500"></i>
                         3. Job Documentation
                     </h3>
                     <div class="space-y-4">
                         <p class="text-xs text-slate-500">Upload work evidence or job site documentation. Support multiple files.</p>
-                        <div class="relative group cursor-pointer border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl p-8 hover:border-indigo-500 transition-all flex flex-col items-center justify-center bg-slate-50/50 dark:bg-slate-900/50">
+                        <div class="relative group cursor-pointer border-2 border-dashed border-slate-200 rounded-xl p-8 hover:border-indigo-500 transition-all flex flex-col items-center justify-center bg-slate-50/50">
                             <input type="file" name="attachments[]" multiple class="absolute inset-0 opacity-0 cursor-pointer">
                             <i data-lucide="upload-cloud" class="w-8 h-8 text-slate-400 group-hover:text-indigo-500 mb-2"></i>
                             <p class="text-[11px] font-bold text-slate-400 group-hover:text-indigo-500 uppercase tracking-widest">Select Images</p>
@@ -113,14 +113,25 @@
 
                 <!-- Terms & Memo -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                    <div class="bg-white dark:bg-slate-900 p-8 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+                    <div class="bg-white p-8 rounded-xl border border-slate-200 shadow-sm space-y-4">
                         <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Internal Memo</label>
-                        <textarea name="notes_internal" rows="3" placeholder="Private notes for the team..." class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-700 dark:text-slate-300"></textarea>
+                        <textarea name="notes_internal" rows="3" placeholder="Private notes for the team..." class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-700"></textarea>
                     </div>
-                    <div class="bg-white dark:bg-slate-900 p-8 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+                    <div class="bg-white p-8 rounded-xl border border-slate-200 shadow-sm space-y-4">
                         <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Client Terms</label>
-                        <textarea name="terms_condition" rows="3" class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-700 dark:text-slate-300">Net 30. Please remit payment via bank transfer.</textarea>
+                        <textarea name="terms_condition" rows="3" class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-700">Net 7. Please remit payment via bank transfer.</textarea>
                     </div>
+                    <div class="bg-white p-8 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Bank Account Details (Displayed on PDF)</label>
+                        <textarea name="bank_account_info" rows="3" placeholder="Bank BCA Account No: 123456..." class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-700">Bank Central Asia (BCA)
+Acc No: 123-456-7890
+Name: Rooterin Technical Services</textarea>
+                    </div>
+                </div>
+
+                <div class="bg-white p-8 rounded-xl border border-slate-200 shadow-sm space-y-2">
+                    <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Warranty Period</label>
+                    <input type="text" name="warranty" placeholder="e.g. 1 Month, 1 Year..." class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-700 font-semibold">
                 </div>
             </div>
 
@@ -165,35 +176,42 @@
     <!-- Quick Client Modal -->
     <x-modal name="quick-client" :show="false">
         <div class="p-10" x-data="quickClientForm()">
-            <h3 class="text-xl font-bold text-slate-900 dark:text-white font-outfit mb-2">Add New Client</h3>
+            <h3 class="text-xl font-bold text-slate-900 font-outfit mb-2">Add New Client</h3>
             <p class="text-sm text-slate-500 mb-8">Register a new client account directly to the system ledger.</p>
             
             <form @submit.prevent="submitForm" class="space-y-6">
                 <div class="grid grid-cols-2 gap-6">
                     <div class="space-y-2">
                         <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Full Name</label>
-                        <input type="text" x-model="form.nama_client" required class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm outline-none">
+                        <input type="text" x-model="form.nama_client" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
                     </div>
                     <div class="space-y-2">
-                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Company Name</label>
-                        <input type="text" x-model="form.nama_perusahaan" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm outline-none">
+                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Client Type</label>
+                        <select x-model="form.client_type" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
+                            <option value="perumahan">Perumahan (Home)</option>
+                            <option value="perusahaan">Perusahaan (Corporate)</option>
+                        </select>
                     </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Company Name (Optional)</label>
+                    <input type="text" x-model="form.nama_perusahaan" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
                 </div>
 
                 <div class="grid grid-cols-2 gap-6">
                     <div class="space-y-2">
                         <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Email Address</label>
-                        <input type="email" x-model="form.email" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm outline-none">
+                        <input type="email" x-model="form.email" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
                     </div>
                     <div class="space-y-2">
                         <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">WhatsApp / Phone</label>
-                        <input type="text" x-model="form.no_hp" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm outline-none">
+                        <input type="text" x-model="form.no_hp" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
                     </div>
                 </div>
 
                 <div class="space-y-2">
                     <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Primary Address</label>
-                    <textarea x-model="form.alamat" rows="2" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm outline-none"></textarea>
+                    <textarea x-model="form.alamat" rows="2" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none"></textarea>
                 </div>
 
                 <div class="pt-6 flex items-center justify-end gap-3">
@@ -212,6 +230,7 @@
             return {
                 form: {
                     nama_client: '',
+                    client_type: 'perumahan',
                     nama_perusahaan: '',
                     email: '',
                     no_hp: '',

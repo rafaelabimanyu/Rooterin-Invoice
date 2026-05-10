@@ -5,7 +5,7 @@ return [
     'dashboard' => 'Dashboard',
     'clients' => 'Clients',
     'invoices' => 'Invoices',
-    'quotations' => 'Quotations',
+    'receipts' => 'Receipts',
     'payments' => 'Payments',
     'reports' => 'Reports',
     'settings' => 'Settings',

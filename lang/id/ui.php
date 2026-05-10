@@ -5,7 +5,7 @@ return [
     'dashboard' => 'Dasbor',
     'clients' => 'Klien',
     'invoices' => 'Invoice',
-    'quotations' => 'Penawaran',
+    'receipts' => 'Kwitansi',
     'payments' => 'Pembayaran',
     'reports' => 'Laporan',
     'settings' => 'Pengaturan',

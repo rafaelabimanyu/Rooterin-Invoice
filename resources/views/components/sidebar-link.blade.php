@@ -2,7 +2,7 @@
 
 <a 
     href="{{ $href }}" 
-    {{ $attributes->merge(['class' => 'group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative ' . ($active ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-950 shadow-lg shadow-slate-900/10 dark:shadow-white/5' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white')]) }}
+    {{ $attributes->merge(['class' => 'group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative ' . ($active ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/10' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900')]) }}
 >
     <!-- Indicator Dot (only for active) -->
     @if($active && !$collapsed)
@@ -10,7 +10,7 @@
     @endif
 
     <div class="shrink-0 transition-transform duration-300 group-hover:scale-110">
-        <i data-lucide="{{ $icon }}" class="w-[18px] h-[18px] {{ $active ? 'text-white dark:text-slate-950' : 'text-slate-400 dark:text-slate-500 group-hover:text-indigo-500 transition-colors' }}"></i>
+        <i data-lucide="{{ $icon }}" class="w-[18px] h-[18px] {{ $active ? 'text-white' : 'text-slate-400 group-hover:text-indigo-500 transition-colors' }}"></i>
     </div>
     
     <span 
@@ -26,7 +26,7 @@
     <!-- Tooltip (only when collapsed) -->
     <div 
         x-show="collapsed" 
-        class="absolute left-full ml-4 px-3 py-1.5 bg-slate-900 dark:bg-white text-white dark:text-slate-950 text-[10px] font-black uppercase tracking-widest rounded-lg opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-300 pointer-events-none z-[100] shadow-2xl whitespace-nowrap"
+        class="absolute left-full ml-4 px-3 py-1.5 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-lg opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-300 pointer-events-none z-[100] shadow-2xl whitespace-nowrap"
     >
         {{ $label }}
     </div>

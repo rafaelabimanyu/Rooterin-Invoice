@@ -71,13 +71,15 @@ class InvoiceController extends Controller
                 'client_id' => $request->client_id,
                 'tanggal_invoice' => $request->tanggal_invoice,
                 'due_date' => $request->due_date,
-                'status' => 'draft',
+                'warranty' => $request->warranty,
+                'status' => 'sent',
                 'subtotal' => $subtotal,
                 'tax_percent' => $request->tax_percent ?? 0,
                 'discount_percent' => $request->discount_percent ?? 0,
                 'total' => $total,
                 'notes_internal' => $request->notes_internal,
                 'terms_condition' => $request->terms_condition,
+                'bank_account_info' => $request->bank_account_info,
                 'created_by' => auth()->id(),
             ]);
 
@@ -155,6 +157,7 @@ class InvoiceController extends Controller
                 'client_id' => $request->client_id,
                 'tanggal_invoice' => $request->tanggal_invoice,
                 'due_date' => $request->due_date,
+                'warranty' => $request->warranty,
                 'status' => $request->status,
                 'subtotal' => $subtotal,
                 'tax_percent' => $request->tax_percent ?? 0,
@@ -162,6 +165,7 @@ class InvoiceController extends Controller
                 'total' => $total,
                 'notes_internal' => $request->notes_internal,
                 'terms_condition' => $request->terms_condition,
+                'bank_account_info' => $request->bank_account_info,
             ]);
 
             $invoice->items()->delete();

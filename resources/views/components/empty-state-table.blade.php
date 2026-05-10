@@ -7,11 +7,11 @@
 ])
 
 <div class="flex flex-col items-center justify-center py-16 px-4">
-    <div class="w-20 h-20 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center mb-6">
-        <i data-lucide="{{ $icon }}" class="w-10 h-10 text-slate-300 dark:text-slate-600"></i>
+    <div class="w-20 h-20 rounded-full bg-slate-50 flex items-center justify-center mb-6">
+        <i data-lucide="{{ $icon }}" class="w-10 h-10 text-slate-300"></i>
     </div>
-    <h4 class="text-lg font-bold text-slate-900 dark:text-white mb-1">{{ $title }}</h4>
-    <p class="text-slate-500 dark:text-slate-400 text-sm text-center max-w-xs mb-8">
+    <h4 class="text-lg font-bold text-slate-900 mb-1">{{ $title }}</h4>
+    <p class="text-slate-500 text-sm text-center max-w-xs mb-8">
         {{ $description }}
     </p>
     @if($buttonLink !== '#')

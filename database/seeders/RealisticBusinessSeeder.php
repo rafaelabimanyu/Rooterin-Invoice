@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Client;
 use App\Models\Invoice;
-use App\Models\Quotation;
+use App\Models\Receipt;
 use App\Models\User;
 use App\Models\Payment;
 use Illuminate\Database\Seeder;
@@ -133,17 +133,17 @@ class RealisticBusinessSeeder extends Seeder
             }
         }
 
-        // 5. Quotations
+        // 5. Receipts
         for ($i = 1; $i <= 10; $i++) {
             $client = $clients->random();
             $subtotal = $faker->numberBetween(10, 100) * 100000;
             $tax = $subtotal * 0.11;
             $total = $subtotal + $tax;
 
-            Quotation::create([
-                'quotation_number' => "ROOT-QUO-" . str_pad($i, 5, '0', STR_PAD_LEFT),
+            Receipt::create([
+                'receipt_number' => "ROOT-KWT-" . str_pad($i, 5, '0', STR_PAD_LEFT),
                 'client_id' => $client->id,
-                'tanggal_quotation' => Carbon::now()->subDays($faker->numberBetween(1, 30)),
+                'tanggal_receipt' => Carbon::now()->subDays($faker->numberBetween(1, 30)),
                 'expiry_date' => Carbon::now()->addDays(30),
                 'status' => $faker->randomElement(['sent', 'approved', 'rejected']),
                 'subtotal' => $subtotal,

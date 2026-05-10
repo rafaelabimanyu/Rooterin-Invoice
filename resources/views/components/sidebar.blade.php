@@ -3,7 +3,7 @@
 <aside 
     @toggle-sidebar.window="collapsed = !collapsed"
     @toggle-mobile-sidebar.window="mobileOpen = !mobileOpen"
-    class="fixed inset-y-0 left-0 z-[70] flex flex-col bg-white dark:bg-premium-900 transition-all duration-300 ease-in-out border-r border-slate-200/50 dark:border-white/[0.05] shadow-2xl"
+    class="fixed inset-y-0 left-0 z-[70] flex flex-col bg-white transition-all duration-300 ease-in-out border-r border-slate-200/50 shadow-2xl"
     x-bind:class="{ 
         'w-[72px]': collapsed, 
         'w-72': !collapsed,
@@ -15,11 +15,11 @@
     <!-- Brand Area -->
     <div class="flex items-center h-16 px-6 mb-6">
         <div class="flex items-center gap-4 group cursor-pointer" onclick="window.location='{{ route('dashboard') }}'">
-            <div class="w-10 h-10 rounded-2xl bg-slate-900 dark:bg-white flex items-center justify-center text-white dark:text-slate-950 shrink-0 shadow-xl shadow-slate-900/10 dark:shadow-white/5 group-hover:rotate-12 transition-transform duration-300">
+            <div class="w-10 h-10 rounded-2xl bg-slate-900 flex items-center justify-center text-white shrink-0 shadow-xl shadow-slate-900/10 group-hover:rotate-12 transition-transform duration-300">
                 <i data-lucide="zap" class="w-6 h-6 fill-current"></i>
             </div>
             <div x-show="!collapsed" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-x-4" x-transition:enter-end="opacity-100 translate-x-0" class="flex flex-col">
-                <span class="text-lg font-black text-slate-900 dark:text-white tracking-tighter font-jakarta leading-none uppercase">Rooterin<span class="text-indigo-500">.</span></span>
+                <span class="text-lg font-black text-slate-900 tracking-tighter font-jakarta leading-none uppercase">Rooterin<span class="text-indigo-500">.</span></span>
                 <span class="text-[8px] font-black text-slate-400 uppercase tracking-[0.3em] mt-1 leading-none">Enterprise Ops</span>
             </div>
         </div>
@@ -40,7 +40,7 @@
         <div>
             <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-400/80">Lifecycle</p>
             <nav class="space-y-1">
-                <x-sidebar-link href="{{ route('quotations.index') }}" :active="request()->routeIs('quotations.*')" icon="file-spreadsheet" :label="__('ui.quotations')" :collapsed="$collapsed" />
+                <x-sidebar-link href="{{ route('receipts.index') }}" :active="request()->routeIs('receipts.*')" icon="file-spreadsheet" :label="__('ui.receipts')" :collapsed="$collapsed" />
                 <x-sidebar-link href="{{ route('invoices.index') }}" :active="request()->routeIs('invoices.*')" icon="file-text" :label="__('ui.invoices')" :collapsed="$collapsed" />
             </nav>
         </div>
@@ -51,8 +51,8 @@
             <nav class="space-y-1">
                 @if(auth()->user()->role !== 'staff')
                     <x-sidebar-link href="{{ route('owner.kpi') }}" :active="request()->routeIs('owner.kpi')" icon="trending-up" label="Owner KPI" :collapsed="$collapsed" />
+                    <x-sidebar-link href="{{ route('reports.index') }}" :active="request()->routeIs('reports.*')" icon="pie-chart" :label="__('ui.reports')" :collapsed="$collapsed" />
                 @endif
-                <x-sidebar-link href="{{ route('reports.index') }}" :active="request()->routeIs('reports.*')" icon="pie-chart" :label="__('ui.reports')" :collapsed="$collapsed" />
             </nav>
         </div>
 
@@ -70,13 +70,13 @@
     </div>
 
     <!-- Sidebar Footer -->
-    <div class="p-4 border-t border-slate-100 dark:border-white/5">
-        <div class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 dark:bg-white/5 border border-transparent hover:border-slate-200 dark:hover:border-white/10 transition-all duration-300 cursor-pointer group" onclick="window.location='{{ route('profile.edit') }}'">
-            <div class="w-10 h-10 rounded-xl bg-slate-200 dark:bg-white/10 flex items-center justify-center text-xs font-black text-slate-500 group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-900 transition-all duration-300">
+    <div class="p-4 border-t border-slate-100">
+        <div class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border border-transparent hover:border-slate-200 transition-all duration-300 cursor-pointer group" onclick="window.location='{{ route('profile.edit') }}'">
+            <div class="w-10 h-10 rounded-xl bg-slate-200 flex items-center justify-center text-xs font-black text-slate-500 group-hover:bg-slate-900 group-hover:text-white transition-all duration-300">
                 {{ substr(Auth::user()->name, 0, 1) }}
             </div>
             <div x-show="!collapsed" class="flex-1 overflow-hidden">
-                <p class="text-[11px] font-black text-slate-900 dark:text-white truncate uppercase tracking-tight">{{ Auth::user()->name }}</p>
+                <p class="text-[11px] font-black text-slate-900 truncate uppercase tracking-tight">{{ Auth::user()->name }}</p>
                 <div class="flex items-center gap-1.5 mt-0.5">
                     <span class="w-1 h-1 rounded-full bg-emerald-500"></span>
                     <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest truncate">{{ Auth::user()->role }} Mode</p>

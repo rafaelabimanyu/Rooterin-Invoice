@@ -14,6 +14,8 @@ class LocaleMiddleware
     {
         if (Session::has('locale')) {
             App::setLocale(Session::get('locale'));
+        } elseif (auth()->check()) {
+            App::setLocale(auth()->user()->locale);
         } else {
             App::setLocale(config('app.locale'));
         }

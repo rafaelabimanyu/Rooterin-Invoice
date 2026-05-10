@@ -6,8 +6,8 @@
                 <i data-lucide="chevron-right" class="w-3 h-3"></i>
                 <span class="text-indigo-600">Billing Ledger</span>
             </div>
-            <h1 class="text-3xl font-black text-slate-900 dark:text-white font-outfit tracking-tight">{{ __('ui.invoices') }}</h1>
-            <p class="text-sm text-slate-500 dark:text-slate-400">Comprehensive list of all issued corporate invoices and payment statuses.</p>
+            <h1 class="text-3xl font-black text-slate-900 font-outfit tracking-tight">{{ __('ui.invoices') }}</h1>
+            <p class="text-sm text-slate-500">Comprehensive list of all issued corporate invoices and payment statuses.</p>
         </div>
         <div class="flex items-center gap-3">
             <a href="{{ route('invoices.create') }}" class="btn-premium">
@@ -20,7 +20,7 @@
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <div class="glass-card px-6 py-4 border-l-4 border-l-indigo-500">
             <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Total Issued</p>
-            <p class="text-xl font-black text-slate-900 dark:text-white font-outfit">{{ $invoices->total() }}</p>
+            <p class="text-xl font-black text-slate-900 font-outfit">{{ $invoices->total() }}</p>
         </div>
         <div class="glass-card px-6 py-4 border-l-4 border-l-emerald-500">
             <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">{{ __('ui.total_collected') }}</p>
@@ -28,7 +28,7 @@
         </div>
         <div class="glass-card px-6 py-4 border-l-4 border-l-amber-500">
             <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">{{ __('ui.amount_due') }}</p>
-            <p class="text-xl font-black text-slate-900 dark:text-white font-outfit">Rp {{ number_format(\App\Models\Invoice::whereIn('status', ['sent', 'dp', 'pending', 'overdue'])->sum('total'), 0, ',', '.') }}</p>
+            <p class="text-xl font-black text-slate-900 font-outfit">Rp {{ number_format(\App\Models\Invoice::whereIn('status', ['sent', 'dp', 'pending', 'overdue'])->sum('total'), 0, ',', '.') }}</p>
         </div>
         <div class="glass-card px-6 py-4 border-l-4 border-l-rose-500">
             <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Overdue Count</p>
@@ -41,35 +41,35 @@
         <div class="overflow-x-auto">
             <table class="w-full text-left">
                 <thead>
-                    <tr class="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400 bg-slate-50/50 dark:bg-slate-800/40">
-                        <th class="px-8 py-4 border-b border-slate-100 dark:border-slate-800">Invoice Number</th>
-                        <th class="px-8 py-4 border-b border-slate-100 dark:border-slate-800">Customer Details</th>
-                        <th class="px-8 py-4 border-b border-slate-100 dark:border-slate-800">Net Amount</th>
-                        <th class="px-8 py-4 border-b border-slate-100 dark:border-slate-800">Due Date</th>
-                        <th class="px-8 py-4 border-b border-slate-100 dark:border-slate-800">{{ __('ui.status') }}</th>
-                        <th class="px-8 py-4 border-b border-slate-100 dark:border-slate-800 text-right">{{ __('ui.actions') }}</th>
+                    <tr class="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400 bg-slate-50/50">
+                        <th class="px-8 py-4 border-b border-slate-100">Invoice Number</th>
+                        <th class="px-8 py-4 border-b border-slate-100">Customer Details</th>
+                        <th class="px-8 py-4 border-b border-slate-100">Net Amount</th>
+                        <th class="px-8 py-4 border-b border-slate-100">Due Date</th>
+                        <th class="px-8 py-4 border-b border-slate-100">{{ __('ui.status') }}</th>
+                        <th class="px-8 py-4 border-b border-slate-100 text-right">{{ __('ui.actions') }}</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-50 dark:divide-slate-800/50">
+                <tbody class="divide-y divide-slate-50">
                     @forelse($invoices as $invoice)
                         <tr class="table-row-premium">
                             <td class="px-8 py-4.5">
-                                <a href="{{ route('invoices.show', $invoice) }}" class="text-[13px] font-bold text-slate-900 dark:text-white hover:text-indigo-600 transition-colors">
+                                <a href="{{ route('invoices.show', $invoice) }}" class="text-[13px] font-bold text-slate-900 hover:text-indigo-600 transition-colors">
                                     {{ $invoice->invoice_number }}
                                 </a>
                             </td>
                             <td class="px-8 py-4.5">
                                 <div class="flex flex-col">
-                                    <span class="text-[13px] font-bold text-slate-800 dark:text-slate-200">{{ $invoice->client->nama_client }}</span>
+                                    <span class="text-[13px] font-bold text-slate-800">{{ $invoice->client->nama_client }}</span>
                                     <span class="text-[11px] text-slate-400 font-medium">{{ $invoice->client->nama_perusahaan }}</span>
                                 </div>
                             </td>
                             <td class="px-8 py-4.5">
-                                <span class="text-[13px] font-black text-slate-900 dark:text-white">Rp {{ number_format($invoice->total, 0, ',', '.') }}</span>
+                                <span class="text-[13px] font-black text-slate-900">Rp {{ number_format($invoice->total, 0, ',', '.') }}</span>
                             </td>
                             <td class="px-8 py-4.5">
                                 <div class="flex flex-col">
-                                    <span class="text-[12px] font-semibold text-slate-600 dark:text-slate-400">{{ $invoice->due_date->format('M d, Y') }}</span>
+                                    <span class="text-[12px] font-semibold text-slate-600">{{ $invoice->due_date->format('M d, Y') }}</span>
                                     @if($invoice->due_date->isPast() && $invoice->status !== 'paid')
                                         <span class="text-[9px] font-bold text-rose-500 uppercase tracking-tighter">{{ __('ui.overdue') }}</span>
                                     @endif
@@ -100,7 +100,7 @@
             </table>
         </div>
         @if($invoices->hasPages())
-            <div class="px-8 py-4 bg-slate-50/50 dark:bg-slate-800/40 border-t border-slate-100 dark:border-slate-800">
+            <div class="px-8 py-4 bg-slate-50/50 border-t border-slate-100">
                 {{ $invoices->links() }}
             </div>
         @endif

@@ -20,7 +20,7 @@
             </div>
             <div x-show="!collapsed" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-x-4" x-transition:enter-end="opacity-100 translate-x-0" class="flex flex-col">
                 <span class="text-lg font-black text-slate-900 tracking-tighter font-jakarta leading-none uppercase">Rooterin<span class="text-indigo-500">.</span></span>
-                <span class="text-[8px] font-black text-slate-400 uppercase tracking-[0.3em] mt-1 leading-none">Enterprise Ops</span>
+                <span class="text-[8px] font-black text-slate-400 uppercase tracking-[0.3em] mt-1 leading-none">{{ __('ui.system_live') }}</span>
             </div>
         </div>
     </div>
@@ -29,7 +29,7 @@
     <div class="flex-1 px-4 space-y-10 overflow-y-auto custom-scrollbar pb-10">
         <!-- Section: Overview -->
         <div>
-            <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-400/80">Terminal</p>
+            <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-400/80">{{ __('ui.terminal') }}</p>
             <nav class="space-y-1">
                 <x-sidebar-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')" icon="layout-grid" :label="__('ui.dashboard')" :collapsed="$collapsed" />
                 <x-sidebar-link href="{{ route('clients.index') }}" :active="request()->routeIs('clients.*')" icon="users" :label="__('ui.clients')" :collapsed="$collapsed" />
@@ -38,7 +38,7 @@
 
         <!-- Section: Operations -->
         <div>
-            <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-400/80">Lifecycle</p>
+            <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-400/80">{{ __('ui.lifecycle') }}</p>
             <nav class="space-y-1">
                 <x-sidebar-link href="{{ route('receipts.index') }}" :active="request()->routeIs('receipts.*')" icon="file-spreadsheet" :label="__('ui.receipts')" :collapsed="$collapsed" />
                 <x-sidebar-link href="{{ route('invoices.index') }}" :active="request()->routeIs('invoices.*')" icon="file-text" :label="__('ui.invoices')" :collapsed="$collapsed" />
@@ -47,7 +47,7 @@
 
         <!-- Section: Intelligence -->
         <div>
-            <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-400/80">Intelligence</p>
+            <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-400/80">{{ __('ui.intelligence') }}</p>
             <nav class="space-y-1">
                 @if(auth()->user()->role !== 'staff')
                     <x-sidebar-link href="{{ route('owner.kpi') }}" :active="request()->routeIs('owner.kpi')" icon="trending-up" label="Owner KPI" :collapsed="$collapsed" />
@@ -58,13 +58,13 @@
 
         <!-- Section: Administration -->
         <div>
-            <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-400/80">Control</p>
+            <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-400/80">{{ __('ui.control') }}</p>
             <nav class="space-y-1">
                 @if(Auth::user()->role !== 'staff')
                     <x-sidebar-link href="{{ route('users.index') }}" :active="request()->routeIs('users.*')" icon="shield-check" :label="__('ui.users')" :collapsed="$collapsed" />
                 @endif
                 <x-sidebar-link href="{{ route('settings.index') }}" :active="request()->routeIs('settings.*')" icon="sliders" :label="__('ui.settings')" :collapsed="$collapsed" />
-                <x-sidebar-link href="{{ route('guide.index') }}" :active="request()->routeIs('guide.index')" icon="book-open" label="Documentation" :collapsed="$collapsed" />
+                <x-sidebar-link href="{{ route('guide.index') }}" :active="request()->routeIs('guide.index')" icon="book-open" :label="__('ui.guide')" :collapsed="$collapsed" />
             </nav>
         </div>
     </div>
@@ -79,7 +79,7 @@
                 <p class="text-[11px] font-black text-slate-900 truncate uppercase tracking-tight">{{ Auth::user()->name }}</p>
                 <div class="flex items-center gap-1.5 mt-0.5">
                     <span class="w-1 h-1 rounded-full bg-emerald-500"></span>
-                    <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest truncate">{{ Auth::user()->role }} Mode</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest truncate">{{ strtoupper(Auth::user()->role) }} {{ __('ui.mode') ?? 'MODE' }}</p>
                 </div>
             </div>
             <i x-show="!collapsed" data-lucide="chevron-right" class="w-3 h-3 text-slate-300 group-hover:translate-x-1 transition-transform"></i>

@@ -2,7 +2,7 @@
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
             <h1 class="text-3xl font-bold text-slate-900 font-outfit">{{ __('ui.clients') }}</h1>
-            <p class="text-slate-500">Manage your customers and their details</p>
+            <p class="text-slate-500">{{ __('ui.manage_clients_desc') ?? 'Manage your customers and their details' }}</p>
         </div>
         <a href="{{ route('clients.create') }}" class="btn-premium">
             <i data-lucide="plus" class="w-5 h-5 mr-2"></i>
@@ -15,19 +15,19 @@
         <form action="{{ route('clients.index') }}" method="GET" class="flex flex-col md:flex-row gap-4">
             <div class="flex-1 relative">
                 <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by name, company, or code..." class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-transparent focus:border-indigo-500 focus:bg-white rounded-xl transition-all outline-none text-sm text-slate-900">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="{{ __('ui.search_clients_placeholder') ?? 'Search by name, company, or code...' }}" class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-transparent focus:border-indigo-500 focus:bg-white rounded-xl transition-all outline-none text-sm text-slate-900">
             </div>
             <select name="status" class="px-4 py-2.5 bg-slate-50 border border-transparent focus:border-indigo-500 focus:bg-white rounded-xl transition-all outline-none text-sm text-slate-900">
-                <option value="">All Status</option>
-                <option value="aktif" {{ request('status') == 'aktif' ? 'selected' : '' }}>Aktif</option>
-                <option value="nonaktif" {{ request('status') == 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
+                <option value="">{{ __('ui.all_status') ?? 'All Status' }}</option>
+                <option value="aktif" {{ request('status') == 'aktif' ? 'selected' : '' }}>{{ __('ui.active') }}</option>
+                <option value="nonaktif" {{ request('status') == 'nonaktif' ? 'selected' : '' }}>{{ __('ui.inactive') }}</option>
             </select>
             <button type="submit" class="px-6 py-2.5 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition-colors">
-                Filter
+                {{ __('ui.filter') }}
             </button>
             @if(request()->anyFilled(['search', 'status']))
                 <a href="{{ route('clients.index') }}" class="px-6 py-2.5 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200 transition-colors text-center">
-                    Reset
+                    {{ __('ui.reset') }}
                 </a>
             @endif
         </form>
@@ -39,11 +39,11 @@
             <table class="w-full text-left">
                 <thead>
                     <tr class="bg-slate-50 border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500">
-                        <th class="px-6 py-4 font-bold">Client Info</th>
-                        <th class="px-6 py-4 font-bold">Company</th>
-                        <th class="px-6 py-4 font-bold">Contact</th>
-                        <th class="px-6 py-4 font-bold">Status</th>
-                        <th class="px-6 py-4 font-bold text-right">Actions</th>
+                        <th class="px-6 py-4 font-bold">{{ __('ui.client_info') }}</th>
+                        <th class="px-6 py-4 font-bold">{{ __('ui.company') }}</th>
+                        <th class="px-6 py-4 font-bold">{{ __('ui.contact') }}</th>
+                        <th class="px-6 py-4 font-bold">{{ __('ui.status') }}</th>
+                        <th class="px-6 py-4 font-bold text-right">{{ __('ui.actions') }}</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -78,7 +78,7 @@
                                     <a href="{{ route('clients.edit', $client) }}" class="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all">
                                         <i data-lucide="edit-3" class="w-4 h-4"></i>
                                     </a>
-                                    <form action="{{ route('clients.destroy', $client) }}" method="POST" onsubmit="return confirm('Are you sure?')">
+                                    <form action="{{ route('clients.destroy', $client) }}" method="POST" onsubmit="return confirm('{{ __('ui.confirm_delete') }}')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all">
@@ -93,10 +93,10 @@
                             <td colspan="5" class="px-8 py-20 text-center">
                                 <x-empty-state 
                                     icon="users" 
-                                    title="No client accounts detected" 
-                                    description="Start by adding your first business client to begin the invoicing process."
+                                    :title="__('ui.no_clients_title') ?? 'No client accounts detected'" 
+                                    :description="__('ui.no_clients_desc') ?? 'Start by adding your first business client to begin the invoicing process.'"
                                     :action="route('clients.create')"
-                                    actionLabel="Register New Client"
+                                    :actionLabel="__('ui.add_client')"
                                 />
                             </td>
                         </tr>

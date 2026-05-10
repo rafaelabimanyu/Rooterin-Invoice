@@ -1,8 +1,8 @@
 <x-app-layout>
     <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-8">
         <div class="page-fade-in">
-            <h1 class="text-3xl font-black text-slate-900 font-jakarta tracking-tight mb-2 uppercase">Command Center</h1>
-            <p class="text-sm text-slate-500 font-medium tracking-tight">Real-time enterprise intelligence and operational overview.</p>
+            <h1 class="text-3xl font-black text-slate-900 font-jakarta tracking-tight mb-2 uppercase">{{ __('ui.command_center') }}</h1>
+            <p class="text-sm text-slate-500 font-medium tracking-tight">{{ __('ui.operational_overview') }}</p>
         </div>
         <div class="flex items-center gap-4 page-fade-in" style="animation-delay: 100ms">
             <a href="{{ route('invoices.create') }}" class="btn-premium group">
@@ -41,11 +41,11 @@
                     <i data-lucide="check-circle-2" class="w-7 h-7"></i>
                 </div>
                 <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-indigo-50 text-indigo-600 shadow-sm">
-                    Efficiency
+                    {{ __('ui.efficiency') }}
                 </span>
             </div>
             <div class="relative z-10">
-                <p class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Collection Rate</p>
+                <p class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">{{ __('ui.collection_rate') }}</p>
                 <div class="flex items-end justify-between mb-2">
                     <h3 class="text-3xl font-black text-slate-900 font-jakarta tracking-tight">{{ $totalInvoices > 0 ? round(($paidInvoicesCount / $totalInvoices) * 100) : 0 }}%</h3>
                 </div>
@@ -61,11 +61,11 @@
     <div class="table-container page-fade-in" style="animation-delay: 300ms">
         <div class="px-10 py-8 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between bg-slate-50/30 gap-4">
             <div>
-                <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg">Billing Operations</h3>
-                <p class="text-[11px] text-slate-400 font-bold uppercase tracking-widest mt-1">Latest system transactions</p>
+                <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg">{{ __('ui.billing_operations') }}</h3>
+                <p class="text-[11px] text-slate-400 font-bold uppercase tracking-widest mt-1">{{ __('ui.latest_transactions') }}</p>
             </div>
             <a href="{{ route('invoices.index') }}" class="btn-secondary group">
-                <span>View All Invoices</span>
+                <span>{{ __('ui.view_all_invoices') }}</span>
                 <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
             </a>
         </div>
@@ -74,11 +74,11 @@
             <table class="w-full text-left">
                 <thead>
                     <tr class="table-header">
-                        <th class="px-10 py-5">Reference</th>
-                        <th class="px-10 py-5">Entity</th>
-                        <th class="px-10 py-5">Timestamp</th>
-                        <th class="px-10 py-5">Volume</th>
-                        <th class="px-10 py-5">Status</th>
+                        <th class="px-10 py-5">{{ __('ui.reference') }}</th>
+                        <th class="px-10 py-5">{{ __('ui.entity') }}</th>
+                        <th class="px-10 py-5">{{ __('ui.timestamp') }}</th>
+                        <th class="px-10 py-5">{{ __('ui.volume') }}</th>
+                        <th class="px-10 py-5">{{ __('ui.status') }}</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-50">
@@ -101,7 +101,7 @@
                             <td class="px-10 py-6">
                                 <div class="flex items-center gap-2">
                                     <i data-lucide="calendar" class="w-3.5 h-3.5 text-slate-300"></i>
-                                    <span class="text-[12px] text-slate-500 font-bold uppercase">{{ $invoice->tanggal_invoice->format('M d, Y') }}</span>
+                                    <span class="text-[12px] text-slate-500 font-bold uppercase">{{ $invoice->tanggal_invoice->translatedFormat('d M Y') }}</span>
                                 </div>
                             </td>
                             <td class="px-10 py-6">
@@ -114,7 +114,7 @@
                     @empty
                         <tr>
                             <td colspan="5" class="px-10 py-20">
-                                <x-empty-state icon="layers" title="Quiet Environment" description="No recent billing activity detected in the system." />
+                                <x-empty-state icon="layers" :title="__('ui.quiet_environment')" :description="__('ui.no_recent_activity')" />
                             </td>
                         </tr>
                     @endforelse

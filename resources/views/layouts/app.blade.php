@@ -59,7 +59,7 @@
                                 <span class="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] leading-tight">System Status</span>
                                 <div class="flex items-center gap-2">
                                     <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)] animate-pulse"></span>
-                                    <span class="text-[11px] font-bold text-slate-700">Enterprise Live</span>
+                                    <span class="text-[11px] font-bold text-slate-700">{{ __('ui.system_live') }}</span>
                                 </div>
                             </div>
                         </div>
@@ -107,17 +107,17 @@
                                 </div>
                                 <div class="space-y-1">
                                     <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-4 py-2.5 text-[12px] font-bold text-slate-600 hover:bg-slate-50 rounded-xl transition-colors group">
-                                        <i data-lucide="user" class="w-4 h-4 group-hover:text-indigo-500"></i> Account Settings
+                                        <i data-lucide="user" class="w-4 h-4 group-hover:text-indigo-500"></i> {{ __('ui.settings') }}
                                     </a>
                                     <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-[12px] font-bold text-slate-600 hover:bg-slate-50 rounded-xl transition-colors group">
-                                        <i data-lucide="shield" class="w-4 h-4 group-hover:text-indigo-500"></i> Privacy Center
+                                        <i data-lucide="shield" class="w-4 h-4 group-hover:text-indigo-500"></i> {{ __('ui.privacy') ?? 'Privacy Center' }}
                                     </a>
                                 </div>
                                 <div class="h-px bg-slate-100 my-2 mx-2"></div>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <button type="submit" class="flex items-center gap-3 w-full text-left px-4 py-2.5 text-[12px] font-bold text-rose-500 hover:bg-rose-50 rounded-xl transition-colors group">
-                                        <i data-lucide="log-out" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i> End Session
+                                        <i data-lucide="log-out" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i> {{ __('ui.logout') ?? 'End Session' }}
                                     </button>
                                 </form>
                             </div>

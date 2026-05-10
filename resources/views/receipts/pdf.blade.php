@@ -15,63 +15,85 @@
             line-height: 1.6; 
             background: #fff;
         }
-        .container { padding: 50px; position: relative; min-height: 1000px; }
+        .container { padding: 40px 50px; position: relative; min-height: 1000px; }
         
-        .header { margin-bottom: 50px; border-bottom: 2px solid #f1f5f9; padding-bottom: 30px; }
-        .logo-container { float: left; width: 50%; }
-        .logo-text { font-size: 28px; font-weight: 900; color: #0f172a; text-transform: uppercase; letter-spacing: -1.5px; }
-        .logo-dot { color: #4f46e5; }
-        .company-details { font-size: 9px; color: #64748b; margin-top: 5px; }
-        
-        .receipt-info { float: right; width: 45%; text-align: right; }
-        .receipt-label { font-size: 36px; font-weight: 900; color: #0f172a; text-transform: uppercase; margin-bottom: 10px; line-height: 1; }
-        .receipt-meta { font-size: 10px; color: #64748b; }
-        .receipt-meta b { color: #0f172a; }
+        /* Watermark */
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 100px;
+            font-weight: 900;
+            color: rgba(241, 245, 249, 0.08);
+            z-index: -1;
+            text-transform: uppercase;
+            letter-spacing: 20px;
+        }
 
-        .address-box { margin-bottom: 40px; }
-        .bill-to { float: left; width: 50%; }
-        .bill-from { float: right; width: 45%; text-align: right; }
-        .section-title { font-size: 8px; font-weight: 900; color: #94a3b8; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; border-bottom: 1px solid #f1f5f9; padding-bottom: 5px; display: inline-block; }
+        /* Letterhead */
+        .header { margin-bottom: 40px; }
+        .logo-box { float: left; width: 60%; }
+        .logo-img { height: 60px; margin-bottom: 15px; }
+        .company-name { font-size: 16px; font-weight: 900; color: #0f172a; text-transform: uppercase; margin: 0; }
+        .company-tagline { font-size: 9px; color: #4f46e5; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
+        .company-contact { font-size: 9px; color: #64748b; line-height: 1.4; }
         
+        .doc-info { float: right; width: 35%; text-align: right; margin-top: 10px; }
+        .doc-type { font-size: 28px; font-weight: 900; color: #0f172a; text-transform: uppercase; margin-bottom: 5px; letter-spacing: -1px; }
+        .doc-id { font-size: 14px; font-weight: 700; color: #4f46e5; margin-bottom: 15px; }
+        .doc-meta { font-size: 10px; color: #64748b; }
+        .doc-meta b { color: #0f172a; }
+
+        .divider { border-top: 2px solid #f1f5f9; margin: 30px 0; clear: both; }
+
+        /* Addressing */
+        .addressing { margin-bottom: 40px; }
+        .bill-to { float: left; width: 45%; }
+        .section-label { font-size: 9px; font-weight: 900; color: #94a3b8; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; display: block; }
+        
+        .client-card { background: #f8fafc; padding: 20px; border-radius: 15px; border: 1px solid #f1f5f9; }
         .client-name { font-size: 14px; font-weight: 900; color: #0f172a; margin-bottom: 5px; }
-        .client-details { font-size: 10px; color: #64748b; }
+        .client-details { font-size: 10px; color: #64748b; line-height: 1.5; }
 
-        .items-table { width: 100%; border-collapse: collapse; margin-bottom: 40px; }
+        /* Items Table */
+        .items-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
         .items-table th { 
-            background: #4f46e5; 
+            background: #0f172a; 
             color: #fff; 
             text-align: left; 
-            padding: 12px 15px; 
-            font-size: 8px; 
+            padding: 15px; 
+            font-size: 9px; 
             font-weight: 900; 
             text-transform: uppercase; 
-            letter-spacing: 1.5px; 
+            letter-spacing: 1px;
         }
-        .items-table td { padding: 15px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+        .items-table td { padding: 18px 15px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
         .items-table tr:nth-child(even) { background: #fcfdfe; }
         
-        .item-name { font-weight: 700; color: #0f172a; font-size: 11px; margin-bottom: 2px; display: block; }
-        .item-desc { font-size: 9px; color: #94a3b8; }
+        .item-desc-primary { font-weight: 700; color: #0f172a; font-size: 11px; }
+        .item-desc-secondary { font-size: 9px; color: #94a3b8; margin-top: 2px; }
         
-        .totals-container { margin-top: 30px; }
+        /* Summary */
+        .financials { margin-top: 40px; }
         .summary-box { float: right; width: 40%; }
-        .summary-row { padding: 8px 0; border-bottom: 1px solid #f1f5f9; }
-        .summary-row.grand-total { border-bottom: none; margin-top: 10px; background: #f4f7ff; padding: 15px; border-radius: 8px; }
+        .summary-line { padding: 10px 0; border-bottom: 1px solid #f1f5f9; clear: both; }
+        .summary-line.total { border-bottom: none; margin-top: 15px; background: #0f172a; padding: 20px; border-radius: 12px; color: #fff; }
         .summary-label { float: left; color: #64748b; font-weight: 600; }
         .summary-value { float: right; text-align: right; font-weight: 700; color: #0f172a; }
-        .total-label { font-size: 12px; font-weight: 900; color: #0f172a; text-transform: uppercase; }
-        .total-value { font-size: 18px; font-weight: 900; color: #4f46e5; }
+        .total .summary-label { color: rgba(255,255,255,0.7); font-size: 12px; font-weight: 900; text-transform: uppercase; }
+        .total .summary-value { color: #fff; font-size: 20px; font-weight: 900; }
 
         .footer { 
             position: absolute; 
-            bottom: 50px; 
+            bottom: 40px; 
             left: 50px; 
             right: 50px; 
             text-align: center; 
-            border-top: 1px solid #f1f5f9; 
-            padding-top: 20px;
             font-size: 8px;
             color: #94a3b8;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 20px;
         }
 
         .clearfix::after { content: ""; clear: both; display: table; }
@@ -81,40 +103,60 @@
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
+        <!-- Watermark -->
+        <div class="watermark">{{ __('receipt.title') }}</div>
+
+        <!-- Header / Letterhead -->
         <div class="header clearfix">
-            <div class="logo-container">
-                <div class="logo-text">Rooterin<span class="logo-dot">.</span></div>
-                <div class="company-details">
-                    <b>Rooterin Technical Services</b><br>
-                    Enterprise Billing Solution<br>
-                    Jakarta, Indonesia | contact@rooterin.com
+            <div class="logo-box">
+                @php
+                    $logoPath = public_path('img/logo-rooterin.png');
+                    $logoData = "";
+                    if (file_exists($logoPath)) {
+                        $logoData = base64_encode(file_get_contents($logoPath));
+                    }
+                @endphp
+                @if($logoData)
+                    <img src="data:image/png;base64,{{ $logoData }}" class="logo-img">
+                @else
+                    <div style="font-size: 24px; font-weight: 900; color: #0f172a; margin-bottom: 15px;">Rooterin<span style="color: #4f46e5;">.</span></div>
+                @endif
+                <div class="company-name">Rooterin Technical Services</div>
+                <div class="company-tagline">High-Precision Operational Solutions</div>
+                <div class="company-contact">
+                    Gedung Artha Graha, Lt. 18, Kav. 52-53, Jakarta Selatan<br>
+                    T: +62 21 555 1234 | E: billing@rooterin.com | W: www.rooterin.com
                 </div>
             </div>
-            <div class="receipt-info">
-                <div class="receipt-label">{{ __('receipt.title') }}</div>
-                <div class="receipt-meta">
-                    {{ __('receipt.receipt_number') }}: <b>{{ $receipt->receipt_number }}</b><br>
-                    {{ __('receipt.date') }}: <b>{{ $receipt->tanggal_receipt->format('d M Y') }}</b><br>
-                    {{ __('receipt.expiry_date') }}: <b>{{ $receipt->expiry_date->format('d M Y') }}</b>
+            <div class="doc-info">
+                <div class="doc-type">{{ __('receipt.title') }}</div>
+                <div class="doc-id">#{{ $receipt->receipt_number }}</div>
+                <div class="doc-meta">
+                    {{ __('receipt.date') }}: <b>{{ $receipt->tanggal_kwitansi->format('d M Y') }}</b><br>
+                    {{ __('receipt.expiry_date') }}: <b>{{ $receipt->tanggal_expired->format('d M Y') }}</b>
                 </div>
             </div>
         </div>
 
-        <!-- Address Area -->
-        <div class="address-box clearfix">
+        <div class="divider"></div>
+
+        <!-- Addressing -->
+        <div class="addressing clearfix">
             <div class="bill-to">
-                <div class="section-title">{{ __('receipt.client') }}</div>
-                <div class="client-name">{{ $receipt->client->nama_client }}</div>
-                <div class="client-details">
-                    <b>{{ $receipt->client->nama_perusahaan }}</b><br>
-                    {{ $receipt->client->alamat }}<br>
-                    {{ $receipt->client->kota }}, {{ $receipt->client->provinsi }}
+                <span class="section-label">{{ __('receipt.client') }}</span>
+                <div class="client-card">
+                    <div class="client-name">{{ $receipt->client->nama_client }}</div>
+                    <div class="client-details">
+                        <b>{{ $receipt->client->nama_perusahaan }}</b><br>
+                        {{ $receipt->client->alamat }}<br>
+                        {{ $receipt->client->kota }}, {{ $receipt->client->provinsi }}<br>
+                        {{ __('ui.contact') }}: {{ $receipt->client->no_hp }}
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Items Table -->
+        <!-- Table -->
         <table class="items-table">
             <thead>
                 <tr>
@@ -128,8 +170,8 @@
                 @foreach($receipt->items as $item)
                 <tr>
                     <td>
-                        <span class="item-name">{{ $item->deskripsi }}</span>
-                        <span class="item-desc">Service provision</span>
+                        <div class="item-desc-primary">{{ $item->deskripsi }}</div>
+                        <div class="item-desc-secondary">Service quotation fulfillment</div>
                     </td>
                     <td class="text-center">{{ number_format($item->qty, 0) }}</td>
                     <td class="text-right">Rp {{ number_format($item->harga, 0, ',', '.') }}</td>
@@ -139,36 +181,43 @@
             </tbody>
         </table>
 
-        <!-- Totals -->
-        <div class="totals-container clearfix">
+        <!-- Financials -->
+        <div class="financials clearfix">
             <div class="summary-box">
-                <div class="summary-row clearfix">
+                <div class="summary-line clearfix">
                     <span class="summary-label">{{ __('receipt.subtotal') }}</span>
                     <span class="summary-value">Rp {{ number_format($receipt->subtotal, 0, ',', '.') }}</span>
                 </div>
                 @if($receipt->tax_percent > 0)
-                <div class="summary-row clearfix">
+                <div class="summary-line clearfix">
                     <span class="summary-label">{{ __('receipt.tax') }} ({{ $receipt->tax_percent }}%)</span>
                     <span class="summary-value">+ Rp {{ number_format($receipt->subtotal * ($receipt->tax_percent/100), 0, ',', '.') }}</span>
                 </div>
                 @endif
                 @if($receipt->discount_percent > 0)
-                <div class="summary-row clearfix">
+                <div class="summary-line clearfix">
                     <span class="summary-label">{{ __('receipt.discount') }} ({{ $receipt->discount_percent }}%)</span>
                     <span class="summary-value">- Rp {{ number_format($receipt->subtotal * ($receipt->discount_percent/100), 0, ',', '.') }}</span>
                 </div>
                 @endif
-                <div class="summary-row grand-total clearfix">
-                    <span class="summary-label total-label">{{ __('receipt.grand_total') }}</span>
-                    <span class="summary-value total-value">Rp {{ number_format($receipt->total, 0, ',', '.') }}</span>
+                <div class="summary-line total clearfix">
+                    <span class="summary-label">{{ __('receipt.grand_total') }}</span>
+                    <span class="summary-value">Rp {{ number_format($receipt->total, 0, ',', '.') }}</span>
                 </div>
             </div>
         </div>
 
+        @if($receipt->notes)
+        <div style="margin-top: 40px; clear: both;">
+            <span class="section-label">{{ __('invoice.notes') }}</span>
+            <div style="font-size: 10px; color: #64748b; line-height: 1.5;">{{ $receipt->notes }}</div>
+        </div>
+        @endif
+
         <!-- Footer -->
         <div class="footer">
-            Rooterin Enterprise Billing Solution &bull; technical.ops@rooterin.com &bull; www.rooterin.com<br>
-            Thank you for your trust. This is an official payment receipt.
+            Rooterin Enterprise Billing &bull; tech-ops@rooterin.com &bull; +62 21 555 1234<br>
+            This document is a formal quotation receipt. Subject to terms and conditions.
         </div>
     </div>
 </body>

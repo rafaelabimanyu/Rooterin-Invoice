@@ -38,5 +38,5 @@
 
 <span {{ $attributes->merge(['class' => "inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm {$config['bg']} {$config['text']} {$config['border']} transition-all duration-300 hover:scale-105"]) }}>
     <span class="w-1.5 h-1.5 rounded-full {{ $config['dot'] }}"></span>
-    {{ strtoupper($status) }}
+    {{ strtoupper(__('ui.' . $status)) }}
 </span>

@@ -4,20 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use App\Models\Invoice;
-use App\Models\Quotation;
-use App\Models\QuotationItem;
+use App\Models\Receipt;
+use App\Models\ReceiptItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class QuotationController extends Controller
+class ReceiptController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Quotation::with('client');
+        $query = Receipt::with('client');
 
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where('quotation_number', 'like', "%{$search}%")
+            $query->where('receipt_number', 'like', "%{$search}%")
                   ->orWhereHas('client', function($q) use ($search) {
                       $q->where('nama_client', 'like', "%{$search}%")
                         ->orWhere('nama_perusahaan', 'like', "%{$search}%");
@@ -28,25 +28,25 @@ class QuotationController extends Controller
             $query->where('status', $request->status);
         }
 
-        $quotations = $query->latest()->paginate(10);
+        $receipts = $query->latest()->paginate(10);
 
-        return view('quotations.index', compact('quotations'));
+        return view('receipts.index', compact('receipts'));
     }
 
     public function create()
     {
-        $quotation_number = Quotation::generateNumber();
+        $receipt_number = Receipt::generateNumber();
         $clients = Client::where('status', 'aktif')->orderBy('nama_client')->get();
-        return view('quotations.create', compact('quotation_number', 'clients'));
+        return view('receipts.create', compact('receipt_number', 'clients'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'quotation_number' => 'required|unique:quotations,quotation_number',
+            'receipt_number' => 'required|unique:receipts,receipt_number',
             'client_id' => 'required|exists:clients,id',
-            'tanggal_quotation' => 'required|date',
-            'expiry_date' => 'required|date|after_or_equal:tanggal_quotation',
+            'tanggal_receipt' => 'required|date',
+            'expiry_date' => 'required|date|after_or_equal:tanggal_receipt',
             'items' => 'required|array|min:1',
             'items.*.deskripsi' => 'required|string',
             'items.*.qty' => 'required|numeric|min:1',
@@ -65,10 +65,10 @@ class QuotationController extends Controller
             $discount_amount = $subtotal * ($request->discount_percent / 100);
             $total = $subtotal + $tax_amount - $discount_amount;
 
-            $quotation = Quotation::create([
-                'quotation_number' => $request->quotation_number,
+            $receipt = Receipt::create([
+                'receipt_number' => $request->receipt_number,
                 'client_id' => $request->client_id,
-                'tanggal_quotation' => $request->tanggal_quotation,
+                'tanggal_receipt' => $request->tanggal_receipt,
                 'expiry_date' => $request->expiry_date,
                 'status' => 'draft',
                 'subtotal' => $subtotal,
@@ -81,7 +81,7 @@ class QuotationController extends Controller
             ]);
 
             foreach ($request->items as $item) {
-                $quotation->items()->create([
+                $receipt->items()->create([
                     'deskripsi' => $item['deskripsi'],
                     'qty' => $item['qty'],
                     'harga' => $item['harga'],
@@ -90,32 +90,32 @@ class QuotationController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('quotations.index')->with('success', 'Quotation created successfully.');
+            return redirect()->route('receipts.index')->with('success', 'Receipt created successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Error: ' . $e->getMessage());
         }
     }
 
-    public function show(Quotation $quotation)
+    public function show(Receipt $receipt)
     {
-        $quotation->load(['client', 'items', 'creator']);
-        return view('quotations.show', compact('quotation'));
+        $receipt->load(['client', 'items', 'creator']);
+        return view('receipts.show', compact('receipt'));
     }
 
-    public function edit(Quotation $quotation)
+    public function edit(Receipt $receipt)
     {
-        $quotation->load('items');
+        $receipt->load('items');
         $clients = Client::where('status', 'aktif')->orderBy('nama_client')->get();
-        return view('quotations.edit', compact('quotation', 'clients'));
+        return view('receipts.edit', compact('receipt', 'clients'));
     }
 
-    public function update(Request $request, Quotation $quotation)
+    public function update(Request $request, Receipt $receipt)
     {
         $request->validate([
             'client_id' => 'required|exists:clients,id',
-            'tanggal_quotation' => 'required|date',
-            'expiry_date' => 'required|date|after_or_equal:tanggal_quotation',
+            'tanggal_receipt' => 'required|date',
+            'expiry_date' => 'required|date|after_or_equal:tanggal_receipt',
             'status' => 'required|in:draft,sent,approved,rejected,invoiced',
             'items' => 'required|array|min:1',
         ]);
@@ -132,9 +132,9 @@ class QuotationController extends Controller
             $discount_amount = $subtotal * ($request->discount_percent / 100);
             $total = $subtotal + $tax_amount - $discount_amount;
 
-            $quotation->update([
+            $receipt->update([
                 'client_id' => $request->client_id,
-                'tanggal_quotation' => $request->tanggal_quotation,
+                'tanggal_receipt' => $request->tanggal_receipt,
                 'expiry_date' => $request->expiry_date,
                 'status' => $request->status,
                 'subtotal' => $subtotal,
@@ -145,9 +145,9 @@ class QuotationController extends Controller
                 'terms_condition' => $request->terms_condition,
             ]);
 
-            $quotation->items()->delete();
+            $receipt->items()->delete();
             foreach ($request->items as $item) {
-                $quotation->items()->create([
+                $receipt->items()->create([
                     'deskripsi' => $item['deskripsi'],
                     'qty' => $item['qty'],
                     'harga' => $item['harga'],
@@ -156,34 +156,34 @@ class QuotationController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('quotations.index')->with('success', 'Quotation updated successfully.');
+            return redirect()->route('receipts.index')->with('success', 'Receipt updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Error: ' . $e->getMessage());
         }
     }
 
-    public function convertToInvoice(Quotation $quotation)
+    public function convertToInvoice(Receipt $receipt)
     {
         try {
             DB::beginTransaction();
 
             $invoice = Invoice::create([
                 'invoice_number' => Invoice::generateNumber(),
-                'client_id' => $quotation->client_id,
+                'client_id' => $receipt->client_id,
                 'tanggal_invoice' => now(),
                 'due_date' => now()->addDays(7),
                 'status' => 'draft',
-                'subtotal' => $quotation->subtotal,
-                'tax_percent' => $quotation->tax_percent,
-                'discount_percent' => $quotation->discount_percent,
-                'total' => $quotation->total,
-                'notes_internal' => "Generated from Quotation #" . $quotation->quotation_number . ". " . $quotation->notes_internal,
-                'terms_condition' => $quotation->terms_condition,
+                'subtotal' => $receipt->subtotal,
+                'tax_percent' => $receipt->tax_percent,
+                'discount_percent' => $receipt->discount_percent,
+                'total' => $receipt->total,
+                'notes_internal' => "Generated from Receipt #" . $receipt->receipt_number . ". " . $receipt->notes_internal,
+                'terms_condition' => $receipt->terms_condition,
                 'created_by' => auth()->id(),
             ]);
 
-            foreach ($quotation->items as $item) {
+            foreach ($receipt->items as $item) {
                 $invoice->items()->create([
                     'deskripsi' => $item->deskripsi,
                     'qty' => $item->qty,
@@ -192,19 +192,19 @@ class QuotationController extends Controller
                 ]);
             }
 
-            $quotation->update(['status' => 'invoiced']);
+            $receipt->update(['status' => 'invoiced']);
 
             DB::commit();
-            return redirect()->route('invoices.show', $invoice)->with('success', 'Quotation converted to Invoice successfully.');
+            return redirect()->route('invoices.show', $invoice)->with('success', 'Receipt converted to Invoice successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Error: ' . $e->getMessage());
         }
     }
 
-    public function destroy(Quotation $quotation)
+    public function destroy(Receipt $receipt)
     {
-        $quotation->delete();
-        return redirect()->route('quotations.index')->with('success', 'Quotation deleted successfully.');
+        $receipt->delete();
+        return redirect()->route('receipts.index')->with('success', 'Receipt deleted successfully.');
     }
 }

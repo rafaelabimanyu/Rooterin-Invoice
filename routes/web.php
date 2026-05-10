@@ -3,7 +3,7 @@
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InvoiceController;
-use App\Http\Controllers\QuotationController;
+use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserManagementController;
@@ -39,12 +39,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('payments', [PaymentController::class, 'store'])->name('payments.store');
         Route::delete('payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy');
 
-        // Quotations
-        Route::resource('quotations', QuotationController::class);
-        Route::post('quotations/{quotation}/convert', [QuotationController::class, 'convertToInvoice'])->name('quotations.convert');
 
-        // Reports
-        Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+        // Receipts
+        Route::resource('receipts', ReceiptController::class);
+        Route::post('receipts/{receipt}/convert', [ReceiptController::class, 'convertToInvoice'])->name('receipts.convert');
+
+
         
         // Profile
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -60,6 +60,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Settings
         Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
         Route::post('/settings', [SettingController::class, 'update'])->name('settings.update');
+
+        // Reports
+        Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
 
         // Owner KPI Dashboard
         Route::get('/owner-kpi', [\App\Http\Controllers\OwnerKpiController::class, 'index'])->name('owner.kpi');

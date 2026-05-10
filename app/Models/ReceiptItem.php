@@ -6,20 +6,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class QuotationItem extends Model
+class ReceiptItem extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'quotation_id',
+        'receipt_id',
         'deskripsi',
         'qty',
         'harga',
         'total',
     ];
 
-    public function quotation(): BelongsTo
+    public function receipt(): BelongsTo
     {
-        return $this->belongsTo(Quotation::class);
+        return $this->belongsTo(Receipt::class);
     }
 }

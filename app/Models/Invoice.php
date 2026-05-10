@@ -17,6 +17,7 @@ class Invoice extends Model
         'client_id',
         'tanggal_invoice',
         'due_date',
+        'warranty',
         'status',
         'subtotal',
         'tax_percent',
@@ -24,6 +25,7 @@ class Invoice extends Model
         'total',
         'notes_internal',
         'terms_condition',
+        'bank_account_info',
         'created_by',
     ];
 

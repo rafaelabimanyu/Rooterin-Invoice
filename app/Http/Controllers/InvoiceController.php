@@ -90,12 +90,14 @@ class InvoiceController extends Controller
                 ]);
             }
 
-            // Handle Attachments
+            // Handle Attachments with Captions
             if ($request->hasFile('attachments')) {
-                foreach ($request->file('attachments') as $file) {
+                $captions = $request->input('captions', []);
+                foreach ($request->file('attachments') as $index => $file) {
                     $path = $file->store('invoice_attachments', 'public');
                     $invoice->attachments()->create([
                         'file_path' => $path,
+                        'caption' => $captions[$index] ?? null,
                     ]);
                 }
             }
@@ -172,6 +174,18 @@ class InvoiceController extends Controller
                 ]);
             }
 
+            // Handle New Attachments with Captions
+            if ($request->hasFile('attachments')) {
+                $captions = $request->input('captions', []);
+                foreach ($request->file('attachments') as $index => $file) {
+                    $path = $file->store('invoice_attachments', 'public');
+                    $invoice->attachments()->create([
+                        'file_path' => $path,
+                        'caption' => $captions[$index] ?? null,
+                    ]);
+                }
+            }
+
             DB::commit();
             return redirect()->route('invoices.index')->with('success', 'Invoice updated successfully.');
         } catch (\Exception $e) {
@@ -180,9 +194,14 @@ class InvoiceController extends Controller
         }
     }
 
-    public function downloadPdf(Invoice $invoice)
+    public function downloadPdf(Request $request, Invoice $invoice)
     {
-        $invoice->load(['client', 'items', 'payments']);
+        $locale = $request->get('lang', config('app.locale'));
+        if (in_array($locale, ['en', 'id'])) {
+            \Illuminate\Support\Facades\App::setLocale($locale);
+        }
+
+        $invoice->load(['client', 'items', 'payments', 'attachments']);
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('invoices.pdf', compact('invoice'));
         return $pdf->download("Invoice-{$invoice->invoice_number}.pdf");
     }

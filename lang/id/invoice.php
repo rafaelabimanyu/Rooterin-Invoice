@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'title' => 'INVOICE',
+    'invoice_number' => 'Nomor Invoice',
+    'date' => 'Tanggal',
+    'due_date' => 'Jatuh Tempo',
+    'bill_to' => 'Tagihan Ke',
+    'description' => 'Deskripsi',
+    'quantity' => 'Qty',
+    'price' => 'Harga',
+    'total' => 'Total',
+    'subtotal' => 'Subtotal',
+    'tax' => 'Pajak',
+    'discount' => 'Diskon',
+    'grand_total' => 'Total Pembayaran',
+    'notes' => 'Catatan',
+    'terms' => 'Syarat & Ketentuan',
+    'warranty' => 'Masa Garansi',
+    'bank_account' => 'Informasi Rekening Bank',
+    'payment_status' => 'Status Pembayaran',
+    'paid' => 'LUNAS',
+    'unpaid' => 'BELUM LUNAS',
+    'documentation' => 'Dokumentasi Pekerjaan',
+];

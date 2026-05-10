@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'title' => 'INVOICE',
+    'invoice_number' => 'Invoice Number',
+    'date' => 'Date',
+    'due_date' => 'Due Date',
+    'bill_to' => 'Bill To',
+    'description' => 'Description',
+    'quantity' => 'Qty',
+    'price' => 'Price',
+    'total' => 'Total',
+    'subtotal' => 'Subtotal',
+    'tax' => 'Tax',
+    'discount' => 'Discount',
+    'grand_total' => 'Grand Total',
+    'notes' => 'Notes',
+    'terms' => 'Terms & Conditions',
+    'warranty' => 'Warranty',
+    'bank_account' => 'Bank Account Details',
+    'payment_status' => 'Payment Status',
+    'paid' => 'PAID',
+    'unpaid' => 'UNPAID',
+    'documentation' => 'Work Documentation',
+];

@@ -8,14 +8,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Quotation extends Model
+class Receipt extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'quotation_number',
+        'receipt_number',
         'client_id',
-        'tanggal_quotation',
+        'tanggal_receipt',
         'expiry_date',
         'status',
         'subtotal',
@@ -28,7 +28,7 @@ class Quotation extends Model
     ];
 
     protected $casts = [
-        'tanggal_quotation' => 'date',
+        'tanggal_receipt' => 'date',
         'expiry_date' => 'date',
     ];
 
@@ -39,7 +39,7 @@ class Quotation extends Model
 
     public function items(): HasMany
     {
-        return $this->hasMany(QuotationItem::class);
+        return $this->hasMany(ReceiptItem::class);
     }
 
     public function creator(): BelongsTo
@@ -49,8 +49,8 @@ class Quotation extends Model
 
     public static function generateNumber(): string
     {
-        $lastQuotation = self::withTrashed()->orderBy('id', 'desc')->first();
-        $number = $lastQuotation ? ((int) substr($lastQuotation->quotation_number, 9)) + 1 : 1;
-        return 'ROOT-QUO-' . str_pad($number, 4, '0', STR_PAD_LEFT);
+        $lastReceipt = self::withTrashed()->orderBy('id', 'desc')->first();
+        $number = $lastReceipt ? ((int) substr($lastReceipt->receipt_number, 9)) + 1 : 1;
+        return 'ROOT-KWT-' . str_pad($number, 4, '0', STR_PAD_LEFT);
     }
 }

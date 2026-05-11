@@ -23,7 +23,7 @@
     <!-- Results Display -->
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
         @forelse($clients as $client)
-            <div class="glass-card group hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 relative overflow-hidden border-transparent hover:border-indigo-500/10">
+            <div wire:key="client-{{ $client->id }}" class="glass-card group hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 relative overflow-hidden border-transparent hover:border-indigo-500/10">
                 <div class="p-6">
                     <div class="flex items-start justify-between mb-6">
                         <div class="flex items-center gap-4">
@@ -102,60 +102,62 @@
                 </button>
             </div>
 
-            <div class="p-10 overflow-y-auto flex-1 space-y-8">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="space-y-2">
-                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Full Name / Contact</label>
-                        <input type="text" wire:model="nama_client" class="w-full px-5 py-4 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all font-bold text-slate-900">
+            <form wire:submit.prevent="save" class="flex flex-col h-full">
+                <div class="p-10 overflow-y-auto flex-1 space-y-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-2">
+                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Full Name / Contact</label>
+                            <input type="text" wire:model="nama_client" class="w-full px-5 py-4 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all font-bold text-slate-900">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Company / Legal Entity</label>
+                            <input type="text" wire:model="nama_perusahaan" class="w-full px-5 py-4 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all font-bold text-slate-900">
+                        </div>
                     </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-2">
+                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Email Address</label>
+                            <input type="email" wire:model="email" class="w-full px-5 py-4 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all font-bold text-slate-900">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Phone / WhatsApp</label>
+                            <input type="text" wire:model="no_hp" class="w-full px-5 py-4 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all font-bold text-slate-900">
+                        </div>
+                    </div>
+
                     <div class="space-y-2">
-                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Company / Legal Entity</label>
-                        <input type="text" wire:model="nama_perusahaan" class="w-full px-5 py-4 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all font-bold text-slate-900">
+                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Physical Address</label>
+                        <textarea wire:model="alamat" rows="3" class="w-full px-5 py-4 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all font-bold text-slate-900"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="space-y-2">
+                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">City</label>
+                            <input type="text" wire:model="kota" class="w-full px-5 py-4 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all font-bold text-slate-900">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Province</label>
+                            <input type="text" wire:model="provinsi" class="w-full px-5 py-4 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all font-bold text-slate-900">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Account Status</label>
+                            <select wire:model="status_field" class="w-full px-5 py-4 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all font-bold text-slate-900">
+                                <option value="aktif">Active</option>
+                                <option value="nonaktif">Inactive</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="space-y-2">
-                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Email Address</label>
-                        <input type="email" wire:model="email" class="w-full px-5 py-4 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all font-bold text-slate-900">
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Phone / WhatsApp</label>
-                        <input type="text" wire:model="no_hp" class="w-full px-5 py-4 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all font-bold text-slate-900">
-                    </div>
+                <div class="px-10 py-8 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+                    <button type="button" @click="$wire.showEditModal = false" class="text-[11px] font-black text-slate-400 uppercase tracking-widest hover:text-slate-900 transition-colors">Discard Changes</button>
+                    <button type="submit" class="btn-premium px-10">
+                        <i data-lucide="check" class="w-4 h-4 mr-2"></i>
+                        Confirm Registration
+                    </button>
                 </div>
-
-                <div class="space-y-2">
-                    <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Physical Address</label>
-                    <textarea wire:model="alamat" rows="3" class="w-full px-5 py-4 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all font-bold text-slate-900"></textarea>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="space-y-2">
-                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">City</label>
-                        <input type="text" wire:model="kota" class="w-full px-5 py-4 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all font-bold text-slate-900">
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Province</label>
-                        <input type="text" wire:model="provinsi" class="w-full px-5 py-4 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all font-bold text-slate-900">
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Account Status</label>
-                        <select wire:model="status_field" class="w-full px-5 py-4 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all font-bold text-slate-900">
-                            <option value="aktif">Active</option>
-                            <option value="nonaktif">Inactive</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <div class="px-10 py-8 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
-                <button @click="$wire.showEditModal = false" class="text-[11px] font-black text-slate-400 uppercase tracking-widest hover:text-slate-900 transition-colors">Discard Changes</button>
-                <button wire:click="save" class="btn-premium px-10">
-                    <i data-lucide="check" class="w-4 h-4 mr-2"></i>
-                    Confirm Registration
-                </button>
-            </div>
+            </form>
         </div>
     </div>
 </div>

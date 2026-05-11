@@ -3,7 +3,7 @@
 <aside 
     @toggle-sidebar.window="collapsed = !collapsed"
     @toggle-mobile-sidebar.window="mobileOpen = !mobileOpen"
-    class="fixed inset-y-0 left-0 z-[70] flex flex-col bg-white transition-all duration-300 ease-in-out border-r border-slate-200/50 shadow-2xl"
+    class="fixed inset-y-0 left-0 z-[70] flex flex-col bg-white transition-all duration-500 cubic-bezier-spring border-r border-slate-200/50 shadow-2xl"
     x-bind:class="{ 
         'w-[72px]': collapsed, 
         'w-72': !collapsed,
@@ -14,7 +14,7 @@
 >
     <!-- Brand Area -->
     <div 
-        class="flex items-center h-20 transition-all duration-300"
+        class="flex items-center h-20 transition-all duration-500 cubic-bezier-spring"
         x-bind:class="collapsed ? 'justify-center px-0 mb-0' : 'px-6 mb-6'"
     >
         <div class="flex items-center gap-4 group cursor-pointer" onclick="window.location='{{ route('dashboard') }}'">
@@ -30,7 +30,7 @@
 
     <!-- Navigation Area -->
     <div 
-        class="flex-1 overflow-y-auto custom-scrollbar transition-all duration-300"
+        class="flex-1 overflow-y-auto custom-scrollbar transition-all duration-500 cubic-bezier-spring"
         x-bind:class="collapsed ? 'px-2 space-y-4 py-2' : 'px-4 space-y-8 pb-10'"
     >
         <!-- Section: Overview -->

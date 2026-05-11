@@ -17,7 +17,17 @@
         <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     </head>
     <body class="h-full bg-[#f8fafc] font-sans antialiased overflow-x-hidden">
-        <div class="flex min-h-screen" x-data="{ collapsed: $persist(false).as('sidebar-collapsed'), mobileOpen: false }">
+        <div 
+            class="flex min-h-screen" 
+            x-data="{ 
+                collapsed: $persist(false).as('sidebar-collapsed'), 
+                mobileOpen: false,
+                slideOverOpen: false,
+                slideOverTitle: '',
+                slideOverContent: ''
+            }"
+            @open-slide-over.window="slideOverOpen = true; slideOverTitle = $event.detail.title; slideOverContent = $event.detail.content"
+        >
             <!-- Sidebar -->
             <x-sidebar />
 
@@ -126,12 +136,69 @@
                 </header>
 
                 <!-- Content Area -->
-                <main class="flex-1 overflow-x-hidden page-fade-in">
+                <main class="flex-1 overflow-x-hidden">
                     <div class="max-w-[1600px] mx-auto p-6 md:p-10 lg:p-14">
                         {{ $slot }}
                     </div>
                 </main>
             </div>
+
+            <!-- Global Slide-over Panel -->
+            <template x-teleport="body">
+                <div 
+                    x-show="slideOverOpen" 
+                    class="fixed inset-0 z-[100] overflow-hidden" 
+                    x-cloak
+                >
+                    <div class="absolute inset-0 overflow-hidden">
+                        <!-- Backdrop -->
+                        <div 
+                            x-show="slideOverOpen"
+                            x-transition:enter="ease-in-out duration-500"
+                            x-transition:enter-start="opacity-0"
+                            x-transition:enter-end="opacity-100"
+                            x-transition:leave="ease-in-out duration-500"
+                            x-transition:leave-start="opacity-100"
+                            x-transition:leave-end="opacity-0"
+                            class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" 
+                            @click="slideOverOpen = false"
+                        ></div>
+
+                        <div class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
+                            <div 
+                                x-show="slideOverOpen"
+                                x-transition:enter="transform transition ease-in-out duration-500 cubic-bezier-spring sm:duration-700"
+                                x-transition:enter-start="translate-x-full"
+                                x-transition:enter-end="translate-x-0"
+                                x-transition:leave="transform transition ease-in-out duration-500 cubic-bezier-spring sm:duration-700"
+                                x-transition:leave-start="translate-x-0"
+                                x-transition:leave-end="translate-x-full"
+                                class="pointer-events-auto w-screen max-w-2xl"
+                            >
+                                <div class="flex h-full flex-col overflow-y-scroll bg-white shadow-2xl border-l border-slate-200">
+                                    <div class="px-8 py-10 sm:px-10 bg-slate-50/50 border-b border-slate-100">
+                                        <div class="flex items-start justify-between">
+                                            <div>
+                                                <h2 class="text-2xl font-black text-slate-900 font-jakarta tracking-tight uppercase" x-text="slideOverTitle"></h2>
+                                                <p class="text-sm text-slate-500 font-medium mt-1">Detailed Intelligence Report</p>
+                                            </div>
+                                            <div class="ml-3 flex h-7 items-center">
+                                                <button @click="slideOverOpen = false" class="rounded-xl p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all">
+                                                    <i data-lucide="x" class="h-6 w-6"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="relative flex-1 px-8 py-10 sm:px-10">
+                                        <!-- Content placeholder -->
+                                        <div x-html="slideOverContent"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
         </div>
 
         <script>

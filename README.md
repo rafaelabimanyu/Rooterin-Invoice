@@ -153,9 +153,6 @@ The data architecture is designed for high relational integrity:
 
 ## 🗺️ Development Roadmap
 
-> [!TIP]
-> **Visi Masa Depan**: Rooterin terus berevolusi untuk menjadi platform manajemen finansial yang tak terkalahkan.
-
 - [ ] **AI-Powered Analytics**: Predictive revenue forecasting based on historical data.
 - [ ] **Multi-Currency Support**: Automated exchange rate integration for global billing.
 - [ ] **API Gateway**: RESTful endpoints for third-party ERP integrations.
@@ -164,8 +161,7 @@ The data architecture is designed for high relational integrity:
 ---
 
 **Rooterin Enterprise Billing System**
-*   **Support**: [rooterinofficial@gmail.com
-](mailto:support@rooterin.com)
+*   **Support**: [rooterinofficial@gmail.com](mailto:rooterinofficial@gmail.com)
 *   **Project Lead**: Rafael Abimanyu / Antigravity AI
 *   **GitHub**: [rafaelabimanyu/Rooterin-Invoice](https://github.com/rafaelabimanyu/Rooterin-Invoice)
 

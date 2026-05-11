@@ -11,4 +11,3 @@
 
     <livewire:settings-manager />
 </x-app-layout>
-</x-app-layout>

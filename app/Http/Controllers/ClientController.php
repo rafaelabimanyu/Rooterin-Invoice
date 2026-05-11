@@ -63,7 +63,7 @@ class ClientController extends Controller
 
     public function edit(Client $client)
     {
-        return view('clients.edit', compact('client'));
+        return redirect()->route('clients.index', ['edit' => $client->id]);
     }
 
     public function update(Request $request, Client $client)

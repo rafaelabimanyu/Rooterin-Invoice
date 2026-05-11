@@ -1,113 +1,15 @@
 <x-app-layout>
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+    <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-            <h1 class="text-3xl font-bold text-slate-900 font-outfit">{{ __('ui.clients') }}</h1>
-            <p class="text-slate-500">{{ __('ui.manage_clients_desc') ?? 'Manage your customers and their details' }}</p>
+            <div class="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">
+                <span>Business Ecosystem</span>
+                <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                <span class="text-indigo-600">Client Management</span>
+            </div>
+            <h1 class="text-2xl font-bold text-slate-900 font-outfit">Portfolio Registry</h1>
+            <p class="text-sm text-slate-500">Manage enterprise clients, contacts, and historical billing telemetry.</p>
         </div>
-        <a href="{{ route('clients.create') }}" class="btn-premium">
-            <i data-lucide="plus" class="w-5 h-5 mr-2"></i>
-            {{ __('ui.add_client') }}
-        </a>
     </div>
 
-    <!-- Filters & Search -->
-    <div class="bg-white p-4 rounded-3xl border border-slate-200 shadow-sm mb-6">
-        <form action="{{ route('clients.index') }}" method="GET" class="flex flex-col md:flex-row gap-4">
-            <div class="flex-1 relative">
-                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="{{ __('ui.search_clients_placeholder') ?? 'Search by name, company, or code...' }}" class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-transparent focus:border-indigo-500 focus:bg-white rounded-xl transition-all outline-none text-sm text-slate-900">
-            </div>
-            <select name="status" class="px-4 py-2.5 bg-slate-50 border border-transparent focus:border-indigo-500 focus:bg-white rounded-xl transition-all outline-none text-sm text-slate-900">
-                <option value="">{{ __('ui.all_status') ?? 'All Status' }}</option>
-                <option value="aktif" {{ request('status') == 'aktif' ? 'selected' : '' }}>{{ __('ui.active') }}</option>
-                <option value="nonaktif" {{ request('status') == 'nonaktif' ? 'selected' : '' }}>{{ __('ui.inactive') }}</option>
-            </select>
-            <button type="submit" class="px-6 py-2.5 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition-colors">
-                {{ __('ui.filter') }}
-            </button>
-            @if(request()->anyFilled(['search', 'status']))
-                <a href="{{ route('clients.index') }}" class="px-6 py-2.5 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200 transition-colors text-center">
-                    {{ __('ui.reset') }}
-                </a>
-            @endif
-        </form>
-    </div>
-
-    <!-- Table -->
-    <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
-        <div class="overflow-x-auto">
-            <table class="w-full text-left">
-                <thead>
-                    <tr class="bg-slate-50 border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500">
-                        <th class="px-6 py-4 font-bold">{{ __('ui.client_info') }}</th>
-                        <th class="px-6 py-4 font-bold">{{ __('ui.company') }}</th>
-                        <th class="px-6 py-4 font-bold">{{ __('ui.contact') }}</th>
-                        <th class="px-6 py-4 font-bold">{{ __('ui.status') }}</th>
-                        <th class="px-6 py-4 font-bold text-right">{{ __('ui.actions') }}</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100">
-                    @forelse($clients as $client)
-                        <tr class="hover:bg-slate-50 transition-colors group">
-                            <td class="px-6 py-4">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-bold">
-                                        {{ substr($client->nama_client, 0, 1) }}
-                                    </div>
-                                    <div>
-                                        <p class="font-bold text-slate-900">{{ $client->nama_client }}</p>
-                                        <p class="text-xs text-slate-500 font-medium">{{ $client->kode_client }}</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <p class="text-sm text-slate-600">{{ $client->nama_perusahaan ?? '-' }}</p>
-                            </td>
-                            <td class="px-6 py-4">
-                                <p class="text-sm text-slate-900 font-medium">{{ $client->email ?? '-' }}</p>
-                                <p class="text-xs text-slate-500">{{ $client->no_hp ?? '-' }}</p>
-                            </td>
-                            <td class="px-6 py-4">
-                                <x-badge :status="$client->status" />
-                            </td>
-                            <td class="px-6 py-4 text-right">
-                                <div class="flex items-center justify-end gap-2">
-                                    <a href="{{ route('clients.show', $client) }}" class="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all">
-                                        <i data-lucide="eye" class="w-4 h-4"></i>
-                                    </a>
-                                    <a href="{{ route('clients.edit', $client) }}" class="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all">
-                                        <i data-lucide="edit-3" class="w-4 h-4"></i>
-                                    </a>
-                                    <form action="{{ route('clients.destroy', $client) }}" method="POST" onsubmit="return confirm('{{ __('ui.confirm_delete') }}')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all">
-                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="px-8 py-20 text-center">
-                                <x-empty-state 
-                                    icon="users" 
-                                    :title="__('ui.no_clients_title') ?? 'No client accounts detected'" 
-                                    :description="__('ui.no_clients_desc') ?? 'Start by adding your first business client to begin the invoicing process.'"
-                                    :action="route('clients.create')"
-                                    :actionLabel="__('ui.add_client')"
-                                />
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-        @if($clients->hasPages())
-            <div class="px-6 py-4 bg-slate-50 border-t border-slate-200">
-                {{ $clients->links() }}
-            </div>
-        @endif
-    </div>
+    <livewire:client-manager />
 </x-app-layout>

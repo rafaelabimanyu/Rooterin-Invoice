@@ -37,6 +37,14 @@ class Client extends Model
     }
 
     /**
+     * Legacy alias for receipts
+     */
+    public function quotations(): HasMany
+    {
+        return $this->receipts();
+    }
+
+    /**
      * Generate unique client code (CLI-0001, etc.)
      */
     public static function generateCode(): string

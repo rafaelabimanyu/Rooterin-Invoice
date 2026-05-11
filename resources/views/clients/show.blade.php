@@ -97,10 +97,10 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-50">
-                            @foreach($client->quotations()->latest()->get() as $quotation)
-                            <tr class="table-row-premium cursor-pointer" onclick="window.location='{{ route('quotations.show', $quotation) }}'">
-                                <td class="px-8 py-4"><span class="text-[13px] font-bold text-slate-900">{{ $quotation->quotation_number }}</span></td>
-                                <td class="px-8 py-4"><span class="text-[12px] text-slate-500">{{ $quotation->tanggal_quotation->format('M d, Y') }}</span></td>
+                            @foreach($client->receipts()->latest()->get() as $quotation)
+                            <tr class="table-row-premium cursor-pointer" onclick="window.location='{{ route('receipts.show', $quotation) }}'">
+                                <td class="px-8 py-4"><span class="text-[13px] font-bold text-slate-900">{{ $quotation->receipt_number }}</span></td>
+                                <td class="px-8 py-4"><span class="text-[12px] text-slate-500">{{ $quotation->tanggal_receipt->format('M d, Y') }}</span></td>
                                 <td class="px-8 py-4"><span class="text-[13px] font-black text-slate-900">Rp {{ number_format($quotation->total, 0, ',', '.') }}</span></td>
                                 <td class="px-8 py-4"><x-badge :status="$quotation->status" /></td>
                             </tr>

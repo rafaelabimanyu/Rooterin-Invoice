@@ -13,9 +13,12 @@
     x-cloak
 >
     <!-- Brand Area -->
-    <div class="flex items-center h-16 px-6 mb-6">
+    <div 
+        class="flex items-center h-20 transition-all duration-300"
+        x-bind:class="collapsed ? 'justify-center px-0 mb-0' : 'px-6 mb-6'"
+    >
         <div class="flex items-center gap-4 group cursor-pointer" onclick="window.location='{{ route('dashboard') }}'">
-            <div class="w-10 h-10 rounded-2xl bg-slate-900 flex items-center justify-center text-white shrink-0 shadow-xl shadow-slate-900/10 group-hover:rotate-12 transition-transform duration-300">
+            <div class="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white shrink-0 shadow-xl shadow-slate-900/10 group-hover:rotate-12 transition-transform duration-300">
                 <i data-lucide="zap" class="w-6 h-6 fill-current"></i>
             </div>
             <div x-show="!collapsed" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-x-4" x-transition:enter-end="opacity-100 translate-x-0" class="flex flex-col">
@@ -26,11 +29,14 @@
     </div>
 
     <!-- Navigation Area -->
-    <div class="flex-1 px-4 space-y-10 overflow-y-auto custom-scrollbar pb-10">
+    <div 
+        class="flex-1 overflow-y-auto custom-scrollbar transition-all duration-300"
+        x-bind:class="collapsed ? 'px-2 space-y-4 py-2' : 'px-4 space-y-8 pb-10'"
+    >
         <!-- Section: Overview -->
         <div>
             <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-400/80">{{ __('ui.terminal') }}</p>
-            <nav class="space-y-1">
+            <nav x-bind:class="collapsed ? 'space-y-4' : 'space-y-1'">
                 <x-sidebar-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')" icon="layout-grid" :label="__('ui.dashboard')" :collapsed="$collapsed" />
                 <x-sidebar-link href="{{ route('clients.index') }}" :active="request()->routeIs('clients.*')" icon="users" :label="__('ui.clients')" :collapsed="$collapsed" />
             </nav>
@@ -39,7 +45,7 @@
         <!-- Section: Operations -->
         <div>
             <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-400/80">{{ __('ui.lifecycle') }}</p>
-            <nav class="space-y-1">
+            <nav x-bind:class="collapsed ? 'space-y-4' : 'space-y-1'">
                 <x-sidebar-link href="{{ route('receipts.index') }}" :active="request()->routeIs('receipts.*')" icon="file-spreadsheet" :label="__('ui.receipts')" :collapsed="$collapsed" />
                 <x-sidebar-link href="{{ route('invoices.index') }}" :active="request()->routeIs('invoices.*')" icon="file-text" :label="__('ui.invoices')" :collapsed="$collapsed" />
             </nav>
@@ -48,7 +54,7 @@
         <!-- Section: Intelligence -->
         <div>
             <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-400/80">{{ __('ui.intelligence') }}</p>
-            <nav class="space-y-1">
+            <nav x-bind:class="collapsed ? 'space-y-4' : 'space-y-1'">
                 @if(auth()->user()->role !== 'staff')
                     <x-sidebar-link href="{{ route('owner.kpi') }}" :active="request()->routeIs('owner.kpi')" icon="trending-up" label="Owner KPI" :collapsed="$collapsed" />
                     <x-sidebar-link href="{{ route('reports.index') }}" :active="request()->routeIs('reports.*')" icon="pie-chart" :label="__('ui.reports')" :collapsed="$collapsed" />
@@ -70,9 +76,13 @@
     </div>
 
     <!-- Sidebar Footer -->
-    <div class="p-4 border-t border-slate-100">
-        <div class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border border-transparent hover:border-slate-200 transition-all duration-300 cursor-pointer group" onclick="window.location='{{ route('profile.edit') }}'">
-            <div class="w-10 h-10 rounded-xl bg-slate-200 flex items-center justify-center text-xs font-black text-slate-500 group-hover:bg-slate-900 group-hover:text-white transition-all duration-300">
+    <div class="p-4 border-t border-slate-100 flex justify-center">
+        <div 
+            class="flex items-center gap-3 rounded-2xl bg-slate-50 border border-transparent hover:border-slate-200 transition-all duration-300 cursor-pointer group" 
+            x-bind:class="collapsed ? 'justify-center w-12 h-12' : 'p-3 w-full'"
+            onclick="window.location='{{ route('profile.edit') }}'"
+        >
+            <div class="w-10 h-10 rounded-xl bg-slate-200 flex items-center justify-center text-xs font-black text-slate-500 group-hover:bg-slate-900 group-hover:text-white transition-all duration-300 shrink-0">
                 {{ substr(Auth::user()->name, 0, 1) }}
             </div>
             <div x-show="!collapsed" class="flex-1 overflow-hidden">

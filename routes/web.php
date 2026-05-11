@@ -70,6 +70,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Owner KPI Dashboard
         Route::get('/owner-kpi', [\App\Http\Controllers\OwnerKpiController::class, 'index'])->name('owner.kpi');
+
+        // Security Command Center
+        Route::get('/security-center', function () {
+            return view('security.center');
+        })->name('security.center');
     });
 });
 

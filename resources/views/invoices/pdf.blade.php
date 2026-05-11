@@ -266,8 +266,15 @@
             <div class="clearfix">
                 @foreach($invoice->attachments as $attachment)
                 <div style="float: left; width: 48%; margin-right: 4%; margin-bottom: 30px; @if($loop->iteration % 2 == 0) margin-right: 0; @endif">
-                    @if(file_exists(public_path('storage/' . $attachment->file_path)))
-                        <img src="{{ public_path('storage/' . $attachment->file_path) }}" style="width: 100%; border-radius: 12px; border: 1px solid #f1f5f9; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                    @php
+                        $directPath = storage_path('app/public/' . $attachment->file_path);
+                    @endphp
+                    @if(file_exists($directPath))
+                        <img src="{{ $directPath }}" style="width: 100%; border-radius: 12px; border: 1px solid #f1f5f9;">
+                    @else
+                        <div style="width: 100%; height: 150px; background: #f1f5f9; border-radius: 12px; text-align: center; line-height: 150px; color: #94a3b8; font-size: 10px;">
+                            Image Missing
+                        </div>
                     @endif
                     @if($attachment->caption)
                     <div style="font-size: 10px; color: #64748b; margin-top: 10px; font-weight: 700; text-align: center;">{{ $attachment->caption }}</div>

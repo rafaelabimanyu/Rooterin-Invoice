@@ -206,7 +206,13 @@ class InvoiceController extends Controller
         }
 
         $invoice->load(['client', 'items', 'payments', 'attachments']);
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('invoices.pdf', compact('invoice'));
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('invoices.pdf', compact('invoice'))
+            ->setPaper('a4')
+            ->setOption([
+                'isRemoteEnabled' => true, 
+                'isHtml5ParserEnabled' => true,
+                'defaultFont' => 'sans-serif'
+            ]);
         return $pdf->download("Invoice-{$invoice->invoice_number}.pdf");
     }
 

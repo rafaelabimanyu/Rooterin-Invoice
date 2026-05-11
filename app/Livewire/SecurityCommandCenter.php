@@ -30,6 +30,7 @@ class SecurityCommandCenter extends Component
 
     // Session properties
     public $sessions = [];
+    public $confirmingTermination = false;
 
     public function mount()
     {
@@ -79,14 +80,36 @@ class SecurityCommandCenter extends Component
                 $agent = new \Jenssegers\Agent\Agent();
                 $agent->setUserAgent($session->user_agent);
                 
+                // Map Browser Icons
+                $browser = $agent->browser();
+                $browserIcon = match(strtolower($browser)) {
+                    'chrome' => 'chrome',
+                    'firefox' => 'globe',
+                    'safari' => 'compass',
+                    'edge' => 'layout',
+                    default => 'browser'
+                };
+
+                // Map OS Icons
+                $platform = $agent->platform();
+                $platformIcon = match(strtolower($platform)) {
+                    'windows' => 'monitor',
+                    'os x', 'ios', 'mac os x' => 'apple',
+                    'android' => 'smartphone',
+                    'linux' => 'terminal',
+                    default => 'cpu'
+                };
+
                 return [
                     'id' => $session->id,
                     'ip_address' => $session->ip_address,
                     'is_current_device' => $session->id === session()->getId(),
                     'last_active' => \Carbon\Carbon::createFromTimestamp($session->last_activity)->diffForHumans(),
+                    'browser' => $browser,
+                    'browser_icon' => $browserIcon,
+                    'platform' => $platform,
+                    'platform_icon' => $platformIcon,
                     'device_type' => $agent->isMobile() ? 'smartphone' : 'monitor',
-                    'browser' => $agent->browser(),
-                    'platform' => $agent->platform(),
                 ];
             });
     }
@@ -101,6 +124,11 @@ class SecurityCommandCenter extends Component
         $this->logActivity('Remote Session Terminated');
     }
 
+    public function confirmTerminateOthers()
+    {
+        $this->confirmingTermination = true;
+    }
+
     public function terminateOtherSessions()
     {
         DB::table('sessions')
@@ -108,6 +136,7 @@ class SecurityCommandCenter extends Component
             ->where('id', '!=', session()->getId())
             ->delete();
         
+        $this->confirmingTermination = false;
         $this->loadSessions();
         $this->dispatch('notify', ['message' => 'All other sessions purged.', 'type' => 'success']);
         $this->logActivity('All Other Sessions Purged');

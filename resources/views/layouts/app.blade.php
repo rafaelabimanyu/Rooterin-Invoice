@@ -14,6 +14,7 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <script src="https://unpkg.com/lucide@latest"></script>
+        @livewireStyles
         <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     </head>
     <body class="h-full bg-[#f8fafc] font-sans antialiased overflow-x-hidden">
@@ -207,5 +208,6 @@
                 lucide.createIcons();
             });
         </script>
+        @livewireScripts
     </body>
 </html>

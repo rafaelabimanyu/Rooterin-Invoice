@@ -34,8 +34,11 @@ class SecurityCommandCenter extends Component
     public function mount()
     {
         // Sudo mode session check
-        if (session()->has('sudo_verified_at') && session('sudo_verified_at')->diffInHours(now()) < 2) {
-            $this->isVerified = true;
+        if (session()->has('sudo_verified_at')) {
+            $verifiedAt = \Illuminate\Support\Carbon::parse(session('sudo_verified_at'));
+            if ($verifiedAt->diffInHours(now()) < 2) {
+                $this->isVerified = true;
+            }
         }
 
         if ($this->isVerified) {

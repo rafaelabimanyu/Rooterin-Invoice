@@ -1,7 +1,7 @@
 # Rooterin Invoice — Modern Enterprise Billing Ecosystem
 
 <p align="center">
-  <img src="assets/public/img/rooterin-banner.png" alt="Rooterin Banner" width="800">
+  <img src="assets/assets/img/rooterin-banner.png" alt="Rooterin Banner" width="800">
 </p>
 
 <p align="center">

@@ -52,6 +52,8 @@ class InvoiceController extends Controller
             'items.*.harga' => 'required|numeric|min:0',
             'tax_percent' => 'nullable|numeric|min:0|max:100',
             'discount_percent' => 'nullable|numeric|min:0|max:100',
+            'attachments' => 'nullable|array',
+            'attachments.*' => 'image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         try {
@@ -92,14 +94,12 @@ class InvoiceController extends Controller
                 ]);
             }
 
-            // Handle Attachments with Captions
+            // Handle Job Documentation
             if ($request->hasFile('attachments')) {
-                $captions = $request->input('captions', []);
-                foreach ($request->file('attachments') as $index => $file) {
-                    $path = $file->store('invoice_attachments', 'public');
+                foreach ($request->file('attachments') as $file) {
+                    $path = $file->store('documentation', 'public');
                     $invoice->attachments()->create([
                         'file_path' => $path,
-                        'caption' => $captions[$index] ?? null,
                     ]);
                 }
             }

@@ -93,10 +93,7 @@
                         </div>
 
                         <!-- Notifications -->
-                        <button class="p-2.5 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all relative group">
-                            <i data-lucide="bell" class="w-5 h-5 group-hover:shake"></i>
-                            <span class="absolute top-2.5 right-2.5 w-2 h-2 bg-indigo-500 rounded-full ring-2 ring-white"></span>
-                        </button>
+                        <livewire:navbar-notification />
 
                         <div class="h-8 w-px bg-slate-200"></div>
 
@@ -221,8 +218,58 @@
         <script>
             window.addEventListener('notify', event => {
                 const data = event.detail[0] || event.detail;
-                // Simple alert fallback if no toast library is present
-                alert(data.message);
+                const type = data.type || 'success';
+                const message = data.message || 'Transmission received.';
+                
+                // Professional Floating Toast Implementation
+                const toast = document.createElement('div');
+                toast.className = `fixed top-10 right-10 z-[1000] flex items-center gap-4 px-6 py-4 rounded-[24px] shadow-2xl border-2 transition-all duration-500 translate-x-full opacity-0 transform scale-95`;
+                
+                const themes = {
+                    success: 'bg-white border-emerald-500/20 text-emerald-600 shadow-emerald-500/10',
+                    warning: 'bg-white border-amber-500/20 text-amber-600 shadow-amber-500/10',
+                    danger: 'bg-white border-rose-500/20 text-rose-600 shadow-rose-500/10',
+                    info: 'bg-white border-indigo-500/20 text-indigo-600 shadow-indigo-500/10'
+                };
+                const theme = themes[type] || themes.success;
+
+                const icons = {
+                    success: 'check-circle-2',
+                    warning: 'alert-triangle',
+                    danger: 'alert-octagon',
+                    info: 'info'
+                };
+                const iconName = icons[type] || 'bell';
+
+                toast.className += ` ${theme}`;
+                toast.innerHTML = `
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background: currentColor; color: white;">
+                        <i data-lucide="${iconName}" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-0.5">Intelligence Event</p>
+                        <p class="text-sm font-bold text-slate-900">${message}</p>
+                    </div>
+                    <button class="ml-4 p-1 hover:bg-slate-50 rounded-lg transition-colors text-slate-300 hover:text-slate-900">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                `;
+
+                document.body.appendChild(toast);
+                lucide.createIcons();
+
+                // Animate In
+                setTimeout(() => {
+                    toast.classList.remove('translate-x-full', 'opacity-0', 'scale-95');
+                }, 100);
+
+                const closeToast = () => {
+                    toast.classList.add('translate-x-full', 'opacity-0', 'scale-95');
+                    setTimeout(() => toast.remove(), 500);
+                };
+
+                toast.querySelector('button').onclick = closeToast;
+                setTimeout(closeToast, 5000);
             });
         </script>
     </body>

@@ -148,6 +148,9 @@
                         {{ $slot }}
                     </div>
                 </main>
+
+                <!-- Footer -->
+                <x-footer />
             </div>
 
             <!-- Global Slide-over Panel -->

@@ -1,3 +1,4 @@
+<x-app-layout>
     <div class="mb-10 page-fade-in px-4 md:px-0">
         <div class="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">
             <span>System</span>
@@ -111,3 +112,4 @@
             </div>
         </div>
     </div>
+</x-app-layout>

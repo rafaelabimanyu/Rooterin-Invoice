@@ -104,9 +104,7 @@
                                     <span class="text-[11px] font-black text-slate-900 leading-tight">{{ Auth::user()->name }}</span>
                                     <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{{ Auth::user()->role }}</span>
                                 </div>
-                                <div class="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-white text-xs font-black shadow-lg shadow-slate-900/10 ring-2 ring-transparent group-hover:ring-indigo-500 transition-all duration-300">
-                                    {{ substr(Auth::user()->name, 0, 1) }}
-                                </div>
+                                <img src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" class="w-10 h-10 rounded-xl object-cover shadow-lg shadow-slate-900/10 ring-2 ring-transparent group-hover:ring-indigo-500 transition-all duration-300">
                             </button>
                             
                             <div 
@@ -124,10 +122,10 @@
                                 </div>
                                 <div class="space-y-1">
                                     <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-4 py-2.5 text-[12px] font-bold text-slate-600 hover:bg-slate-50 rounded-xl transition-colors group">
-                                        <i data-lucide="user" class="w-4 h-4 group-hover:text-indigo-500"></i> {{ __('ui.settings') }}
+                                        <i data-lucide="user" class="w-4 h-4 group-hover:text-indigo-500"></i> {{ __('Profile') }}
                                     </a>
-                                    <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-[12px] font-bold text-slate-600 hover:bg-slate-50 rounded-xl transition-colors group">
-                                        <i data-lucide="shield" class="w-4 h-4 group-hover:text-indigo-500"></i> {{ __('ui.privacy') ?? 'Privacy Center' }}
+                                    <a href="{{ route('security.center') }}" class="flex items-center gap-3 px-4 py-2.5 text-[12px] font-bold text-slate-600 hover:bg-slate-50 rounded-xl transition-colors group">
+                                        <i data-lucide="shield" class="w-4 h-4 group-hover:text-indigo-500"></i> {{ __('ui.security_center') }}
                                     </a>
                                 </div>
                                 <div class="h-px bg-slate-100 my-2 mx-2"></div>

@@ -16,9 +16,9 @@
         </div>
     </div>
 
-    <!-- Table -->
+    <!-- Table / Mobile List -->
     <div class="glass-card overflow-hidden">
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto hidden md:block">
             <table class="w-full text-left">
                 <thead>
                     <tr class="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400 bg-slate-50/50">
@@ -85,6 +85,48 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+
+        <!-- Mobile List View -->
+        <div class="md:hidden divide-y divide-slate-100 px-4">
+            @forelse($receipts as $receipt)
+                <div class="py-6 space-y-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <a href="{{ route('receipts.show', $receipt) }}" class="text-sm font-black text-slate-900 hover:text-indigo-600 transition-colors">
+                                {{ $receipt->receipt_number }}
+                            </a>
+                            <p class="text-[11px] font-bold text-indigo-600 uppercase tracking-tight mt-0.5">{{ $receipt->client->nama_client }}</p>
+                        </div>
+                        <x-badge :status="$receipt->status" class="scale-90 origin-right" />
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4 pt-2">
+                        <div>
+                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Amount</p>
+                            <p class="text-sm font-black text-slate-900">Rp {{ number_format($receipt->total, 0, ',', '.') }}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Date</p>
+                            <p class="text-xs font-bold text-slate-600">{{ $receipt->tanggal_receipt->format('M d, Y') }}</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-4 border-t border-slate-50">
+                        <p class="text-[10px] text-slate-400 font-medium">{{ $receipt->client->nama_perusahaan }}</p>
+                        <div class="flex items-center gap-4">
+                            <a href="{{ route('receipts.show', $receipt) }}" class="text-[11px] font-black text-indigo-600 uppercase tracking-widest">View</a>
+                            @if($receipt->status !== 'invoiced')
+                                <a href="{{ route('receipts.edit', $receipt) }}" class="text-[11px] font-black text-amber-600 uppercase tracking-widest">Edit</a>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="p-10 text-center">
+                    <p class="text-sm text-slate-500">No receipts detected.</p>
+                </div>
+            @endforelse
         </div>
     </div>
 </x-app-layout>

@@ -1,16 +1,16 @@
 <x-app-layout>
-    <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
+    <div class="mb-8 md:mb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+        <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">
-                <span>Enterprise</span>
-                <i data-lucide="chevron-right" class="w-3 h-3"></i>
-                <span class="text-indigo-600">Billing Ledger</span>
+                <span class="shrink-0">Enterprise</span>
+                <i data-lucide="chevron-right" class="w-3 h-3 shrink-0"></i>
+                <span class="text-indigo-600 truncate">Billing Ledger</span>
             </div>
-            <h1 class="text-3xl font-black text-slate-900 font-outfit tracking-tight">{{ __('ui.invoices') }}</h1>
-            <p class="text-sm text-slate-500">Comprehensive list of all issued corporate invoices and payment statuses.</p>
+            <h1 class="text-2xl md:text-3xl font-black text-slate-900 font-outfit tracking-tight truncate">{{ __('ui.invoices') }}</h1>
+            <p class="text-xs md:text-sm text-slate-500 truncate">Manage all issued corporate invoices and statuses.</p>
         </div>
-        <div class="flex items-center gap-3">
-            <a href="{{ route('invoices.create') }}" class="btn-premium">
+        <div class="flex items-center">
+            <a href="{{ route('invoices.create') }}" class="btn-premium w-full sm:w-auto py-3 sm:py-2.5">
                 <i data-lucide="plus" class="w-4 h-4 mr-2 inline"></i>{{ __('ui.create_invoice') }}
             </a>
         </div>
@@ -36,9 +36,9 @@
         </div>
     </div>
 
-    <!-- Table -->
+    <!-- Table / Mobile List -->
     <div class="glass-card overflow-hidden">
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto hidden md:block">
             <table class="w-full text-left">
                 <thead>
                     <tr class="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400 bg-slate-50/50">
@@ -98,6 +98,46 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+
+        <!-- Mobile List View -->
+        <div class="md:hidden divide-y divide-slate-100">
+            @forelse($invoices as $invoice)
+                <div class="p-6 space-y-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <a href="{{ route('invoices.show', $invoice) }}" class="text-sm font-black text-slate-900 hover:text-indigo-600 transition-colors">
+                                {{ $invoice->invoice_number }}
+                            </a>
+                            <p class="text-[11px] font-bold text-indigo-600 uppercase tracking-tight mt-0.5">{{ $invoice->client->nama_client }}</p>
+                        </div>
+                        <x-badge :status="$invoice->status" class="scale-90 origin-right" />
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4 pt-2">
+                        <div>
+                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Net Amount</p>
+                            <p class="text-sm font-black text-slate-900">Rp {{ number_format($invoice->total, 0, ',', '.') }}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Due Date</p>
+                            <p class="text-xs font-bold text-slate-600">{{ $invoice->due_date->format('M d, Y') }}</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-4 border-t border-slate-50">
+                        <p class="text-[10px] text-slate-400 font-medium">{{ $invoice->client->nama_perusahaan }}</p>
+                        <div class="flex items-center gap-4">
+                            <a href="{{ route('invoices.show', $invoice) }}" class="text-[11px] font-black text-indigo-600 uppercase tracking-widest">View</a>
+                            <a href="{{ route('invoices.edit', $invoice) }}" class="text-[11px] font-black text-amber-600 uppercase tracking-widest">Edit</a>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="p-10 text-center">
+                    <p class="text-sm text-slate-500">{{ __('ui.empty_data') }}</p>
+                </div>
+            @endforelse
         </div>
         @if($invoices->hasPages())
             <div class="px-8 py-4 bg-slate-50/50 border-t border-slate-100">

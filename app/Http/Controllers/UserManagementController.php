@@ -10,7 +10,10 @@ class UserManagementController extends Controller
 {
     public function index()
     {
-        $users = User::latest()->paginate(10);
+        $users = User::withCount('invoices')
+            ->with(['activityLogs' => fn($q) => $q->latest()->limit(5)])
+            ->latest()
+            ->get();
         return view('users.index', compact('users'));
     }
 
@@ -33,6 +36,7 @@ class UserManagementController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
+            'last_password_change_at' => now(),
         ]);
 
         return redirect()->route('users.index')->with('success', 'User created successfully.');
@@ -49,16 +53,21 @@ class UserManagementController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'role' => 'required|in:owner,admin,staff',
+            'is_active' => 'boolean',
         ]);
 
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
             'role' => $request->role,
+            'is_active' => $request->boolean('is_active'),
         ]);
 
         if ($request->filled('password')) {
-            $user->update(['password' => Hash::make($request->password)]);
+            $user->update([
+                'password' => Hash::make($request->password),
+                'last_password_change_at' => now(),
+            ]);
         }
 
         return redirect()->route('users.index')->with('success', 'User updated successfully.');

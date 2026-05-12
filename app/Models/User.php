@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'role', 'locale', 'profile_photo_path', 'last_login_at', 'last_login_ip'])]
+#[Fillable(['name', 'email', 'password', 'role', 'is_active', 'last_password_change_at', 'locale', 'profile_photo_path', 'last_login_at', 'last_login_ip'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -20,6 +20,22 @@ class User extends Authenticatable
     const ROLE_OWNER = 'owner';
     const ROLE_ADMIN = 'admin';
     const ROLE_STAFF = 'staff';
+
+    /**
+     * Get the invoices created by the user.
+     */
+    public function invoices(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Invoice::class, 'created_by');
+    }
+
+    /**
+     * Get the activity logs for the user.
+     */
+    public function activityLogs(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ActivityLog::class);
+    }
 
     /**
      * Get the URL to the user's profile photo.

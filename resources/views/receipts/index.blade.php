@@ -78,11 +78,15 @@
                     @empty
                         <tr>
                             <td colspan="6" class="px-8 py-20 text-center">
-                                <div class="flex flex-col items-center max-w-xs mx-auto opacity-50">
-                                    <i data-lucide="file-text" class="w-10 h-10 mb-4"></i>
-                                    <h4 class="text-sm font-bold text-slate-900">No Receipts Found</h4>
-                                    <p class="text-xs text-slate-400 mt-1">Start by creating a payment receipt for your clients.</p>
-                                </div>
+                                @if(auth()->user()->role === 'staff')
+                                    <x-empty-state icon="coffee" title="No activities today" description="Take a breath! You haven't created any receipts in the last 24 hours." />
+                                @else
+                                    <div class="flex flex-col items-center max-w-xs mx-auto opacity-50">
+                                        <i data-lucide="file-text" class="w-10 h-10 mb-4"></i>
+                                        <h4 class="text-sm font-bold text-slate-900">No Receipts Found</h4>
+                                        <p class="text-xs text-slate-400 mt-1">Start by creating a payment receipt for your clients.</p>
+                                    </div>
+                                @endif
                             </td>
                         </tr>
                     @endforelse
@@ -128,7 +132,15 @@
                 </div>
             @empty
                 <div class="p-10 text-center">
-                    <p class="text-sm text-slate-500">No receipts detected.</p>
+                    @if(auth()->user()->role === 'staff')
+                        <div class="flex flex-col items-center">
+                            <i data-lucide="coffee" class="w-10 h-10 text-slate-300 mb-4"></i>
+                            <p class="text-sm font-bold text-slate-900">No activities today</p>
+                            <p class="text-[11px] text-slate-400 mt-1">You haven't created any receipts in the last 24 hours.</p>
+                        </div>
+                    @else
+                        <p class="text-sm text-slate-500">No receipts detected.</p>
+                    @endif
                 </div>
             @endforelse
         </div>

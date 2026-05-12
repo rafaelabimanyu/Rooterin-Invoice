@@ -16,6 +16,7 @@
         </div>
     </div>
 
+    @if(auth()->user()->role !== 'staff')
     <!-- Quick Stats Mini -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <div class="glass-card px-6 py-4 border-l-4 border-l-indigo-500">
@@ -35,6 +36,7 @@
             <p class="text-xl font-black text-rose-600 font-outfit">{{ \App\Models\Invoice::where('status', 'overdue')->count() }}</p>
         </div>
     </div>
+    @endif
 
     <!-- Table / Mobile List -->
     <div class="glass-card overflow-hidden">
@@ -92,7 +94,11 @@
                     @empty
                         <tr>
                             <td colspan="6" class="px-8 py-20 text-center">
-                                <x-empty-state icon="file-text" :title="__('ui.empty_data')" description="No invoices detected in the ledger." />
+                                @if(auth()->user()->role === 'staff')
+                                    <x-empty-state icon="coffee" title="No activities today" description="Take a breath! You haven't created any invoices in the last 24 hours." />
+                                @else
+                                    <x-empty-state icon="file-text" :title="__('ui.empty_data')" description="No invoices detected in the ledger." />
+                                @endif
                             </td>
                         </tr>
                     @endforelse
@@ -135,7 +141,15 @@
                 </div>
             @empty
                 <div class="p-10 text-center">
-                    <p class="text-sm text-slate-500">{{ __('ui.empty_data') }}</p>
+                    @if(auth()->user()->role === 'staff')
+                        <div class="flex flex-col items-center">
+                            <i data-lucide="coffee" class="w-10 h-10 text-slate-300 mb-4"></i>
+                            <p class="text-sm font-bold text-slate-900">No activities today</p>
+                            <p class="text-[11px] text-slate-400 mt-1">You haven't created any invoices in the last 24 hours.</p>
+                        </div>
+                    @else
+                        <p class="text-sm text-slate-500">{{ __('ui.empty_data') }}</p>
+                    @endif
                 </div>
             @endforelse
         </div>

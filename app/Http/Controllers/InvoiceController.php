@@ -27,6 +27,11 @@ class InvoiceController extends Controller
             $query->where('status', $request->status);
         }
 
+        if (auth()->user()->role === 'staff') {
+            $query->where('created_by', auth()->id())
+                  ->where('created_at', '>=', now()->subHours(24));
+        }
+
         $invoices = $query->latest()->paginate(10);
 
         return view('invoices.index', compact('invoices'));
@@ -117,12 +122,22 @@ class InvoiceController extends Controller
 
     public function show(Invoice $invoice)
     {
+        if (auth()->user()->role === 'staff') {
+            if ($invoice->created_by !== auth()->id() || $invoice->created_at < now()->subHours(24)) {
+                abort(403, 'Access restricted to your own items created within 24 hours.');
+            }
+        }
         $invoice->load(['client', 'items', 'creator', 'payments']);
         return view('invoices.show', compact('invoice'));
     }
 
     public function edit(Invoice $invoice)
     {
+        if (auth()->user()->role === 'staff') {
+            if ($invoice->created_by !== auth()->id() || $invoice->created_at < now()->subHours(24)) {
+                abort(403, 'Unauthorized edit access.');
+            }
+        }
         $invoice->load('items');
         $clients = Client::where('status', 'aktif')->orderBy('nama_client')->get();
         return view('invoices.edit', compact('invoice', 'clients'));

@@ -28,6 +28,11 @@ class ReceiptController extends Controller
             $query->where('status', $request->status);
         }
 
+        if (auth()->user()->role === 'staff') {
+            $query->where('created_by', auth()->id())
+                  ->where('created_at', '>=', now()->subHours(24));
+        }
+
         $receipts = $query->latest()->paginate(10);
 
         return view('receipts.index', compact('receipts'));
@@ -99,12 +104,22 @@ class ReceiptController extends Controller
 
     public function show(Receipt $receipt)
     {
+        if (auth()->user()->role === 'staff') {
+            if ($receipt->created_by !== auth()->id() || $receipt->created_at < now()->subHours(24)) {
+                abort(403, 'Access restricted to your own items created within 24 hours.');
+            }
+        }
         $receipt->load(['client', 'items', 'creator']);
         return view('receipts.show', compact('receipt'));
     }
 
     public function edit(Receipt $receipt)
     {
+        if (auth()->user()->role === 'staff') {
+            if ($receipt->created_by !== auth()->id() || $receipt->created_at < now()->subHours(24)) {
+                abort(403, 'Unauthorized edit access.');
+            }
+        }
         $receipt->load('items');
         $clients = Client::where('status', 'aktif')->orderBy('nama_client')->get();
         return view('receipts.edit', compact('receipt', 'clients'));

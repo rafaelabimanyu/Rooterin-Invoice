@@ -50,44 +50,6 @@
         </div>
     </div>
     @else
-    <!-- Staff: Daily Work Summary -->
-    <div class="mb-12 page-fade-in">
-        <div class="glass-card p-10 bg-gradient-to-r from-indigo-600 to-indigo-800 text-white relative overflow-hidden">
-            <div class="relative z-10">
-                <p class="text-xs font-black uppercase tracking-[0.3em] text-indigo-200 mb-2">Daily Performance Overview</p>
-                <h2 class="text-3xl font-black font-jakarta tracking-tight mb-8">Hello, {{ auth()->user()->name }}! 👋<br><span class="text-indigo-200/80 font-medium text-lg">Here's your productivity summary for today.</span></h2>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20">
-                        <p class="text-[10px] font-black uppercase tracking-widest text-indigo-100 mb-1">Invoices Issued</p>
-                        <div class="flex items-end gap-3">
-                            <span class="text-4xl font-black">{{ $todayInvoicesCount }}</span>
-                            <span class="text-xs font-bold text-indigo-200 mb-2">Documents</span>
-                        </div>
-                    </div>
-                    <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20">
-                        <p class="text-[10px] font-black uppercase tracking-widest text-indigo-100 mb-1">Receipts Logged</p>
-                        <div class="flex items-end gap-3">
-                            <span class="text-4xl font-black">{{ $todayReceiptsCount }}</span>
-                            <span class="text-xs font-bold text-indigo-200 mb-2">Activities</span>
-                        </div>
-                    </div>
-                    <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20">
-                        <p class="text-[10px] font-black uppercase tracking-widest text-indigo-100 mb-1">Output Value</p>
-                        <div class="flex items-end gap-3">
-                            <span class="text-2xl font-black">Rp {{ number_format($todayRevenue, 0, ',', '.') }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Decorative Graphics -->
-            <div class="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full -mr-48 -mt-48 blur-3xl"></div>
-            <div class="absolute bottom-0 left-0 w-64 h-64 bg-indigo-400/20 rounded-full -ml-32 -mb-32 blur-2xl"></div>
-        </div>
-    </div>
-    @endif
-
-    @else
     <!-- Staff: Premium Interactive Dashboard -->
     <div class="mb-12 page-fade-in" x-data="{ 
         time: '', 

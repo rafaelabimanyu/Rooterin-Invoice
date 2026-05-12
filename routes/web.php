@@ -25,6 +25,8 @@ Route::get('/lang/{locale}', function ($locale) {
     return redirect()->back();
 })->name('lang.switch');
 
+Route::post('/help/password-reset', \App\Http\Controllers\Auth\PasswordResetHelpController::class)->name('password.help');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     
     // All Roles (Owner, Admin, Staff)

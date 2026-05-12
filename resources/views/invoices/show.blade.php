@@ -9,23 +9,28 @@
             <h1 class="text-3xl font-bold text-slate-900 font-outfit leading-tight">Invoice Details</h1>
             <p class="text-slate-500 mt-1">Review and manage billing for {{ $invoice->client->nama_client }}.</p>
         </div>
-        <div class="flex items-center gap-3">
-            <x-badge :status="$invoice->status" class="px-3 py-1 text-[11px]" />
-            <div class="h-8 w-px bg-slate-200 mx-2"></div>
-            <button class="p-2.5 bg-white border border-slate-200 rounded-lg text-slate-500 hover:text-slate-900 transition-all shadow-sm">
-                <i data-lucide="printer" class="w-4 h-4"></i>
-            </button>
-            <a href="{{ route('invoices.pdf', $invoice) }}" class="p-2.5 bg-white border border-slate-200 rounded-lg text-slate-500 hover:text-indigo-600 transition-all shadow-sm">
-                <i data-lucide="download" class="w-4 h-4"></i>
-            </button>
-            <button class="px-5 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-bold hover:bg-indigo-700 transition-all shadow-sm flex items-center gap-2">
-                <i data-lucide="send" class="w-4 h-4"></i>
-                Send Invoice
-            </button>
+        <div class="flex items-center gap-4">
+            <x-badge :status="$invoice->status" class="px-3 py-1.5 text-[11px]" />
+            <div class="h-8 w-px bg-slate-200 mx-1"></div>
+            <div class="flex items-center gap-2">
+                <button title="Print" class="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-500 hover:text-slate-900 transition-all shadow-sm active:scale-95">
+                    <i data-lucide="printer" class="w-4 h-4"></i>
+                </button>
+                <a href="{{ route('invoices.pdf', $invoice) }}" title="Download PDF" class="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-500 hover:text-indigo-600 transition-all shadow-sm active:scale-95">
+                    <i data-lucide="download" class="w-4 h-4"></i>
+                </a>
+                <button class="px-6 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-600/20 flex items-center gap-2 active:scale-95">
+                    <i data-lucide="send" class="w-4 h-4"></i>
+                    {{ __('ui.send_invoice') ?? 'Send Invoice' }}
+                </button>
+            </div>
         </div>
     </div>
 
-    <div class="bg-white rounded-xl border border-slate-200 shadow-2xl overflow-hidden max-w-5xl mx-auto">
+    <div class="bg-white rounded-[32px] border border-slate-200/60 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] overflow-hidden max-w-5xl mx-auto mb-20 relative">
+        <!-- Decorative Elements -->
+        <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50/30 rounded-full blur-3xl -mr-32 -mt-32"></div>
+        <div class="absolute bottom-0 left-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl -ml-32 -mb-32"></div>
         <!-- Professional Invoice Header -->
         <div class="p-16 border-b border-slate-100">
             <div class="flex justify-between items-start gap-12">
@@ -96,7 +101,7 @@
                             </td>
                             <td class="py-6 text-center text-[13px] font-medium text-slate-600">{{ number_format($item->qty, 0) }}</td>
                             <td class="py-6 text-right text-[13px] font-medium text-slate-600">Rp {{ number_format($item->harga, 0, ',', '.') }}</td>
-                            <td class="py-6 text-right text-[13px] font-black text-slate-900">Rp {{ number_format($item->total, 0, ',', '.') }}</td>
+                            <td class="py-6 text-right text-[13px] font-black text-slate-900">Rp {{ number_format($item->qty * $item->harga, 0, ',', '.') }}</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -149,6 +154,13 @@
                         <span class="text-slate-500 font-medium">Adjustment</span>
                         <span class="font-bold text-rose-500">- Rp {{ number_format($invoice->subtotal * ($invoice->discount_percent / 100), 0, ',', '.') }}</span>
                     </div>
+                    
+                    @if($invoice->status === 'dp')
+                    <div class="flex justify-between text-sm p-3 bg-indigo-50 rounded-lg border border-indigo-100">
+                        <span class="text-indigo-600 font-bold">Remaining Balance</span>
+                        <span class="font-black text-indigo-700">Rp {{ number_format($invoice->amount_due, 0, ',', '.') }}</span>
+                    </div>
+                    @endif
                     <div class="pt-6 border-t border-slate-200 flex justify-between items-center">
                         <span class="text-lg font-black text-slate-900 uppercase tracking-tighter">Total Due</span>
                         <span class="text-3xl font-black text-indigo-600 font-outfit">Rp {{ number_format($invoice->total, 0, ',', '.') }}</span>

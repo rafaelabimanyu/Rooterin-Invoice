@@ -56,7 +56,7 @@
             <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-400/80">{{ __('ui.intelligence') }}</p>
             <nav x-bind:class="collapsed ? 'space-y-4' : 'space-y-1'">
                 @if(auth()->user()->role !== 'staff')
-                    <x-sidebar-link href="{{ route('owner.kpi') }}" :active="request()->routeIs('owner.kpi')" icon="trending-up" label="Owner KPI" :collapsed="$collapsed" />
+                    <x-sidebar-link href="{{ route('owner.kpi') }}" :active="request()->routeIs('owner.kpi')" icon="trending-up" :label="__('ui.owner_kpi')" :collapsed="$collapsed" />
                     <x-sidebar-link href="{{ route('reports.index') }}" :active="request()->routeIs('reports.*')" icon="pie-chart" :label="__('ui.reports')" :collapsed="$collapsed" />
                 @endif
             </nav>
@@ -70,7 +70,7 @@
                     <x-sidebar-link href="{{ route('users.index') }}" :active="request()->routeIs('users.*')" icon="shield-check" :label="__('ui.users')" :collapsed="$collapsed" />
                 @endif
                 <x-sidebar-link href="{{ route('settings.index') }}" :active="request()->routeIs('settings.*')" icon="sliders" :label="__('ui.settings')" :collapsed="$collapsed" />
-                <x-sidebar-link href="{{ route('security.center') }}" :active="request()->routeIs('security.*')" icon="fingerprint" label="Security Center" :collapsed="$collapsed" />
+                <x-sidebar-link href="{{ route('security.center') }}" :active="request()->routeIs('security.*')" icon="fingerprint" :label="__('ui.security_center')" :collapsed="$collapsed" />
                 <x-sidebar-link href="{{ route('guide.index') }}" :active="request()->routeIs('guide.index')" icon="book-open" :label="__('ui.guide')" :collapsed="$collapsed" />
             </nav>
         </div>

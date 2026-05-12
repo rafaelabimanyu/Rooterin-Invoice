@@ -19,6 +19,8 @@ return [
     'lifecycle' => 'Lifecycle',
     'intelligence' => 'Intelligence',
     'control' => 'Control',
+    'owner_kpi' => 'Owner KPI',
+    'security_center' => 'Security Center',
     
     // Actions & General
     'actions' => 'Actions',

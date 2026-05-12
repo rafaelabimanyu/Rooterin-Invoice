@@ -19,6 +19,8 @@ return [
     'lifecycle' => 'Siklus Hidup',
     'intelligence' => 'Intelijen',
     'control' => 'Kontrol',
+    'owner_kpi' => 'KPI Pemilik',
+    'security_center' => 'Pusat Keamanan',
     
     // Aksi & Umum
     'actions' => 'Aksi',

@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable(['name', 'email', 'password', 'role', 'locale', 'profile_photo_path', 'last_login_at', 'last_login_ip'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -20,6 +20,40 @@ class User extends Authenticatable
     const ROLE_OWNER = 'owner';
     const ROLE_ADMIN = 'admin';
     const ROLE_STAFF = 'staff';
+
+    /**
+     * Get the URL to the user's profile photo.
+     */
+    public function getProfilePhotoUrlAttribute(): string
+    {
+        if ($this->profile_photo_path) {
+            return asset('storage/' . $this->profile_photo_path);
+        }
+
+        return $this->defaultProfilePhotoUrl();
+    }
+
+    /**
+     * Get the default profile photo URL if no photo has been uploaded.
+     */
+    protected function defaultProfilePhotoUrl(): string
+    {
+        $name = urlencode($this->name);
+        return "https://ui-avatars.com/api/?name={$name}&color=7F9CF5&background=EBF4FF";
+    }
+
+    /**
+     * Get the role badge color and label.
+     */
+    public function getRoleBadgeAttribute(): array
+    {
+        return match($this->role) {
+            self::ROLE_OWNER => ['color' => 'indigo', 'label' => 'System Owner'],
+            self::ROLE_ADMIN => ['color' => 'blue', 'label' => 'System Admin'],
+            self::ROLE_STAFF => ['color' => 'emerald', 'label' => 'Operational Staff'],
+            default => ['color' => 'slate', 'label' => 'User'],
+        };
+    }
 
     /**
      * Get the attributes that should be cast.

@@ -59,9 +59,7 @@
         <!-- Profile Dropdown -->
         <div class="relative" x-data="{ open: false }">
             <button @click="open = !open" class="flex items-center gap-2 p-1 rounded-full border border-slate-200 hover:bg-slate-50 transition-colors">
-                <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center text-sm font-bold">
-                    {{ substr(Auth::user()->name, 0, 1) }}
-                </div>
+                <img src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" class="w-8 h-8 rounded-full object-cover">
             </button>
             
             <div 
@@ -70,12 +68,24 @@
                 x-transition:enter="transition ease-out duration-100"
                 x-transition:enter-start="transform opacity-0 scale-95"
                 x-transition:enter-end="transform opacity-100 scale-100"
-                class="absolute right-0 mt-2 w-48 rounded-2xl bg-white shadow-xl border border-slate-200 py-2"
+                class="absolute right-0 mt-2 w-56 rounded-2xl bg-white shadow-xl border border-slate-200 py-3 overflow-hidden z-50"
             >
-                <a href="#" class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">Profile Settings</a>
+                <div class="px-5 py-3 border-b border-slate-50 bg-slate-50/50 mb-1">
+                    <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Signed in as</p>
+                    <p class="text-sm font-bold text-slate-900 truncate">{{ Auth::user()->name }}</p>
+                </div>
+                
+                <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors group">
+                    <i data-lucide="user" class="w-4 h-4 text-slate-400 group-hover:text-indigo-500"></i>
+                    Profile
+                </a>
+                
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">Log Out</button>
+                    <button type="submit" class="w-full flex items-center gap-3 px-5 py-2.5 text-sm font-bold text-rose-600 hover:bg-rose-50 transition-colors group">
+                        <i data-lucide="log-out" class="w-4 h-4 text-rose-400 group-hover:text-rose-500"></i>
+                        Logout
+                    </button>
                 </form>
             </div>
         </div>

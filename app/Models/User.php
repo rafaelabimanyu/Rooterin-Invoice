@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'role', 'is_active', 'last_password_change_at', 'locale', 'profile_photo_path', 'last_login_at', 'last_login_ip'])]
+#[Fillable(['name', 'email', 'password', 'role', 'is_active', 'last_password_change_at', 'last_seen', 'locale', 'profile_photo_path', 'last_login_at', 'last_login_ip'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -35,6 +35,15 @@ class User extends Authenticatable
     public function activityLogs(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(ActivityLog::class);
+    }
+
+    /**
+     * Determine if the user is currently online.
+     */
+    public function isOnline(): bool
+    {
+        if (!$this->last_seen) return false;
+        return $this->last_seen->gt(now()->subMinutes(5));
     }
 
     /**
@@ -82,6 +91,8 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
+            'last_seen' => 'datetime',
+            'last_login_at' => 'datetime',
         ];
     }
 

@@ -68,9 +68,21 @@
                 <div class="glass-card p-8 group hover:-translate-y-2 hover:shadow-[0_30px_60px_rgba(0,0,0,0.12)] transition-all duration-500 relative overflow-hidden page-fade-in stagger-{{ $loop->iteration % 5 }} {{ !$user->is_active ? 'opacity-75 grayscale-[0.5]' : '' }}">
                     <!-- Status Indicator -->
                     <div class="absolute top-0 right-0 p-4">
-                        <div class="flex items-center gap-2 px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-widest {{ $user->is_active ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-rose-50 text-rose-600 border border-rose-100' }}">
-                            <span class="w-1.5 h-1.5 rounded-full {{ $user->is_active ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500' }}"></span>
-                            {{ $user->is_active ? 'Active' : 'Suspended' }}
+                        <div class="flex flex-col items-end gap-1.5">
+                            <div class="flex items-center gap-2 px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-widest {{ $user->is_active ? 'bg-indigo-50 text-indigo-600 border border-indigo-100' : 'bg-rose-50 text-rose-600 border border-rose-100' }}">
+                                {{ $user->is_active ? 'Authorized' : 'Suspended' }}
+                            </div>
+                            @if($user->isOnline())
+                                <div class="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500 text-white rounded-full text-[8px] font-black uppercase tracking-widest shadow-[0_0_10px_rgba(16,185,129,0.4)]">
+                                    <span class="w-1.5 h-1.5 bg-white rounded-full animate-ping"></span>
+                                    Online
+                                </div>
+                            @else
+                                <div class="flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 text-slate-400 rounded-full text-[8px] font-black uppercase tracking-widest">
+                                    <span class="w-1.5 h-1.5 bg-slate-300 rounded-full"></span>
+                                    Offline
+                                </div>
+                            @endif
                         </div>
                     </div>
 
@@ -109,8 +121,8 @@
                         <div class="p-4 bg-slate-50/50 rounded-2xl border border-slate-100 group-hover:bg-white group-hover:border-emerald-100 transition-all duration-500">
                             <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Status</p>
                             <div class="flex items-center gap-2">
-                                <i data-lucide="clock" class="w-3.5 h-3.5 text-emerald-500"></i>
-                                <span class="text-[11px] font-black text-slate-900">{{ $user->last_login_at ? $user->last_login_at->diffForHumans(null, true) : 'Offline' }}</span>
+                                <i data-lucide="clock" class="w-3.5 h-3.5 {{ $user->isOnline() ? 'text-emerald-500' : 'text-slate-400' }}"></i>
+                                <span class="text-[11px] font-black text-slate-900">{{ $user->isOnline() ? 'Active Now' : ($user->last_seen ? $user->last_seen->diffForHumans() : 'Never') }}</span>
                             </div>
                         </div>
                     </div>
@@ -131,8 +143,9 @@
                                     email: '{{ $user->email }}', 
                                     role: '{{ $user->role }}',
                                     is_active: {{ $user->is_active ? 'true' : 'false' }},
+                                    is_online: {{ $user->isOnline() ? 'true' : 'false' }},
                                     photo: '{{ $user->profile_photo_url }}',
-                                    last_login: '{{ $user->last_login_at ? $user->last_login_at->format('M d, H:i') : 'Never' }}',
+                                    last_login: '{{ $user->last_seen ? $user->last_seen->format('M d, H:i') : 'Never' }}',
                                     last_ip: '{{ $user->last_login_ip ?? 'N/A' }}',
                                     last_pass_change: '{{ $user->last_password_change_at ? $user->last_password_change_at->diffForHumans() : 'Unknown' }}',
                                     logs: @json($user->activityLogs->map(fn($log) => ['desc' => $log->description, 'time' => $log->created_at->diffForHumans()]))
@@ -186,7 +199,7 @@
                             </div>
                             <div>
                                 <h2 class="text-xl font-black text-slate-900 uppercase tracking-tight">Security & Command Center</h2>
-                                <p class="text-xs text-slate-500 font-bold uppercase tracking-widest">ID: <span x-text="currentUser.id"></span> • Status: <span :class="currentUser.is_active ? 'text-emerald-600' : 'text-rose-600'" x-text="currentUser.is_active ? 'Authorized' : 'Suspended'"></span></p>
+                                <p class="text-xs text-slate-500 font-bold uppercase tracking-widest">ID: <span x-text="currentUser.id"></span> • Status: <span :class="currentUser.is_active ? 'text-emerald-600' : 'text-rose-600'" x-text="currentUser.is_active ? 'Authorized' : 'Suspended'"></span> • Presence: <span :class="currentUser.is_online ? 'text-emerald-500' : 'text-slate-400'" x-text="currentUser.is_online ? 'Online' : 'Offline'"></span></p>
                             </div>
                         </div>
                         <button @click="editModalOpen = false" class="p-3 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-2xl transition-all">

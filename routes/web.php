@@ -31,6 +31,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(['role:owner,admin,staff'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/guide', [\App\Http\Controllers\GuideController::class, 'index'])->name('guide.index');
+
+        // Footer Static Pages
+        Route::get('/privacy-policy', function () { return view('pages.privacy'); })->name('privacy.index');
+        Route::get('/terms-of-service', function () { return view('pages.terms'); })->name('terms.index');
+        Route::get('/help-center', function () { return view('pages.help'); })->name('help.index');
         
         // Clients (Show/Index/Create/Edit)
         Route::resource('clients', ClientController::class);

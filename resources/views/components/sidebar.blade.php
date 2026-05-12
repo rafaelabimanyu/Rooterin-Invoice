@@ -72,7 +72,7 @@
                     <x-sidebar-link href="{{ route('security.center') }}" :active="request()->routeIs('security.*')" icon="fingerprint" :label="__('ui.security_center')" :collapsed="$collapsed" />
                     <x-sidebar-link href="{{ route('guide.index') }}" :active="request()->routeIs('guide.index')" icon="book-open" :label="__('ui.guide')" :collapsed="$collapsed" />
                 @else
-                    <x-sidebar-link href="{{ route('guide.index') }}?type=sop" :active="request()->routeIs('guide.index')" icon="book-open" label="Operational SOP" :collapsed="$collapsed" />
+                    <x-sidebar-link href="{{ route('guide.index') }}?type=sop" :active="request()->routeIs('guide.index')" icon="clipboard-list" label="Operational SOP" :collapsed="$collapsed" />
                 @endif
             </nav>
         </div>

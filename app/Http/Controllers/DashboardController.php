@@ -44,6 +44,25 @@ class DashboardController extends Controller
                 ->latest()
                 ->take(5)
                 ->get();
+
+            // New Staff Features
+            $dailyGoal = 5; // Example goal
+            $goalProgress = min(100, round(($todayInvoicesCount / $dailyGoal) * 100));
+            
+            $quotes = [
+                "Quality is not an act, it is a habit.",
+                "Success is the sum of small efforts, repeated day-in and day-out.",
+                "Your work is going to fill a large part of your life.",
+                "Don't count the days, make the days count.",
+                "Efficiency is doing things right; effectiveness is doing the right things."
+            ];
+            $randomQuote = $quotes[array_rand($quotes)];
+
+            $activityLogs = \App\Models\ActivityLog::where('user_id', auth()->id())
+                ->where('created_at', '>=', now()->startOfDay())
+                ->latest()
+                ->take(5)
+                ->get();
         } else {
             $recentInvoices = Invoice::with('client')->latest()->take(5)->get();
             $todayInvoicesCount = Invoice::where('created_at', '>=', now()->startOfDay())->count();
@@ -51,6 +70,11 @@ class DashboardController extends Controller
             $todayRevenue = Invoice::where('status', 'paid')
                 ->where('created_at', '>=', now()->startOfDay())
                 ->sum('total');
+            
+            $dailyGoal = null;
+            $goalProgress = null;
+            $randomQuote = null;
+            $activityLogs = collect();
         }
 
         return view('dashboard', compact(
@@ -67,7 +91,11 @@ class DashboardController extends Controller
             'isStaff',
             'todayInvoicesCount',
             'todayReceiptsCount',
-            'todayRevenue'
+            'todayRevenue',
+            'dailyGoal',
+            'goalProgress',
+            'randomQuote',
+            'activityLogs'
         ));
     }
 }

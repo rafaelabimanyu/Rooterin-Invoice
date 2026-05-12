@@ -49,7 +49,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
         // Receipts
-        Route::get('receipts/{receipt}/download', [ReceiptController::class, 'downloadPdf'])->name('receipts.download');
+        Route::get('receipts/{receipt}/pdf', [ReceiptController::class, 'downloadPdf'])->name('receipts.pdf');
         Route::post('receipts/{receipt}/convert', [ReceiptController::class, 'convertToInvoice'])->name('receipts.convert');
         Route::resource('receipts', ReceiptController::class);
 

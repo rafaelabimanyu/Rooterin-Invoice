@@ -58,6 +58,9 @@
                                     <a href="{{ route('receipts.show', $receipt) }}" class="p-2 text-slate-400 hover:text-indigo-600 transition-colors">
                                         <i data-lucide="eye" class="w-4 h-4"></i>
                                     </a>
+                                    <a href="{{ route('receipts.pdf', $receipt) }}" class="p-2 text-slate-400 hover:text-indigo-600 transition-colors" title="Download PDF">
+                                        <i data-lucide="download" class="w-4 h-4"></i>
+                                    </a>
                                     @if($receipt->status !== 'invoiced')
                                     <a href="{{ route('receipts.edit', $receipt) }}" class="p-2 text-slate-400 hover:text-amber-600 transition-colors">
                                         <i data-lucide="edit-2" class="w-4 h-4"></i>
@@ -116,6 +119,7 @@
                         <p class="text-[10px] text-slate-400 font-medium">{{ $receipt->client->nama_perusahaan }}</p>
                         <div class="flex items-center gap-4">
                             <a href="{{ route('receipts.show', $receipt) }}" class="text-[11px] font-black text-indigo-600 uppercase tracking-widest">View</a>
+                            <a href="{{ route('receipts.pdf', $receipt) }}" class="text-[11px] font-black text-indigo-600 uppercase tracking-widest">PDF</a>
                             @if($receipt->status !== 'invoiced')
                                 <a href="{{ route('receipts.edit', $receipt) }}" class="text-[11px] font-black text-amber-600 uppercase tracking-widest">Edit</a>
                             @endif

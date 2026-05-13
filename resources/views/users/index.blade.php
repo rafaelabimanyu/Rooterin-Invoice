@@ -147,7 +147,7 @@
                                     photo: '{{ $user->profile_photo_url }}',
                                     last_login: '{{ $user->last_seen ? $user->last_seen->format('M d, H:i') : 'Never' }}',
                                     last_ip: '{{ $user->last_login_ip ?? 'N/A' }}',
-                                    last_pass_change: '{{ $user->last_password_change_at ? $user->last_password_change_at->diffForHumans() : 'Unknown' }}',
+                                    last_pass_change: '{{ $user->last_password_change_at ? $user->last_password_change_at->diffForHumans() : 'Never' }}',
                                     logs: @json($user->activityLogs->map(fn($log) => ['desc' => $log->description, 'time' => $log->created_at->diffForHumans()]))
                                 }"
                                 class="p-2.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"

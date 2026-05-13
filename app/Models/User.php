@@ -93,6 +93,7 @@ class User extends Authenticatable
             'two_factor_confirmed_at' => 'datetime',
             'last_seen' => 'datetime',
             'last_login_at' => 'datetime',
+            'last_password_change_at' => 'datetime',
         ];
     }
 

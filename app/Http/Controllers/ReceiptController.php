@@ -6,11 +6,14 @@ use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\Receipt;
 use App\Models\ReceiptItem;
+use App\Traits\CalculatesTotals;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ReceiptController extends Controller
 {
+    use CalculatesTotals;
+
     public function index(Request $request)
     {
         $query = Receipt::with('client');
@@ -61,14 +64,11 @@ class ReceiptController extends Controller
         try {
             DB::beginTransaction();
 
-            $subtotal = 0;
-            foreach ($request->items as $item) {
-                $subtotal += $item['qty'] * $item['harga'];
-            }
-
-            $tax_amount = $subtotal * ($request->tax_percent / 100);
-            $discount_amount = $subtotal * ($request->discount_percent / 100);
-            $total = $subtotal + $tax_amount - $discount_amount;
+            $financials = $this->calculateFinancials(
+                $request->items,
+                $request->tax_percent,
+                $request->discount_percent
+            );
 
             $receipt = Receipt::create([
                 'receipt_number' => $request->receipt_number,
@@ -76,10 +76,10 @@ class ReceiptController extends Controller
                 'tanggal_receipt' => $request->tanggal_receipt,
                 'expiry_date' => $request->expiry_date,
                 'status' => 'draft',
-                'subtotal' => $subtotal,
-                'tax_percent' => $request->tax_percent ?? 0,
-                'discount_percent' => $request->discount_percent ?? 0,
-                'total' => $total,
+                'subtotal' => $financials['subtotal'],
+                'tax_percent' => $financials['tax_percent'],
+                'discount_percent' => $financials['discount_percent'],
+                'total' => $financials['total'],
                 'notes_internal' => $request->notes_internal,
                 'terms_condition' => $request->terms_condition,
                 'created_by' => auth()->id(),
@@ -138,24 +138,21 @@ class ReceiptController extends Controller
         try {
             DB::beginTransaction();
 
-            $subtotal = 0;
-            foreach ($request->items as $item) {
-                $subtotal += $item['qty'] * $item['harga'];
-            }
-
-            $tax_amount = $subtotal * ($request->tax_percent / 100);
-            $discount_amount = $subtotal * ($request->discount_percent / 100);
-            $total = $subtotal + $tax_amount - $discount_amount;
+            $financials = $this->calculateFinancials(
+                $request->items,
+                $request->tax_percent,
+                $request->discount_percent
+            );
 
             $receipt->update([
                 'client_id' => $request->client_id,
                 'tanggal_receipt' => $request->tanggal_receipt,
                 'expiry_date' => $request->expiry_date,
                 'status' => $request->status,
-                'subtotal' => $subtotal,
-                'tax_percent' => $request->tax_percent ?? 0,
-                'discount_percent' => $request->discount_percent ?? 0,
-                'total' => $total,
+                'subtotal' => $financials['subtotal'],
+                'tax_percent' => $financials['tax_percent'],
+                'discount_percent' => $financials['discount_percent'],
+                'total' => $financials['total'],
                 'notes_internal' => $request->notes_internal,
                 'terms_condition' => $request->terms_condition,
             ]);

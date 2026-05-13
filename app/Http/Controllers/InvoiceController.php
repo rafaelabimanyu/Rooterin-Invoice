@@ -5,11 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
+use App\Traits\CalculatesTotals;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class InvoiceController extends Controller
 {
+    use CalculatesTotals;
+
     public function index(Request $request)
     {
         $query = Invoice::with('client');
@@ -64,14 +67,11 @@ class InvoiceController extends Controller
         try {
             DB::beginTransaction();
 
-            $subtotal = 0;
-            foreach ($request->items as $item) {
-                $subtotal += $item['qty'] * $item['harga'];
-            }
-
-            $tax_amount = $subtotal * ($request->tax_percent / 100);
-            $discount_amount = $subtotal * ($request->discount_percent / 100);
-            $total = $subtotal + $tax_amount - $discount_amount;
+            $financials = $this->calculateFinancials(
+                $request->items,
+                $request->tax_percent,
+                $request->discount_percent
+            );
 
             $invoice = Invoice::create([
                 'invoice_number' => $request->invoice_number,
@@ -80,10 +80,10 @@ class InvoiceController extends Controller
                 'due_date' => $request->due_date,
                 'warranty' => $request->warranty,
                 'status' => 'sent',
-                'subtotal' => $subtotal,
-                'tax_percent' => $request->tax_percent ?? 0,
-                'discount_percent' => $request->discount_percent ?? 0,
-                'total' => $total,
+                'subtotal' => $financials['subtotal'],
+                'tax_percent' => $financials['tax_percent'],
+                'discount_percent' => $financials['discount_percent'],
+                'total' => $financials['total'],
                 'notes_internal' => $request->notes_internal,
                 'terms_condition' => $request->terms_condition,
                 'bank_account_info' => $request->bank_account_info,
@@ -122,22 +122,16 @@ class InvoiceController extends Controller
 
     public function show(Invoice $invoice)
     {
-        if (auth()->user()->role === 'staff') {
-            if ($invoice->created_by !== auth()->id() || $invoice->created_at < now()->subHours(24)) {
-                abort(403, 'Access restricted to your own items created within 24 hours.');
-            }
-        }
+        $this->authorize('view', $invoice);
+
         $invoice->load(['client', 'items', 'creator', 'payments']);
         return view('invoices.show', compact('invoice'));
     }
 
     public function edit(Invoice $invoice)
     {
-        if (auth()->user()->role === 'staff') {
-            if ($invoice->created_by !== auth()->id() || $invoice->created_at < now()->subHours(24)) {
-                abort(403, 'Unauthorized edit access.');
-            }
-        }
+        $this->authorize('update', $invoice);
+
         $invoice->load('items');
         $clients = Client::where('status', 'aktif')->orderBy('nama_client')->get();
         return view('invoices.edit', compact('invoice', 'clients'));
@@ -145,6 +139,8 @@ class InvoiceController extends Controller
 
     public function update(Request $request, Invoice $invoice)
     {
+        $this->authorize('update', $invoice);
+
         $request->validate([
             'client_id' => 'required|exists:clients,id',
             'tanggal_invoice' => 'required|date',
@@ -159,14 +155,11 @@ class InvoiceController extends Controller
         try {
             DB::beginTransaction();
 
-            $subtotal = 0;
-            foreach ($request->items as $item) {
-                $subtotal += $item['qty'] * $item['harga'];
-            }
-
-            $tax_amount = $subtotal * ($request->tax_percent / 100);
-            $discount_amount = $subtotal * ($request->discount_percent / 100);
-            $total = $subtotal + $tax_amount - $discount_amount;
+            $financials = $this->calculateFinancials(
+                $request->items,
+                $request->tax_percent,
+                $request->discount_percent
+            );
 
             $invoice->update([
                 'client_id' => $request->client_id,
@@ -174,10 +167,10 @@ class InvoiceController extends Controller
                 'due_date' => $request->due_date,
                 'warranty' => $request->warranty,
                 'status' => $request->status,
-                'subtotal' => $subtotal,
-                'tax_percent' => $request->tax_percent ?? 0,
-                'discount_percent' => $request->discount_percent ?? 0,
-                'total' => $total,
+                'subtotal' => $financials['subtotal'],
+                'tax_percent' => $financials['tax_percent'],
+                'discount_percent' => $financials['discount_percent'],
+                'total' => $financials['total'],
                 'notes_internal' => $request->notes_internal,
                 'terms_condition' => $request->terms_condition,
                 'bank_account_info' => $request->bank_account_info,
@@ -233,6 +226,8 @@ class InvoiceController extends Controller
 
     public function destroy(Invoice $invoice)
     {
+        $this->authorize('delete', $invoice);
+
         $num = $invoice->invoice_number;
         $invoice->delete();
         

@@ -2,59 +2,56 @@
     <div class="min-h-screen flex items-center justify-center bg-[#0a0f1d] p-6 relative overflow-hidden">
         <!-- Background Elements -->
         <div class="absolute inset-0">
-            <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-indigo-600/10 rounded-full blur-[120px] -mr-[300px] -mt-[300px]"></div>
-            <div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[120px] -ml-[300px] -mb-[300px]"></div>
+            <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-red-600/5 rounded-full blur-[120px] -mr-[300px] -mt-[300px]"></div>
+            <div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-indigo-600/5 rounded-full blur-[120px] -ml-[300px] -mb-[300px]"></div>
             <div class="absolute inset-0 opacity-[0.02]" style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 30px 30px;"></div>
         </div>
 
-        <div class="w-full max-w-lg relative z-10 page-fade-in">
+        <div class="w-full max-w-xl relative z-10 page-fade-in">
             <div class="bg-white/5 border border-white/10 backdrop-blur-2xl rounded-[40px] p-10 md:p-16 shadow-2xl space-y-12">
                 <!-- Header -->
                 <div class="space-y-6 text-center">
-                    <div class="w-20 h-20 bg-indigo-500/20 rounded-3xl flex items-center justify-center mx-auto border border-indigo-500/30">
-                        <i data-lucide="key-round" class="w-8 h-8 text-indigo-400"></i>
+                    <div class="w-24 h-24 bg-red-500/10 rounded-[32px] flex items-center justify-center mx-auto border border-red-500/20 shadow-[0_0_50px_rgba(239,68,68,0.1)]">
+                        <i data-lucide="shield-alert" class="w-10 h-10 text-red-500"></i>
                     </div>
-                    <div class="space-y-2">
-                        <h1 class="text-3xl font-black text-white tracking-tight uppercase">Identity <span class="text-indigo-500">Recovery</span>.</h1>
-                        <p class="text-slate-400 text-sm font-medium leading-relaxed">
-                            {{ __('Enter your operative email to receive a secure password restoration link.') }}
-                        </p>
+                    <div class="space-y-3">
+                        <h1 class="text-3xl font-black text-white tracking-tight uppercase">Security <span class="text-red-500">Protocol</span>.</h1>
+                        <div class="h-1 w-20 bg-red-500 mx-auto rounded-full"></div>
                     </div>
                 </div>
 
-                <!-- Session Status -->
-                <x-auth-session-status class="mb-4" :status="session('status')" />
-
-                <form method="POST" action="{{ route('password.email') }}" class="space-y-8">
-                    @csrf
-
-                    <!-- Email Address -->
+                <div class="p-8 bg-white/5 border border-white/5 rounded-3xl space-y-8">
                     <div class="space-y-4">
-                        <label class="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em]">Operative Identity (Email)</label>
-                        <div class="relative group">
-                            <div class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 transition-colors group-focus-within:text-indigo-500">
-                                <i data-lucide="mail" class="w-5 h-5"></i>
-                            </div>
-                            <input id="email" type="email" name="email" :value="old('email')" required autofocus class="w-full pl-14 pr-5 py-5 bg-white/5 border-transparent rounded-[24px] text-sm font-bold text-white outline-none focus:bg-white/10 focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500/50 transition-all shadow-inner placeholder:text-slate-600" placeholder="name@enterprise.com">
-                        </div>
-                        <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                        <p class="text-slate-300 text-sm font-medium leading-relaxed text-center">
+                            {{ __('SECURITY PROTOCOL: Automated password recovery is disabled. To maintain node integrity, all identity restorations must be performed manually.') }}
+                        </p>
                     </div>
-
-                    <div class="flex flex-col gap-6">
-                        <button type="submit" class="w-full py-6 bg-indigo-600 text-white rounded-[28px] font-black text-xs shadow-[0_20px_50px_rgba(79,70,229,0.3)] hover:bg-indigo-500 hover:-translate-y-1 transition-all duration-500 uppercase tracking-[0.3em]">
-                            Send Recovery Link
-                        </button>
+                    
+                    <div class="pt-8 border-t border-white/5 space-y-6 text-center">
+                        <p class="text-white text-base font-bold">
+                            {{ __('To regain access to your node, please contact the System Administrator for manual identity verification at:') }}
+                        </p>
                         
-                        <a href="{{ route('login') }}" class="text-center text-[10px] font-black text-slate-500 hover:text-white uppercase tracking-[0.3em] transition-colors">
-                            Return to Login Node
-                        </a>
+                        <div class="inline-flex flex-col items-center gap-4">
+                            <div class="px-6 py-3 bg-indigo-500 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-lg shadow-indigo-500/20">
+                                Contact Admin
+                            </div>
+                            <p class="text-indigo-400 text-sm font-black tracking-widest uppercase">admin@rooterin.com</p>
+                            <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1">+62 8xx-xxxx-xxxx (WhatsApp)</p>
+                        </div>
                     </div>
-                </form>
+                </div>
+
+                <div class="flex flex-col gap-6">
+                    <a href="{{ route('login') }}" class="w-full py-6 bg-slate-900 text-white border border-white/10 rounded-[28px] font-black text-xs text-center shadow-xl hover:bg-white hover:text-slate-900 transition-all duration-500 uppercase tracking-[0.3em]">
+                        Return to Login Node
+                    </a>
+                </div>
             </div>
 
             <!-- Footer Info -->
             <div class="mt-12 text-center">
-                <p class="text-[10px] text-slate-600 font-black uppercase tracking-[0.4em]">Recovery Protocol Active — Node Secured</p>
+                <p class="text-[10px] text-slate-600 font-black uppercase tracking-[0.4em]">Protocol Active — Manual Override Required</p>
             </div>
         </div>
     </div>

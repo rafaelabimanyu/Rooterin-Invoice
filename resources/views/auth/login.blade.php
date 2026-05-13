@@ -1,5 +1,5 @@
 <x-guest-layout>
-    <div class="min-h-screen grid grid-cols-1 lg:grid-cols-2 overflow-hidden" x-data="{ showPassword: false, helpRequested: false }">
+    <div class="min-h-screen grid grid-cols-1 lg:grid-cols-2 overflow-hidden" x-data="{ showPassword: false, helpRequested: {{ session('status') ? 'true' : 'false' }} }">
         <!-- Left Side: Login Form -->
         <div class="flex items-center justify-center p-8 md:p-16 bg-white relative z-10 page-fade-in">
             <div class="w-full max-w-md space-y-12">
@@ -22,6 +22,7 @@
                 <!-- Session Status -->
                 <x-auth-session-status class="mb-4" :status="session('status')" />
 
+                @if(session('status') || session('success'))
                 <div x-show="helpRequested" x-transition class="p-6 bg-emerald-50 border border-emerald-100 rounded-3xl mb-8">
                     <div class="flex gap-4">
                         <div class="w-10 h-10 bg-emerald-500 text-white rounded-full flex items-center justify-center shrink-0">
@@ -29,10 +30,13 @@
                         </div>
                         <div>
                             <h4 class="text-sm font-black text-emerald-900 uppercase tracking-tight">Help Request Deployed</h4>
-                            <p class="text-xs text-emerald-700 font-medium mt-1">An administrator has been notified. Please wait for a manual identity verification.</p>
+                            <p class="text-xs text-emerald-700 font-medium mt-1">
+                                {{ session('status') ?? session('success') }}
+                            </p>
                         </div>
                     </div>
                 </div>
+                @endif
 
                 <form method="POST" action="{{ route('login') }}" class="space-y-8">
                     @csrf
@@ -53,19 +57,9 @@
                     <div class="space-y-3">
                         <div class="flex items-center justify-between">
                             <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Security Token (Password)</label>
-                            <button type="button" @click="
-                                fetch('{{ route('password.help') }}', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                    },
-                                    body: JSON.stringify({ email: document.getElementById('email').value })
-                                });
-                                helpRequested = true;
-                            " class="text-[10px] font-black text-indigo-600 hover:text-indigo-800 uppercase tracking-widest transition-colors">
+                            <a href="{{ route('password.request') }}" class="text-[10px] font-black text-indigo-600 hover:text-indigo-800 uppercase tracking-widest transition-colors">
                                 Identity Issues?
-                            </button>
+                            </a>
                         </div>
                         <div class="relative group">
                             <div class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 transition-colors group-focus-within:text-indigo-600">

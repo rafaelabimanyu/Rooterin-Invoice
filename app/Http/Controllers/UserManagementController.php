@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -31,13 +32,15 @@ class UserManagementController extends Controller
             'role' => 'required|in:owner,admin,staff',
         ]);
 
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
             'last_password_change_at' => now(),
         ]);
+
+        ActivityLog::log('created_user', "Registered new team member: {$user->name} ({$user->role})", $user);
 
         return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
@@ -63,6 +66,8 @@ class UserManagementController extends Controller
             'is_active' => $request->boolean('is_active'),
         ]);
 
+        ActivityLog::log('updated_user', "Updated profile/role for user: {$user->name}", $user);
+
         if ($request->filled('password')) {
             $user->update([
                 'password' => Hash::make($request->password),
@@ -78,7 +83,10 @@ class UserManagementController extends Controller
         if ($user->id === auth()->id()) {
             return back()->with('error', 'You cannot delete yourself.');
         }
+        $name = $user->name;
         $user->delete();
+
+        ActivityLog::log('deleted_user', "Removed user account: {$name}");
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
     }
 }

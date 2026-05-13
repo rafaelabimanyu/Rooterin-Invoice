@@ -26,8 +26,8 @@ class LogFailedLogin
 
         // Create security log
         \App\Models\SecurityLog::create([
-            'user_id' => $event->user ? $event->user->id : null,
-            'activity' => "Failed login attempt for: {$email}",
+            'user_id' => $event->user?->id, // Safe navigation or null
+            'activity' => "Failed login attempt for operative: {$email}",
             'ip_address' => $ip,
             'user_agent' => request()->userAgent(),
             'is_suspicious' => true,

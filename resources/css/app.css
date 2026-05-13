@@ -58,6 +58,10 @@
         @apply transition-transform duration-300 group-hover:rotate-12;
     }
 
+    .card-premium {
+        @apply bg-white rounded-[24px] p-6 border border-slate-200/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1 relative overflow-hidden flex flex-col;
+    }
+
     /* Tables */
     .table-container {
         @apply glass-card overflow-hidden;

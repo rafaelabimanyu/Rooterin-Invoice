@@ -49,6 +49,8 @@ return [
     'partial' => 'Partial',
     'aktif' => 'Active',
     'nonaktif' => 'Inactive',
+    'approved' => 'Approved',
+    'rejected' => 'Rejected',
     'efficiency' => 'Efficiency',
     
     // Module Specifics

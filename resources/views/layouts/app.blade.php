@@ -26,7 +26,7 @@
         <script src="https://unpkg.com/lucide@latest"></script>
         @livewireStyles
     </head>
-    <body class="h-full bg-[#f8fafc] font-sans antialiased overflow-x-hidden">
+    <body class="h-full bg-[#f8f9fa] font-sans antialiased overflow-x-hidden">
         <div 
             class="flex min-h-screen" 
             x-data="{ 

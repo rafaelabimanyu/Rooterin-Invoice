@@ -49,6 +49,8 @@ return [
     'partial' => 'Sebagian',
     'aktif' => 'Aktif',
     'nonaktif' => 'Nonaktif',
+    'approved' => 'Disetujui',
+    'rejected' => 'Ditolak',
     'efficiency' => 'Efisiensi',
     
     // Spesifik Modul

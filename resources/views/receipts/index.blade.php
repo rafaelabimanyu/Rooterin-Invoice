@@ -1,148 +1,139 @@
 <x-app-layout>
-    <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+    <!-- Header Section -->
+    <div class="mb-12 flex flex-col md:flex-row md:items-center justify-between gap-8">
         <div>
-            <div class="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">
+            <div class="flex items-center gap-2 text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-3">
                 <span>Enterprise</span>
-                <i data-lucide="chevron-right" class="w-3 h-3"></i>
-                <span class="text-indigo-600">Receipts / Kwitansi</span>
+                <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                <span class="text-blue-600">Receipts / Kwitansi</span>
             </div>
-            <h1 class="text-2xl font-bold text-slate-900 font-outfit">Receipts</h1>
-            <p class="text-sm text-slate-500">Manage payment receipts for your clients.</p>
+            <h1 class="text-5xl font-extrabold text-slate-900 tracking-tight mb-2 font-outfit">Receipts</h1>
+            <p class="text-[15px] text-slate-400 font-medium">Manage payment receipts for your clients</p>
         </div>
-        <div class="flex items-center gap-3">
-            <a href="{{ route('receipts.create') }}" class="btn-premium">
-                <i data-lucide="plus" class="w-4 h-4 mr-2 inline"></i>New Receipt
+        <div class="flex items-center">
+            <a href="{{ route('receipts.create') }}" class="btn-premium-glass group">
+                <i data-lucide="plus" class="w-5 h-5"></i>
+                <span>New Receipt</span>
             </a>
         </div>
     </div>
 
-    <!-- Table / Mobile List -->
-    <div class="glass-card overflow-hidden">
-        <div class="overflow-x-auto hidden md:block">
-            <table class="w-full text-left">
-                <thead>
-                    <tr class="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400 bg-slate-50/50">
-                        <th class="px-8 py-4 border-b border-slate-100">Rec Number</th>
-                        <th class="px-8 py-4 border-b border-slate-100">Client Account</th>
-                        <th class="px-8 py-4 border-b border-slate-100">Amount</th>
-                        <th class="px-8 py-4 border-b border-slate-100">Date</th>
-                        <th class="px-8 py-4 border-b border-slate-100">Status</th>
-                        <th class="px-8 py-4 border-b border-slate-100 text-right">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-50">
-                    @forelse($receipts as $receipt)
-                        <tr class="table-row-premium">
-                            <td class="px-8 py-4.5">
-                                <a href="{{ route('receipts.show', $receipt) }}" class="text-[13px] font-bold text-slate-900 hover:text-indigo-600 transition-colors">
-                                    {{ $receipt->receipt_number }}
-                                </a>
-                            </td>
-                            <td class="px-8 py-4.5">
-                                <div class="flex flex-col">
-                                    <span class="text-[13px] font-bold text-slate-800">{{ $receipt->client->nama_client }}</span>
-                                    <span class="text-[11px] text-slate-400 font-medium">{{ $receipt->client->nama_perusahaan }}</span>
-                                </div>
-                            </td>
-                            <td class="px-8 py-4.5">
-                                <span class="text-[13px] font-black text-slate-900">Rp {{ number_format($receipt->total, 0, ',', '.') }}</span>
-                            </td>
-                            <td class="px-8 py-4.5">
-                                <span class="text-[12px] font-medium text-slate-600">{{ $receipt->tanggal_receipt->format('M d, Y') }}</span>
-                            </td>
-                            <td class="px-8 py-4.5">
-                                <x-badge :status="$receipt->status" />
-                            </td>
-                            <td class="px-8 py-4.5 text-right">
-                                <div class="flex items-center justify-end gap-1">
-                                    <a href="{{ route('receipts.show', $receipt) }}" class="p-2 text-slate-400 hover:text-indigo-600 transition-colors">
-                                        <i data-lucide="eye" class="w-4 h-4"></i>
-                                    </a>
-                                    <a href="{{ route('receipts.pdf', $receipt) }}" class="p-2 text-slate-400 hover:text-indigo-600 transition-colors" title="Download PDF">
-                                        <i data-lucide="download" class="w-4 h-4"></i>
-                                    </a>
-                                    @if($receipt->status !== 'invoiced')
-                                    <a href="{{ route('receipts.edit', $receipt) }}" class="p-2 text-slate-400 hover:text-amber-600 transition-colors">
-                                        <i data-lucide="edit-2" class="w-4 h-4"></i>
-                                    </a>
-                                    @endif
-                                    <form action="{{ route('receipts.destroy', $receipt) }}" method="POST" onsubmit="return confirm('Delete this receipt?')">
-                                        @csrf @method('DELETE')
-                                        <button class="p-2 text-slate-400 hover:text-rose-600 transition-colors">
-                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="px-8 py-20 text-center">
-                                @if(auth()->user()->role === 'staff')
-                                    <x-empty-state icon="coffee" title="No activities today" description="Take a breath! You haven't created any receipts in the last 24 hours." />
-                                @else
-                                    <div class="flex flex-col items-center max-w-xs mx-auto opacity-50">
-                                        <i data-lucide="file-text" class="w-10 h-10 mb-4"></i>
-                                        <h4 class="text-sm font-bold text-slate-900">No Receipts Found</h4>
-                                        <p class="text-xs text-slate-400 mt-1">Start by creating a payment receipt for your clients.</p>
-                                    </div>
-                                @endif
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+    <!-- Desktop List View (Floating Rows) -->
+    <div class="hidden md:block space-y-4">
+        <!-- List Header -->
+        <div class="grid grid-cols-12 gap-6 px-10 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 bg-slate-50/50 rounded-2xl mb-2">
+            <div class="col-span-2">Rec Number</div>
+            <div class="col-span-3">Client Account</div>
+            <div class="col-span-2 text-center">Amount</div>
+            <div class="col-span-2 text-center">Date</div>
+            <div class="col-span-1 text-center">Status</div>
+            <div class="col-span-2 text-right">Actions</div>
         </div>
 
-        <!-- Mobile List View -->
-        <div class="md:hidden divide-y divide-slate-100 px-4">
-            @forelse($receipts as $receipt)
-                <div class="py-6 space-y-4">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <a href="{{ route('receipts.show', $receipt) }}" class="text-sm font-black text-slate-900 hover:text-indigo-600 transition-colors">
-                                {{ $receipt->receipt_number }}
-                            </a>
-                            <p class="text-[11px] font-bold text-indigo-600 uppercase tracking-tight mt-0.5">{{ $receipt->client->nama_client }}</p>
-                        </div>
-                        <x-badge :status="$receipt->status" class="scale-90 origin-right" />
-                    </div>
-                    
-                    <div class="grid grid-cols-2 gap-4 pt-2">
-                        <div>
-                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Amount</p>
-                            <p class="text-sm font-black text-slate-900">Rp {{ number_format($receipt->total, 0, ',', '.') }}</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Date</p>
-                            <p class="text-xs font-bold text-slate-600">{{ $receipt->tanggal_receipt->format('M d, Y') }}</p>
-                        </div>
-                    </div>
+        @forelse($receipts as $receipt)
+            <div class="row-floating grid grid-cols-12 gap-6 items-center px-10 py-6 group">
+                <!-- REC NUMBER -->
+                <div class="col-span-2">
+                    <a href="{{ route('receipts.show', $receipt) }}" class="text-[14px] font-bold text-slate-900 hover:text-blue-600 transition-colors tracking-tight">
+                        {{ $receipt->receipt_number }}
+                    </a>
+                </div>
 
-                    <div class="flex items-center justify-between pt-4 border-t border-slate-50">
-                        <p class="text-[10px] text-slate-400 font-medium">{{ $receipt->client->nama_perusahaan }}</p>
-                        <div class="flex items-center gap-4">
-                            <a href="{{ route('receipts.show', $receipt) }}" class="text-[11px] font-black text-indigo-600 uppercase tracking-widest">View</a>
-                            <a href="{{ route('receipts.pdf', $receipt) }}" class="text-[11px] font-black text-indigo-600 uppercase tracking-widest">PDF</a>
-                            @if($receipt->status !== 'invoiced')
-                                <a href="{{ route('receipts.edit', $receipt) }}" class="text-[11px] font-black text-amber-600 uppercase tracking-widest">Edit</a>
-                            @endif
-                        </div>
+                <!-- CLIENT ACCOUNT -->
+                <div class="col-span-3">
+                    <div class="flex flex-col">
+                        <span class="text-[14px] font-bold text-slate-800">{{ $receipt->client->nama_client }}</span>
+                        <span class="text-[12px] text-slate-400 font-medium">{{ $receipt->client->nama_perusahaan }}</span>
                     </div>
                 </div>
-            @empty
-                <div class="p-10 text-center">
-                    @if(auth()->user()->role === 'staff')
-                        <div class="flex flex-col items-center">
-                            <i data-lucide="coffee" class="w-10 h-10 text-slate-300 mb-4"></i>
-                            <p class="text-sm font-bold text-slate-900">No activities today</p>
-                            <p class="text-[11px] text-slate-400 mt-1">You haven't created any receipts in the last 24 hours.</p>
-                        </div>
-                    @else
-                        <p class="text-sm text-slate-500">No receipts detected.</p>
-                    @endif
+
+                <!-- AMOUNT -->
+                <div class="col-span-2 text-center">
+                    <span class="text-[15px] font-black text-slate-900 tracking-tight">Rp {{ number_format($receipt->total, 0, ',', '.') }}</span>
                 </div>
-            @endforelse
-        </div>
+
+                <!-- DATE -->
+                <div class="col-span-2 text-center">
+                    <span class="text-[13px] font-bold text-slate-500">{{ $receipt->tanggal_receipt->format('M d, Y') }}</span>
+                </div>
+
+                <!-- STATUS -->
+                <div class="col-span-1 flex justify-center">
+                    <x-badge :status="$receipt->status" />
+                </div>
+
+                <!-- ACTIONS -->
+                <div class="col-span-2">
+                    <div class="flex items-center justify-end gap-1.5 opacity-40 group-hover:opacity-100 transition-all duration-300">
+                        <a href="{{ route('receipts.show', $receipt) }}" class="p-2.5 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all" title="View Detail">
+                            <i data-lucide="eye" class="w-4.5 h-4.5"></i>
+                        </a>
+                        <a href="{{ route('receipts.pdf', $receipt) }}" class="p-2.5 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all" title="Download PDF">
+                            <i data-lucide="download" class="w-4.5 h-4.5"></i>
+                        </a>
+                        @if($receipt->status !== 'invoiced')
+                        <a href="{{ route('receipts.edit', $receipt) }}" class="p-2.5 text-slate-600 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition-all" title="Edit">
+                            <i data-lucide="edit-3" class="w-4.5 h-4.5"></i>
+                        </a>
+                        @endif
+                        <form action="{{ route('receipts.destroy', $receipt) }}" method="POST" onsubmit="return confirm('Delete this receipt?')" class="inline">
+                            @csrf @method('DELETE')
+                            <button class="p-2.5 text-slate-600 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all" title="Delete">
+                                <i data-lucide="trash-2" class="w-4.5 h-4.5"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        @empty
+            <div class="bg-white border border-dashed border-slate-200 rounded-[32px] p-24 text-center">
+                <div class="flex flex-col items-center max-w-sm mx-auto">
+                    <div class="w-20 h-20 bg-slate-50 rounded-[24px] flex items-center justify-center mb-6">
+                        <i data-lucide="file-text" class="w-10 h-10 text-slate-300"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-slate-900 mb-2">No Receipts Found</h4>
+                    <p class="text-[14px] text-slate-400 font-medium">Start by creating a payment receipt for your business clients to track transactions.</p>
+                </div>
+            </div>
+        @endforelse
+    </div>
+
+    <!-- Mobile View -->
+    <div class="md:hidden space-y-4">
+        @forelse($receipts as $receipt)
+            <div class="bg-white border border-slate-100 rounded-[24px] p-6 shadow-sm">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <h3 class="text-lg font-black text-slate-900 tracking-tight">{{ $receipt->receipt_number }}</h3>
+                        <p class="text-[13px] font-bold text-blue-600 uppercase tracking-tight mt-0.5">{{ $receipt->client->nama_client }}</p>
+                    </div>
+                    <x-badge :status="$receipt->status" class="scale-90 origin-right" />
+                </div>
+                
+                <div class="grid grid-cols-2 gap-6 py-4 border-t border-slate-50">
+                    <div>
+                        <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1">Amount</p>
+                        <p class="text-lg font-black text-slate-900">Rp {{ number_format($receipt->total, 0, ',', '.') }}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1">Date</p>
+                        <p class="text-[14px] font-bold text-slate-600">{{ $receipt->tanggal_receipt->format('M d, Y') }}</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between pt-4 border-t border-slate-50">
+                    <p class="text-[12px] text-slate-400 font-medium truncate max-w-[150px]">{{ $receipt->client->nama_perusahaan }}</p>
+                    <div class="flex items-center gap-3">
+                        <a href="{{ route('receipts.show', $receipt) }}" class="text-[12px] font-black text-blue-600 uppercase tracking-widest">View</a>
+                        <a href="{{ route('receipts.pdf', $receipt) }}" class="text-[12px] font-black text-indigo-600 uppercase tracking-widest">PDF</a>
+                    </div>
+                </div>
+            </div>
+        @empty
+            <div class="bg-white border border-slate-100 rounded-[24px] p-12 text-center">
+                <i data-lucide="file-text" class="w-12 h-12 text-slate-200 mx-auto mb-4"></i>
+                <p class="text-sm font-bold text-slate-900">No records found.</p>
+            </div>
+        @endforelse
     </div>
 </x-app-layout>

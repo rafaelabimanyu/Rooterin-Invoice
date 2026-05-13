@@ -45,6 +45,19 @@
         @apply px-4 py-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all duration-200;
     }
 
+    /* Floating Row & Interaction */
+    .row-floating {
+        @apply bg-white border border-slate-200/50 rounded-[22px] transition-all duration-500 hover:shadow-[0_20px_50px_rgba(0,0,0,0.04)] hover:border-blue-400 hover:-translate-y-1.5 relative z-10;
+    }
+
+    .btn-premium-glass {
+        @apply px-6 py-3 bg-white/40 backdrop-blur-md border border-white/60 text-slate-900 rounded-[14px] font-bold text-[13px] transition-all duration-300 active:scale-[0.96] hover:bg-white/60 shadow-xl shadow-slate-900/5 flex items-center justify-center gap-2.5;
+    }
+
+    .btn-premium-glass i {
+        @apply transition-transform duration-300 group-hover:rotate-12;
+    }
+
     /* Tables */
     .table-container {
         @apply glass-card overflow-hidden;

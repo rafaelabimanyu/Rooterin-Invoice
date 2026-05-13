@@ -24,9 +24,9 @@
         <div class="grid grid-cols-12 gap-6 px-10 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 bg-slate-50/50 rounded-2xl mb-2">
             <div class="col-span-2">Rec Number</div>
             <div class="col-span-3">Client Account</div>
-            <div class="col-span-2 text-center">Amount</div>
-            <div class="col-span-2 text-center">Date</div>
-            <div class="col-span-1 text-center">Status</div>
+            <div class="col-span-2">Amount</div>
+            <div class="col-span-1 text-center">Date</div>
+            <div class="col-span-2 text-center">Status</div>
             <div class="col-span-2 text-right">Actions</div>
         </div>
 
@@ -48,37 +48,37 @@
                 </div>
 
                 <!-- AMOUNT -->
-                <div class="col-span-2 text-center">
+                <div class="col-span-2">
                     <span class="text-[15px] font-black text-slate-900 tracking-tight">Rp {{ number_format($receipt->total, 0, ',', '.') }}</span>
                 </div>
 
                 <!-- DATE -->
-                <div class="col-span-2 text-center">
+                <div class="col-span-1 text-center">
                     <span class="text-[13px] font-bold text-slate-500">{{ $receipt->tanggal_receipt->format('M d, Y') }}</span>
                 </div>
 
                 <!-- STATUS -->
-                <div class="col-span-1 flex justify-center">
+                <div class="col-span-2 flex justify-center">
                     <x-badge :status="$receipt->status" />
                 </div>
 
                 <!-- ACTIONS -->
                 <div class="col-span-2">
-                    <div class="flex items-center justify-end gap-1.5 opacity-40 group-hover:opacity-100 transition-all duration-300">
-                        <a href="{{ route('receipts.show', $receipt) }}" class="p-2.5 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all" title="View Detail">
+                    <div class="flex items-center justify-end gap-4 opacity-40 group-hover:opacity-100 transition-all duration-300">
+                        <a href="{{ route('receipts.show', $receipt) }}" class="p-1 text-slate-400 hover:text-blue-600 transition-colors" title="View Detail">
                             <i data-lucide="eye" class="w-4.5 h-4.5"></i>
                         </a>
-                        <a href="{{ route('receipts.pdf', $receipt) }}" class="p-2.5 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all" title="Download PDF">
+                        <a href="{{ route('receipts.pdf', $receipt) }}" class="p-1 text-slate-400 hover:text-indigo-600 transition-colors" title="Download PDF">
                             <i data-lucide="download" class="w-4.5 h-4.5"></i>
                         </a>
                         @if($receipt->status !== 'invoiced')
-                        <a href="{{ route('receipts.edit', $receipt) }}" class="p-2.5 text-slate-600 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition-all" title="Edit">
+                        <a href="{{ route('receipts.edit', $receipt) }}" class="p-1 text-slate-400 hover:text-amber-600 transition-colors" title="Edit">
                             <i data-lucide="edit-3" class="w-4.5 h-4.5"></i>
                         </a>
                         @endif
                         <form action="{{ route('receipts.destroy', $receipt) }}" method="POST" onsubmit="return confirm('Delete this receipt?')" class="inline">
                             @csrf @method('DELETE')
-                            <button class="p-2.5 text-slate-600 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all" title="Delete">
+                            <button class="p-1 text-slate-400 hover:text-rose-600 transition-colors" title="Delete">
                                 <i data-lucide="trash-2" class="w-4.5 h-4.5"></i>
                             </button>
                         </form>

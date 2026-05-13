@@ -46,6 +46,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Invoices
         Route::get('invoices/{invoice}/pdf', [InvoiceController::class, 'downloadPdf'])->name('invoices.pdf');
         Route::resource('invoices', InvoiceController::class);
+
+        // Security Intelligence
+        Route::get('/intelligence', [\App\Http\Controllers\Admin\IntelligenceController::class, 'index'])->name('intelligence.index');
+        Route::get('/intelligence/read/{id}', [\App\Http\Controllers\Admin\IntelligenceController::class, 'markAsRead'])->name('intelligence.read');
         Route::post('payments', [PaymentController::class, 'store'])->name('payments.store');
         Route::delete('payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy');
 

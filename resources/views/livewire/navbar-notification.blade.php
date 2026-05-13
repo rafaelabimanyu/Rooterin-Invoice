@@ -102,7 +102,7 @@
 
         <!-- Footer -->
         <div class="p-6 bg-slate-50/50 border-t border-slate-100">
-            <a href="#" class="flex items-center justify-center gap-2 w-full py-3 bg-white border border-slate-200 rounded-2xl text-[10px] font-black text-slate-900 uppercase tracking-widest hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all shadow-sm">
+            <a href="{{ route('intelligence.index') }}" class="flex items-center justify-center gap-2 w-full py-3 bg-white border border-slate-200 rounded-2xl text-[10px] font-black text-slate-900 uppercase tracking-widest hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all shadow-sm">
                 View All Intelligence
                 <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
             </a>

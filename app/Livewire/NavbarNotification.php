@@ -29,6 +29,17 @@ class NavbarNotification extends Component
         $notification = Auth::user()->notifications()->find($id);
         if ($notification) {
             $notification->markAsRead();
+            
+            // Redirect if action_url exists
+            if (isset($notification->data['action_url'])) {
+                return redirect($notification->data['action_url']);
+            }
+
+            // Default redirect for security alerts to Intelligence Center
+            if (isset($notification->data['type']) && $notification->data['type'] === 'security') {
+                return redirect()->route('intelligence.index');
+            }
+            
             $this->loadNotifications();
         }
     }

@@ -85,7 +85,7 @@
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-3 md:gap-6">
+                    <div class="flex items-center gap-3 md:gap-6 shrink-0">
                         <!-- Language Switcher -->
                         <div class="flex items-center bg-slate-50 rounded-lg p-1 border border-slate-200">
                             <a href="{{ route('lang.switch', 'id') }}" class="px-2.5 py-1 text-[10px] font-black rounded-md transition-all {{ App::getLocale() == 'id' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600' }}">ID</a>

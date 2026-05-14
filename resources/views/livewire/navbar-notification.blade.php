@@ -33,7 +33,7 @@
         x-transition:leave="transition-all transform ease-in duration-300"
         x-transition:leave-start="translate-y-0 md:opacity-100 md:scale-100"
         x-transition:leave-end="translate-y-full md:opacity-0 md:translate-y-4 md:scale-95"
-        class="fixed inset-x-0 bottom-0 z-[100] w-full bg-white rounded-t-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden md:absolute md:left-auto md:-right-4 md:bottom-auto md:top-full md:mt-4 md:w-[360px] md:rounded-[32px] md:border md:border-slate-100 md:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] md:origin-top flex flex-col max-h-[85vh] md:max-h-[600px]"
+        class="fixed inset-x-0 bottom-0 z-[100] w-full bg-white rounded-t-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden md:absolute md:left-auto md:-right-4 md:bottom-auto md:top-full md:mt-4 md:w-96 md:rounded-[32px] md:border md:border-slate-100 md:shadow-xl md:origin-top flex flex-col max-h-[85vh] md:max-h-[32rem]"
         x-cloak
     >
         <!-- Mobile drag handle -->
@@ -42,7 +42,7 @@
         </div>
 
         <!-- Header -->
-        <div class="px-8 py-6 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between">
+        <div class="px-6 py-5 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between">
             <div>
                 <h3 class="text-sm font-black text-slate-900 uppercase tracking-tight">Notifications</h3>
                 <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-0.5">{{ $unreadCount }} Unread transmissions</p>
@@ -55,7 +55,7 @@
         </div>
 
         <!-- Body -->
-        <div class="max-h-[450px] overflow-y-auto custom-scrollbar">
+        <div class="max-h-[60vh] md:max-h-96 overflow-y-auto custom-scrollbar">
             @forelse($notifications as $notification)
                 @php
                     $type = $notification->data['type'] ?? 'system';
@@ -73,7 +73,7 @@
                     };
                 @endphp
                 <div 
-                    class="px-8 py-5 border-b border-slate-50 hover:bg-slate-50/80 transition-all cursor-pointer group relative {{ $notification->read_at ? 'opacity-60' : '' }}"
+                    class="px-6 py-5 border-b border-slate-50 hover:bg-slate-50/80 transition-all cursor-pointer group relative {{ $notification->read_at ? 'opacity-60' : '' }}"
                     @click="$wire.markAsRead('{{ $notification->id }}')"
                 >
                     @if(!$notification->read_at)

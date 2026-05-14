@@ -1,12 +1,12 @@
 <x-app-layout>
-    <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-8 page-fade-in">
-        <div>
-            <h1 class="text-3xl font-black text-slate-900 font-jakarta tracking-tight mb-2 uppercase">
+    <div class="mb-8 md:mb-12 flex flex-col md:flex-row md:items-center justify-between gap-6 page-fade-in">
+        <div class="flex-1">
+            <h1 class="text-2xl md:text-3xl font-black text-slate-900 font-jakarta tracking-tight mb-2 uppercase">
                 {{ __('ui.command_center') }}</h1>
-            <p class="text-sm text-slate-500 font-medium tracking-tight">{{ __('ui.operational_overview') }}</p>
+            <p class="text-[13px] md:text-sm text-slate-500 font-medium tracking-tight">{{ __('ui.operational_overview') }}</p>
         </div>
-        <div class="flex items-center gap-4">
-            <a href="{{ route('invoices.create') }}" class="btn-premium group">
+        <div class="flex items-center w-full md:w-auto">
+            <a href="{{ route('invoices.create') }}" class="btn-premium group w-full md:w-auto flex justify-center items-center">
                 <i data-lucide="plus" class="w-4 h-4 transition-transform group-hover:rotate-90"></i>
                 <span>{{ __('ui.create_invoice') }}</span>
             </a>

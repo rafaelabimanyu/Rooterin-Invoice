@@ -61,7 +61,8 @@
                 x-bind:class="collapsed ? 'lg:ml-[72px]' : 'lg:ml-72'"
             >
                 <!-- Header / Navbar -->
-                <header class="h-16 flex items-center justify-between px-4 sm:px-6 md:px-10 lg:px-14 bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm relative">
+                <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm relative w-full">
+                    <div class="max-w-[1600px] w-full mx-auto h-16 flex items-center justify-between px-4 sm:px-6 md:px-10 lg:px-14">
                     <div class="flex items-center gap-3 md:gap-8">
                         <!-- Toggle Button -->
                         <button @click="collapsed = !collapsed" class="hidden lg:flex p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all duration-300 group">
@@ -138,11 +139,12 @@
                             </div>
                         </div>
                     </div>
+                    </div>
                 </header>
 
                 <!-- Content Area -->
                 <main class="flex-1 overflow-x-hidden bg-[#f8f9fa]">
-                    <div class="max-w-screen-xl mx-auto px-4 sm:px-6 md:px-10 lg:px-14 py-8 md:py-12">
+                    <div class="max-w-[1600px] w-full mx-auto px-4 sm:px-6 md:px-10 lg:px-14 py-8 md:py-12">
                         {{ $slot }}
                     </div>
                 </main>

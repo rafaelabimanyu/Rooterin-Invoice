@@ -218,9 +218,9 @@
     @endif
 
     <!-- Content Sections -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-10">
         <!-- Main Activity Table -->
-        <div class="lg:col-span-8">
+        <div class="lg:col-span-8 xl:col-span-9 flex flex-col">
             <div class="table-container page-fade-in stagger-5 overflow-hidden">
                 <div
                     class="px-10 py-8 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between bg-slate-50/30 gap-4">
@@ -308,7 +308,7 @@
         </div>
 
         <!-- Right Side: Activity Timeline (Staff) or Stats (Admin) -->
-        <div class="lg:col-span-4 space-y-10">
+        <div class="lg:col-span-4 xl:col-span-3 space-y-10 flex flex-col">
             @if($isStaff)
                 <div class="glass-card p-10 h-full flex flex-col">
                     <div class="flex items-center justify-between mb-10">

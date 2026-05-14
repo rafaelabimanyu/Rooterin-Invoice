@@ -15,7 +15,7 @@
 
     @if(!$isStaff)
     <!-- KPI Metrics (Admin/Owner Only) -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8 mb-8 md:mb-12">
         <div class="page-fade-in stagger-1">
             <x-stats-card :title="__('ui.total_billing')" value="Rp {{ number_format($totalRevenue, 0, ',', '.') }}"
                 change="+12.5%" icon="bar-chart-3" color="indigo" detail="..." />
@@ -28,7 +28,7 @@
             <x-stats-card :title="__('ui.clients')" value="{{ $totalClients }}" change="+3" icon="users" color="emerald"
                 detail="..." />
         </div>
-        <div class="page-fade-in stagger-4 glass-card p-7 group hover:-translate-y-3 hover:shadow-[0_20px_50px_rgba(79,70,229,0.15)] hover:border-indigo-500/30 transition-all duration-500 relative overflow-hidden cursor-pointer">
+        <div class="page-fade-in stagger-4 glass-card p-6 md:p-7 group md:hover:-translate-y-3 md:hover:shadow-[0_20px_50px_rgba(79,70,229,0.15)] md:hover:border-indigo-500/30 active:scale-95 transition-all duration-500 relative overflow-hidden cursor-pointer">
              <!-- Efficiency card content -->
              <div class="flex items-center justify-between mb-6 relative z-10">
                 <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500/10 to-indigo-500/5 text-indigo-600 flex items-center justify-center border border-indigo-500/10 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
@@ -39,9 +39,9 @@
                 </span>
             </div>
             <div class="relative z-10">
-                <p class="text-[11px] font-black text-slate-400 uppercase tracking-[0.25em] mb-2">{{ __('ui.collection_rate') }}</p>
+                <p class="text-[10px] md:text-[11px] font-black text-slate-400 uppercase tracking-[0.25em] mb-2">{{ __('ui.collection_rate') }}</p>
                 <div class="flex items-end justify-between mb-2">
-                    <h3 class="text-3xl font-black text-slate-900 font-jakarta tracking-tight">{{ $totalInvoices > 0 ? round(($paidInvoicesCount / $totalInvoices) * 100) : 0 }}%</h3>
+                    <h3 class="text-2xl md:text-3xl font-black text-slate-900 font-jakarta tracking-tight group-hover:translate-x-1 transition-transform duration-500">{{ $totalInvoices > 0 ? round(($paidInvoicesCount / $totalInvoices) * 100) : 0 }}%</h3>
                 </div>
                 <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden shadow-inner">
                     <div class="bg-indigo-600 h-full progress-bar-fill shadow-[0_0_12px_rgba(79,70,229,0.5)]" style="width: {{ $totalInvoices > 0 ? ($paidInvoicesCount / $totalInvoices) * 100 : 0 }}%"></div>
@@ -146,38 +146,38 @@
         </div>
 
         <!-- Productivity Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
-            <div class="glass-card p-8 group hover:-translate-y-2 transition-all duration-500 relative overflow-hidden">
-                <div class="flex items-center justify-between mb-6">
-                    <div class="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-500 shadow-sm">
-                        <i data-lucide="file-text" class="w-7 h-7 group-hover:animate-bounce"></i>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8 mb-8 md:mb-10">
+            <div class="glass-card p-6 md:p-8 group md:hover:-translate-y-2 active:scale-95 transition-all duration-500 relative overflow-hidden cursor-pointer">
+                <div class="flex items-center justify-between mb-5 md:mb-6">
+                    <div class="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-500 shadow-sm">
+                        <i data-lucide="file-text" class="w-6 h-6 md:w-7 md:h-7 group-hover:animate-bounce"></i>
                     </div>
                     <span class="text-[9px] font-black bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full uppercase tracking-widest">Invoices</span>
                 </div>
-                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Today's Invoices</p>
-                <h3 class="text-4xl font-black text-slate-900 font-jakarta">{{ $todayInvoicesCount }}</h3>
+                <p class="text-[10px] md:text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Today's Invoices</p>
+                <h3 class="text-3xl md:text-4xl font-black text-slate-900 font-jakarta">{{ $todayInvoicesCount }}</h3>
             </div>
             
-            <div class="glass-card p-8 group hover:-translate-y-2 transition-all duration-500 relative overflow-hidden">
-                <div class="flex items-center justify-between mb-6">
-                    <div class="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-500 shadow-sm">
-                        <i data-lucide="clipboard-check" class="w-7 h-7 group-hover:scale-110 transition-transform"></i>
+            <div class="glass-card p-6 md:p-8 group md:hover:-translate-y-2 active:scale-95 transition-all duration-500 relative overflow-hidden cursor-pointer">
+                <div class="flex items-center justify-between mb-5 md:mb-6">
+                    <div class="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-500 shadow-sm">
+                        <i data-lucide="clipboard-check" class="w-6 h-6 md:w-7 md:h-7 group-hover:scale-110 transition-transform"></i>
                     </div>
                     <span class="text-[9px] font-black bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full uppercase tracking-widest">Receipts</span>
                 </div>
-                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Receipts Logged</p>
-                <h3 class="text-4xl font-black text-slate-900 font-jakarta">{{ $todayReceiptsCount }}</h3>
+                <p class="text-[10px] md:text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Receipts Logged</p>
+                <h3 class="text-3xl md:text-4xl font-black text-slate-900 font-jakarta">{{ $todayReceiptsCount }}</h3>
             </div>
 
-            <div class="glass-card p-8 group hover:-translate-y-2 transition-all duration-500 relative overflow-hidden">
-                <div class="flex items-center justify-between mb-6">
-                    <div class="w-14 h-14 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600 group-hover:bg-amber-600 group-hover:text-white transition-all duration-500 shadow-sm">
-                        <i data-lucide="zap" class="w-7 h-7 group-hover:rotate-12 transition-transform"></i>
+            <div class="glass-card p-6 md:p-8 group md:hover:-translate-y-2 active:scale-95 transition-all duration-500 relative overflow-hidden cursor-pointer">
+                <div class="flex items-center justify-between mb-5 md:mb-6">
+                    <div class="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600 group-hover:bg-amber-600 group-hover:text-white transition-all duration-500 shadow-sm">
+                        <i data-lucide="zap" class="w-6 h-6 md:w-7 md:h-7 group-hover:rotate-12 transition-transform"></i>
                     </div>
                     <span class="text-[9px] font-black bg-amber-50 text-amber-600 px-3 py-1 rounded-full uppercase tracking-widest">Revenue</span>
                 </div>
-                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Daily Output Value</p>
-                <h3 class="text-2xl font-black text-slate-900 font-jakarta truncate">Rp {{ number_format($todayRevenue, 0, ',', '.') }}</h3>
+                <p class="text-[10px] md:text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Daily Output Value</p>
+                <h3 class="text-2xl md:text-3xl font-black text-slate-900 font-jakarta truncate">Rp {{ number_format($todayRevenue, 0, ',', '.') }}</h3>
             </div>
         </div>
     </div>
@@ -211,7 +211,7 @@
                         </thead>
                         <tbody class="divide-y divide-slate-50">
                             @forelse($recentInvoices as $invoice)
-                                <tr class="table-row-premium cursor-pointer group" onclick="window.location='{{ route('invoices.show', $invoice) }}'">
+                                <tr class="table-row-premium cursor-pointer group active:bg-slate-50 md:hover:bg-slate-50 transition-colors duration-300" onclick="window.location='{{ route('invoices.show', $invoice) }}'">
                                     <td class="px-10 py-6">
                                         <div class="flex items-center gap-3">
                                             <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center group-hover:bg-slate-900 transition-colors duration-300">

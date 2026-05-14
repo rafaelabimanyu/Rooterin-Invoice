@@ -10,18 +10,37 @@
         @endif
     </button>
 
-    <!-- Notification Popover -->
+    <!-- Mobile Backdrop -->
+    <div 
+        x-show="open" 
+        class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[90] md:hidden" 
+        @click="open = false" 
+        x-transition:enter="transition-opacity ease-linear duration-300"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="transition-opacity ease-linear duration-300"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        x-cloak
+    ></div>
+
+    <!-- Notification Popover / Bottom Sheet -->
     <div 
         x-show="open"
         x-transition:enter="transition ease-out duration-300"
-        x-transition:enter-start="opacity-0 translate-y-4 scale-95"
-        x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+        x-transition:enter-start="opacity-0 translate-y-full md:translate-y-4 md:scale-95"
+        x-transition:enter-end="opacity-100 translate-y-0 md:scale-100"
         x-transition:leave="transition ease-in duration-200"
-        x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-        x-transition:leave-end="opacity-0 translate-y-4 scale-95"
-        class="absolute right-0 mt-4 w-[400px] bg-white rounded-[32px] shadow-2xl border border-slate-100 overflow-hidden z-[100] origin-top-right"
+        x-transition:leave-start="opacity-100 translate-y-0 md:scale-100"
+        x-transition:leave-end="opacity-0 translate-y-full md:translate-y-4 md:scale-95"
+        class="fixed inset-x-0 bottom-0 z-[100] w-full bg-white rounded-t-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden md:absolute md:right-0 md:bottom-auto md:top-full md:mt-4 md:w-[400px] md:rounded-[32px] md:border md:border-slate-100 md:shadow-2xl md:origin-top-right flex flex-col max-h-[85vh] md:max-h-none"
         x-cloak
     >
+        <!-- Mobile drag handle -->
+        <div class="w-full flex justify-center pt-4 pb-2 md:hidden bg-slate-50/50 cursor-grab active:cursor-grabbing" @click="open = false">
+            <div class="w-12 h-1.5 bg-slate-200 rounded-full"></div>
+        </div>
+
         <!-- Header -->
         <div class="px-8 py-6 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between">
             <div>
@@ -90,12 +109,13 @@
                     </div>
                 </div>
             @empty
-                <div class="py-20 px-10 text-center">
-                    <div class="w-20 h-20 bg-slate-50 rounded-[32px] flex items-center justify-center mx-auto mb-6 text-slate-200">
-                        <i data-lucide="inbox" class="w-10 h-10"></i>
+                <div class="py-16 md:py-20 px-10 text-center flex flex-col items-center justify-center">
+                    <div class="w-20 h-20 bg-slate-50 rounded-[32px] shadow-inner flex items-center justify-center mx-auto mb-5 text-slate-300 relative">
+                        <i data-lucide="bell-off" class="w-10 h-10 relative z-10"></i>
+                        <div class="absolute inset-0 bg-indigo-500/5 rounded-[32px] blur-md"></div>
                     </div>
-                    <h4 class="text-sm font-black text-slate-900 uppercase tracking-tight">All Caught Up!</h4>
-                    <p class="text-[11px] text-slate-400 font-bold uppercase tracking-widest mt-2">No pending transmissions detected.</p>
+                    <h4 class="text-[13px] md:text-sm font-black text-slate-900 uppercase tracking-tight">All Caught Up!</h4>
+                    <p class="text-[10px] md:text-[11px] text-slate-400 font-bold uppercase tracking-widest mt-2 leading-relaxed max-w-[200px] mx-auto">No pending transmissions detected.</p>
                 </div>
             @endforelse
         </div>

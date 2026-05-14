@@ -11,7 +11,7 @@
 @endphp
 
 <div 
-    class="glass-card p-7 group hover:-translate-y-3 hover:shadow-[0_20px_50px_rgba(79,70,229,0.15)] hover:border-indigo-500/30 transition-all duration-500 relative overflow-hidden cursor-pointer"
+    class="glass-card p-6 md:p-7 group md:hover:-translate-y-3 md:hover:shadow-[0_20px_50px_rgba(79,70,229,0.15)] md:hover:border-indigo-500/30 active:scale-95 transition-all duration-500 relative overflow-hidden cursor-pointer"
     x-data="{ 
         displayValue: '0', 
         targetValue: '{{ preg_replace('/[^0-9.]/', '', $value) }}',
@@ -51,8 +51,8 @@
     </div>
     
     <div class="relative z-10">
-        <p class="text-[11px] font-black text-slate-400 uppercase tracking-[0.25em] mb-2">{{ $title }}</p>
-        <h3 class="text-3xl font-black text-slate-900 font-jakarta tracking-tight group-hover:translate-x-1 transition-transform duration-500" x-text="displayValue">0</h3>
+        <p class="text-[10px] md:text-[11px] font-black text-slate-400 uppercase tracking-[0.25em] mb-2">{{ $title }}</p>
+        <h3 class="text-2xl md:text-3xl font-black text-slate-900 font-jakarta tracking-tight group-hover:translate-x-1 transition-transform duration-500" x-text="displayValue">0</h3>
     </div>
     
     <!-- Shimmer Effect -->

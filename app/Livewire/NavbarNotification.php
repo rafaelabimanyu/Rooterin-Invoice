@@ -19,13 +19,60 @@ class NavbarNotification extends Component
     {
         $user = Auth::user();
         if ($user) {
-            $this->notifications = $user->notifications()->latest()->take(10)->get();
+            $dbNotifications = $user->notifications()->latest()->take(10)->get();
             $this->unreadCount = $user->unreadNotifications()->count();
+
+            if ($dbNotifications->isEmpty()) {
+                $logs = \App\Models\ActivityLog::latest()->take(5)->get();
+                $securityLogs = \App\Models\SecurityLog::latest()->take(5)->get();
+                
+                $fakeNotifications = collect();
+                
+                foreach ($securityLogs as $log) {
+                    $fakeNotifications->push((object)[
+                        'id' => 'sec-'.$log->id,
+                        'read_at' => null,
+                        'created_at' => $log->created_at,
+                        'data' => [
+                            'title' => 'Security Alert',
+                            'message' => $log->activity . ' from IP ' . $log->ip_address,
+                            'type' => $log->is_suspicious ? 'critical' : 'security',
+                            'action_url' => route('security.center'),
+                            'action_label' => 'Review'
+                        ]
+                    ]);
+                }
+                
+                foreach ($logs as $log) {
+                    $fakeNotifications->push((object)[
+                        'id' => 'act-'.$log->id,
+                        'read_at' => null,
+                        'created_at' => $log->created_at,
+                        'data' => [
+                            'title' => 'System Activity',
+                            'message' => $log->description,
+                            'type' => 'system'
+                        ]
+                    ]);
+                }
+                
+                $this->notifications = $fakeNotifications->sortByDesc('created_at')->take(10);
+                $this->unreadCount = $this->notifications->count();
+            } else {
+                $this->notifications = $dbNotifications;
+            }
         }
     }
 
     public function markAsRead($id)
     {
+        if (str_starts_with($id, 'sec-')) {
+            return redirect()->route('security.center');
+        }
+        if (str_starts_with($id, 'act-')) {
+            return;
+        }
+
         $notification = Auth::user()->notifications()->find($id);
         if ($notification) {
             $notification->markAsRead();

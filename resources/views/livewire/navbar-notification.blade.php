@@ -33,7 +33,7 @@
         x-transition:leave="transition-all transform ease-in duration-300"
         x-transition:leave-start="translate-y-0 md:opacity-100 md:scale-100"
         x-transition:leave-end="translate-y-full md:opacity-0 md:translate-y-4 md:scale-95"
-        class="fixed inset-x-0 bottom-0 z-[100] w-full bg-white rounded-t-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden md:absolute md:left-auto md:right-0 md:bottom-auto md:top-full md:mt-4 md:w-[400px] md:rounded-[32px] md:border md:border-slate-100 md:shadow-2xl md:origin-top-right flex flex-col max-h-[85vh] md:max-h-none"
+        class="fixed inset-x-0 bottom-0 z-[100] w-full bg-white rounded-t-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden md:absolute md:left-auto md:-right-4 md:bottom-auto md:top-full md:mt-4 md:w-[360px] md:rounded-[32px] md:border md:border-slate-100 md:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] md:origin-top flex flex-col max-h-[85vh] md:max-h-[600px]"
         x-cloak
     >
         <!-- Mobile drag handle -->

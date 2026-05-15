@@ -29,21 +29,24 @@ Route::get('/lang/{locale}', function ($locale) {
 Route::post('/help/password-reset', \App\Http\Controllers\Auth\PasswordResetHelpController::class)->name('password.help');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    
+
     // All Roles (Owner, Admin, Staff)
     Route::middleware(['role:owner,admin,staff'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/guide/{section?}', [\App\Http\Controllers\GuideController::class, 'show'])->name('guide.index');
 
         // Footer Static Pages
-        Route::get('/privacy-policy', function () { return view('pages.privacy'); })->name('privacy.index');
-        Route::get('/terms-of-service', function () { return view('pages.terms'); })->name('terms.index');
-        Route::get('/help-center', function () { return view('pages.help'); })->name('help.index');
-        
+        Route::get('/privacy-policy', function () {
+            return view('pages.privacy'); })->name('privacy.index');
+        Route::get('/terms-of-service', function () {
+            return view('pages.terms'); })->name('terms.index');
+        Route::get('/help-center', function () {
+            return view('pages.help'); })->name('help.index');
+
         // Clients (Show/Index/Create/Edit)
         Route::resource('clients', ClientController::class);
         Route::post('api/clients', [\App\Http\Controllers\Api\ClientController::class, 'store'])->name('api.clients.store');
-        
+
         // Invoices
         Route::get('invoices/{invoice}/pdf', [InvoiceController::class, 'downloadPdf'])->name('invoices.pdf');
         Route::resource('invoices', InvoiceController::class);
@@ -61,7 +64,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('receipts', ReceiptController::class);
 
 
-        
+
         // Profile
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -95,4 +98,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

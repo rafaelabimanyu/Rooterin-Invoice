@@ -32,7 +32,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // All Roles (Owner, Admin, Staff)
     Route::middleware(['role:owner,admin,staff'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-        Route::get('/guide', [\App\Http\Controllers\GuideController::class, 'index'])->name('guide.index');
+        Route::get('/guide/{section?}', [\App\Http\Controllers\GuideController::class, 'show'])->name('guide.show');
 
         // Footer Static Pages
         Route::get('/privacy-policy', function () { return view('pages.privacy'); })->name('privacy.index');

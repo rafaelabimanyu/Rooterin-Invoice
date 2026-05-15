@@ -22,8 +22,8 @@
             
             <!-- Text -->
             <div class="mt-4 text-center">
-                <h4 class="text-sm font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">{{ __($step['label']) }}</h4>
-                <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-wide mt-1">{{ __($step['desc']) }}</p>
+                <h4 class="text-sm font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">{{ is_array(__($step['label'])) ? $step['label'] : __($step['label']) }}</h4>
+                <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-wide mt-1">{{ is_array(__($step['desc'])) ? $step['desc'] : __($step['desc']) }}</p>
             </div>
             
             <!-- Tooltip -->

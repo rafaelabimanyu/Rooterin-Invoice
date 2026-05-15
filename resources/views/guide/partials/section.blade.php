@@ -18,11 +18,11 @@
         <div class="w-12 h-12 rounded-2xl {{ $iconClass }} flex items-center justify-center shadow-sm">
             <i data-lucide="{{ $activeSectionData['icon'] ?? 'file-text' }}" class="w-6 h-6"></i>
         </div>
-        <h2 class="text-3xl font-black text-slate-900 font-outfit">{{ __($activeSectionData['title']) }}</h2>
+        <h2 class="text-3xl font-black text-slate-900 font-outfit">{{ is_array(__($activeSectionData['title'])) ? $activeSectionData['title'] : __($activeSectionData['title']) }}</h2>
     </div>
     
     <div class="prose prose-slate max-w-none space-y-6">
-        <p class="text-slate-500 leading-relaxed text-lg">{{ __($activeSectionData['content']) }}</p>
+        <p class="text-slate-500 leading-relaxed text-lg">{{ is_array(__($activeSectionData['content'])) ? $activeSectionData['content'] : __($activeSectionData['content']) }}</p>
         
         @if(isset($activeSectionData['pro_tip']))
         <div class="bg-amber-50 p-6 rounded-2xl border border-amber-100 flex gap-4 mt-6">

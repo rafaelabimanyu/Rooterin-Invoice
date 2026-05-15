@@ -13,7 +13,8 @@
 
 <aside class="fixed inset-y-0 left-0 z-[110] w-72 bg-white transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 lg:z-0 lg:w-64 lg:sticky lg:top-24 lg:h-[calc(100vh-120px)] overflow-y-auto border-r border-slate-100 lg:pr-6"
        :class="mobileMenuOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full lg:shadow-none'"
-       @click.away="if(window.innerWidth < 1024) mobileMenuOpen = false"
+       @click.outside="if(window.innerWidth < 1024) mobileMenuOpen = false"
+       x-cloak
        >
     
     <!-- Mobile Close Button -->

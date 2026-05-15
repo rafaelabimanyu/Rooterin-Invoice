@@ -7,7 +7,7 @@
                 <i data-lucide="{{ $guideData['header']['icon'] ?? 'book-open' }}" class="w-5 h-5 text-indigo-600"></i>
                 <span class="font-bold text-slate-900 text-sm tracking-wide">{{ strtoupper($role) }} GUIDE</span>
             </div>
-            <button @click="mobileMenuOpen = true" class="p-2 -mr-2 text-slate-500 hover:text-indigo-600 transition-colors rounded-lg hover:bg-slate-50">
+            <button @click.stop="mobileMenuOpen = true" class="p-2 -mr-2 text-slate-500 hover:text-indigo-600 transition-colors rounded-lg hover:bg-slate-50">
                 <i data-lucide="menu" class="w-6 h-6"></i>
             </button>
         </div>

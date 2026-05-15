@@ -1,7 +1,19 @@
 <x-guest-layout>
-    <div class="min-h-screen grid grid-cols-1 lg:grid-cols-2 overflow-hidden" x-data="{ showPassword: false, helpRequested: {{ session('status') ? 'true' : 'false' }} }">
+    <div class="min-h-screen grid grid-cols-1 lg:grid-cols-2 overflow-hidden" 
+        x-data="{ 
+            showPassword: false, 
+            helpRequested: {{ session('status') ? 'true' : 'false' }},
+            isLoggingIn: false,
+            mouseX: 0,
+            mouseY: 0,
+            moveParallax(e) {
+                this.mouseX = (e.clientX - window.innerWidth / 2) / 25;
+                this.mouseY = (e.clientY - window.innerHeight / 2) / 25;
+            }
+        }"
+        @mousemove="moveParallax($event)">
         <!-- Left Side: Login Form -->
-        <div class="flex items-center justify-center p-8 md:p-16 bg-white relative z-10 page-fade-in">
+        <div class="flex items-center justify-center p-8 md:p-16 bg-white relative z-10 page-fade-in stagger-1">
             <div class="w-full max-w-md space-y-12">
                 <!-- Brand -->
                 <div class="flex items-center gap-4">
@@ -44,11 +56,11 @@
                     <!-- Email Address -->
                     <div class="space-y-3">
                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Operative Identity (Email)</label>
-                        <div class="relative group">
-                            <div class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 transition-colors group-focus-within:text-indigo-600">
+                        <div class="relative group input-focus-effect rounded-[24px]">
+                            <div class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 transition-colors group-focus-within:text-indigo-600 z-10">
                                 <i data-lucide="mail" class="w-5 h-5"></i>
                             </div>
-                            <input id="email" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" class="w-full pl-14 pr-5 py-5 bg-slate-50 border-transparent rounded-[24px] text-sm font-bold outline-none focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all shadow-inner" placeholder="name@enterprise.com">
+                            <input id="email" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" class="w-full pl-14 pr-5 py-5 bg-slate-50/50 backdrop-blur-sm border-transparent rounded-[24px] text-sm font-bold outline-none transition-all shadow-inner focus:ring-0" placeholder="name@enterprise.com">
                         </div>
                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>
@@ -61,13 +73,14 @@
                                 Identity Issues?
                             </a>
                         </div>
-                        <div class="relative group">
-                            <div class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 transition-colors group-focus-within:text-indigo-600">
+                        <div class="relative group input-focus-effect rounded-[24px]">
+                            <div class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 transition-colors group-focus-within:text-indigo-600 z-10">
                                 <i data-lucide="lock" class="w-5 h-5"></i>
                             </div>
-                            <input id="password" :type="showPassword ? 'text' : 'password'" name="password" required autocomplete="current-password" class="w-full pl-14 pr-14 py-5 bg-slate-50 border-transparent rounded-[24px] text-sm font-bold outline-none focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all shadow-inner" placeholder="••••••••••••">
-                            <button type="button" @click="showPassword = !showPassword" class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-900 transition-colors">
-                                <i :data-lucide="showPassword ? 'eye-off' : 'eye'" class="w-5 h-5"></i>
+                            <input id="password" :type="showPassword ? 'text' : 'password'" name="password" required autocomplete="current-password" class="w-full pl-14 pr-14 py-5 bg-slate-50/50 backdrop-blur-sm border-transparent rounded-[24px] text-sm font-bold outline-none transition-all shadow-inner focus:ring-0" placeholder="••••••••••••">
+                            <button type="button" @click="showPassword = !showPassword" class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-900 transition-colors z-10 p-1">
+                                <svg x-show="!showPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
+                                <svg x-show="showPassword" x-cloak xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-off"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
                             </button>
                         </div>
                         <x-input-error :messages="$errors->get('password')" class="mt-2" />
@@ -80,8 +93,16 @@
                             <span class="ms-3 text-[11px] font-black text-slate-500 uppercase tracking-[0.2em] group-hover:text-slate-900 transition-colors">Persistent Access</span>
                         </label>
 
-                        <button type="submit" class="w-full py-6 bg-slate-900 text-white rounded-[28px] font-black text-xs shadow-[0_20px_50px_rgba(0,0,0,0.2)] hover:bg-indigo-600 hover:-translate-y-1 transition-all duration-500 uppercase tracking-[0.3em]">
-                            Initialize Node
+                        <button type="submit" @click="isLoggingIn = true" class="w-full min-w-[200px] h-[72px] bg-slate-900 text-white rounded-[28px] font-black text-xs shadow-[0_20px_50px_rgba(0,0,0,0.2)] hover:bg-indigo-600 hover:-translate-y-1 transition-all duration-500 uppercase tracking-[0.3em] flex items-center justify-center gap-3">
+                            <template x-if="!isLoggingIn">
+                                <span>Initialize Node</span>
+                            </template>
+                            <template x-if="isLoggingIn">
+                                <div class="flex items-center gap-3">
+                                    <div class="loading-spinner"></div>
+                                    <span>Processing...</span>
+                                </div>
+                            </template>
                         </button>
                     </div>
                 </form>
@@ -96,14 +117,18 @@
         <div class="hidden lg:flex relative items-center justify-center bg-[#0a0f1d] overflow-hidden">
             <!-- Animated Background -->
             <div class="absolute inset-0">
-                <div class="absolute top-0 right-0 w-[800px] h-[800px] bg-indigo-600/10 rounded-full blur-[150px] -mr-[400px] -mt-[400px]"></div>
-                <div class="absolute bottom-0 left-0 w-[800px] h-[800px] bg-purple-600/10 rounded-full blur-[150px] -ml-[400px] -mb-[400px]"></div>
+                <div class="parallax-layer absolute top-0 right-0 w-[800px] h-[800px] bg-indigo-600/10 rounded-full blur-[150px] -mr-[400px] -mt-[400px]"
+                    :style="'transform: translate(' + mouseX * 1.5 + 'px, ' + mouseY * 1.5 + 'px)'"></div>
+                <div class="parallax-layer absolute bottom-0 left-0 w-[800px] h-[800px] bg-purple-600/10 rounded-full blur-[150px] -ml-[400px] -mb-[400px]"
+                    :style="'transform: translate(' + mouseX * -1.5 + 'px, ' + mouseY * -1.5 + 'px)'"></div>
                 
                 <!-- Grid Pattern -->
-                <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 40px 40px;"></div>
+                <div class="absolute inset-0 opacity-[0.03] parallax-layer" 
+                    style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 40px 40px;"
+                    :style="'transform: translate(' + mouseX * 0.5 + 'px, ' + mouseY * 0.5 + 'px)'"></div>
             </div>
             
-            <div class="relative z-20 text-center px-24">
+            <div class="relative z-20 text-center px-24 page-fade-in stagger-2">
                 <div class="w-32 h-32 bg-white/5 border border-white/10 rounded-[40px] flex items-center justify-center mb-16 mx-auto backdrop-blur-2xl shadow-2xl">
                     <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap fill-white/10"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                 </div>

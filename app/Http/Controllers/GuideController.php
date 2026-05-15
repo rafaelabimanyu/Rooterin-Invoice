@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 class GuideController extends Controller
 {
-    public function show($section = null, Request $request)
+    public function show($section = null)
     {
         $user = auth()->user();
         $role = $user->role; // 'owner', 'admin', 'staff'

@@ -5,7 +5,7 @@
         </p>
         
         @foreach($guideData['navigation'] as $key => $nav)
-            <a href="{{ route('guide.show', $key) }}" 
+            <a href="{{ route('guide.index', $key) }}" 
                class="group flex items-center px-4 py-2.5 text-sm font-bold rounded-lg transition-all border {{ $activeSectionKey === $key ? 'bg-indigo-50 text-indigo-700 border-indigo-100 shadow-sm' : 'text-slate-600 hover:bg-slate-50 border-transparent hover:border-slate-200' }}">
                 <i data-lucide="{{ $nav['icon'] ?? 'file-text' }}" class="w-4 h-4 mr-3 {{ $activeSectionKey === $key ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600' }}"></i>
                 {{ __($nav['title']) }}

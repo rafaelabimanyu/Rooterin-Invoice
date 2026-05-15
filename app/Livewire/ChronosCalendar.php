@@ -20,7 +20,7 @@ class ChronosCalendar extends Component
         ]);
     }
 
-    public function updatedFilters()
+    public function updated($propertyName)
     {
         $this->dispatch('filtersUpdated', [
             'clientId' => $this->clientId,

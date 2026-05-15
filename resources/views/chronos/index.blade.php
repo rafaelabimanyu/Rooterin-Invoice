@@ -77,9 +77,9 @@
                     url: '{{ route("chronos.events") }}',
                     extraParams: function() {
                         return {
-                            clientId: @this.clientId || '',
-                            status: @this.status || '',
-                            staffId: @this.staffId || ''
+                            clientId: window.chronosFilters?.clientId || '',
+                            status: window.chronosFilters?.status || '',
+                            staffId: window.chronosFilters?.staffId || ''
                         };
                     }
                 },
@@ -92,7 +92,16 @@
             });
             calendar.render();
 
+            window.chronosFilters = {
+                clientId: '{{ $clientId ?? "" }}',
+                status: '{{ $status ?? "" }}',
+                staffId: '{{ $staffId ?? "" }}'
+            };
+
             window.addEventListener('filtersUpdated', event => {
+                // Livewire 3/4 event detail structure
+                const data = event.detail[0] || event.detail;
+                window.chronosFilters = data;
                 calendar.refetchEvents();
             });
 

@@ -48,6 +48,7 @@
             <nav x-bind:class="collapsed ? 'space-y-4' : 'space-y-1'">
                 <x-sidebar-link href="{{ route('receipts.index') }}" :active="request()->routeIs('receipts.*')" icon="file-spreadsheet" :label="__('ui.receipts')" :collapsed="$collapsed" />
                 <x-sidebar-link href="{{ route('invoices.index') }}" :active="request()->routeIs('invoices.*')" icon="file-text" :label="__('ui.invoices')" :collapsed="$collapsed" />
+                <x-sidebar-link href="{{ route('chronos.index') }}" :active="request()->routeIs('chronos.*')" icon="calendar-days" label="Chronos" :collapsed="$collapsed" />
             </nav>
         </div>
 

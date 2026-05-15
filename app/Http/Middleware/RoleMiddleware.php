@@ -16,8 +16,8 @@ class RoleMiddleware
 
         $user = auth()->user();
 
-        // Check if user has one of the allowed roles
-        if (!in_array($user->role, $roles)) {
+        // Check if user has one of the allowed roles using Spatie Permission
+        if (!$user->hasAnyRole($roles)) {
             abort(403, 'Unauthorized access. Your account does not have sufficient permissions.');
         }
 

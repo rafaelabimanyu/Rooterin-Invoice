@@ -62,13 +62,17 @@
                     $icon = match($type) {
                         'finance' => 'wallet',
                         'security' => 'shield-check',
-                        'critical' => 'alert-octagon',
+                        'critical', 'overdue' => 'alert-octagon',
+                        'reminder' => 'bell',
+                        'due_today' => 'clock',
                         default => 'cpu'
                     };
                     $colorClass = match($type) {
                         'finance' => 'bg-emerald-50 text-emerald-600',
                         'security' => 'bg-amber-50 text-amber-600',
-                        'critical' => 'bg-rose-50 text-rose-600',
+                        'critical', 'overdue' => 'bg-rose-50 text-rose-600',
+                        'reminder' => 'bg-indigo-50 text-indigo-600',
+                        'due_today' => 'bg-amber-50 text-amber-600',
                         default => 'bg-blue-50 text-blue-600'
                     };
                 @endphp

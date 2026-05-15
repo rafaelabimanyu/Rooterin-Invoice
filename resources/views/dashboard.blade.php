@@ -309,6 +309,7 @@
 
         <!-- Right Side: Activity Timeline (Staff) or Stats (Admin) -->
         <div class="lg:col-span-4 xl:col-span-3 space-y-10 flex flex-col">
+            @livewire('dashboard.upcoming-billing-horizon')
             @if($isStaff)
                 <div class="glass-card p-10 h-full flex flex-col">
                     <div class="flex items-center justify-between mb-10">
@@ -366,20 +367,14 @@
             @else
                 <!-- Admin Stats Side Card (Placeholder or mini charts) -->
                 <div class="glass-card p-10">
-                    <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg mb-8">System
-                        Analytics</h3>
-                    <!-- Add mini charts or secondary stats here if needed -->
-                    <div class="space-y-6">
-                        <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100">
-                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Client Retention
-                            </p>
-                            <div class="flex items-end gap-3 mb-4">
-                                <span class="text-3xl font-black text-slate-900">94.2%</span>
-                                <span class="text-xs font-bold text-emerald-500 mb-1">+2.4%</span>
-                            </div>
-                            <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
-                                <div class="bg-indigo-600 h-full w-[94%]"></div>
-                            </div>
+                    <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg mb-8">System Analytics</h3>
+                    <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Operational Load</p>
+                        <div class="flex items-end gap-3 mb-4">
+                            <span class="text-3xl font-black text-slate-900">Optimal</span>
+                        </div>
+                        <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                            <div class="bg-emerald-500 h-full w-[100%] shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
                         </div>
                     </div>
                 </div>

@@ -9,6 +9,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ChronosController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -65,6 +66,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+        // Chronos (Billing Calendar)
+        Route::get('/chronos', [ChronosController::class, 'index'])->name('chronos.index');
+        Route::get('/api/chronos/events', [ChronosController::class, 'events'])->name('chronos.events');
+        Route::post('/chronos/update-date/{invoice}', [ChronosController::class, 'updateDate'])->name('chronos.update');
     });
 
     // Elevated Roles (Owner, Admin)

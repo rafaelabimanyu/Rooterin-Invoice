@@ -218,9 +218,9 @@
     @endif
 
     <!-- Content Sections -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-10">
+    <div class="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-6 xl:gap-8 w-full min-w-0">
         <!-- Main Activity Table -->
-        <div class="lg:col-span-8 xl:col-span-9 flex flex-col">
+        <div class="lg:col-span-2 xl:col-span-3 flex flex-col min-w-0 w-full">
             <div class="table-container page-fade-in stagger-5 overflow-hidden">
                 <div
                     class="px-10 py-8 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between bg-slate-50/30 gap-4">
@@ -238,8 +238,8 @@
                     </a>
                 </div>
 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left">
+                <div class="overflow-x-auto w-full">
+                    <table class="w-full text-left whitespace-nowrap">
                         <thead>
                             <tr class="table-header">
                                 <th class="px-10 py-5">{{ __('ui.reference') }}</th>
@@ -308,7 +308,7 @@
         </div>
 
         <!-- Right Side: Activity Timeline (Staff) or Stats (Admin) -->
-        <div class="lg:col-span-4 xl:col-span-3 flex flex-col gap-8 xl:gap-10 min-w-0 w-full">
+        <div class="lg:col-span-1 xl:col-span-1 flex flex-col gap-6 xl:gap-8 min-w-0 w-full">
             @livewire('dashboard.upcoming-billing-horizon')
             @if($isStaff)
                 <div class="glass-card p-10 flex flex-col w-full min-w-0">

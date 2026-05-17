@@ -308,10 +308,10 @@
         </div>
 
         <!-- Right Side: Activity Timeline (Staff) or Stats (Admin) -->
-        <div class="lg:col-span-4 xl:col-span-3 space-y-10 flex flex-col">
+        <div class="lg:col-span-4 xl:col-span-3 flex flex-col gap-8 xl:gap-10 min-w-0 w-full">
             @livewire('dashboard.upcoming-billing-horizon')
             @if($isStaff)
-                <div class="glass-card p-10 h-full flex flex-col">
+                <div class="glass-card p-10 flex flex-col w-full min-w-0">
                     <div class="flex items-center justify-between mb-10">
                         <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg">Activity Feed
                         </h3>
@@ -366,7 +366,7 @@
                 </div>
             @else
                 <!-- Admin Stats Side Card (Placeholder or mini charts) -->
-                <div class="glass-card p-10">
+                <div class="glass-card p-10 w-full min-w-0">
                     <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg mb-8">System Analytics</h3>
                     <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100">
                         <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Operational Load</p>

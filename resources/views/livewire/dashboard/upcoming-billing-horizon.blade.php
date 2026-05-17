@@ -1,4 +1,4 @@
-<div class="glass-card p-10 h-full flex flex-col shadow-2xl shadow-indigo-500/5 border-slate-100 page-fade-in stagger-4">
+<div class="glass-card p-10 flex flex-col shadow-2xl shadow-indigo-500/5 border-slate-100 page-fade-in stagger-4 w-full min-w-0">
     <div class="flex items-center justify-between mb-10">
         <div>
             <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg">Upcoming Billing Horizon</h3>
@@ -11,20 +11,20 @@
 
     <div class="flex-1 space-y-6">
         @forelse($upcomingInvoices as $invoice)
-            <div class="group flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-transparent hover:border-indigo-100 hover:bg-white transition-all duration-300">
-                <div class="flex items-center gap-4">
-                    <div class="flex flex-col items-center justify-center w-12 h-12 rounded-xl bg-white shadow-sm border border-slate-100">
+            <div class="group flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-transparent hover:border-indigo-100 hover:bg-white transition-all duration-300 gap-3">
+                <div class="flex items-center gap-3 min-w-0 flex-1">
+                    <div class="flex flex-col items-center justify-center w-12 h-12 shrink-0 rounded-xl bg-white shadow-sm border border-slate-100">
                         <span class="text-[9px] font-black uppercase text-slate-400 leading-none mb-1">{{ $invoice->due_date->format('M') }}</span>
                         <span class="text-lg font-black text-slate-900 leading-none">{{ $invoice->due_date->format('d') }}</span>
                     </div>
-                    <div>
-                        <p class="text-[13px] font-black text-slate-900 group-hover:text-indigo-600 transition-colors">{{ $invoice->invoice_number }}</p>
-                        <p class="text-[11px] text-slate-500 font-medium">{{ $invoice->client->nama_client }}</p>
+                    <div class="min-w-0 flex-1">
+                        <p class="text-[13px] font-black text-slate-900 group-hover:text-indigo-600 transition-colors truncate">{{ $invoice->invoice_number }}</p>
+                        <p class="text-[11px] text-slate-500 font-medium truncate">{{ $invoice->client->nama_client }}</p>
                     </div>
                 </div>
-                <div class="text-right">
-                    <p class="text-[14px] font-black text-slate-900">Rp {{ number_format($invoice->total, 0, ',', '.') }}</p>
-                    <span class="text-[9px] font-black uppercase tracking-widest {{ $invoice->due_date->isToday() ? 'text-rose-500' : 'text-slate-400' }}">
+                <div class="text-right shrink-0 max-w-[45%] flex flex-col items-end">
+                    <p class="text-[12px] sm:text-[14px] font-black text-slate-900 truncate w-full text-right">Rp {{ number_format($invoice->total, 0, ',', '.') }}</p>
+                    <span class="text-[9px] font-black uppercase tracking-widest truncate w-full text-right {{ $invoice->due_date->isToday() ? 'text-rose-500' : 'text-slate-400' }}">
                         {{ $invoice->due_date->isToday() ? 'Due Today' : $invoice->due_date->diffForHumans() }}
                     </span>
                 </div>

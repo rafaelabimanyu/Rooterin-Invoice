@@ -26,8 +26,8 @@
 
     @livewire('chronos-calendar')
 
-    <div class="glass-card p-8 shadow-2xl shadow-indigo-500/10 border-slate-100 page-fade-in stagger-1">
-        <div id="calendar" class="min-h-[700px]"></div>
+    <div class="glass-card p-4 md:p-8 shadow-2xl shadow-indigo-500/10 border-slate-100 page-fade-in stagger-1 h-[calc(100vh-140px)] flex flex-col">
+        <div id="calendar" class="flex-1 w-full h-full"></div>
     </div>
 
     <!-- Details Modal -->
@@ -56,6 +56,9 @@
         .fc .fc-day-today { background-color: #f8fafc !important; }
         .fc-event { border-radius: 8px !important; border: none !important; padding: 4px 8px !important; font-weight: 700 !important; font-size: 11px !important; transition: all 0.2s ease; cursor: pointer !important; }
         .fc-event:hover { transform: scale(1.02); filter: brightness(1.1); box-shadow: 0 10px 20px -5px rgba(0,0,0,0.1); }
+        .fc-event:hover { transform: scale(1.02); filter: brightness(1.1); box-shadow: 0 10px 20px -5px rgba(0,0,0,0.1); }
+        .toast-enter { animation: toastSlideIn 0.3s ease-out forwards; }
+        @keyframes toastSlideIn { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
     @endpush
 
@@ -66,6 +69,7 @@
             const calendarEl = document.getElementById('calendar');
             const calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
+                height: '100%',
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
@@ -135,6 +139,7 @@
                     </div>
                 `;
                 
+                // Construct URL correctly for view invoice
                 btn.href = `/invoices/${event.id}`;
                 modal.classList.remove('hidden');
                 lucide.createIcons();
@@ -158,16 +163,34 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Optional: Show toast
+                        showToast('Invoice due date updated successfully!', 'success');
                     } else {
-                        alert('Failed to update date');
+                        showToast('Failed to update due date. Unauthorized.', 'error');
                         event.revert();
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
+                    showToast('Network error occurred.', 'error');
                     event.revert();
                 });
+            }
+
+            function showToast(message, type = 'success') {
+                const toast = document.createElement('div');
+                toast.className = `fixed bottom-4 right-4 px-6 py-3 rounded-xl text-white font-bold text-sm shadow-xl z-[200] toast-enter ${type === 'success' ? 'bg-emerald-500' : 'bg-rose-500'}`;
+                toast.innerHTML = `<div class="flex items-center gap-3">
+                    <i data-lucide="${type === 'success' ? 'check-circle' : 'alert-circle'}" class="w-5 h-5"></i>
+                    ${message}
+                </div>`;
+                document.body.appendChild(toast);
+                lucide.createIcons();
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateY(100%)';
+                    toast.style.transition = 'all 0.3s ease';
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
             }
         });
     </script>

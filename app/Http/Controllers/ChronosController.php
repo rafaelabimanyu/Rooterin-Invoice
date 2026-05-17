@@ -10,7 +10,24 @@ class ChronosController extends Controller
 {
     public function index()
     {
-        return view('chronos.index');
+        $invoiceQuery = Invoice::query();
+        $activityQuery = \App\Models\ActivityLog::query();
+
+        if (auth()->user()->hasRole('staff')) {
+            $invoiceQuery->where('created_by', auth()->id());
+            $activityQuery->where('user_id', auth()->id());
+        }
+
+        $activeArrears = (clone $invoiceQuery)->where('status', 'overdue')->sum('total');
+        
+        $dueThisWeek = (clone $invoiceQuery)
+            ->whereBetween('due_date', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
+            ->where('status', '!=', 'paid')
+            ->count();
+            
+        $activities = $activityQuery->latest()->take(5)->get();
+
+        return view('chronos.index', compact('activeArrears', 'dueThisWeek', 'activities'));
     }
 
     public function events(Request $request)
@@ -36,7 +53,7 @@ class ChronosController extends Controller
 
             return [
                 'id' => $invoice->id,
-                'title' => $invoice->invoice_number . ' - ' . $invoice->client->nama_client,
+                'title' => '[' . ucfirst($invoice->status) . '] ' . $invoice->invoice_number . ' - Rp ' . number_format($invoice->total, 0, ',', '.'),
                 'start' => $invoice->due_date->toIso8601String(),
                 'color' => $color,
                 'extendedProps' => [

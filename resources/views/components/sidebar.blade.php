@@ -38,6 +38,7 @@
             <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-400/80">{{ __('ui.terminal') }}</p>
             <nav x-bind:class="collapsed ? 'space-y-4' : 'space-y-1'">
                 <x-sidebar-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')" icon="layout-grid" :label="__('ui.dashboard')" :collapsed="$collapsed" />
+                <x-sidebar-link href="{{ route('ai-assistant.index') }}" :active="request()->routeIs('ai-assistant.*')" icon="bot" label="AI Assistant" :collapsed="$collapsed" />
                 <x-sidebar-link href="{{ route('clients.index') }}" :active="request()->routeIs('clients.*')" icon="users" :label="__('ui.clients')" :collapsed="$collapsed" />
             </nav>
         </div>

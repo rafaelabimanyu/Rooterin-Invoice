@@ -8,6 +8,11 @@ use Carbon\Carbon;
 
 class AiChatController extends Controller
 {
+    public function index()
+    {
+        return view('ai-assistant.index');
+    }
+
     public function handleChat(Request $request)
     {
         $request->validate([
@@ -32,7 +37,7 @@ class AiChatController extends Controller
         }
         $overdueText = count($overdueList) > 0 ? implode("\n", $overdueList) : "Tidak ada invoice menunggak.";
 
-        $context = "Kamu adalah Asisten Virtual Rooterin-Invoice. Kamu bertugas membantu Admin/Owner menganalisis data keuangan, invoice, dan klien. Jawablah pertanyaan pengguna dengan sopan, taktis, dan ringkas dalam Bahasa Indonesia.
+        $context = "Kamu adalah Asisten Virtual Rooterin-Invoice. Kamu bertugas membantu Admin/Owner/Staff menganalisis data keuangan, invoice, dan klien. Jawablah pertanyaan pengguna dengan sopan, taktis, dan ringkas dalam Bahasa Indonesia.
 
 Berikut adalah data ringkasan terkini dari sistem:
 - Jumlah Klien Aktif: {$totalClients}
@@ -41,6 +46,20 @@ Berikut adalah data ringkasan terkini dari sistem:
 
 Daftar Invoice Menunggak/Overdue:
 {$overdueText}
+
+Aturan Khusus Navigasi:
+Jika pengguna menanyakan letak, lokasi, atau cara menuju ke suatu halaman (seperti halaman invoice, klien, dashboard, atau pengaturan), sertakan tag format khusus di akhir jawaban Anda seperti ini: `[NAVIGATE: nama-route]`. 
+Gunakan hanya route berikut jika cocok:
+- `dashboard` -> Dashboard utama
+- `invoices.index` -> Daftar Invoice
+- `invoices.create` -> Buat Invoice Baru
+- `clients.index` -> Daftar Klien
+- `clients.create` -> Tambah Klien Baru
+- `receipts.index` -> Daftar Kuitansi / Tanda Terima
+- `receipts.create` -> Buat Kuitansi / Tanda Terima Baru
+- `settings.index` -> Pengaturan Aplikasi
+- `profile.edit` -> Profil Pengguna
+Contoh: `[NAVIGATE: invoices.index]` atau `[NAVIGATE: clients.index]`.
 
 Gunakan data di atas untuk menjawab pertanyaan pengguna dengan tepat. Jika pengguna menanyakan di luar konteks tagihan/klien/keuangan, arahkan mereka dengan sopan untuk fokus pada data tagihan.";
 
@@ -52,7 +71,7 @@ Gunakan data di atas untuk menjawab pertanyaan pengguna dengan tepat. Jika pengg
             $userMessage = $request->input('message');
             $prompt = "{$context}\n\nPertanyaan Pengguna: {$userMessage}\n\nJawaban:";
 
-            $result = Gemini::generativeModel('gemini-1.5-flash')->generateContent($prompt);
+            $result = Gemini::generativeModel('gemini-pro')->generateContent($prompt);
             $reply = trim($result->text());
 
             return response()->json([
@@ -63,24 +82,10 @@ Gunakan data di atas untuk menjawab pertanyaan pengguna dengan tepat. Jika pengg
 
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error("AiChatController Error: " . $e->getMessage(), ['exception' => $e]);
-            $userMessageLower = strtolower($request->input('message'));
-            $reply = "Halo! Maaf, koneksi AI asisten sedang terganggu. Detail Error: " . $e->getMessage() . "\n\nNamun, berikut adalah data sistem terbaru yang dapat saya temukan:\n\n";
-
-            if (str_contains($userMessageLower, 'tunggak') || str_contains($userMessageLower, 'belum bayar') || str_contains($userMessageLower, 'overdue')) {
-                $reply .= "Saat ini terdapat {$pendingCount} invoice belum lunas dengan total nilai Rp " . number_format($pendingTotal, 0, ',', '.') . ".\n\nBerikut daftar menunggak:\n{$overdueText}";
-            } elseif (str_contains($userMessageLower, 'lunas') || str_contains($userMessageLower, 'bayar') || str_contains($userMessageLower, 'revenue')) {
-                $reply .= "Total invoice lunas: {$paidCount} invoice dengan nominal Rp " . number_format($paidTotal, 0, ',', '.') . ".";
-            } elseif (str_contains($userMessageLower, 'klien') || str_contains($userMessageLower, 'client')) {
-                $reply .= "Jumlah klien aktif saat ini adalah {$totalClients} klien.";
-            } else {
-                $reply .= "Sistem mencatat:\n- {$totalClients} klien aktif\n- {$paidCount} invoice lunas (Rp " . number_format($paidTotal, 0, ',', '.') . ")\n- {$pendingCount} invoice belum lunas (Rp " . number_format($pendingTotal, 0, ',', '.') . ").\n\nSilakan atur GEMINI_API_KEY di file .env Anda untuk mengaktifkan kecerdasan penuh asisten ini.";
-            }
-
             return response()->json([
-                'success' => true,
-                'reply' => $reply,
-                'is_fallback' => true
-            ]);
+                'success' => false,
+                'error' => 'Koneksi ke Gemini API terganggu. Detail: ' . $e->getMessage()
+            ], 500);
         }
     }
 }

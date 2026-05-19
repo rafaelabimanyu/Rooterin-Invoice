@@ -414,6 +414,16 @@
     </div>
 
     <!-- AI Chatbot Assistant floating widget -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        .chat-bubble-content p { margin-bottom: 0.25rem; }
+        .chat-bubble-content p:last-child { margin-bottom: 0; }
+        .chat-bubble-content ul { list-style-type: disc; margin-left: 1rem; margin-bottom: 0.25rem; }
+        .chat-bubble-content ol { list-style-type: decimal; margin-left: 1rem; margin-bottom: 0.25rem; }
+        .chat-bubble-content li { margin-bottom: 0.125rem; }
+        .chat-bubble-content strong { font-weight: 700; }
+    </style>
+
     <div x-data="{
         open: false,
         input: '',
@@ -421,6 +431,34 @@
             { sender: 'ai', text: 'Halo! Saya Asisten Virtual Rooterin. Ada yang bisa saya bantu terkait tagihan, klien, atau ringkasan keuangan hari ini?' }
         ],
         loading: false,
+        routeMap: {
+            'dashboard': '{{ route('dashboard') }}',
+            'invoices.index': '{{ route('invoices.index') }}',
+            'invoices.create': '{{ route('invoices.create') }}',
+            'clients.index': '{{ route('clients.index') }}',
+            'clients.create': '{{ route('clients.create') }}',
+            'receipts.index': '{{ route('receipts.index') }}',
+            'receipts.create': '{{ route('receipts.create') }}',
+            'settings.index': '{{ route('settings.index') }}',
+            'profile.edit': '{{ route('profile.edit') }}'
+        },
+        routeLabels: {
+            'dashboard': '👉 Buka Dashboard',
+            'invoices.index': '👉 Lihat Daftar Invoice',
+            'invoices.create': '👉 Buat Invoice Baru',
+            'clients.index': '👉 Lihat Daftar Klien',
+            'clients.create': '👉 Tambah Klien Baru',
+            'receipts.index': '👉 Lihat Daftar Kuitansi',
+            'receipts.create': '👉 Buat Kuitansi Baru',
+            'settings.index': '👉 Buka Pengaturan',
+            'profile.edit': '👉 Edit Profil Saya'
+        },
+        renderMarkdown(text) {
+            if (typeof marked !== 'undefined') {
+                return marked.parse(text);
+            }
+            return text.replace(/\n/g, '<br>');
+        },
         sendMessage() {
             if (!this.input.trim()) return;
             const userMsg = this.input;
@@ -442,11 +480,18 @@
                 },
                 body: JSON.stringify({ message: userMsg })
             })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) {
+                    return res.json().then(errData => {
+                        throw new Error(errData.error || 'Server error');
+                    });
+                }
+                return res.json();
+            })
             .then(data => {
                 this.loading = false;
                 if (data.success) {
-                    this.messages.push({ sender: 'ai', text: data.reply });
+                    this.processResponse(data.reply);
                 } else {
                     this.messages.push({ sender: 'ai', text: 'Maaf, terjadi kesalahan saat memproses permintaan Anda.' });
                 }
@@ -458,12 +503,30 @@
             })
             .catch(err => {
                 this.loading = false;
-                this.messages.push({ sender: 'ai', text: 'Maaf, koneksi gagal.' });
+                this.messages.push({ sender: 'ai', text: 'Maaf, gagal memproses: ' + err.message });
                 this.$nextTick(() => {
                     const container = this.$refs.chatContainer;
                     container.scrollTop = container.scrollHeight;
                 });
             });
+        },
+        processResponse(reply) {
+            let routeName = null;
+            let text = reply;
+            const navRegex = /\[NAVIGATE:\s*([a-zA-Z0-9_\.-]+)\]/;
+            const match = reply.match(navRegex);
+            if (match) {
+                routeName = match[1].trim();
+                text = reply.replace(navRegex, '').trim();
+            }
+            
+            const msg = { sender: 'ai', text: text };
+            if (routeName && this.routeMap[routeName]) {
+                msg.navigateUrl = this.routeMap[routeName];
+                msg.navigateLabel = this.routeLabels[routeName] || '👉 Buka Halaman';
+            }
+            
+            this.messages.push(msg);
         }
     }" class="fixed bottom-6 right-6 z-50">
         
@@ -487,16 +550,32 @@
                         <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Online</p>
                     </div>
                 </div>
-                <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                <div class="flex items-center gap-2">
+                    <a href="{{ route('ai-assistant.index') }}" class="p-1 hover:bg-white/10 rounded text-slate-400 hover:text-white transition-colors" title="Buka Halaman Penuh">
+                        <i data-lucide="maximize-2" class="w-3.5 h-3.5"></i>
+                    </a>
+                    <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                </div>
             </div>
 
             <!-- Messages List -->
             <div x-ref="chatContainer" class="flex-1 p-6 overflow-y-auto space-y-4 bg-slate-50/50">
                 <template x-for="(msg, idx) in messages" :key="idx">
                     <div class="flex flex-col" :class="msg.sender === 'user' ? 'items-end' : 'items-start'">
-                        <div class="max-w-[85%] px-4 py-3 rounded-2xl text-xs leading-relaxed" :class="msg.sender === 'user' ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-white border border-slate-200 text-slate-800 rounded-tl-none shadow-sm'">
-                            <p class="whitespace-pre-line" x-text="msg.text"></p>
+                        <div class="max-w-[85%] px-4 py-3 rounded-2xl text-xs leading-relaxed" :class="msg.sender === 'user' ? 'bg-indigo-600 text-white rounded-tr-none shadow-sm' : 'bg-white border border-slate-200 text-slate-800 rounded-tl-none shadow-sm'">
+                            <div class="chat-bubble-content" x-html="renderMarkdown(msg.text)"></div>
                         </div>
+
+                        <!-- Intercepted Navigation Action Button -->
+                        <template x-if="msg.navigateUrl">
+                            <div class="mt-1.5 pl-2">
+                                <a :href="msg.navigateUrl" 
+                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-600 rounded-lg text-[10px] font-bold transition-all shadow-sm">
+                                    <i data-lucide="external-link" class="w-3 h-3"></i>
+                                    <span x-text="msg.navigateLabel"></span>
+                                </a>
+                            </div>
+                        </template>
                     </div>
                 </template>
 

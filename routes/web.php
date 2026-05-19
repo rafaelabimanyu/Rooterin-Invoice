@@ -55,6 +55,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('invoices', InvoiceController::class);
 
         // AI Chatbot Assistant
+        Route::get('ai-assistant', [AiChatController::class, 'index'])->name('ai-assistant.index');
         Route::post('ai-assistant/chat', [AiChatController::class, 'handleChat'])->name('ai-assistant.chat');
 
         // Security Intelligence

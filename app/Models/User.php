@@ -116,4 +116,15 @@ class User extends Authenticatable
     {
         return in_array($this->role, [self::ROLE_OWNER, self::ROLE_ADMIN]);
     }
+
+    protected static function booted()
+    {
+        static::saved(function ($user) {
+            if ($user->role) {
+                if ($user->wasChanged('role') || $user->wasRecentlyCreated || !$user->hasRole($user->role)) {
+                    $user->syncRoles([$user->role]);
+                }
+            }
+        });
+    }
 }

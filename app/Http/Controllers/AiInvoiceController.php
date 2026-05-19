@@ -89,6 +89,7 @@ PENTING: Jangan sertakan blok kode markdown seperti ```json atau pembungkus teks
             ]);
 
         } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error("AiInvoiceController Error: " . $e->getMessage(), ['exception' => $e]);
             // Provide a graceful fallback if Gemini API fails
             $subjectFallback = "Pengingat Pembayaran Tagihan: Invoice #{$invoiceNumber}";
             if ($tone === 'urgent') {
@@ -104,7 +105,7 @@ PENTING: Jangan sertakan blok kode markdown seperti ```json atau pembungkus teks
                 'subject' => $subjectFallback,
                 'body' => $bodyFallback,
                 'is_fallback' => true,
-                'warning' => 'Menggunakan draf lokal (Gemini API bermasalah atau API Key belum diset).'
+                'warning' => 'Menggunakan draf lokal. Detail Error: ' . $e->getMessage()
             ]);
         }
     }

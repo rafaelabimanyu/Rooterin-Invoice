@@ -65,10 +65,12 @@ Berikan 2-3 kalimat berisi insight bisnis taktis dan rekomendasi tindakan prakti
                 $result = \Gemini\Laravel\Facades\Gemini::generativeModel('gemini-1.5-flash')->generateContent($prompt);
                 return trim($result->text());
             } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error("DashboardController Gemini Error: " . $e->getMessage(), ['exception' => $e]);
+                $errMsg = " (Advisory Fallback - Detail Error: " . $e->getMessage() . ")";
                 if ($overdueRevenue > $monthlyRevenue) {
-                    return "Total tagihan menunggak Anda saat ini cukup tinggi dibandingkan dengan pendapatan bulanan. Prioritaskan penagihan piutang aktif dengan mengirimkan peringatan otomatis menggunakan AI Copywriter, serta tawarkan opsi pembayaran bertahap agar arus kas operasional Anda tetap terjaga.";
+                    return "Total tagihan menunggak Anda saat ini cukup tinggi dibandingkan dengan pendapatan bulanan. Prioritaskan penagihan piutang aktif dengan mengirimkan peringatan otomatis menggunakan AI Copywriter, serta tawarkan opsi pembayaran bertahap agar arus kas operasional Anda tetap terjaga." . $errMsg;
                 } else {
-                    return "Performa keuangan Anda bulan ini stabil dengan piutang tertagih yang baik. Namun, tetap pantau tagihan outstanding Anda secara ketat untuk meminimalkan resiko keterlambatan pembayaran di masa mendatang.";
+                    return "Performa keuangan Anda bulan ini stabil dengan piutang tertagih yang baik. Namun, tetap pantau tagihan outstanding Anda secara ketat untuk meminimalkan resiko keterlambatan pembayaran di masa mendatang." . $errMsg;
                 }
             }
         });

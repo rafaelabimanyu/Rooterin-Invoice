@@ -62,8 +62,9 @@ Gunakan data di atas untuk menjawab pertanyaan pengguna dengan tepat. Jika pengg
             ]);
 
         } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error("AiChatController Error: " . $e->getMessage(), ['exception' => $e]);
             $userMessageLower = strtolower($request->input('message'));
-            $reply = "Halo! Maaf, koneksi AI asisten sedang terganggu. Namun, berikut adalah data sistem terbaru yang dapat saya temukan:\n\n";
+            $reply = "Halo! Maaf, koneksi AI asisten sedang terganggu. Detail Error: " . $e->getMessage() . "\n\nNamun, berikut adalah data sistem terbaru yang dapat saya temukan:\n\n";
 
             if (str_contains($userMessageLower, 'tunggak') || str_contains($userMessageLower, 'belum bayar') || str_contains($userMessageLower, 'overdue')) {
                 $reply .= "Saat ini terdapat {$pendingCount} invoice belum lunas dengan total nilai Rp " . number_format($pendingTotal, 0, ',', '.') . ".\n\nBerikut daftar menunggak:\n{$overdueText}";

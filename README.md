@@ -47,6 +47,12 @@ Centralized entity intelligence for cross-module consistency.
 *   **NPWP & Tax Profiling**: Storage and validation of tax credentials for B2B compliance.
 *   **Relational History**: Instant access to every transaction, quotation, and payment associated with an entity.
 
+### 🧠 Kecerdasan Buatan (AI Intelligence Hub)
+Orkestrasi modul kecerdasan buatan tingkat lanjut yang didukung oleh model bahasa besar Google Gemini untuk optimalisasi operasional bisnis.
+*   **AI Financial Insights**: Analisis otomatis data keuangan secara real-time yang menghasilkan saran taktis arus kas dan penagihan strategis langsung di Dashboard Owner/Admin.
+*   **AI Chatbot Assistant**: Asisten virtual interaktif halaman penuh (`/ai-assistant`) dan widget mengambang di dashboard dengan riwayat chat persisten, pengelompokan sesi berbasis waktu, dan pemahaman kontekstual data tagihan aktif.
+*   **AI Copywriter (Draf Surel)**: Pembuatan draf email korespondensi invoice otomatis yang disesuaikan dengan status penagihan untuk mempercepat komunikasi dengan klien.
+
 ---
 
 ## 🏗️ Technical Architecture

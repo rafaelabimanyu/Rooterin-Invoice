@@ -59,7 +59,7 @@ PENTING: Jangan sertakan blok kode markdown seperti ```json atau pembungkus teks
                 throw new \Exception("GEMINI_API_KEY tidak dikonfigurasi di file .env");
             }
 
-            $result = Gemini::generativeModel(model: 'gemini-1.5-flash')->generateContent($prompt);
+            $result = Gemini::generativeModel('gemini-1.5-flash')->generateContent($prompt);
             $responseText = trim($result->text());
 
             // Strip potential markdown wrappers

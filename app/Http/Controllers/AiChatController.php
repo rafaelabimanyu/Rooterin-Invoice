@@ -52,7 +52,7 @@ Gunakan data di atas untuk menjawab pertanyaan pengguna dengan tepat. Jika pengg
             $userMessage = $request->input('message');
             $prompt = "{$context}\n\nPertanyaan Pengguna: {$userMessage}\n\nJawaban:";
 
-            $result = Gemini::generativeModel(model: 'gemini-1.5-flash')->generateContent($prompt);
+            $result = Gemini::generativeModel('gemini-1.5-flash')->generateContent($prompt);
             $reply = trim($result->text());
 
             return response()->json([

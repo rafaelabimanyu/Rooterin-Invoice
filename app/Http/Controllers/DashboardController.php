@@ -62,7 +62,7 @@ Berikan 2-3 kalimat berisi insight bisnis taktis dan rekomendasi tindakan prakti
                 if (empty(env('GEMINI_API_KEY')) && empty(config('gemini.api_key'))) {
                     throw new \Exception("Key missing");
                 }
-                $result = \Gemini\Laravel\Facades\Gemini::generativeModel(model: 'gemini-1.5-flash')->generateContent($prompt);
+                $result = \Gemini\Laravel\Facades\Gemini::generativeModel('gemini-1.5-flash')->generateContent($prompt);
                 return trim($result->text());
             } catch (\Throwable $e) {
                 if ($overdueRevenue > $monthlyRevenue) {

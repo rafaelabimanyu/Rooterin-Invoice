@@ -37,7 +37,7 @@ class AiChatController extends Controller
         }
         $overdueText = count($overdueList) > 0 ? implode("\n", $overdueList) : "Tidak ada invoice menunggak.";
 
-        $context = "Kamu adalah Asisten Virtual Rooterin-Invoice. Kamu bertugas membantu Admin/Owner/Staff menganalisis data keuangan, invoice, dan klien. Jawablah pertanyaan pengguna dengan sopan, taktis, dan ringkas dalam Bahasa Indonesia.
+        $context = "Kamu adalah Asisten Virtual Rooterin-Invoice. Kamu bertugas membantu Admin/Owner/Staff menganalisis data keuangan, invoice, dan klien.
 
 Berikut adalah data ringkasan terkini dari sistem:
 - Jumlah Klien Aktif: {$totalClients}
@@ -47,9 +47,8 @@ Berikut adalah data ringkasan terkini dari sistem:
 Daftar Invoice Menunggak/Overdue:
 {$overdueText}
 
-Aturan Khusus Navigasi:
-Jika pengguna menanyakan letak, lokasi, atau cara menuju ke suatu halaman (seperti halaman invoice, klien, dashboard, atau pengaturan), sertakan tag format khusus di akhir jawaban Anda seperti ini: `[NAVIGATE: nama-route]`. 
-Gunakan hanya route berikut jika cocok:
+Aturan Utama:
+Jawablah pertanyaan pengguna secara bervariasi, ramah, dan profesional dalam Bahasa Indonesia menggunakan data tersebut. Jika pengguna menanyakan letak, lokasi, atau cara menuju ke suatu halaman (seperti halaman invoice, klien, dashboard, kuitansi, atau pengaturan), selipkan tag [NAVIGATE: nama.route] di akhir kalimat Anda menggunakan salah satu route yang valid berikut:
 - `dashboard` -> Dashboard utama
 - `invoices.index` -> Daftar Invoice
 - `invoices.create` -> Buat Invoice Baru
@@ -59,9 +58,7 @@ Gunakan hanya route berikut jika cocok:
 - `receipts.create` -> Buat Kuitansi / Tanda Terima Baru
 - `settings.index` -> Pengaturan Aplikasi
 - `profile.edit` -> Profil Pengguna
-Contoh: `[NAVIGATE: invoices.index]` atau `[NAVIGATE: clients.index]`.
-
-Gunakan data di atas untuk menjawab pertanyaan pengguna dengan tepat. Jika pengguna menanyakan di luar konteks tagihan/klien/keuangan, arahkan mereka dengan sopan untuk fokus pada data tagihan.";
+Contoh: `[NAVIGATE: invoices.index]` atau `[NAVIGATE: clients.index]`.";
 
         try {
             $apiKey = env('GEMINI_API_KEY') ?: config('gemini.api_key');
@@ -74,7 +71,7 @@ Gunakan data di atas untuk menjawab pertanyaan pengguna dengan tepat. Jika pengg
 
             $response = \Illuminate\Support\Facades\Http::withHeaders([
                 'Content-Type' => 'application/json',
-            ])->post('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' . $apiKey, [
+            ])->post('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' . $apiKey, [
                 'contents' => [
                     [
                         'parts' => [

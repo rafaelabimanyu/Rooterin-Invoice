@@ -9,6 +9,7 @@
         "php": "^8.3",
         "bacon/bacon-qr-code": "^3.1",
         "barryvdh/laravel-dompdf": "^3.1",
+        "google-gemini-php/laravel": "^2.0",
         "jenssegers/agent": "^2.6",
         "laravel/framework": "^13.7",
         "laravel/tinker": "^3.0",

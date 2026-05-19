@@ -59,6 +59,37 @@
                 </div>
             </div>
         </div>
+
+        <!-- AI Financial Insights Card (Owner/Admin Only) -->
+        <div class="mb-12 page-fade-in stagger-5">
+            <div class="bg-gradient-to-r from-indigo-50/50 to-blue-50/30 rounded-3xl border border-indigo-100/80 p-8 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
+                <!-- Sparkle design background element -->
+                <div class="absolute right-0 top-0 w-32 h-32 bg-indigo-200/10 rounded-full blur-2xl pointer-events-none"></div>
+                
+                <div class="flex items-start gap-5 relative z-10 flex-1">
+                    <div class="w-12 h-12 rounded-2xl bg-indigo-600/10 flex items-center justify-center text-indigo-600 shrink-0 shadow-sm border border-indigo-200/30">
+                        <i data-lucide="sparkles" class="w-6 h-6 text-indigo-600"></i>
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] font-black bg-indigo-600 text-white px-2 py-0.5 rounded-full uppercase tracking-wider">AI Financial Advisory</span>
+                            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Real-time Analysis</span>
+                        </div>
+                        <h4 class="text-base font-bold text-slate-900 leading-snug font-jakarta">Taktik Keuangan & Arus Kas</h4>
+                        <p class="text-sm text-slate-600 leading-relaxed max-w-4xl mt-1">
+                            {{ $aiInsight }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 shrink-0 relative z-10">
+                    <a href="{{ route('dashboard', ['refresh_ai' => 1]) }}" class="px-4 py-2.5 bg-white border border-slate-200 hover:border-indigo-200 hover:text-indigo-600 rounded-xl text-xs font-bold shadow-sm transition-all flex items-center gap-2 active:scale-95">
+                        <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                        <span>Perbarui Analisis</span>
+                    </a>
+                </div>
+            </div>
+        </div>
     @else
         <!-- Staff: Premium Interactive Dashboard -->
         <div class="mb-12 page-fade-in" x-data="{ 
@@ -379,6 +410,114 @@
                     </div>
                 </div>
             @endif
+        </div>
+    </div>
+
+    <!-- AI Chatbot Assistant floating widget -->
+    <div x-data="{
+        open: false,
+        input: '',
+        messages: [
+            { sender: 'ai', text: 'Halo! Saya Asisten Virtual Rooterin. Ada yang bisa saya bantu terkait tagihan, klien, atau ringkasan keuangan hari ini?' }
+        ],
+        loading: false,
+        sendMessage() {
+            if (!this.input.trim()) return;
+            const userMsg = this.input;
+            this.messages.push({ sender: 'user', text: userMsg });
+            this.input = '';
+            this.loading = true;
+            
+            // Scroll to bottom
+            this.$nextTick(() => {
+                const container = this.$refs.chatContainer;
+                container.scrollTop = container.scrollHeight;
+            });
+
+            fetch('{{ route('ai-assistant.chat') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ message: userMsg })
+            })
+            .then(res => res.json())
+            .then(data => {
+                this.loading = false;
+                if (data.success) {
+                    this.messages.push({ sender: 'ai', text: data.reply });
+                } else {
+                    this.messages.push({ sender: 'ai', text: 'Maaf, terjadi kesalahan saat memproses permintaan Anda.' });
+                }
+                this.$nextTick(() => {
+                    const container = this.$refs.chatContainer;
+                    container.scrollTop = container.scrollHeight;
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                });
+            })
+            .catch(err => {
+                this.loading = false;
+                this.messages.push({ sender: 'ai', text: 'Maaf, koneksi gagal.' });
+                this.$nextTick(() => {
+                    const container = this.$refs.chatContainer;
+                    container.scrollTop = container.scrollHeight;
+                });
+            });
+        }
+    }" class="fixed bottom-6 right-6 z-50">
+        
+        <!-- Toggle Button -->
+        <button @click="open = !open; setTimeout(() => typeof lucide !== 'undefined' && lucide.createIcons(), 50)" class="w-14 h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full flex items-center justify-center shadow-2xl transition-all hover:scale-105 active:scale-95 border-2 border-white">
+            <i x-show="!open" data-lucide="message-square" class="w-6 h-6"></i>
+            <i x-show="open" data-lucide="x" class="w-6 h-6" style="display: none;"></i>
+        </button>
+
+        <!-- Chat Window -->
+        <div x-show="open" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 scale-95" x-transition:enter-end="opacity-100 translate-y-0 scale-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 scale-100" x-transition:leave-end="opacity-0 translate-y-4 scale-95" class="absolute bottom-20 right-0 w-80 md:w-96 h-[450px] bg-white rounded-3xl border border-slate-200 shadow-[0_24px_48px_rgba(0,0,0,0.15)] overflow-hidden flex flex-col" style="display: none;">
+            
+            <!-- Chat Header -->
+            <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white">
+                        <i data-lucide="bot" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-bold font-jakarta">Rooterin AI Assistant</h4>
+                        <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Online</p>
+                    </div>
+                </div>
+                <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
+            </div>
+
+            <!-- Messages List -->
+            <div x-ref="chatContainer" class="flex-1 p-6 overflow-y-auto space-y-4 bg-slate-50/50">
+                <template x-for="(msg, idx) in messages" :key="idx">
+                    <div class="flex flex-col" :class="msg.sender === 'user' ? 'items-end' : 'items-start'">
+                        <div class="max-w-[85%] px-4 py-3 rounded-2xl text-xs leading-relaxed" :class="msg.sender === 'user' ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-white border border-slate-200 text-slate-800 rounded-tl-none shadow-sm'">
+                            <p class="whitespace-pre-line" x-text="msg.text"></p>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Loading Bubble -->
+                <div x-show="loading" class="flex items-start" style="display: none;">
+                    <div class="bg-white border border-slate-200 text-slate-500 rounded-2xl rounded-tl-none px-4 py-3 shadow-sm flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></span>
+                        <span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
+                        <span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.3s"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <form @submit.prevent="sendMessage()" class="p-4 bg-white border-t border-slate-100 flex items-center gap-3">
+                <input x-model="input" type="text" placeholder="Tanyakan total invoice menunggak..." class="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all text-slate-800" :disabled="loading">
+                <button type="submit" class="w-9 h-9 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl flex items-center justify-center shrink-0 transition-all active:scale-95 disabled:opacity-50" :disabled="loading">
+                    <i data-lucide="send" class="w-4 h-4"></i>
+                </button>
+            </form>
+
         </div>
     </div>
 </x-app-layout>

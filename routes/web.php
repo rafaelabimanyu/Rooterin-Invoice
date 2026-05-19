@@ -10,6 +10,8 @@ use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ChronosController;
+use App\Http\Controllers\AiInvoiceController;
+use App\Http\Controllers\AiChatController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -49,7 +51,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Invoices
         Route::get('invoices/{invoice}/pdf', [InvoiceController::class, 'downloadPdf'])->name('invoices.pdf');
+        Route::post('invoices/{invoice}/ai-email-draft', [AiInvoiceController::class, 'generateEmailDraft'])->name('invoices.ai-email-draft');
         Route::resource('invoices', InvoiceController::class);
+
+        // AI Chatbot Assistant
+        Route::post('ai-assistant/chat', [AiChatController::class, 'handleChat'])->name('ai-assistant.chat');
 
         // Security Intelligence
         Route::get('/intelligence', [\App\Http\Controllers\Admin\IntelligenceController::class, 'index'])->name('intelligence.index');

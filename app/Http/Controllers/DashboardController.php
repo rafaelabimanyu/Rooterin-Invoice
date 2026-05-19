@@ -24,7 +24,54 @@ class DashboardController extends Controller
 
         $monthlyRevenue = Invoice::where('status', 'paid')
             ->whereMonth('tanggal_invoice', Carbon::now()->month)
+            ->whereYear('tanggal_invoice', Carbon::now()->year)
             ->sum('total');
+
+        $overdueRevenue = Invoice::whereIn('status', ['sent', 'pending', 'dp'])
+            ->where('due_date', '<', Carbon::now())
+            ->sum('total');
+
+        // Compile 3 months trend
+        $threeMonthsAgo = Carbon::now()->subMonths(2)->startOfMonth();
+        $recentThreeMonthsInvoices = Invoice::where('tanggal_invoice', '>=', $threeMonthsAgo)->get();
+
+        $trendSummary = [];
+        for ($i = 2; $i >= 0; $i--) {
+            $monthDate = Carbon::now()->subMonths($i);
+            $monthTotal = $recentThreeMonthsInvoices->filter(function($invoice) use ($monthDate) {
+                return $invoice->tanggal_invoice && $invoice->tanggal_invoice->format('Y-m') === $monthDate->format('Y-m');
+            })->sum('total');
+            
+            $trendSummary[] = $monthDate->format('F Y') . ": Rp " . number_format($monthTotal, 0, ',', '.');
+        }
+        $trendText = implode(', ', $trendSummary);
+
+        if (request()->has('refresh_ai')) {
+            \Illuminate\Support\Facades\Cache::forget('ai_financial_insights');
+        }
+
+        $aiInsight = \Illuminate\Support\Facades\Cache::remember('ai_financial_insights', 3600, function() use ($monthlyRevenue, $overdueRevenue, $trendText) {
+            $prompt = "Kamu adalah konsultan keuangan bisnis terpercaya. Analisis data ringkasan keuangan berikut secara cerdas dan taktis:
+- Total Invoice Lunas Bulan Ini: Rp " . number_format($monthlyRevenue, 0, ',', '.') . "
+- Total Tagihan Menunggak (Overdue): Rp " . number_format($overdueRevenue, 0, ',', '.') . "
+- Tren Penjualan/Invoice 3 Bulan Terakhir: {$trendText}
+
+Berikan 2-3 kalimat berisi insight bisnis taktis dan rekomendasi tindakan praktis dalam Bahasa Indonesia yang profesional untuk membantu pemilik bisnis menjaga kelancaran cash flow (arus kas). Jangan gunakan format markdown (seperti tebal/miring atau list), kembalikan langsung paragraf teks bersih.";
+
+            try {
+                if (empty(env('GEMINI_API_KEY')) && empty(config('gemini.api_key'))) {
+                    throw new \Exception("Key missing");
+                }
+                $result = \Gemini\Laravel\Facades\Gemini::generativeModel(model: 'gemini-1.5-flash')->generateContent($prompt);
+                return trim($result->text());
+            } catch (\Throwable $e) {
+                if ($overdueRevenue > $monthlyRevenue) {
+                    return "Total tagihan menunggak Anda saat ini cukup tinggi dibandingkan dengan pendapatan bulanan. Prioritaskan penagihan piutang aktif dengan mengirimkan peringatan otomatis menggunakan AI Copywriter, serta tawarkan opsi pembayaran bertahap agar arus kas operasional Anda tetap terjaga.";
+                } else {
+                    return "Performa keuangan Anda bulan ini stabil dengan piutang tertagih yang baik. Namun, tetap pantau tagihan outstanding Anda secara ketat untuk meminimalkan resiko keterlambatan pembayaran di masa mendatang.";
+                }
+            }
+        });
 
         $isStaff = auth()->user()->role === 'staff';
         
@@ -95,7 +142,8 @@ class DashboardController extends Controller
             'dailyGoal',
             'goalProgress',
             'randomQuote',
-            'activityLogs'
+            'activityLogs',
+            'aiInsight'
         ));
     }
 }

@@ -2,12 +2,12 @@
     <div class="mb-8 md:mb-12 flex flex-col lg:flex-row lg:items-end justify-between gap-6 px-4 md:px-0">
         <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2 text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 overflow-hidden">
-                <a href="{{ route('receipts.index') }}" class="hover:text-indigo-600 transition-colors shrink-0">Receipts</a>
+                <a href="{{ route('receipts.index') }}" class="hover:text-indigo-600 transition-colors shrink-0">{{ app()->getLocale() == 'en' ? 'Receipts' : 'Kuitansi' }}</a>
                 <i data-lucide="chevron-right" class="w-3 h-3 shrink-0"></i>
                 <span class="text-slate-900 truncate">{{ $receipt->receipt_number }}</span>
             </div>
-            <h1 class="text-2xl md:text-3xl font-bold text-slate-900 font-outfit leading-tight truncate">Receipt Details</h1>
-            <p class="text-sm text-slate-500 mt-1 truncate">Review payment receipt for {{ $receipt->client->nama_client }}.</p>
+            <h1 class="text-2xl md:text-3xl font-bold text-slate-900 font-outfit leading-tight truncate">{{ app()->getLocale() == 'en' ? 'Receipt Details' : 'Detail Kuitansi' }}</h1>
+            <p class="text-sm text-slate-500 mt-1 truncate">{{ app()->getLocale() == 'en' ? 'Review payment receipt for ' : 'Tinjau kuitansi pembayaran untuk ' }}{{ $receipt->client->nama_client }}.</p>
         </div>
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 md:gap-4">
             <div class="flex items-center justify-between sm:justify-start gap-4">
@@ -16,7 +16,7 @@
                     <button title="Print" class="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-500 hover:text-slate-900 transition-all shadow-sm active:scale-95">
                         <i data-lucide="printer" class="w-4 h-4"></i>
                     </button>
-                    <a href="{{ route('receipts.pdf', $receipt) }}" title="Download PDF" class="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-500 hover:text-indigo-600 transition-all shadow-sm active:scale-95">
+                    <a href="{{ route('receipts.pdf', $receipt) }}" title="{{ app()->getLocale() == 'en' ? 'Download PDF' : 'Unduh PDF' }}" class="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-500 hover:text-indigo-600 transition-all shadow-sm active:scale-95">
                         <i data-lucide="download" class="w-4 h-4"></i>
                     </a>
                 </div>
@@ -27,7 +27,7 @@
                     @csrf
                     <button type="submit" class="w-full px-6 py-3 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2 active:scale-95">
                         <i data-lucide="file-check" class="w-4 h-4"></i>
-                        Convert to Invoice
+                        {{ app()->getLocale() == 'en' ? 'Convert to Invoice' : 'Ubah ke Faktur' }}
                     </button>
                 </form>
             @endif
@@ -55,11 +55,11 @@
                 </div>
                 
                 <div class="w-full md:w-auto text-left md:text-right space-y-2">
-                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-[0.3em] mb-4 md:mb-6">Payment Receipt</h2>
+                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-[0.3em] mb-4 md:mb-6">{{ app()->getLocale() == 'en' ? 'Payment Receipt' : 'Kuitansi Pembayaran' }}</h2>
                     <p class="text-2xl font-black text-slate-900 font-outfit">{{ $receipt->receipt_number }}</p>
-                    <p class="text-xs font-bold text-slate-500">Issued: {{ $receipt->tanggal_receipt->format('M d, Y') }}</p>
+                    <p class="text-xs font-bold text-slate-500">{{ app()->getLocale() == 'en' ? 'Issued' : 'Diterbitkan' }}: {{ $receipt->tanggal_receipt->format('M d, Y') }}</p>
                     <div class="inline-block mt-4 px-3 py-1 bg-rose-50 text-rose-600 border border-rose-100 rounded text-[10px] font-bold uppercase tracking-widest">
-                        Expiry: {{ $receipt->expiry_date->format('M d, Y') }}
+                        {{ app()->getLocale() == 'en' ? 'Expiry' : 'Kedaluwarsa' }}: {{ $receipt->expiry_date->format('M d, Y') }}
                     </div>
                 </div>
             </div>
@@ -68,7 +68,7 @@
         <!-- Billing Relations -->
         <div class="flex flex-col md:flex-row p-6 md:p-16 gap-10 md:gap-16 bg-slate-50/30 border-b border-slate-100">
             <div class="w-full md:flex-1">
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Client Account</p>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">{{ app()->getLocale() == 'en' ? 'Client Account' : 'Akun Klien' }}</p>
                 <div class="space-y-2">
                     <p class="text-base md:text-lg font-black text-slate-900">{{ $receipt->client->nama_client }}</p>
                     <p class="text-xs md:text-sm font-bold text-indigo-600">{{ $receipt->client->nama_perusahaan }}</p>
@@ -80,7 +80,7 @@
             
             <div class="w-full md:w-auto text-left md:text-right">
                 <div class="p-6 md:p-8 bg-white rounded-xl border border-slate-200 shadow-sm w-full">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Amount Paid</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Amount Paid' : 'Jumlah Dibayar' }}</p>
                     <p class="text-2xl md:text-3xl font-black text-slate-900 font-outfit">Rp {{ number_format($receipt->total, 0, ',', '.') }}</p>
                 </div>
             </div>
@@ -92,10 +92,10 @@
             <table class="hidden md:table w-full text-left">
                 <thead>
                     <tr class="text-[10px] font-bold uppercase text-slate-400 tracking-widest border-b border-slate-200">
-                        <th class="py-4 px-16">Service Description</th>
-                        <th class="py-4 text-center w-24">Qty</th>
-                        <th class="py-4 text-right w-40">Rate</th>
-                        <th class="py-4 text-right px-16 w-40">Amount</th>
+                        <th class="py-4 px-16">{{ app()->getLocale() == 'en' ? 'Service Description' : 'Deskripsi Layanan' }}</th>
+                        <th class="py-4 text-center w-24">{{ app()->getLocale() == 'en' ? 'Qty' : 'Jumlah' }}</th>
+                        <th class="py-4 text-right w-40">{{ app()->getLocale() == 'en' ? 'Rate' : 'Harga' }}</th>
+                        <th class="py-4 text-right px-16 w-40">{{ app()->getLocale() == 'en' ? 'Amount' : 'Jumlah' }}</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -117,11 +117,11 @@
                 @foreach($receipt->items as $item)
                     <div class="p-6 space-y-5">
                         <div class="w-full">
-                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1.5">Description</p>
+                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1.5">{{ app()->getLocale() == 'en' ? 'Description' : 'Deskripsi' }}</p>
                             <p class="text-sm font-bold text-slate-900 leading-snug">{{ $item->deskripsi }}</p>
                         </div>
                         <div class="w-full">
-                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1.5">Quantity & Rate</p>
+                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1.5">{{ app()->getLocale() == 'en' ? 'Quantity & Rate' : 'Jumlah & Harga' }}</p>
                             <p class="text-xs font-medium text-slate-600">
                                 {{ number_format($item->qty, 0) }} Unit &times; Rp {{ number_format($item->harga, 0, ',', '.') }}
                             </p>
@@ -140,7 +140,7 @@
             <div class="flex flex-col md:flex-row justify-between gap-12">
                 <div class="w-full md:flex-1 space-y-8">
                     <div>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Terms & Conditions</p>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">{{ app()->getLocale() == 'en' ? 'Terms & Conditions' : 'Syarat & Ketentuan' }}</p>
                         <p class="text-[11px] text-slate-500 leading-relaxed">{{ $receipt->terms_condition }}</p>
                     </div>
                 </div>
@@ -155,11 +155,11 @@
                         <span class="font-bold text-slate-900">+ Rp {{ number_format($receipt->subtotal * ($receipt->tax_percent / 100), 0, ',', '.') }}</span>
                     </div>
                     <div class="flex justify-between items-center text-sm">
-                        <span class="text-slate-500 font-medium">Discount</span>
+                        <span class="text-slate-500 font-medium">{{ app()->getLocale() == 'en' ? 'Discount' : 'Diskon' }}</span>
                         <span class="font-bold text-rose-500">- Rp {{ number_format($receipt->subtotal * ($receipt->discount_percent / 100), 0, ',', '.') }}</span>
                     </div>
                     <div class="pt-6 border-t border-slate-200 flex justify-between items-center">
-                        <span class="text-xs md:text-sm font-black text-slate-900 uppercase tracking-widest">Grand Total</span>
+                        <span class="text-xs md:text-sm font-black text-slate-900 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Grand Total' : 'Total Keseluruhan' }}</span>
                         <span class="text-xl md:text-3xl font-black text-indigo-600 font-outfit">Rp {{ number_format($receipt->total, 0, ',', '.') }}</span>
                     </div>
                 </div>

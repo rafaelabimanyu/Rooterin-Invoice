@@ -125,7 +125,7 @@
                     <div style="font-size: 24px; font-weight: 900; color: #0f172a; margin-bottom: 15px;">Rooterin<span style="color: #4f46e5;">.</span></div>
                 @endif
                 <div class="company-name">Rooterin Technical Services</div>
-                <div class="company-tagline">High-Precision Operational Solutions</div>
+                <div class="company-tagline">{{ app()->getLocale() == 'en' ? 'High-Precision Operational Solutions' : 'Solusi Operasional Presisi Tinggi' }}</div>
                 <div class="company-contact">
                     Gedung Artha Graha, Lt. 18, Kav. 52-53, Jakarta Selatan<br>
                     T: +62 21 555 1234 | E: billing@rooterin.com | W: www.rooterin.com
@@ -186,7 +186,7 @@
                 <tr>
                     <td>
                         <div class="item-desc-primary">{{ $item->deskripsi }}</div>
-                        <div class="item-desc-secondary">Technical implementation fulfillment</div>
+                        <div class="item-desc-secondary">{{ app()->getLocale() == 'en' ? 'Technical implementation fulfillment' : 'Pemenuhan implementasi teknis' }}</div>
                     </td>
                     <td class="text-center">{{ number_format($item->qty, 0) }}</td>
                     <td class="text-right">Rp {{ number_format($item->harga, 0, ',', '.') }}</td>
@@ -238,7 +238,7 @@
         <!-- Footer -->
         <div class="footer">
             Rooterin Enterprise Billing &bull; tech-ops@rooterin.com &bull; +62 21 555 1234<br>
-            This is an electronically generated document. No signature required.
+            {{ app()->getLocale() == 'en' ? 'This is an electronically generated document. No signature required.' : 'Dokumen ini dibuat secara elektronik. Tidak memerlukan tanda tangan.' }}
         </div>
     </div>
 
@@ -273,7 +273,7 @@
                         <img src="{{ $directPath }}" style="width: 100%; border-radius: 12px; border: 1px solid #f1f5f9;">
                     @else
                         <div style="width: 100%; height: 150px; background: #f1f5f9; border-radius: 12px; text-align: center; line-height: 150px; color: #94a3b8; font-size: 10px;">
-                            Image Missing
+                            {{ app()->getLocale() == 'en' ? 'Image Missing' : 'Gambar Tidak Ditemukan' }}
                         </div>
                     @endif
                     @if($attachment->caption)

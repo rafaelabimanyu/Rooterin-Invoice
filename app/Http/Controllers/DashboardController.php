@@ -50,17 +50,29 @@ class DashboardController extends Controller
 
         $aiInsight = null;
         if (!$isStaff) {
+            $locale = app()->getLocale();
             if (request()->has('refresh_ai')) {
-                \Illuminate\Support\Facades\Cache::forget('ai_financial_insights');
+                \Illuminate\Support\Facades\Cache::forget('ai_financial_insights_' . $locale);
             }
 
-            $aiInsight = \Illuminate\Support\Facades\Cache::remember('ai_financial_insights', 3600, function() use ($monthlyRevenue, $overdueRevenue, $trendText) {
-                $prompt = "Kamu adalah konsultan keuangan bisnis terpercaya. Analisis data ringkasan keuangan berikut secara cerdas dan taktis:
+            $aiInsight = \Illuminate\Support\Facades\Cache::remember('ai_financial_insights_' . $locale, 3600, function() use ($monthlyRevenue, $overdueRevenue, $trendText, $locale) {
+                if ($locale === 'en') {
+                    $prompt = "You are a professional business financial consultant. Analyze the following financial summary smartly and tactfully:
+- Total Invoices Paid This Month: Rp " . number_format($monthlyRevenue, 0, ',', '.') . "
+- Total Overdue Invoices: Rp " . number_format($overdueRevenue, 0, ',', '.') . "
+- Sales/Invoice Trend for the Last 3 Months: {$trendText}
+
+Strictly match the user's current application language interface. If the active language is 'en', you MUST construct your entire analysis, greetings, and responses in Professional English. If the active language is 'id', you MUST respond in Professional Indonesian. Never mix the languages.
+Provide 2-3 sentences containing tactical business insights and practical action recommendations to help the business owner maintain smooth cash flow. Do not use any markdown formatting (like bold/italic or lists), return only plain text paragraph.";
+                } else {
+                    $prompt = "Kamu adalah konsultan keuangan bisnis terpercaya. Analisis data ringkasan keuangan berikut secara cerdas dan taktis:
 - Total Invoice Lunas Bulan Ini: Rp " . number_format($monthlyRevenue, 0, ',', '.') . "
 - Total Tagihan Menunggak (Overdue): Rp " . number_format($overdueRevenue, 0, ',', '.') . "
 - Tren Penjualan/Invoice 3 Bulan Terakhir: {$trendText}
 
+Strictly match the user's current application language interface. If the active language is 'en', you MUST construct your entire analysis, greetings, and responses in Professional English. If the active language is 'id', you MUST respond in Professional Indonesian. Never mix the languages.
 Berikan 2-3 kalimat berisi insight bisnis taktis dan rekomendasi tindakan praktis dalam Bahasa Indonesia yang profesional untuk membantu pemilik bisnis menjaga kelancaran cash flow (arus kas). Jangan gunakan format markdown (seperti tebal/miring atau list), kembalikan langsung paragraf teks bersih.";
+                }
 
                 try {
                     $apiKey = env('GEMINI_API_KEY') ?: config('gemini.api_key');
@@ -95,10 +107,18 @@ Berikan 2-3 kalimat berisi insight bisnis taktis dan rekomendasi tindakan prakti
                 } catch (\Throwable $e) {
                     \Illuminate\Support\Facades\Log::error("DashboardController Gemini Error: " . $e->getMessage(), ['exception' => $e]);
                     $errMsg = " (Advisory Fallback)";
-                    if ($overdueRevenue > $monthlyRevenue) {
-                        return "Total tagihan menunggak Anda saat ini cukup tinggi dibandingkan dengan pendapatan bulanan. Prioritaskan penagihan piutang aktif dengan mengirimkan peringatan otomatis menggunakan AI Copywriter, serta tawarkan opsi pembayaran bertahap agar arus kas operasional Anda tetap terjaga." . $errMsg;
+                    if ($locale === 'en') {
+                        if ($overdueRevenue > $monthlyRevenue) {
+                            return "Your total overdue invoices are currently quite high compared to monthly revenue. Prioritize active collections by sending automated reminders, and offer installment options to maintain operational cash flow." . $errMsg;
+                        } else {
+                            return "Your financial performance this month is stable with good collection rates. However, continue to monitor outstanding invoices closely to minimize future payment delays." . $errMsg;
+                        }
                     } else {
-                        return "Performa keuangan Anda bulan ini stabil dengan piutang tertagih yang baik. Namun, tetap pantau tagihan outstanding Anda secara ketat untuk meminimalkan resiko keterlambatan pembayaran di masa mendatang." . $errMsg;
+                        if ($overdueRevenue > $monthlyRevenue) {
+                            return "Total tagihan menunggak Anda saat ini cukup tinggi dibandingkan dengan pendapatan bulanan. Prioritaskan penagihan piutang aktif dengan mengirimkan peringatan otomatis menggunakan AI Copywriter, serta tawarkan opsi pembayaran bertahap agar arus kas operasional Anda tetap terjaga." . $errMsg;
+                        } else {
+                            return "Performa keuangan Anda bulan ini stabil dengan piutang tertagih yang baik. Namun, tetap pantau tagihan outstanding Anda secara ketat untuk meminimalkan resiko keterlambatan pembayaran di masa mendatang." . $errMsg;
+                        }
                     }
                 }
             });

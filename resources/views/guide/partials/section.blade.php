@@ -38,7 +38,7 @@
         <!-- Mobile Expand/Collapse Button -->
         <div class="lg:hidden mt-8 pt-4 border-t border-slate-100 flex justify-center">
             <button @click="expanded = !expanded" class="flex items-center gap-2 px-6 py-2.5 bg-indigo-50 text-indigo-600 rounded-full text-sm font-bold shadow-sm border border-indigo-100 hover:bg-indigo-100 transition-colors">
-                <span x-text="expanded ? 'Sembunyikan Detail' : 'Tampilkan Detail'"></span>
+                <span x-text="expanded ? '{{ app()->getLocale() == 'en' ? 'Hide Details' : 'Sembunyikan Detail' }}' : '{{ app()->getLocale() == 'en' ? 'Show Details' : 'Tampilkan Detail' }}'"></span>
                 <i data-lucide="chevron-down" class="w-4 h-4 transition-transform duration-300" :class="expanded ? 'rotate-180' : ''"></i>
             </button>
         </div>

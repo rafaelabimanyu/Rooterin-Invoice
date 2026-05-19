@@ -1,12 +1,12 @@
 <x-app-layout>
     <div class="mb-10 page-fade-in px-4 md:px-0">
         <div class="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">
-            <span>System</span>
+            <span>{{ app()->getLocale() == 'en' ? 'System' : 'Sistem' }}</span>
             <i data-lucide="chevron-right" class="w-3 h-3"></i>
-            <span class="text-indigo-600">User Profile</span>
+            <span class="text-indigo-600">{{ app()->getLocale() == 'en' ? 'User Profile' : 'Profil Pengguna' }}</span>
         </div>
         <h1 class="text-3xl font-black text-slate-900 font-jakarta tracking-tight truncate">{{ __('Profile Information') }}</h1>
-        <p class="text-sm text-slate-500 font-medium">Manage your identity, security preferences, and system localization.</p>
+        <p class="text-sm text-slate-500 font-medium">{{ app()->getLocale() == 'en' ? 'Manage your identity, security preferences, and system localization.' : 'Kelola identitas, preferensi keamanan, dan lokalisasi sistem Anda.' }}</p>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
@@ -32,7 +32,7 @@
                             <i data-lucide="calendar" class="w-5 h-5"></i>
                         </div>
                         <div>
-                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Member Since</p>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Member Since' : 'Anggota Sejak' }}</p>
                             <p class="text-sm font-bold text-slate-900">{{ $user->created_at->format('M d, Y') }}</p>
                         </div>
                     </div>
@@ -41,12 +41,12 @@
                 <!-- Security Quick Info -->
                 <div class="mt-10 pt-8 border-t border-slate-50 space-y-6 text-left">
                     <div>
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Security Overview</p>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">{{ app()->getLocale() == 'en' ? 'Security Overview' : 'Ikhtisar Keamanan' }}</p>
                         <div class="space-y-4">
                             <div class="flex items-center justify-between p-3 bg-emerald-50 rounded-xl border border-emerald-100">
                                 <div class="flex items-center gap-3">
                                     <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
-                                    <span class="text-xs font-bold text-emerald-900">2FA Protected</span>
+                                    <span class="text-xs font-bold text-emerald-900">{{ app()->getLocale() == 'en' ? '2FA Protected' : 'Dilindungi 2FA' }}</span>
                                 </div>
                                 <div class="relative inline-flex items-center cursor-pointer">
                                     <div class="w-8 h-4 bg-emerald-500 rounded-full transition-colors"></div>
@@ -56,9 +56,9 @@
                             <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
                                 <div class="flex items-center gap-2 mb-1">
                                     <i data-lucide="map-pin" class="w-3.5 h-3.5 text-slate-400"></i>
-                                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Last Login</span>
+                                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Last Login' : 'Login Terakhir' }}</span>
                                 </div>
-                                <p class="text-xs font-bold text-slate-900">{{ $user->last_login_at ? $user->last_login_at->diffForHumans() : 'Never' }}</p>
+                                <p class="text-xs font-bold text-slate-900">{{ $user->last_login_at ? $user->last_login_at->diffForHumans() : (app()->getLocale() == 'en' ? 'Never' : 'Belum Pernah') }}</p>
                                 <p class="text-[10px] text-slate-400 font-medium mt-0.5">{{ $user->last_login_ip ?? '0.0.0.0' }}</p>
                             </div>
                         </div>
@@ -66,7 +66,7 @@
 
                     <!-- Activity Log -->
                     <div>
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Recent Activity</p>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">{{ app()->getLocale() == 'en' ? 'Recent Activity' : 'Aktivitas Terbaru' }}</p>
                         <div class="space-y-4">
                             @forelse($activityLogs as $log)
                                 <div class="flex gap-3">
@@ -77,7 +77,7 @@
                                     </div>
                                 </div>
                             @empty
-                                <p class="text-xs text-slate-400 italic">No recent activity recorded.</p>
+                                <p class="text-xs text-slate-400 italic">{{ app()->getLocale() == 'en' ? 'No recent activity recorded.' : 'Tidak ada aktivitas terbaru yang tercatat.' }}</p>
                             @endforelse
                         </div>
                     </div>
@@ -104,8 +104,8 @@
                         <i data-lucide="trash-2" class="w-6 h-6"></i>
                     </div>
                     <div>
-                        <h4 class="text-lg font-black text-slate-900 font-jakarta">Security: Danger Zone</h4>
-                        <p class="text-sm text-slate-500 font-medium">Irreversible actions that will remove your access permanently.</p>
+                        <h4 class="text-lg font-black text-slate-900 font-jakarta">{{ app()->getLocale() == 'en' ? 'Security: Danger Zone' : 'Keamanan: Zona Bahaya' }}</h4>
+                        <p class="text-sm text-slate-500 font-medium">{{ app()->getLocale() == 'en' ? 'Irreversible actions that will remove your access permanently.' : 'Tindakan tidak dapat dibatalkan yang akan menghapus akses Anda secara permanen.' }}</p>
                     </div>
                 </div>
                 @include('profile.partials.delete-user-form')

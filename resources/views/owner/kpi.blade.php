@@ -6,18 +6,18 @@
                     <i data-lucide="trending-up" class="w-6 h-6"></i>
                 </div>
                 <div>
-                    <h1 class="text-3xl font-black text-slate-900 font-jakarta tracking-tight uppercase">Executive Intelligence</h1>
-                    <p class="text-[11px] text-slate-500 font-bold uppercase tracking-[0.1em]">Business performance & growth analytics</p>
+                    <h1 class="text-3xl font-black text-slate-900 font-jakarta tracking-tight uppercase">{{ app()->getLocale() == 'en' ? 'Executive Intelligence' : 'Kecerdasan Eksekutif' }}</h1>
+                    <p class="text-[11px] text-slate-500 font-bold uppercase tracking-[0.1em]">{{ app()->getLocale() == 'en' ? 'Business performance & growth analytics' : 'Analisis kinerja bisnis & pertumbuhan' }}</p>
                 </div>
             </div>
         </div>
         <div class="hidden md:flex items-center gap-4">
             <div class="px-4 py-2 glass-panel rounded-xl shadow-sm flex items-center gap-3 border-slate-200/50">
                 <div class="flex flex-col">
-                    <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">Telemetry</span>
+                    <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">{{ app()->getLocale() == 'en' ? 'Telemetry' : 'Telemetri' }}</span>
                     <div class="flex items-center gap-1.5 mt-1">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <span class="text-[10px] font-bold text-slate-700 uppercase">Live Feed</span>
+                        <span class="text-[10px] font-bold text-slate-700 uppercase">{{ app()->getLocale() == 'en' ? 'Live Feed' : 'Aktivitas Terkini' }}</span>
                     </div>
                 </div>
             </div>
@@ -28,28 +28,28 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 page-fade-in" style="animation-delay: 100ms">
         <!-- Monthly Revenue -->
         <div class="glass-card p-6 group hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 relative overflow-hidden border-indigo-500/10 cursor-pointer"
-             @click="$dispatch('open-slide-over', { title: 'Revenue Detail', content: `<div class=\'space-y-6\'>
+             @click="$dispatch('open-slide-over', { title: '{{ app()->getLocale() == 'en' ? 'Revenue Detail' : 'Detail Pendapatan' }}', content: `<div class=\'space-y-6\'>
                 <div class=\'p-5 bg-indigo-50 rounded-2xl border border-indigo-100\'>
-                    <p class=\'text-xs font-black text-indigo-400 uppercase tracking-widest mb-4\'>MoM Analysis</p>
+                    <p class=\'text-xs font-black text-indigo-400 uppercase tracking-widest mb-4\'>{{ app()->getLocale() == 'en' ? 'MoM Analysis' : 'Analisis Bulanan' }}</p>
                     <div class=\'flex items-center justify-between mb-2\'>
-                        <span class=\'text-sm font-bold text-slate-600\'>Current Month</span>
+                        <span class=\'text-sm font-bold text-slate-600\'>{{ app()->getLocale() == 'en' ? 'Current Month' : 'Bulan Ini' }}</span>
                         <span class=\'text-sm font-black text-slate-900\'>Rp {{ number_format($currentMonthRevenue, 0, ',', '.') }}</span>
                     </div>
                     <div class=\'flex items-center justify-between\'>
-                        <span class=\'text-sm font-bold text-slate-600\'>Last Month</span>
+                        <span class=\'text-sm font-bold text-slate-600\'>{{ app()->getLocale() == 'en' ? 'Last Month' : 'Bulan Lalu' }}</span>
                         <span class=\'text-sm font-black text-slate-900\'>Rp {{ number_format($lastMonthRevenue ?? 0, 0, ',', '.') }}</span>
                     </div>
                 </div>
              </div>` })">
             <div class="flex items-center justify-between mb-6">
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Revenue (MTD)</p>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Revenue (MTD)' : 'Pendapatan (Bulan Berjalan)' }}</p>
                 <div class="p-2.5 bg-indigo-50 rounded-xl text-indigo-600 group-hover:rotate-12 transition-transform duration-500">
                     <i data-lucide="banknote" class="w-5 h-5"></i>
                 </div>
             </div>
             <h3 class="text-2xl font-black text-slate-900 font-jakarta tracking-tight mb-4">Rp {{ number_format($currentMonthRevenue, 0, ',', '.') }}</h3>
             <div class="pt-4 border-t border-slate-50 flex items-center justify-between">
-                <span class="text-[9px] text-slate-400 font-black uppercase tracking-widest">Growth</span>
+                <span class="text-[9px] text-slate-400 font-black uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Growth' : 'Pertumbuhan' }}</span>
                 <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black {{ $revenueChange >= 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600' }}">
                     <i data-lucide="{{ $revenueChange >= 0 ? 'trending-up' : 'trending-down' }}" class="w-3 h-3"></i>
                     {{ number_format(abs($revenueChange), 1) }}%
@@ -60,9 +60,9 @@
 
         <!-- Unpaid Amount -->
         <div class="glass-card p-6 group hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 relative overflow-hidden border-amber-500/10 cursor-pointer"
-             @click="$dispatch('open-slide-over', { title: 'Capital Risks', content: 'Detailed risk assessment content...' })">
+             @click="$dispatch('open-slide-over', { title: '{{ app()->getLocale() == 'en' ? 'Capital Risks' : 'Risiko Modal' }}', content: '{{ app()->getLocale() == 'en' ? 'Detailed risk assessment content...' : 'Konten penilaian risiko terperinci...' }}' })">
             <div class="flex items-center justify-between mb-6">
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Capital at Risk</p>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Capital at Risk' : 'Modal dalam Risiko' }}</p>
                 <div class="p-2.5 bg-amber-50 rounded-xl text-amber-600 group-hover:rotate-12 transition-transform duration-500">
                     <i data-lucide="alert-triangle" class="w-5 h-5"></i>
                 </div>
@@ -70,11 +70,11 @@
             <h3 class="text-2xl font-black text-amber-600 font-jakarta tracking-tight mb-4">Rp {{ number_format($totalUnpaid, 0, ',', '.') }}</h3>
             <div class="pt-4 border-t border-slate-50 grid grid-cols-2 gap-4">
                 <div class="flex flex-col">
-                    <span class="text-[8px] text-slate-400 font-black uppercase tracking-widest">Floating</span>
+                    <span class="text-[8px] text-slate-400 font-black uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Floating' : 'Berjalan' }}</span>
                     <span class="text-[11px] font-black text-slate-700">Rp {{ number_format($pendingUnpaid, 0, ',', '.') }}</span>
                 </div>
                 <div class="flex flex-col text-right">
-                    <span class="text-[8px] text-rose-400 font-black uppercase tracking-widest">Critical</span>
+                    <span class="text-[8px] text-rose-400 font-black uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Critical' : 'Kritis' }}</span>
                     <span class="text-[11px] font-black text-rose-600">Rp {{ number_format($overdueUnpaid, 0, ',', '.') }}</span>
                 </div>
             </div>
@@ -83,9 +83,9 @@
 
         <!-- Repeat Customer Rate -->
         <div class="glass-card p-6 group hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 relative overflow-hidden border-emerald-500/10 cursor-pointer"
-             @click="$dispatch('open-slide-over', { title: 'Loyalty Metrics', content: 'Detailed loyalty metrics...' })">
+             @click="$dispatch('open-slide-over', { title: '{{ app()->getLocale() == 'en' ? 'Loyalty Metrics' : 'Metrik Loyalitas' }}', content: '{{ app()->getLocale() == 'en' ? 'Detailed loyalty metrics...' : 'Metrik loyalitas terperinci...' }}' })">
             <div class="flex items-center justify-between mb-6">
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Loyalty Pulse</p>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Loyalty Pulse' : 'Indeks Loyalitas' }}</p>
                 <div class="p-2.5 bg-emerald-50 rounded-xl text-emerald-600 group-hover:rotate-12 transition-transform duration-500">
                     <i data-lucide="refresh-cw" class="w-5 h-5"></i>
                 </div>
@@ -95,16 +95,16 @@
                 <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
                     <div class="bg-emerald-500 h-full shadow-[0_0_8px_rgba(16,185,129,0.5)]" style="width: {{ $repeatRate }}%"></div>
                 </div>
-                <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Across {{ $totalClients }} entities</p>
+                <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Across ' : 'Dari ' }}{{ $totalClients }}{{ app()->getLocale() == 'en' ? ' entities' : ' entitas' }}</p>
             </div>
             <div class="absolute inset-0 shimmer opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
         </div>
 
         <!-- Top Client -->
         <div class="glass-card p-6 group hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 relative overflow-hidden border-rose-500/10 cursor-pointer"
-             @click="$dispatch('open-slide-over', { title: 'Prime Asset', content: 'Top client detail report...' })">
+             @click="$dispatch('open-slide-over', { title: '{{ app()->getLocale() == 'en' ? 'Prime Asset' : 'Aset Utama' }}', content: '{{ app()->getLocale() == 'en' ? 'Top client detail report...' : 'Detail laporan klien utama...' }}' })">
             <div class="flex items-center justify-between mb-6">
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Prime Asset</p>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Prime Asset' : 'Aset Utama' }}</p>
                 <div class="p-2.5 bg-rose-50 rounded-xl text-rose-600 group-hover:rotate-12 transition-transform duration-500">
                     <i data-lucide="crown" class="w-5 h-5"></i>
                 </div>
@@ -113,11 +113,11 @@
                 <h3 class="text-lg font-black text-slate-900 font-jakarta tracking-tight truncate mb-0.5">{{ $topClients[0]->nama_client }}</h3>
                 <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider truncate">{{ $topClients[0]->nama_perusahaan }}</p>
                 <div class="mt-6 pt-4 border-t border-slate-50 flex items-center justify-between">
-                    <span class="text-[9px] text-slate-400 font-black uppercase tracking-widest">Valuation</span>
+                    <span class="text-[9px] text-slate-400 font-black uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Valuation' : 'Valuasi' }}</span>
                     <span class="text-[12px] font-black text-slate-900 tracking-tighter">Rp {{ number_format($topClients[0]->invoices_sum_total, 0, ',', '.') }}</span>
                 </div>
             @else
-                <p class="text-[10px] text-slate-400 italic font-medium">Insufficient data</p>
+                <p class="text-[10px] text-slate-400 italic font-medium">{{ app()->getLocale() == 'en' ? 'Insufficient data' : 'Data tidak mencukupi' }}</p>
             @endif
             <div class="absolute inset-0 shimmer opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
         </div>
@@ -128,13 +128,13 @@
         <div class="lg:col-span-2 glass-card p-8">
             <div class="flex items-center justify-between mb-8">
                 <div>
-                    <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg">Revenue Vectors</h3>
-                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-[0.15em] mt-1">6-Month historical analysis</p>
+                    <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg">{{ app()->getLocale() == 'en' ? 'Revenue Vectors' : 'Vektor Pendapatan' }}</h3>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-[0.15em] mt-1">{{ app()->getLocale() == 'en' ? '6-Month historical analysis' : 'Analisis riwayat 6 bulan' }}</p>
                 </div>
                 <div class="hidden sm:flex items-center gap-3">
                     <div class="flex items-center gap-2 px-3 py-1 bg-indigo-50 rounded-full text-[9px] font-black text-indigo-600 uppercase tracking-widest">
                         <span class="w-1.5 h-1.5 rounded-full bg-indigo-600"></span>
-                        Gross Intake
+                        {{ app()->getLocale() == 'en' ? 'Gross Intake' : 'Pemasukan Kotor' }}
                     </div>
                 </div>
             </div>
@@ -144,18 +144,18 @@
         <!-- Performance Summary -->
         <div class="glass-card overflow-hidden flex flex-col group">
             <div class="p-6 border-b border-slate-100 bg-slate-50/30">
-                <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg">Operational Summary</h3>
-                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-[0.15em] mt-1">Status: {{ now()->format('M Y') }}</p>
+                <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg">{{ app()->getLocale() == 'en' ? 'Operational Summary' : 'Ringkasan Operasional' }}</h3>
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-[0.15em] mt-1">{{ app()->getLocale() == 'en' ? 'Status' : 'Status' }}: {{ now()->format('M Y') }}</p>
             </div>
             <div class="flex-1 p-6 flex flex-col justify-center space-y-6 relative">
                 <div class="flex items-center justify-between group/item cursor-pointer hover:translate-x-1 transition-transform"
-                     @click="$dispatch('open-slide-over', { title: 'New Issuance Detail', content: 'Detailed list of new invoices...' })">
+                     @click="$dispatch('open-slide-over', { title: '{{ app()->getLocale() == 'en' ? 'New Issuance Detail' : 'Detail Penerbitan Baru' }}', content: '{{ app()->getLocale() == 'en' ? 'Detailed list of new invoices...' : 'Daftar detail faktur baru...' }}' })">
                     <div class="flex items-center gap-4">
                         <div class="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 group-hover/item:bg-blue-600 group-hover/item:text-white transition-all duration-300">
                             <i data-lucide="file-plus" class="w-5 h-5"></i>
                         </div>
                         <div>
-                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-[0.15em] mb-0.5">New Issuance</p>
+                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-[0.15em] mb-0.5">{{ app()->getLocale() == 'en' ? 'New Issuance' : 'Penerbitan Baru' }}</p>
                             <p class="text-xl font-black text-slate-900 font-jakarta">{{ $monthlyPerformance['created'] }}</p>
                         </div>
                     </div>
@@ -163,13 +163,13 @@
                 </div>
 
                 <div class="flex items-center justify-between group/item cursor-pointer hover:translate-x-1 transition-transform"
-                     @click="$dispatch('open-slide-over', { title: 'Settled Assets Detail', content: 'Detailed list of settled invoices...' })">
+                     @click="$dispatch('open-slide-over', { title: '{{ app()->getLocale() == 'en' ? 'Settled Assets Detail' : 'Detail Aset Diselesaikan' }}', content: '{{ app()->getLocale() == 'en' ? 'Detailed list of settled invoices...' : 'Daftar detail faktur diselesaikan...' }}' })">
                     <div class="flex items-center gap-4">
                         <div class="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 group-hover/item:bg-emerald-600 group-hover/item:text-white transition-all duration-300">
                             <i data-lucide="check-circle" class="w-5 h-5"></i>
                         </div>
                         <div>
-                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-[0.15em] mb-0.5">Settled Assets</p>
+                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-[0.15em] mb-0.5">{{ app()->getLocale() == 'en' ? 'Settled Assets' : 'Aset Diselesaikan' }}</p>
                             <p class="text-xl font-black text-slate-900 font-jakarta">{{ $monthlyPerformance['paid'] }}</p>
                         </div>
                     </div>
@@ -177,13 +177,13 @@
                 </div>
 
                 <div class="flex items-center justify-between group/item cursor-pointer hover:translate-x-1 transition-transform"
-                     @click="$dispatch('open-slide-over', { title: 'Stagnant Flow Detail', content: 'Detailed list of overdue invoices...' })">
+                     @click="$dispatch('open-slide-over', { title: '{{ app()->getLocale() == 'en' ? 'Stagnant Flow Detail' : 'Detail Aliran Stagnan' }}', content: '{{ app()->getLocale() == 'en' ? 'Detailed list of overdue invoices...' : 'Daftar detail faktur terlambat...' }}' })">
                     <div class="flex items-center gap-4">
                         <div class="w-11 h-11 rounded-xl bg-rose-50 flex items-center justify-center text-rose-600 group-hover/item:bg-rose-600 group-hover/item:text-white transition-all duration-300">
                             <i data-lucide="clock-alert" class="w-5 h-5"></i>
                         </div>
                         <div>
-                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-[0.15em] mb-0.5">Stagnant Flow</p>
+                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-[0.15em] mb-0.5">{{ app()->getLocale() == 'en' ? 'Stagnant Flow' : 'Aliran Stagnan' }}</p>
                             <p class="text-xl font-black text-slate-900 font-jakarta">{{ $monthlyPerformance['overdue'] }}</p>
                         </div>
                     </div>
@@ -192,7 +192,7 @@
 
                 <div class="pt-6 border-t border-slate-100">
                     <div class="flex items-center justify-between text-[10px] font-black uppercase tracking-widest mb-2">
-                        <span class="text-slate-500">Collection Velocity</span>
+                        <span class="text-slate-500">{{ app()->getLocale() == 'en' ? 'Collection Velocity' : 'Kecepatan Pengumpulan' }}</span>
                         <span class="text-indigo-600">{{ $monthlyPerformance['created'] > 0 ? round(($monthlyPerformance['paid'] / $monthlyPerformance['created']) * 100) : 0 }}%</span>
                     </div>
                     <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
@@ -208,8 +208,8 @@
         <div class="table-container">
             <div class="px-8 py-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/30">
                 <div>
-                    <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg">Priority Entities</h3>
-                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Enterprise valuation (LTV)</p>
+                    <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg">{{ app()->getLocale() == 'en' ? 'Priority Entities' : 'Entitas Prioritas' }}</h3>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">{{ app()->getLocale() == 'en' ? 'Enterprise valuation (LTV)' : 'Valuasi perusahaan (LTV)' }}</p>
                 </div>
                 <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-500 border border-amber-500/10">
                     <i data-lucide="award" class="w-5 h-5"></i>
@@ -219,9 +219,9 @@
                 <table class="w-full text-left">
                     <thead>
                         <tr class="table-header">
-                            <th class="px-8 py-4 text-[10px]">Rank & Identity</th>
-                            <th class="px-8 py-4 text-[10px]">Volume</th>
-                            <th class="px-8 py-4 text-[10px] text-right">Valuation</th>
+                            <th class="px-8 py-4 text-[10px]">{{ app()->getLocale() == 'en' ? 'Rank & Identity' : 'Peringkat & Identitas' }}</th>
+                            <th class="px-8 py-4 text-[10px]">{{ app()->getLocale() == 'en' ? 'Volume' : 'Volume' }}</th>
+                            <th class="px-8 py-4 text-[10px] text-right">{{ app()->getLocale() == 'en' ? 'Valuation' : 'Valuasi' }}</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-50">
@@ -250,7 +250,7 @@
                         @empty
                             <tr>
                                 <td colspan="3" class="px-8 py-12 text-center text-slate-400 italic text-sm">
-                                    No data available
+                                    {{ app()->getLocale() == 'en' ? 'No data available' : 'Tidak ada data tersedia' }}
                                 </td>
                             </tr>
                         @endforelse
@@ -263,8 +263,8 @@
         <div class="glass-card flex flex-col">
             <div class="px-8 py-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/30">
                 <div>
-                    <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg">Inflow Telemetry</h3>
-                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Major capital movements</p>
+                    <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg">{{ app()->getLocale() == 'en' ? 'Inflow Telemetry' : 'Telemetri Aliran Masuk' }}</h3>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">{{ app()->getLocale() == 'en' ? 'Major capital movements' : 'Pergerakan modal besar' }}</p>
                 </div>
                 <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-500 border border-emerald-500/10">
                     <i data-lucide="zap" class="w-5 h-5 fill-current"></i>
@@ -291,12 +291,12 @@
                             </div>
                             <div class="flex flex-col text-right">
                                 <span class="text-[14px] font-black text-emerald-600 tracking-tighter">Rp {{ number_format($payment->amount, 0, ',', '.') }}</span>
-                                <span class="text-[8px] text-slate-400 font-black uppercase tracking-widest mt-0.5">Inflow</span>
+                                <span class="text-[8px] text-slate-400 font-black uppercase tracking-widest mt-0.5">{{ app()->getLocale() == 'en' ? 'Inflow' : 'Masuk' }}</span>
                             </div>
                         </div>
                     @empty
                         <div class="py-12 text-center text-slate-400 italic text-sm">
-                            No recent inflows
+                            {{ app()->getLocale() == 'en' ? 'No recent inflows' : 'Tidak ada aliran masuk baru' }}
                         </div>
                     @endforelse
                 </div>
@@ -310,7 +310,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const options = {
                 series: [{
-                    name: 'Enterprise Revenue',
+                    name: '{{ app()->getLocale() == 'en' ? "Enterprise Revenue" : "Pendapatan Perusahaan" }}',
                     data: {!! json_encode($revenueTrend->pluck('revenue')) !!}
                 }],
                 chart: {

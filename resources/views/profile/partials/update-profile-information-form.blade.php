@@ -1,10 +1,10 @@
 <section>
     <header class="mb-8">
         <h3 class="text-xl font-black text-slate-900 font-jakarta uppercase tracking-tight">
-            {{ __('Profile Information') }}
+            {{ app()->getLocale() == 'en' ? 'Profile Information' : 'Informasi Profil' }}
         </h3>
         <p class="text-sm text-slate-500 font-medium mt-1">
-            {{ __("Update your account's profile information and email address.") }}
+            {{ app()->getLocale() == 'en' ? "Update your account's profile information and email address." : 'Perbarui informasi profil dan alamat email akun Anda.' }}
         </p>
     </header>
 
@@ -29,7 +29,7 @@
 
         <!-- Profile Photo -->
         <div class="space-y-4">
-            <label class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ __('Identity Photo') }}</label>
+            <label class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Identity Photo' : 'Foto Identitas' }}</label>
             <div class="flex items-center gap-6">
                 <div class="relative">
                     <template x-if="!photoPreview">
@@ -44,7 +44,7 @@
                     </label>
                 </div>
                 <div class="flex-1">
-                    <p class="text-[11px] text-slate-500 font-medium leading-relaxed">JPG, PNG or GIF. Max size 2MB.<br>Upload a professional photo for system identity.</p>
+                    <p class="text-[11px] text-slate-500 font-medium leading-relaxed">{!! app()->getLocale() == 'en' ? 'JPG, PNG or GIF. Max size 2MB.<br>Upload a professional photo for system identity.' : 'JPG, PNG atau GIF. Ukuran maks 2MB.<br>Unggah foto profesional untuk identitas sistem.' !!}</p>
                 </div>
             </div>
             <x-input-error class="mt-2" :messages="$errors->get('profile_photo')" />
@@ -53,30 +53,30 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <!-- Name -->
             <div class="space-y-2">
-                <x-input-label for="name" :value="__('Full Name')" class="text-[11px] font-black text-slate-400 uppercase tracking-widest" />
+                <x-input-label for="name" value="{{ app()->getLocale() == 'en' ? 'Full Name' : 'Nama Lengkap' }}" class="text-[11px] font-black text-slate-400 uppercase tracking-widest" />
                 <x-text-input id="name" name="name" type="text" class="w-full bg-slate-50/50 border-slate-200 focus:border-indigo-500 focus:ring-indigo-500 rounded-xl py-3" :value="old('name', $user->name)" required autofocus autocomplete="name" />
                 <x-input-error class="mt-2" :messages="$errors->get('name')" />
             </div>
 
             <!-- Email -->
             <div class="space-y-2">
-                <x-input-label for="email" :value="__('Email Address')" class="text-[11px] font-black text-slate-400 uppercase tracking-widest" />
+                <x-input-label for="email" value="{{ app()->getLocale() == 'en' ? 'Email Address' : 'Alamat Email' }}" class="text-[11px] font-black text-slate-400 uppercase tracking-widest" />
                 <x-text-input id="email" name="email" type="email" class="w-full bg-slate-50/50 border-slate-200 focus:border-indigo-500 focus:ring-indigo-500 rounded-xl py-3" :value="old('email', $user->email)" required autocomplete="username" />
                 <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
                 @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
                     <div>
                         <p class="text-sm mt-2 text-gray-800">
-                            {{ __('Your email address is unverified.') }}
+                            {{ app()->getLocale() == 'en' ? 'Your email address is unverified.' : 'Alamat email Anda belum diverifikasi.' }}
 
                             <button form="send-verification" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                {{ __('Click here to re-send the verification email.') }}
+                                {{ app()->getLocale() == 'en' ? 'Click here to re-send the verification email.' : 'Klik di sini untuk mengirim ulang email verifikasi.' }}
                             </button>
                         </p>
 
                         @if (session('status') === 'verification-link-sent')
                             <p class="mt-2 font-medium text-sm text-green-600">
-                                {{ __('A new verification link has been sent to your email address.') }}
+                                {{ app()->getLocale() == 'en' ? 'A new verification link has been sent to your email address.' : 'Tautan verifikasi baru telah dikirim ke alamat email Anda.' }}
                             </p>
                         @endif
                     </div>
@@ -85,7 +85,7 @@
 
             <!-- System Locale -->
             <div class="space-y-2">
-                <x-input-label for="locale" :value="__('System Localization')" class="text-[11px] font-black text-slate-400 uppercase tracking-widest" />
+                <x-input-label for="locale" value="{{ app()->getLocale() == 'en' ? 'System Localization' : 'Lokalisasi Sistem' }}" class="text-[11px] font-black text-slate-400 uppercase tracking-widest" />
                 <select id="locale" name="locale" class="w-full bg-slate-50/50 border-slate-200 focus:border-indigo-500 focus:ring-indigo-500 rounded-xl py-3 text-sm font-bold text-slate-700">
                     <option value="en" {{ old('locale', $user->locale) === 'en' ? 'selected' : '' }}>English (US)</option>
                     <option value="id" {{ old('locale', $user->locale) === 'id' ? 'selected' : '' }}>Bahasa Indonesia (ID)</option>
@@ -97,7 +97,7 @@
         <div class="flex items-center gap-4 pt-4">
             <button type="submit" class="btn-premium px-8 py-3">
                 <i data-lucide="save" class="w-4 h-4 mr-2"></i>
-                {{ __('Update Profile') }}
+                {{ app()->getLocale() == 'en' ? 'Update Profile' : 'Perbarui Profil' }}
             </button>
 
             @if (session('status') === 'profile-updated')
@@ -109,7 +109,7 @@
                     class="text-sm font-bold text-emerald-600 flex items-center gap-2"
                 >
                     <i data-lucide="check-circle" class="w-4 h-4"></i>
-                    {{ __('Saved successfully.') }}
+                    {{ app()->getLocale() == 'en' ? 'Saved successfully.' : 'Berhasil disimpan.' }}
                 </p>
             @endif
         </div>

@@ -1,8 +1,8 @@
 <div class="mb-14 p-6 lg:p-8 glass-card rounded-3xl border border-slate-100 bg-white/50">
     <div class="flex items-center justify-between mb-8">
         <div>
-            <h3 class="text-sm font-black text-slate-900 uppercase tracking-widest font-outfit">Workflow Overview</h3>
-            <p class="text-xs text-slate-500 mt-1">Siklus operasional standar sistem</p>
+            <h3 class="text-sm font-black text-slate-900 uppercase tracking-widest font-outfit">{{ app()->getLocale() == 'en' ? 'Workflow Overview' : 'Ikhtisar Alur Kerja' }}</h3>
+            <p class="text-xs text-slate-500 mt-1">{{ app()->getLocale() == 'en' ? 'Standard operational cycle of the system' : 'Siklus operasional standar sistem' }}</p>
         </div>
         <div class="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-[10px] font-black uppercase tracking-widest hidden sm:block">
             {{ strtoupper($role) }}

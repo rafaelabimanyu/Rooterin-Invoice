@@ -2,7 +2,7 @@
     <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
             <div class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
-                <a href="{{ route('invoices.index') }}" class="hover:text-indigo-600 transition-colors">Invoices</a>
+                <a href="{{ route('invoices.index') }}" class="hover:text-indigo-600 transition-colors">{{ app()->getLocale() == 'en' ? 'Invoices' : 'Invoice' }}</a>
                 <i data-lucide="chevron-right" class="w-3 h-3"></i>
                 <span class="text-slate-900">{{ __('Create Invoice') }}</span>
             </div>
@@ -141,10 +141,10 @@
                     </div>
                     <div class="bg-white p-8 rounded-xl border border-slate-200 shadow-sm space-y-4">
                         <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{{ __('Client Terms') }}</label>
-                        <textarea name="terms_condition" rows="3" class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-700">Net 7. Please remit payment via bank transfer.</textarea>
+                        <textarea name="terms_condition" rows="3" class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-700">{{ app()->getLocale() == 'en' ? 'Net 7. Please remit payment via bank transfer.' : 'Tempo 7 Hari. Harap lakukan pembayaran via transfer bank.' }}</textarea>
                     </div>
                     <div class="bg-white p-8 rounded-xl border border-slate-200 shadow-sm space-y-4">
-                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{{ __('Bank Account Details (Displayed on PDF)') }}</label>
+                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Bank Account Details (Displayed on PDF)' : 'Rincian Rekening Bank (Ditampilkan pada PDF)' }}</label>
                         <textarea name="bank_account_info" rows="3" placeholder="Bank BCA Account No: 123456..." class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-700">Bank Central Asia (BCA)
 Acc No: 123-456-7890
 Name: Rooterin Technical Services</textarea>
@@ -199,48 +199,48 @@ Name: Rooterin Technical Services</textarea>
     <x-modal name="quick-client" :show="false">
         <div class="p-10" x-data="quickClientForm()">
             <h3 class="text-xl font-bold text-slate-900 font-outfit mb-2">{{ __('Add New Client') }}</h3>
-            <p class="text-sm text-slate-500 mb-8">Register a new client account directly to the system ledger.</p>
+            <p class="text-sm text-slate-500 mb-8">{{ app()->getLocale() == 'en' ? 'Register a new client account directly to the system ledger.' : 'Daftarkan akun klien baru langsung ke buku besar sistem.' }}</p>
             
             <form @submit.prevent="submitForm" class="space-y-6">
                 <div class="grid grid-cols-2 gap-6">
                     <div class="space-y-2">
-                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Full Name</label>
+                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Full Name' : 'Nama Lengkap' }}</label>
                         <input type="text" x-model="form.nama_client" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
                     </div>
                     <div class="space-y-2">
-                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Client Type</label>
+                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Client Type' : 'Tipe Klien' }}</label>
                         <select x-model="form.client_type" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
-                            <option value="perumahan">Perumahan (Home)</option>
-                            <option value="perusahaan">Perusahaan (Corporate)</option>
+                            <option value="perumahan">{{ app()->getLocale() == 'en' ? 'Home' : 'Perumahan' }}</option>
+                            <option value="perusahaan">{{ app()->getLocale() == 'en' ? 'Corporate' : 'Perusahaan' }}</option>
                         </select>
                     </div>
                 </div>
                 <div class="space-y-2">
-                    <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Company Name (Optional)</label>
+                    <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Company Name (Optional)' : 'Nama Perusahaan (Opsional)' }}</label>
                     <input type="text" x-model="form.nama_perusahaan" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
                 </div>
 
                 <div class="grid grid-cols-2 gap-6">
                     <div class="space-y-2">
-                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Email Address</label>
+                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Email Address' : 'Alamat Email' }}</label>
                         <input type="email" x-model="form.email" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
                     </div>
                     <div class="space-y-2">
-                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">WhatsApp / Phone</label>
+                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'WhatsApp / Phone' : 'WhatsApp / Telepon' }}</label>
                         <input type="text" x-model="form.no_hp" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
                     </div>
                 </div>
 
                 <div class="space-y-2">
-                    <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Primary Address</label>
+                    <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Primary Address' : 'Alamat Utama' }}</label>
                     <textarea x-model="form.alamat" rows="2" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none"></textarea>
                 </div>
 
                 <div class="pt-6 flex items-center justify-end gap-3">
-                    <button type="button" @click="$dispatch('close-modal', 'quick-client')" class="px-5 py-2.5 text-sm font-bold text-slate-500">Cancel</button>
+                    <button type="button" @click="$dispatch('close-modal', 'quick-client')" class="px-5 py-2.5 text-sm font-bold text-slate-500">{{ app()->getLocale() == 'en' ? 'Cancel' : 'Batal' }}</button>
                     <button type="submit" :disabled="loading" class="px-8 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-bold shadow-lg shadow-indigo-600/20 disabled:opacity-50">
-                        <span x-show="!loading">Register & Select</span>
-                        <span x-show="loading">Processing...</span>
+                        <span x-show="!loading">{{ app()->getLocale() == 'en' ? 'Register & Select' : 'Daftar & Pilih' }}</span>
+                        <span x-show="loading">{{ app()->getLocale() == 'en' ? 'Processing...' : 'Memproses...' }}</span>
                     </button>
                 </div>
             </form>
@@ -280,7 +280,7 @@ Name: Rooterin Technical Services</textarea>
                             this.form = { nama_client: '', nama_perusahaan: '', email: '', no_hp: '', alamat: '', status: 'aktif' };
                         }
                     } catch (error) {
-                        alert('Failed to register client. Please check your data.');
+                        alert('{{ app()->getLocale() == "en" ? "Failed to register client. Please check your data." : "Gagal mendaftarkan klien. Silakan periksa kembali data Anda." }}');
                     } finally {
                         this.loading = false;
                     }

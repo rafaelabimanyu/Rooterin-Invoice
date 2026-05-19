@@ -21,7 +21,7 @@
         x-data="{
             input: '',
             messages: [
-                { sender: 'ai', text: 'Halo! Saya Senior Financial Consultant & Business Analyst Virtual Anda. Ada yang bisa saya bantu terkait analisis arus kas, klien overdue, prediksi keuangan, atau navigasi sistem hari ini?' }
+                { sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Hello! I am your Virtual Senior Financial Consultant & Business Analyst. Is there anything I can help you with regarding cash flow analysis, overdue clients, financial forecasts, or system navigation today?" : "Halo! Saya Senior Financial Consultant & Business Analyst Virtual Anda. Ada yang bisa saya bantu terkait analisis arus kas, klien overdue, prediksi keuangan, atau navigasi sistem hari ini?" }}' }
             ],
             loading: false,
             currentSessionId: null,
@@ -40,17 +40,17 @@
                 'chronos.index': '{{ route('chronos.index') }}'
             },
             routeLabels: {
-                'dashboard': '👉 Buka Dashboard Utama',
-                'invoices.index': '👉 Lihat Daftar Invoice',
-                'invoices.create': '👉 Buat Invoice Baru',
-                'clients.index': '👉 Lihat Daftar Klien',
-                'clients.create': '👉 Tambah Klien Baru',
-                'receipts.index': '👉 Lihat Daftar Kuitansi',
-                'receipts.create': '👉 Buat Kuitansi Baru',
-                'settings.index': '👉 Buka Pengaturan',
-                'profile.edit': '👉 Edit Profil Saya',
-                'reports.index': '👉 Buka Laporan Keuangan',
-                'chronos.index': '👉 Buka Kalender Billing (Chronos)'
+                'dashboard': '{{ app()->getLocale() == "en" ? "👉 Open Main Dashboard" : "👉 Buka Dashboard Utama" }}',
+                'invoices.index': '{{ app()->getLocale() == "en" ? "👉 View Invoices List" : "👉 Lihat Daftar Invoice" }}',
+                'invoices.create': '{{ app()->getLocale() == "en" ? "👉 Create New Invoice" : "👉 Buat Invoice Baru" }}',
+                'clients.index': '{{ app()->getLocale() == "en" ? "👉 View Clients List" : "👉 Lihat Daftar Klien" }}',
+                'clients.create': '{{ app()->getLocale() == "en" ? "👉 Add New Client" : "👉 Tambah Klien Baru" }}',
+                'receipts.index': '{{ app()->getLocale() == "en" ? "👉 View Receipts List" : "👉 Lihat Daftar Kuitansi" }}',
+                'receipts.create': '{{ app()->getLocale() == "en" ? "👉 Create New Receipt" : "👉 Buat Kuitansi Baru" }}',
+                'settings.index': '{{ app()->getLocale() == "en" ? "👉 Open Settings" : "👉 Buka Pengaturan" }}',
+                'profile.edit': '{{ app()->getLocale() == "en" ? "👉 Edit My Profile" : "👉 Edit Profil Saya" }}',
+                'reports.index': '{{ app()->getLocale() == "en" ? "👉 Open Financial Reports" : "👉 Buka Laporan Keuangan" }}',
+                'chronos.index': '{{ app()->getLocale() == "en" ? "👉 Open Billing Calendar (Chronos)" : "👉 Buka Kalender Billing (Chronos)" }}'
             },
             renderMarkdown(text) {
                 if (typeof marked !== 'undefined') {
@@ -64,7 +64,7 @@
             },
             newChat() {
                 this.messages = [
-                    { sender: 'ai', text: 'Halo! Saya Senior Financial Consultant & Business Analyst Virtual Anda. Ada yang bisa saya bantu terkait analisis arus kas, klien overdue, prediksi keuangan, atau navigasi sistem hari ini?' }
+                    { sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Hello! I am your Virtual Senior Financial Consultant & Business Analyst. Is there anything I can help you with regarding cash flow analysis, overdue clients, financial forecasts, or system navigation today?" : "Halo! Saya Senior Financial Consultant & Business Analyst Virtual Anda. Ada yang bisa saya bantu terkait analisis arus kas, klien overdue, prediksi keuangan, atau navigasi sistem hari ini?" }}' }
                 ];
                 this.currentSessionId = null;
                 this.input = '';
@@ -85,7 +85,7 @@
                         this.loading = false;
                         if (data.success) {
                             this.messages = data.messages.length > 0 ? data.messages : [
-                                { sender: 'ai', text: 'Halo! Saya Senior Financial Consultant & Business Analyst Virtual Anda. Ada yang bisa saya bantu terkait analisis keuangan hari ini?' }
+                                { sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Hello! I am your Virtual Senior Financial Consultant & Business Analyst. Is there anything I can help you with regarding financial analysis today?" : "Halo! Saya Senior Financial Consultant & Business Analyst Virtual Anda. Ada yang bisa saya bantu terkait analisis keuangan hari ini?" }}' }
                             ];
                             this.$nextTick(() => {
                                 this.scrollToBottom();
@@ -94,7 +94,7 @@
                     })
                     .catch(err => {
                         this.loading = false;
-                        this.messages.push({ sender: 'ai', text: 'Maaf, gagal memuat riwayat obrolan: ' + err.message });
+                        this.messages.push({ sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Sorry, failed to load chat history: " : "Maaf, gagal memuat riwayat obrolan: " }}' + err.message });
                         this.$nextTick(() => this.scrollToBottom());
                     });
             },
@@ -140,7 +140,7 @@
                             this.refreshSessionsList();
                         }
                     } else {
-                        this.messages.push({ sender: 'ai', text: 'Maaf, terjadi kesalahan saat memproses permintaan Anda.' });
+                        this.messages.push({ sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Sorry, an error occurred while processing your request." : "Maaf, terjadi kesalahan saat memproses permintaan Anda." }}' });
                     }
                     this.$nextTick(() => {
                         this.scrollToBottom();
@@ -148,7 +148,7 @@
                 })
                 .catch(err => {
                     this.loading = false;
-                    this.messages.push({ sender: 'ai', text: 'Maaf, gagal memproses. ' + err.message });
+                    this.messages.push({ sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Sorry, failed to process. " : "Maaf, gagal memproses. " }}' + err.message });
                     this.$nextTick(() => {
                         this.scrollToBottom();
                     });
@@ -167,7 +167,7 @@
                 const msg = { sender: 'ai', text: text };
                 if (routeName && this.routeMap[routeName]) {
                     msg.navigateUrl = this.routeMap[routeName];
-                    msg.navigateLabel = this.routeLabels[routeName] || '👉 Buka Halaman';
+                    msg.navigateLabel = this.routeLabels[routeName] || '{{ app()->getLocale() == "en" ? "👉 Open Page" : "👉 Buka Halaman" }}';
                 }
                 
                 this.messages.push(msg);
@@ -202,12 +202,12 @@
                 <!-- Sidebar Header -->
                 <div class="p-6 border-b border-slate-100 flex items-center justify-between shrink-0">
                     <div>
-                        <h3 class="text-sm font-black text-slate-800 uppercase tracking-wider font-jakarta">Riwayat Obrolan</h3>
+                        <h3 class="text-sm font-black text-slate-800 uppercase tracking-wider font-jakarta">{{ app()->getLocale() == 'en' ? 'Chat History' : 'Riwayat Obrolan' }}</h3>
                         <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Rooterin AI 2.0</p>
                     </div>
                     <button @click="newChat()" 
                         class="p-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-xl transition-all active:scale-95 group" 
-                        title="Mulai Obrolan Baru">
+                        title="{{ app()->getLocale() == 'en' ? 'Start New Chat' : 'Mulai Obrolan Baru' }}">
                         <i data-lucide="plus-circle" class="w-5 h-5 transition-transform group-hover:rotate-45"></i>
                     </button>
                 </div>
@@ -239,8 +239,8 @@
                             <div class="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-slate-100">
                                 <i data-lucide="history" class="w-6 h-6 text-slate-300"></i>
                             </div>
-                            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Belum ada riwayat</p>
-                            <p class="text-[10px] text-slate-400 mt-1 leading-relaxed">Mulai kirim pesan untuk menyimpan log percakapan Anda.</p>
+                            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'No history yet' : 'Belum ada riwayat' }}</p>
+                            <p class="text-[10px] text-slate-400 mt-1 leading-relaxed">{{ app()->getLocale() == 'en' ? 'Start sending messages to save your conversation log.' : 'Mulai kirim pesan untuk menyimpan log percakapan Anda.' }}</p>
                         </div>
                     </template>
                 </div>
@@ -252,7 +252,7 @@
                     <div class="w-6 h-6 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-600 border border-emerald-500/20">
                         <i data-lucide="shield" class="w-3.5 h-3.5"></i>
                     </div>
-                    <span>Sistem Aman & Terenkripsi</span>
+                    <span>{{ app()->getLocale() == 'en' ? 'System Secure & Encrypted' : 'Sistem Aman & Terenkripsi' }}</span>
                 </div>
             </div>
         </div>
@@ -272,12 +272,12 @@
                                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                                 <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                             </span>
-                            <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Konsultan Finansial Senior</span>
+                            <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Senior Financial Consultant' : 'Konsultan Finansial Senior' }}</span>
                         </div>
                     </div>
                 </div>
                 
-                <a href="{{ route('dashboard') }}" class="p-2.5 bg-slate-50 hover:bg-slate-100 text-slate-500 hover:text-slate-700 rounded-xl transition-colors border border-slate-200" title="Kembali ke Dashboard">
+                <a href="{{ route('dashboard') }}" class="p-2.5 bg-slate-50 hover:bg-slate-100 text-slate-500 hover:text-slate-700 rounded-xl transition-colors border border-slate-200" title="{{ app()->getLocale() == 'en' ? 'Back to Dashboard' : 'Kembali ke Dashboard' }}">
                     <i data-lucide="home" class="w-4.5 h-4.5"></i>
                 </a>
             </div>
@@ -292,70 +292,70 @@
                             <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-3xl flex items-center justify-center text-white mx-auto shadow-lg shadow-indigo-500/20">
                                 <i data-lucide="sparkles" class="w-8 h-8"></i>
                             </div>
-                            <h3 class="text-lg font-black text-slate-900 font-jakarta uppercase tracking-tight">Selamat Datang di Rooterin AI 2.0</h3>
+                            <h3 class="text-lg font-black text-slate-900 font-jakarta uppercase tracking-tight">{{ app()->getLocale() == 'en' ? 'Welcome to Rooterin AI 2.0' : 'Selamat Datang di Rooterin AI 2.0' }}</h3>
                             <p class="text-xs text-slate-500 font-medium leading-relaxed max-w-md mx-auto">
-                                Ajukan pertanyaan tentang cashflow, analisis penagihan piutang, status klien, atau minta asisten untuk membuka halaman tertentu secara langsung.
+                                {{ app()->getLocale() == 'en' ? 'Ask questions about cash flow, receivable analysis, client status, or ask the assistant to navigate to a specific page directly.' : 'Ajukan pertanyaan tentang cashflow, analisis penagihan piutang, status klien, atau minta asisten untuk membuka halaman tertentu secara langsung.' }}
                             </p>
                         </div>
 
                         <!-- Popular questions deck -->
                         <div class="space-y-3">
-                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-center">Rekomendasi Pertanyaan Populer</p>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-center">{{ app()->getLocale() == 'en' ? 'Recommended Popular Questions' : 'Rekomendasi Pertanyaan Populer' }}</p>
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <button @click="sendSuggestion('Analisis arus kas bulan ini')" 
+                                <button @click="sendSuggestion('{{ app()->getLocale() == 'en' ? 'This month\'s cash flow analysis' : 'Analisis arus kas bulan ini' }}')" 
                                     class="text-left p-4 bg-white hover:bg-indigo-50/30 border border-slate-200 hover:border-indigo-300 rounded-2xl transition-all flex items-center gap-3.5 group shadow-sm hover:shadow active:scale-98">
                                     <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-all">
                                         <i data-lucide="trending-up" class="w-4 h-4"></i>
                                     </div>
                                     <div class="space-y-0.5">
-                                        <span class="text-xs font-bold text-slate-800 group-hover:text-indigo-950 transition-colors">Analisis Arus Kas</span>
-                                        <p class="text-[10px] text-slate-400 font-medium">Bandingkan lunas &amp; overdue bulan ini.</p>
+                                        <span class="text-xs font-bold text-slate-800 group-hover:text-indigo-950 transition-colors">{{ app()->getLocale() == 'en' ? 'Cash Flow Analysis' : 'Analisis Arus Kas' }}</span>
+                                        <p class="text-[10px] text-slate-400 font-medium">{{ app()->getLocale() == 'en' ? 'Compare paid & overdue this month.' : 'Bandingkan lunas & overdue bulan ini.' }}</p>
                                     </div>
                                 </button>
 
-                                <button @click="sendSuggestion('Siapa klien yang paling sering menunggak?')" 
+                                <button @click="sendSuggestion('{{ app()->getLocale() == 'en' ? 'Who are the most overdue clients?' : 'Siapa klien yang paling sering menunggak?' }}')" 
                                     class="text-left p-4 bg-white hover:bg-indigo-50/30 border border-slate-200 hover:border-indigo-300 rounded-2xl transition-all flex items-center gap-3.5 group shadow-sm hover:shadow active:scale-98">
                                     <div class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-all">
                                         <i data-lucide="users" class="w-4 h-4"></i>
                                     </div>
                                     <div class="space-y-0.5">
-                                        <span class="text-xs font-bold text-slate-800 group-hover:text-indigo-950 transition-colors">Klien Terlambat Bayar</span>
-                                        <p class="text-[10px] text-slate-400 font-medium">Deteksi klien dengan piutang menumpuk.</p>
+                                        <span class="text-xs font-bold text-slate-800 group-hover:text-indigo-950 transition-colors">{{ app()->getLocale() == 'en' ? 'Overdue Clients' : 'Klien Terlambat Bayar' }}</span>
+                                        <p class="text-[10px] text-slate-400 font-medium">{{ app()->getLocale() == 'en' ? 'Detect clients with accumulated receivables.' : 'Deteksi klien dengan piutang menumpuk.' }}</p>
                                     </div>
                                 </button>
 
-                                <button @click="sendSuggestion('Buat laporan ringkas untuk meeting owner')" 
+                                <button @click="sendSuggestion('{{ app()->getLocale() == 'en' ? 'Create summary report for owner meeting' : 'Buat laporan ringkas untuk meeting owner' }}')" 
                                     class="text-left p-4 bg-white hover:bg-indigo-50/30 border border-slate-200 hover:border-indigo-300 rounded-2xl transition-all flex items-center gap-3.5 group shadow-sm hover:shadow active:scale-98">
                                     <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-all">
                                         <i data-lucide="file-text" class="w-4 h-4"></i>
                                     </div>
                                     <div class="space-y-0.5">
-                                        <span class="text-xs font-bold text-slate-800 group-hover:text-indigo-950 transition-colors">Summary Executive Meeting</span>
-                                        <p class="text-[10px] text-slate-400 font-medium">Ringkasan KPI operasional terkini.</p>
+                                        <span class="text-xs font-bold text-slate-800 group-hover:text-indigo-950 transition-colors">{{ app()->getLocale() == 'en' ? 'Summary Executive Meeting' : 'Ringkasan Executive Meeting' }}</span>
+                                        <p class="text-[10px] text-slate-400 font-medium">{{ app()->getLocale() == 'en' ? 'Summary of latest operational KPIs.' : 'Ringkasan KPI operasional terkini.' }}</p>
                                     </div>
                                 </button>
 
-                                <button @click="sendSuggestion('Prediksi pendapatan 3 bulan ke depan')" 
+                                <button @click="sendSuggestion('{{ app()->getLocale() == 'en' ? 'Revenue projection for the next 3 months' : 'Prediksi pendapatan 3 bulan ke depan' }}')" 
                                     class="text-left p-4 bg-white hover:bg-indigo-50/30 border border-slate-200 hover:border-indigo-300 rounded-2xl transition-all flex items-center gap-3.5 group shadow-sm hover:shadow active:scale-98">
                                     <div class="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-all">
                                         <i data-lucide="line-chart" class="w-4 h-4"></i>
                                     </div>
                                     <div class="space-y-0.5">
-                                        <span class="text-xs font-bold text-slate-800 group-hover:text-indigo-950 transition-colors">Prediksi Pendapatan</span>
-                                        <p class="text-[10px] text-slate-400 font-medium">Proyeksi kas berdasarkan tren 3 bulan.</p>
+                                        <span class="text-xs font-bold text-slate-800 group-hover:text-indigo-950 transition-colors">{{ app()->getLocale() == 'en' ? 'Revenue Projection' : 'Prediksi Pendapatan' }}</span>
+                                        <p class="text-[10px] text-slate-400 font-medium">{{ app()->getLocale() == 'en' ? 'Cash projection based on 3-month trend.' : 'Proyeksi kas berdasarkan tren 3 bulan.' }}</p>
                                     </div>
                                 </button>
                             </div>
 
-                            <button @click="sendSuggestion('Bagaimana cara meningkatkan kolektibilitas invoice?')" 
+                            <button @click="sendSuggestion('{{ app()->getLocale() == 'en' ? 'How to improve invoice collectibility?' : 'Bagaimana cara meningkatkan kolektibilitas invoice?' }}')" 
                                 class="w-full text-left p-4 bg-white hover:bg-indigo-50/30 border border-slate-200 hover:border-indigo-300 rounded-2xl transition-all flex items-center gap-3.5 group shadow-sm hover:shadow active:scale-98">
                                 <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-all">
                                     <i data-lucide="help-circle" class="w-4 h-4"></i>
                                 </div>
                                 <div class="space-y-0.5">
-                                    <span class="text-xs font-bold text-slate-800 group-hover:text-indigo-950 transition-colors">Optimalkan Kolektibilitas Invoice</span>
-                                    <p class="text-[10px] text-slate-400 font-medium">Saran taktis untuk mengurangi piutang overdue dan menjaga perputaran kas.</p>
+                                    <span class="text-xs font-bold text-slate-800 group-hover:text-indigo-950 transition-colors">{{ app()->getLocale() == 'en' ? 'Optimize Invoice Collectibility' : 'Optimalkan Kolektibilitas Invoice' }}</span>
+                                    <p class="text-[10px] text-slate-400 font-medium">{{ app()->getLocale() == 'en' ? 'Tactical advice to reduce overdue receivables and maintain cash rotation.' : 'Saran taktis untuk mengurangi piutang overdue dan menjaga perputaran kas.' }}</p>
                                 </div>
                             </button>
                         </div>
@@ -401,7 +401,7 @@
             <form @submit.prevent="sendMessage()" class="p-6 bg-white border-t border-slate-200 flex items-center gap-4 shrink-0">
                 <input x-model="input" 
                     type="text" 
-                    placeholder="Tanyakan analisis keuangan, tagihan overdue, atau jalankan perintah navigasi..." 
+                    placeholder="{{ app()->getLocale() == 'en' ? 'Ask financial analysis, overdue bills, or run navigation commands...' : 'Tanyakan analisis keuangan, tagihan overdue, atau jalankan perintah navigasi...' }}" 
                     class="flex-1 px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500/80 transition-all text-slate-800 font-medium" 
                     :disabled="loading"
                     autofocus>

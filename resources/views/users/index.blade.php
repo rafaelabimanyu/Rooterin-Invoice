@@ -27,21 +27,21 @@
         <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 page-fade-in">
             <div>
                 <div class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">
-                    <span>Administration</span>
+                    <span>{{ app()->getLocale() == 'en' ? 'Administration' : 'Administrasi' }}</span>
                     <i data-lucide="chevron-right" class="w-3 h-3"></i>
-                    <span class="text-indigo-600">Team Control Center</span>
+                    <span class="text-indigo-600">{{ app()->getLocale() == 'en' ? 'Team Control Center' : 'Pusat Kontrol Tim' }}</span>
                 </div>
-                <h1 class="text-3xl font-black text-slate-900 font-jakarta tracking-tight uppercase">{{ __('ui.users') ?? 'Team Management' }}</h1>
-                <p class="text-sm text-slate-500 font-medium mt-1">Manage operatives, security clearances, and operational status.</p>
+                <h1 class="text-3xl font-black text-slate-900 font-jakarta tracking-tight uppercase">{{ __('ui.users') ?? (app()->getLocale() == 'en' ? 'Team Management' : 'Manajemen Tim') }}</h1>
+                <p class="text-sm text-slate-500 font-medium mt-1">{{ app()->getLocale() == 'en' ? 'Manage operatives, security clearances, and operational status.' : 'Kelola staf pelaksana, izin keamanan, dan status operasional.' }}</p>
             </div>
             <div class="flex items-center gap-3">
                 <div class="px-4 py-2 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center gap-3">
                     <span class="flex h-2 w-2 rounded-full bg-emerald-500"></span>
-                    <span class="text-xs font-bold text-slate-600">{{ $users->count() }} Total Operatives</span>
+                    <span class="text-xs font-bold text-slate-600">{{ $users->count() }} {{ app()->getLocale() == 'en' ? 'Total Operatives' : 'Total Staf Pelaksana' }}</span>
                 </div>
                 <a href="{{ route('users.create') }}" class="btn-premium group">
                     <i data-lucide="user-plus" class="w-4 h-4 transition-transform group-hover:rotate-12"></i>
-                    <span>Add New Operative</span>
+                    <span>{{ app()->getLocale() == 'en' ? 'Add New Operative' : 'Tambah Pelaksana Baru' }}</span>
                 </a>
             </div>
         </div>
@@ -70,7 +70,7 @@
                     <div class="absolute top-0 right-0 p-4">
                         <div class="flex flex-col items-end gap-1.5">
                             <div class="flex items-center gap-2 px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-widest {{ $user->is_active ? 'bg-indigo-50 text-indigo-600 border border-indigo-100' : 'bg-rose-50 text-rose-600 border border-rose-100' }}">
-                                {{ $user->is_active ? 'Authorized' : 'Suspended' }}
+                                {{ $user->is_active ? (app()->getLocale() == 'en' ? 'Authorized' : 'Diizinkan') : (app()->getLocale() == 'en' ? 'Suspended' : 'Ditangguhkan') }}
                             </div>
                             @if($user->isOnline())
                                 <div class="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500 text-white rounded-full text-[8px] font-black uppercase tracking-widest shadow-[0_0_10px_rgba(16,185,129,0.4)]">
@@ -112,17 +112,17 @@
                     <!-- Stats Row -->
                     <div class="grid grid-cols-2 gap-4 mb-8">
                         <div class="p-4 bg-slate-50/50 rounded-2xl border border-slate-100 group-hover:bg-white group-hover:border-indigo-100 transition-all duration-500">
-                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Productivity</p>
+                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Productivity' : 'Produktivitas' }}</p>
                             <div class="flex items-center gap-2">
                                 <i data-lucide="file-text" class="w-3.5 h-3.5 text-indigo-500"></i>
-                                <span class="text-sm font-black text-slate-900">{{ $user->invoices_count }} Invoices</span>
+                                <span class="text-sm font-black text-slate-900">{{ $user->invoices_count }} {{ app()->getLocale() == 'en' ? 'Invoices' : 'Faktur' }}</span>
                             </div>
                         </div>
                         <div class="p-4 bg-slate-50/50 rounded-2xl border border-slate-100 group-hover:bg-white group-hover:border-emerald-100 transition-all duration-500">
-                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Status</p>
+                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Status' : 'Status' }}</p>
                             <div class="flex items-center gap-2">
                                 <i data-lucide="clock" class="w-3.5 h-3.5 {{ $user->isOnline() ? 'text-emerald-500' : 'text-slate-400' }}"></i>
-                                <span class="text-[11px] font-black text-slate-900">{{ $user->isOnline() ? 'Active Now' : ($user->last_seen ? $user->last_seen->diffForHumans() : 'Never') }}</span>
+                                <span class="text-[11px] font-black text-slate-900">{{ $user->isOnline() ? (app()->getLocale() == 'en' ? 'Active Now' : 'Aktif Sekarang') : ($user->last_seen ? $user->last_seen->diffForHumans() : (app()->getLocale() == 'en' ? 'Never' : 'Tidak Pernah')) }}</span>
                             </div>
                         </div>
                     </div>
@@ -145,20 +145,20 @@
                                     is_active: {{ $user->is_active ? 'true' : 'false' }},
                                     is_online: {{ $user->isOnline() ? 'true' : 'false' }},
                                     photo: '{{ $user->profile_photo_url }}',
-                                    last_login: '{{ $user->last_seen ? $user->last_seen->format('M d, H:i') : 'Never' }}',
+                                    last_login: '{{ $user->last_seen ? $user->last_seen->format('M d, H:i') : (app()->getLocale() == 'en' ? 'Never' : 'Tidak Pernah') }}',
                                     last_ip: '{{ $user->last_login_ip ?? 'N/A' }}',
-                                    last_pass_change: '{{ $user->last_password_change_at ? $user->last_password_change_at->diffForHumans() : 'Never' }}',
+                                    last_pass_change: '{{ $user->last_password_change_at ? $user->last_password_change_at->diffForHumans() : (app()->getLocale() == 'en' ? 'Never' : 'Tidak Pernah') }}',
                                     logs: @json($user->activityLogs->map(fn($log) => ['desc' => $log->description, 'time' => $log->created_at->diffForHumans()]))
                                 }"
                                 class="p-2.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
-                                title="Manage Operative"
+                                title="{{ app()->getLocale() == 'en' ? 'Manage Operative' : 'Kelola Pelaksana' }}"
                             >
                                 <i data-lucide="settings-2" class="w-5 h-5"></i>
                             </button>
                             @if($user->id !== auth()->id())
-                                <form action="{{ route('users.destroy', $user) }}" method="POST" onsubmit="return confirm('Deep purge this operative data?')">
+                                <form action="{{ route('users.destroy', $user) }}" method="POST" onsubmit="return confirm('{{ app()->getLocale() == 'en' ? 'Deep purge this operative data?' : 'Hapus permanen data pelaksana ini?' }}')">
                                     @csrf @method('DELETE')
-                                    <button class="p-2.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all" title="Archive Account">
+                                    <button class="p-2.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all" title="{{ app()->getLocale() == 'en' ? 'Archive Account' : 'Arsipkan Akun' }}">
                                         <i data-lucide="shield-off" class="w-5 h-5"></i>
                                     </button>
                                 </form>
@@ -198,8 +198,8 @@
                                 <i data-lucide="shield" class="w-6 h-6"></i>
                             </div>
                             <div>
-                                <h2 class="text-xl font-black text-slate-900 uppercase tracking-tight">Security & Command Center</h2>
-                                <p class="text-xs text-slate-500 font-bold uppercase tracking-widest">ID: <span x-text="currentUser.id"></span> • Status: <span :class="currentUser.is_active ? 'text-emerald-600' : 'text-rose-600'" x-text="currentUser.is_active ? 'Authorized' : 'Suspended'"></span> • Presence: <span :class="currentUser.is_online ? 'text-emerald-500' : 'text-slate-400'" x-text="currentUser.is_online ? 'Online' : 'Offline'"></span></p>
+                                <h2 class="text-xl font-black text-slate-900 uppercase tracking-tight">{{ app()->getLocale() == 'en' ? 'Security & Command Center' : 'Pusat Keamanan & Kontrol' }}</h2>
+                                <p class="text-xs text-slate-500 font-bold uppercase tracking-widest">ID: <span x-text="currentUser.id"></span> • Status: <span :class="currentUser.is_active ? 'text-emerald-600' : 'text-rose-600'" x-text="currentUser.is_active ? '{{ app()->getLocale() == 'en' ? 'Authorized' : 'Diizinkan' }}' : '{{ app()->getLocale() == 'en' ? 'Suspended' : 'Ditangguhkan' }}'"></span> • Presence: <span :class="currentUser.is_online ? 'text-emerald-500' : 'text-slate-400'" x-text="currentUser.is_online ? 'Online' : 'Offline'"></span></p>
                             </div>
                         </div>
                         <button @click="editModalOpen = false" class="p-3 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-2xl transition-all">
@@ -223,13 +223,13 @@
 
                             <div class="grid grid-cols-1 gap-6">
                                 <div class="space-y-2">
-                                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Full Identity</label>
+                                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Full Identity' : 'Identitas Lengkap' }}</label>
                                     <input type="text" name="name" x-model="currentUser.name" class="w-full px-5 py-3.5 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900">
                                 </div>
 
                                 <div class="grid grid-cols-2 gap-6">
                                     <div class="space-y-2">
-                                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Access Level</label>
+                                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Access Level' : 'Tingkat Akses' }}</label>
                                         <select name="role" x-model="currentUser.role" class="w-full px-5 py-3.5 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 uppercase text-xs tracking-widest">
                                             <option value="owner">Owner</option>
                                             <option value="admin">Admin</option>
@@ -237,13 +237,13 @@
                                         </select>
                                     </div>
                                     <div class="space-y-2">
-                                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Account Status</label>
+                                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Account Status' : 'Status Akun' }}</label>
                                         <div class="flex items-center h-full">
                                             <label class="relative inline-flex items-center cursor-pointer">
                                                 <input type="hidden" name="is_active" value="0">
                                                 <input type="checkbox" name="is_active" value="1" x-model="currentUser.is_active" class="sr-only peer">
                                                 <div class="w-14 h-7 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:start-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
-                                                <span class="ms-3 text-[11px] font-black text-slate-500 uppercase tracking-widest" x-text="currentUser.is_active ? 'Active' : 'Suspended'"></span>
+                                                <span class="ms-3 text-[11px] font-black text-slate-500 uppercase tracking-widest" x-text="currentUser.is_active ? '{{ app()->getLocale() == 'en' ? 'Active' : 'Aktif' }}' : '{{ app()->getLocale() == 'en' ? 'Suspended' : 'Ditangguhkan' }}'"></span>
                                             </label>
                                         </div>
                                     </div>
@@ -254,11 +254,11 @@
                             <div class="p-8 bg-slate-900 rounded-[32px] text-white space-y-6 relative overflow-hidden">
                                 <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-2xl"></div>
                                 <div>
-                                    <h4 class="text-sm font-black uppercase tracking-[0.2em] text-indigo-400 mb-1">Overrule Password</h4>
-                                    <p class="text-[11px] text-slate-400 font-medium">Reset this operative's credentials manually.</p>
+                                    <h4 class="text-sm font-black uppercase tracking-[0.2em] text-indigo-400 mb-1">{{ app()->getLocale() == 'en' ? 'Overrule Password' : 'Ganti Kata Sandi' }}</h4>
+                                    <p class="text-[11px] text-slate-400 font-medium">{{ app()->getLocale() == 'en' ? "Reset this operative's credentials manually." : 'Reset kredensial pelaksana ini secara manual.' }}</p>
                                 </div>
                                 <div class="relative">
-                                    <input x-bind:type="showPassword ? 'text' : 'password'" name="password" x-model="password" class="w-full bg-white/5 border-white/10 rounded-2xl py-3.5 px-5 text-sm font-mono tracking-wider focus:border-indigo-500 focus:ring-0 transition-all" placeholder="Enter new password...">
+                                    <input x-bind:type="showPassword ? 'text' : 'password'" name="password" x-model="password" class="w-full bg-white/5 border-white/10 rounded-2xl py-3.5 px-5 text-sm font-mono tracking-wider focus:border-indigo-500 focus:ring-0 transition-all" placeholder="{{ app()->getLocale() == 'en' ? 'Enter new password...' : 'Masukkan kata sandi baru...' }}">
                                     <button type="button" @click="showPassword = !showPassword" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white">
                                         <i x-show="!showPassword" data-lucide="eye" class="w-4 h-4"></i>
                                         <i x-show="showPassword" data-lucide="eye-off" class="w-4 h-4"></i>
@@ -267,11 +267,11 @@
                                 <div class="flex items-center gap-3">
                                     <button type="button" @click="generatePassword()" class="flex-1 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2">
                                         <i data-lucide="sparkles" class="w-3 h-3"></i>
-                                        Generate
+                                        {{ app()->getLocale() == 'en' ? 'Generate' : 'Buat' }}
                                     </button>
                                     <button type="button" x-show="password.length > 0" @click="copyPassword()" class="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2">
                                         <i :data-lucide="copied ? 'check' : 'copy'" class="w-3 h-3" :class="copied ? 'text-emerald-400' : ''"></i>
-                                        <span x-text="copied ? 'Copied' : 'Copy'"></span>
+                                        <span x-text="copied ? '{{ app()->getLocale() == 'en' ? 'Copied' : 'Disalin' }}' : '{{ app()->getLocale() == 'en' ? 'Copy' : 'Salin' }}'"></span>
                                     </button>
                                 </div>
                             </div>
@@ -280,23 +280,23 @@
                         <!-- Right Column: Monitoring -->
                         <div class="lg:w-1/2 p-10 bg-slate-50/50 flex flex-col">
                             <div class="mb-8">
-                                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-6">Operative Intelligence</h4>
+                                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-6">{{ app()->getLocale() == 'en' ? 'Operative Intelligence' : 'Informasi Pelaksana' }}</h4>
                                 <div class="grid grid-cols-2 gap-4">
                                     <div class="p-5 bg-white rounded-[24px] border border-slate-100 shadow-sm">
-                                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Last Sync</p>
+                                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Last Sync' : 'Sinkronisasi Terakhir' }}</p>
                                         <p class="text-sm font-black text-slate-900" x-text="currentUser.last_login"></p>
                                         <p class="text-[10px] text-slate-400 font-bold" x-text="'IP: ' + currentUser.last_ip"></p>
                                     </div>
                                     <div class="p-5 bg-white rounded-[24px] border border-slate-100 shadow-sm">
-                                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Pass Age</p>
+                                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Pass Age' : 'Umur Sandi' }}</p>
                                         <p class="text-sm font-black text-slate-900" x-text="currentUser.last_pass_change"></p>
-                                        <p class="text-[10px] text-slate-400 font-bold">Last Identity Reset</p>
+                                        <p class="text-[10px] text-slate-400 font-bold">{{ app()->getLocale() == 'en' ? 'Last Identity Reset' : 'Reset Identitas Terakhir' }}</p>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="flex-1 flex flex-col min-h-0">
-                                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-6">Activity Timeline</h4>
+                                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-6">{{ app()->getLocale() == 'en' ? 'Activity Timeline' : 'Lini Masa Aktivitas' }}</h4>
                                 <div class="flex-1 overflow-y-auto pr-4 space-y-6 custom-scrollbar">
                                     <template x-for="log in currentUser.logs">
                                         <div class="flex gap-4 relative">
@@ -314,7 +314,7 @@
 
                             <div class="mt-10">
                                 <button type="submit" class="w-full btn-premium py-5 rounded-[24px]">
-                                    <span class="text-sm font-black uppercase tracking-[0.2em]">Deploy Changes</span>
+                                    <span class="text-sm font-black uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Deploy Changes' : 'Terapkan Perubahan' }}</span>
                                     <i data-lucide="send" class="w-5 h-5 ml-2"></i>
                                 </button>
                             </div>

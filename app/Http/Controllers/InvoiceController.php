@@ -122,7 +122,7 @@ class InvoiceController extends Controller
 
     public function show(Invoice $invoice)
     {
-        $this->authorize('view', $invoice);
+        \Illuminate\Support\Facades\Gate::authorize('view', $invoice);
 
         $invoice->load(['client', 'items', 'creator', 'payments']);
         return view('invoices.show', compact('invoice'));
@@ -130,7 +130,7 @@ class InvoiceController extends Controller
 
     public function edit(Invoice $invoice)
     {
-        $this->authorize('update', $invoice);
+        \Illuminate\Support\Facades\Gate::authorize('update', $invoice);
 
         $invoice->load('items');
         $clients = Client::where('status', 'aktif')->orderBy('nama_client')->get();
@@ -139,7 +139,7 @@ class InvoiceController extends Controller
 
     public function update(Request $request, Invoice $invoice)
     {
-        $this->authorize('update', $invoice);
+        \Illuminate\Support\Facades\Gate::authorize('update', $invoice);
 
         $request->validate([
             'client_id' => 'required|exists:clients,id',
@@ -226,7 +226,7 @@ class InvoiceController extends Controller
 
     public function destroy(Invoice $invoice)
     {
-        $this->authorize('delete', $invoice);
+        \Illuminate\Support\Facades\Gate::authorize('delete', $invoice);
 
         $num = $invoice->invoice_number;
         $invoice->delete();

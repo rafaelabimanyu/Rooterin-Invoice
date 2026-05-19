@@ -87,13 +87,52 @@ class AiChatController extends Controller
             ->where('due_date', '<', Carbon::now())
             ->get();
 
+        $locale = app()->getLocale();
         $overdueList = [];
         foreach ($overdueInvoices as $inv) {
-            $overdueList[] = "- Invoice #{$inv->invoice_number} oleh {$inv->client->nama_client} ({$inv->client->nama_perusahaan}): sebesar Rp " . number_format($inv->total, 0, ',', '.') . " (Jatuh tempo: " . $inv->due_date->format('d M Y') . ")";
+            if ($locale === 'en') {
+                $overdueList[] = "- Invoice #{$inv->invoice_number} by {$inv->client->nama_client} ({$inv->client->nama_perusahaan}): amounting to Rp " . number_format($inv->total, 0, ',', '.') . " (Due date: " . $inv->due_date->format('d M Y') . ")";
+            } else {
+                $overdueList[] = "- Invoice #{$inv->invoice_number} oleh {$inv->client->nama_client} ({$inv->client->nama_perusahaan}): sebesar Rp " . number_format($inv->total, 0, ',', '.') . " (Jatuh tempo: " . $inv->due_date->format('d M Y') . ")";
+            }
         }
-        $overdueText = count($overdueList) > 0 ? implode("\n", $overdueList) : "Tidak ada invoice menunggak.";
 
-        $context = "Anda adalah Senior Financial Consultant & Business Analyst profesional khusus untuk sistem Rooterin-Invoice. Jawaban Anda harus sangat jelas, berbasis data riil dari sistem, memberikan solusi taktis, dan menggunakan bahasa Indonesia yang sangat profesional. Jangan memberikan jawaban template yang membosankan.
+        if ($locale === 'en') {
+            $overdueText = count($overdueList) > 0 ? implode("\n", $overdueList) : "No overdue invoices.";
+
+            $context = "You are a Senior Financial Consultant & Business Analyst professional specialized for the Rooterin-Invoice system. Your responses must be crystal clear, based on real data from the system, offer tactical solutions, and use professional business English. Avoid boring, templated answers.
+Always provide relevant and strategic extra insights (for example, after explaining the overdue total, suggest tactical actions to accelerate payment collection or manage cash flow).
+
+Here is the latest summarized data from the system:
+- Active Clients: {$totalClients}
+- Paid Invoices: {$paidCount} (Total amount: Rp " . number_format($paidTotal, 0, ',', '.') . ")
+- Pending/Unpaid Invoices: {$pendingCount} (Total amount: Rp " . number_format($pendingTotal, 0, ',', '.') . ")
+
+Overdue Invoices List:
+{$overdueText}
+
+Auto-Navigation Rule:
+If the user asks for the location, path, or how to go to a specific page, or if you advise them to go to a page to take action, insert the tag [NAVIGATE: route_name] at the very end of your response using one of these valid routes:
+- `dashboard` -> Main Dashboard
+- `invoices.index` -> Invoices List
+- `invoices.create` -> Create New Invoice
+- `clients.index` -> Clients List
+- `clients.create` -> Create New Client
+- `receipts.index` -> Receipts List
+- `receipts.create` -> Create New Receipt
+- `settings.index` -> Application Settings
+- `profile.edit` -> User Profile
+- `reports.index` -> Financial Reports
+- `chronos.index` -> Calendar Schedule
+
+Example of using the navigation tag: [NAVIGATE: invoices.index] or [NAVIGATE: settings.index].
+
+Strict Language Match Requirement:
+Strictly match the user's current application language interface. Since the active language is 'en', you MUST construct your entire analysis, greetings, and responses in Professional English. Never mix the languages.";
+        } else {
+            $overdueText = count($overdueList) > 0 ? implode("\n", $overdueList) : "Tidak ada invoice menunggak.";
+
+            $context = "Anda adalah Senior Financial Consultant & Business Analyst profesional khusus untuk sistem Rooterin-Invoice. Jawaban Anda harus sangat jelas, berbasis data riil dari sistem, memberikan solusi taktis, dan menggunakan bahasa Indonesia yang sangat profesional. Jangan memberikan jawaban template yang membosankan.
 Pastikan Anda selalu memberikan insight tambahan yang relevan dan strategis (misalnya, setelah menjawab tentang total tunggakan, berikan saran tindakan apa yang harus diambil secara taktis untuk mempercepat pembayaran atau mengelola arus kas).
 
 Berikut adalah data ringkasan terkini dari sistem:
@@ -118,7 +157,11 @@ Jika pengguna menanyakan letak, lokasi, atau cara menuju ke suatu halaman, atau 
 - `reports.index` -> Halaman Laporan (reports)
 - `chronos.index` -> Halaman Kalender (chronos)
 
-Contoh penggunaan tag navigasi: [NAVIGATE: invoices.index] atau [NAVIGATE: settings.index].";
+Contoh penggunaan tag navigasi: [NAVIGATE: invoices.index] atau [NAVIGATE: settings.index].
+
+Strict Language Match Requirement:
+Strictly match the user's current application language interface. Since the active language is 'id', you MUST construct your entire analysis, greetings, and responses in Professional Indonesian. Never mix the languages.";
+        }
 
         try {
             $apiKey = env('GEMINI_API_KEY') ?: config('gemini.api_key');

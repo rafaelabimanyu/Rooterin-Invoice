@@ -4,13 +4,13 @@
             <h1 class="text-3xl font-black text-slate-900 font-jakarta tracking-tight mb-2 uppercase">
                 Rooterin Chronos
             </h1>
-            <p class="text-sm text-slate-500 font-medium tracking-tight">Billing Calendar & Operational Workflows</p>
+            <p class="text-sm text-slate-500 font-medium tracking-tight">{{ app()->getLocale() == 'en' ? 'Billing Calendar & Operational Workflows' : 'Kalender Penagihan & Alur Kerja Operasional' }}</p>
         </div>
         <div class="flex items-center gap-4">
             <div class="flex items-center gap-6 px-6 py-3 bg-white/50 backdrop-blur-md rounded-2xl border border-slate-100 shadow-sm">
                 <div class="flex items-center gap-2">
                     <span class="w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
-                    <span class="text-[10px] font-black uppercase text-slate-400">Paid</span>
+                    <span class="text-[10px] font-black uppercase text-slate-400">{{ app()->getLocale() == 'en' ? 'Paid' : 'Lunas' }}</span>
                 </div>
                 <div class="flex items-center gap-2">
                     <span class="w-3 h-3 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]"></span>
@@ -18,7 +18,7 @@
                 </div>
                 <div class="flex items-center gap-2">
                     <span class="w-3 h-3 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]"></span>
-                    <span class="text-[10px] font-black uppercase text-slate-400">Overdue</span>
+                    <span class="text-[10px] font-black uppercase text-slate-400">{{ app()->getLocale() == 'en' ? 'Overdue' : 'Terlambat' }}</span>
                 </div>
             </div>
         </div>
@@ -38,16 +38,16 @@
         <div class="xl:col-span-1 flex flex-col gap-6 xl:gap-8 min-w-0 w-full">
             <!-- Metrics Card -->
             <div class="glass-card p-6 border-slate-100 shadow-2xl shadow-rose-500/5 page-fade-in stagger-2">
-                <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-md mb-6">Metrics Insights</h3>
+                <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-md mb-6">{{ app()->getLocale() == 'en' ? 'Metrics Insights' : 'Wawasan Metrik' }}</h3>
                 
                 <div class="space-y-6">
                     <div>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Total Tunggakan Aktif</p>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Active Arrears' : 'Total Tunggakan Aktif' }}</p>
                         <h4 class="text-2xl font-black text-rose-500 font-jakarta tracking-tighter">Rp {{ number_format($activeArrears, 0, ',', '.') }}</h4>
                     </div>
                     
                     <div class="pt-6 border-t border-slate-50">
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Jatuh Tempo Minggu Ini</p>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Due This Week' : 'Jatuh Tempo Minggu Ini' }}</p>
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-500">
                                 <i data-lucide="alert-circle" class="w-5 h-5"></i>
@@ -61,7 +61,7 @@
             <!-- Activity Feed Card -->
             <div class="glass-card p-6 border-slate-100 shadow-2xl shadow-indigo-500/5 page-fade-in stagger-3 flex-1 flex flex-col">
                 <div class="flex items-center justify-between mb-8">
-                    <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-md">Live Feed</h3>
+                    <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-md">{{ app()->getLocale() == 'en' ? 'Live Feed' : 'Aktivitas Terkini' }}</h3>
                     <span class="relative flex h-2 w-2">
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
@@ -84,7 +84,7 @@
                                 <div class="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center mx-auto mb-4">
                                     <i data-lucide="activity" class="w-6 h-6 text-slate-300"></i>
                                 </div>
-                                <p class="text-[11px] font-bold text-slate-900 uppercase tracking-widest">No activities yet</p>
+                                <p class="text-[11px] font-bold text-slate-900 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'No activities yet' : 'Belum ada aktivitas' }}</p>
                             </div>
                         @endforelse
                     </div>
@@ -101,8 +101,8 @@
                 <!-- Content injected via JS -->
             </div>
             <div class="p-6 bg-slate-50 border-t border-slate-100 flex justify-end gap-4">
-                <button onclick="closeModal()" class="px-6 py-3 text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors">Close</button>
-                <a id="viewInvoiceBtn" href="#" class="btn-premium">View Full Invoice</a>
+                <button onclick="closeModal()" class="px-6 py-3 text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors">{{ app()->getLocale() == 'en' ? 'Close' : 'Tutup' }}</button>
+                <a id="viewInvoiceBtn" href="#" class="btn-premium">{{ app()->getLocale() == 'en' ? 'View Full Invoice' : 'Lihat Faktur Lengkap' }}</a>
             </div>
         </div>
     </div>
@@ -129,6 +129,7 @@
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            const appLocale = '{{ app()->getLocale() }}';
             const calendarEl = document.getElementById('calendar');
             const calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
@@ -188,15 +189,15 @@
                         </span>
                     </div>
                     <h3 class="text-2xl font-black text-slate-900 mb-2">${event.title}</h3>
-                    <p class="text-sm text-slate-500 font-medium mb-8">Due on ${new Date(event.start).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+                    <p class="text-sm text-slate-500 font-medium mb-8">${appLocale === 'en' ? 'Due on' : 'Jatuh tempo pada'} ${new Date(event.start).toLocaleDateString(appLocale === 'en' ? 'en-US' : 'id-ID', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
                     
                     <div class="grid grid-cols-2 gap-8 py-8 border-y border-slate-100">
                         <div>
-                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Total Amount</p>
+                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">${appLocale === 'en' ? 'Total Amount' : 'Jumlah Total'}</p>
                             <p class="text-xl font-black text-slate-900">${props.total}</p>
                         </div>
                         <div>
-                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Client Entity</p>
+                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">${appLocale === 'en' ? 'Client Entity' : 'Entitas Klien'}</p>
                             <p class="text-md font-bold text-slate-900">${props.client}</p>
                         </div>
                     </div>
@@ -226,15 +227,15 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        showToast('Invoice due date updated successfully!', 'success');
+                        showToast(appLocale === 'en' ? 'Invoice due date updated successfully!' : 'Tanggal jatuh tempo faktur berhasil diperbarui!', 'success');
                     } else {
-                        showToast('Failed to update due date. Unauthorized.', 'error');
+                        showToast(appLocale === 'en' ? 'Failed to update due date. Unauthorized.' : 'Gagal memperbarui tanggal jatuh tempo. Tidak diizinkan.', 'error');
                         event.revert();
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    showToast('Network error occurred.', 'error');
+                    showToast(appLocale === 'en' ? 'Network error occurred.' : 'Terjadi kesalahan jaringan.', 'error');
                     event.revert();
                 });
             }

@@ -3,12 +3,12 @@
     <div class="mb-8 md:mb-12 flex flex-col lg:flex-row lg:items-end justify-between gap-6 px-4 md:px-0">
         <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2 text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 overflow-hidden">
-                <a href="{{ route('invoices.index') }}" class="hover:text-indigo-600 transition-colors shrink-0">Invoices</a>
+                <a href="{{ route('invoices.index') }}" class="hover:text-indigo-600 transition-colors shrink-0">{{ app()->getLocale() == 'en' ? 'Invoices' : 'Invoice' }}</a>
                 <i data-lucide="chevron-right" class="w-3 h-3 shrink-0"></i>
                 <span class="text-slate-900 truncate">{{ $invoice->invoice_number }}</span>
             </div>
-            <h1 class="text-2xl md:text-3xl font-bold text-slate-900 font-outfit leading-tight truncate">Invoice Details</h1>
-            <p class="text-sm text-slate-500 mt-1 truncate">Manage billing for {{ $invoice->client->nama_client }}.</p>
+            <h1 class="text-2xl md:text-3xl font-bold text-slate-900 font-outfit leading-tight truncate">{{ app()->getLocale() == 'en' ? 'Invoice Details' : 'Rincian Invoice' }}</h1>
+            <p class="text-sm text-slate-500 mt-1 truncate">{{ app()->getLocale() == 'en' ? 'Manage billing for ' : 'Kelola tagihan untuk ' }}{{ $invoice->client->nama_client }}.</p>
         </div>
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 md:gap-4">
             <div class="flex items-center justify-between sm:justify-start gap-4">
@@ -56,12 +56,12 @@
                 </div>
                 
                 <div class="w-full md:w-auto text-left md:text-right">
-                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-[0.3em] mb-4 md:mb-6">Tax Invoice</h2>
+                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-[0.3em] mb-4 md:mb-6">{{ app()->getLocale() == 'en' ? 'Tax Invoice' : 'Faktur Pajak' }}</h2>
                     <div class="space-y-1">
                         <p class="text-2xl font-black text-slate-900 font-outfit">{{ $invoice->invoice_number }}</p>
-                        <p class="text-xs font-bold text-slate-500">Issued: {{ $invoice->tanggal_invoice->format('M d, Y') }}</p>
+                        <p class="text-xs font-bold text-slate-500">{{ app()->getLocale() == 'en' ? 'Issued' : 'Dibuat' }}: {{ $invoice->tanggal_invoice->format('M d, Y') }}</p>
                         <div class="inline-block mt-4 px-3 py-1 bg-rose-50 text-rose-600 border border-rose-100 rounded text-[10px] font-bold uppercase tracking-widest">
-                            Due: {{ $invoice->due_date->format('M d, Y') }}
+                            {{ app()->getLocale() == 'en' ? 'Due' : 'Tempo' }}: {{ $invoice->due_date->format('M d, Y') }}
                         </div>
                     </div>
                 </div>
@@ -71,7 +71,7 @@
         <!-- Billing Relations -->
         <div class="flex flex-col md:flex-row p-6 md:p-16 gap-10 md:gap-16 bg-slate-50/30 border-b border-slate-100">
             <div class="w-full md:flex-1">
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Customer Account</p>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">{{ app()->getLocale() == 'en' ? 'Customer Account' : 'Akun Pelanggan' }}</p>
                 <div class="space-y-2">
                     <p class="text-base md:text-lg font-black text-slate-900">{{ $invoice->client->nama_client }}</p>
                     <p class="text-xs md:text-sm font-bold text-indigo-600">{{ $invoice->client->nama_perusahaan }}</p>
@@ -84,7 +84,7 @@
             
             <div class="w-full md:w-auto text-left md:text-right">
                 <div class="p-6 md:p-8 bg-white rounded-xl border border-slate-200 shadow-sm w-full">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Total Payable</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Total Payable' : 'Total Tagihan' }}</p>
                     <p class="text-2xl md:text-3xl font-black text-slate-900 font-outfit">Rp {{ number_format($invoice->total, 0, ',', '.') }}</p>
                 </div>
             </div>
@@ -96,10 +96,10 @@
             <table class="hidden md:table w-full text-left">
                 <thead>
                     <tr class="text-[10px] font-bold uppercase text-slate-400 tracking-widest border-b border-slate-200">
-                        <th class="py-4 px-16">Line Item Description</th>
-                        <th class="py-4 text-center w-24">Qty</th>
-                        <th class="py-4 text-right w-40">Rate</th>
-                        <th class="py-4 text-right px-16 w-40">Amount</th>
+                        <th class="py-4 px-16">{{ app()->getLocale() == 'en' ? 'Line Item Description' : 'Deskripsi Item Tagihan' }}</th>
+                        <th class="py-4 text-center w-24">{{ app()->getLocale() == 'en' ? 'Qty' : 'Jumlah' }}</th>
+                        <th class="py-4 text-right w-40">{{ app()->getLocale() == 'en' ? 'Rate' : 'Harga Satuan' }}</th>
+                        <th class="py-4 text-right px-16 w-40">{{ app()->getLocale() == 'en' ? 'Amount' : 'Total' }}</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -121,17 +121,17 @@
                 @foreach($invoice->items as $item)
                     <div class="p-6 space-y-5">
                         <div class="w-full">
-                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1.5">Description</p>
+                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1.5">{{ app()->getLocale() == 'en' ? 'Description' : 'Deskripsi' }}</p>
                             <p class="text-sm font-bold text-slate-900 leading-snug">{{ $item->deskripsi }}</p>
                         </div>
                         <div class="w-full">
-                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1.5">Quantity & Rate</p>
+                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1.5">{{ app()->getLocale() == 'en' ? 'Quantity & Rate' : 'Jumlah & Harga Satuan' }}</p>
                             <p class="text-xs font-medium text-slate-600">
                                 {{ number_format($item->qty, 0) }} Unit &times; Rp {{ number_format($item->harga, 0, ',', '.') }}
                             </p>
                         </div>
                         <div class="w-full bg-slate-50 p-4 rounded-xl border border-slate-100">
-                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Item Subtotal</p>
+                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">{{ app()->getLocale() == 'en' ? 'Item Subtotal' : 'Subtotal Item' }}</p>
                             <p class="text-base font-black text-slate-900">Rp {{ number_format($item->qty * $item->harga, 0, ',', '.') }}</p>
                         </div>
                     </div>
@@ -144,14 +144,14 @@
             <div class="flex flex-col md:flex-row justify-between gap-12">
                 <div class="w-full md:flex-1 space-y-8">
                     <div>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Terms & Conditions</p>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">{{ app()->getLocale() == 'en' ? 'Terms & Conditions' : 'Syarat & Ketentuan' }}</p>
                         <p class="text-[11px] text-slate-500 leading-relaxed">{{ $invoice->terms_condition }}</p>
                     </div>
                     
                     <!-- Payment History Section -->
                     @if($invoice->payments->count() > 0)
                     <div class="w-full">
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Payment History</p>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">{{ app()->getLocale() == 'en' ? 'Payment History' : 'Riwayat Pembayaran' }}</p>
                         <div class="space-y-3">
                             @foreach($invoice->payments as $payment)
                             <div class="flex items-center justify-between p-4 bg-white border border-slate-200/60 rounded-xl shadow-sm">
@@ -161,7 +161,7 @@
                                 </div>
                                 <div class="flex items-center gap-4">
                                     <span class="text-xs font-black text-emerald-600">Rp {{ number_format($payment->amount, 0, ',', '.') }}</span>
-                                    <form action="{{ route('payments.destroy', $payment) }}" method="POST" onsubmit="return confirm('Delete this payment record?')">
+                                    <form action="{{ route('payments.destroy', $payment) }}" method="POST" onsubmit="return confirm('{{ app()->getLocale() == 'en' ? 'Delete this payment record?' : 'Hapus catatan pembayaran ini?' }}')">
                                         @csrf @method('DELETE')
                                         <button class="p-1.5 text-slate-300 hover:text-rose-500 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                                     </form>
@@ -183,25 +183,25 @@
                         <span class="font-bold text-slate-900">+ Rp {{ number_format($invoice->subtotal * ($invoice->tax_percent / 100), 0, ',', '.') }}</span>
                     </div>
                     <div class="flex justify-between items-center text-sm">
-                        <span class="text-slate-500 font-medium">Adjustment</span>
+                        <span class="text-slate-500 font-medium">{{ app()->getLocale() == 'en' ? 'Adjustment' : 'Penyesuaian' }}</span>
                         <span class="font-bold text-rose-500">- Rp {{ number_format($invoice->subtotal * ($invoice->discount_percent / 100), 0, ',', '.') }}</span>
                     </div>
                     
                     @if($invoice->status === 'dp')
                     <div class="flex justify-between items-center p-4 bg-indigo-50 rounded-xl border border-indigo-100">
-                        <span class="text-[11px] text-indigo-600 font-bold uppercase tracking-tight">Remaining</span>
+                        <span class="text-[11px] text-indigo-600 font-bold uppercase tracking-tight">{{ app()->getLocale() == 'en' ? 'Remaining' : 'Sisa Tagihan' }}</span>
                         <span class="text-sm font-black text-indigo-700">Rp {{ number_format($invoice->amount_due, 0, ',', '.') }}</span>
                     </div>
                     @endif
 
                     <div class="pt-6 border-t border-slate-200 flex justify-between items-center">
-                        <span class="text-xs md:text-sm font-black text-slate-900 uppercase tracking-widest">Total Due</span>
+                        <span class="text-xs md:text-sm font-black text-slate-900 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Total Due' : 'Total Tagihan' }}</span>
                         <span class="text-xl md:text-3xl font-black text-indigo-600 font-outfit">Rp {{ number_format($invoice->total, 0, ',', '.') }}</span>
                     </div>
                     
                     @if($invoice->status !== 'paid')
                     <button @click="$dispatch('open-modal', 'record-payment')" class="w-full py-4 bg-[#0f172a] text-white rounded-xl font-bold text-[12px] uppercase tracking-widest hover:bg-slate-800 transition-all mt-6 shadow-xl shadow-slate-900/10 active:scale-[0.98]">
-                        Record Payment
+                        {{ app()->getLocale() == 'en' ? 'Record Payment' : 'Catat Pembayaran' }}
                     </button>
                     @endif
                 </div>
@@ -212,11 +212,11 @@
         <div class="px-6 md:px-16 py-10 bg-slate-50 border-t border-slate-100">
             <div class="flex flex-col md:flex-row justify-between items-center gap-8">
                 <div class="text-[11px] text-slate-400 font-medium leading-relaxed max-w-lg text-left w-full md:w-auto">
-                    <p class="font-bold text-slate-500 uppercase tracking-widest mb-1">Payment Instructions</p>
+                    <p class="font-bold text-slate-500 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Payment Instructions' : 'Instruksi Pembayaran' }}</p>
                     <p>{{ $invoice->terms_condition }}</p>
                 </div>
                 <div class="text-left md:text-right w-full md:w-auto">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Digitally Issued By</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Digitally Issued By' : 'Diterbitkan Secara Digital Oleh' }}</p>
                     <p class="text-xs font-black text-slate-900 uppercase">{{ $invoice->creator->name }}</p>
                 </div>
             </div>
@@ -226,43 +226,43 @@
     <!-- Payment Modal -->
     <x-modal name="record-payment" :show="false">
         <div class="p-6 md:p-10">
-            <h3 class="text-xl font-bold text-slate-900 font-outfit mb-2">Record Payment</h3>
-            <p class="text-sm text-slate-500 mb-8">Enter the amount received for this invoice.</p>
+            <h3 class="text-xl font-bold text-slate-900 font-outfit mb-2">{{ app()->getLocale() == 'en' ? 'Record Payment' : 'Catat Pembayaran' }}</h3>
+            <p class="text-sm text-slate-500 mb-8">{{ app()->getLocale() == 'en' ? 'Enter the amount received for this invoice.' : 'Masukkan jumlah yang diterima untuk invoice ini.' }}</p>
             
             <form action="{{ route('payments.store') }}" method="POST" class="space-y-6">
                 @csrf
                 <input type="hidden" name="invoice_id" value="{{ $invoice->id }}">
                 
                 <div class="space-y-2">
-                    <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Amount Received (IDR)</label>
+                    <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Amount Received (IDR)' : 'Jumlah Diterima (IDR)' }}</label>
                     <input type="number" name="amount" value="{{ $invoice->amount_due }}" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-lg font-black text-indigo-600 outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all">
-                    <p class="text-[10px] text-slate-400 font-medium italic">Remaining balance: Rp {{ number_format($invoice->amount_due, 0, ',', '.') }}</p>
+                    <p class="text-[10px] text-slate-400 font-medium italic">{{ app()->getLocale() == 'en' ? 'Remaining balance' : 'Sisa saldo' }}: Rp {{ number_format($invoice->amount_due, 0, ',', '.') }}</p>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div class="space-y-2">
-                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Payment Date</label>
+                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Payment Date' : 'Tanggal Pembayaran' }}</label>
                         <input type="date" name="payment_date" value="{{ date('Y-m-d') }}" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all">
                     </div>
                     <div class="space-y-2">
-                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Method</label>
+                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Method' : 'Metode' }}</label>
                         <select name="payment_method" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all">
-                            <option value="Transfer Bank">Transfer Bank</option>
+                            <option value="Transfer Bank">{{ app()->getLocale() == 'en' ? 'Bank Transfer' : 'Transfer Bank' }}</option>
                             <option value="Cash">Cash</option>
-                            <option value="Credit Card">Credit Card</option>
+                            <option value="Credit Card">{{ app()->getLocale() == 'en' ? 'Credit Card' : 'Kartu Kredit' }}</option>
                             <option value="E-Wallet">E-Wallet</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="space-y-2">
-                    <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Reference / Transaction ID</label>
+                    <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Reference / Transaction ID' : 'Referensi / ID Transaksi' }}</label>
                     <input type="text" name="reference_number" placeholder="e.g. TRX-123456" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all">
                 </div>
 
                 <div class="pt-6 flex flex-col-reverse sm:flex-row items-center justify-end gap-3">
-                    <button type="button" @click="$dispatch('close-modal', 'record-payment')" class="w-full sm:w-auto px-5 py-2.5 text-sm font-bold text-slate-500 hover:text-slate-800">Cancel</button>
-                    <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-indigo-600 text-white rounded-lg text-sm font-bold shadow-lg shadow-indigo-600/20 active:scale-95">Save Payment</button>
+                    <button type="button" @click="$dispatch('close-modal', 'record-payment')" class="w-full sm:w-auto px-5 py-2.5 text-sm font-bold text-slate-500 hover:text-slate-800">{{ app()->getLocale() == 'en' ? 'Cancel' : 'Batal' }}</button>
+                    <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-indigo-600 text-white rounded-lg text-sm font-bold shadow-lg shadow-indigo-600/20 active:scale-95">{{ app()->getLocale() == 'en' ? 'Save Payment' : 'Simpan Pembayaran' }}</button>
                 </div>
             </form>
         </div>
@@ -301,13 +301,13 @@
                             this.warning = data.warning;
                         }
                     } else {
-                        this.warning = 'Gagal memproses draf email.';
+                        this.warning = '{{ app()->getLocale() == 'en' ? 'Failed to process email draft.' : 'Gagal memproses draf email.' }}';
                     }
                     setTimeout(() => typeof lucide !== 'undefined' && lucide.createIcons(), 50);
                 })
                 .catch(err => {
                     this.loading = false;
-                    this.warning = 'Terjadi kesalahan koneksi.';
+                    this.warning = '{{ app()->getLocale() == 'en' ? 'Connection error occurred.' : 'Terjadi kesalahan koneksi.' }}';
                     setTimeout(() => typeof lucide !== 'undefined' && lucide.createIcons(), 50);
                 });
             },
@@ -323,7 +323,7 @@
                 </div>
                 <div>
                     <h3 class="text-xl font-bold text-slate-900 font-outfit">AI Billing Copywriter</h3>
-                    <p class="text-xs text-slate-500">Draft professional billing email reminders instantly.</p>
+                    <p class="text-xs text-slate-500">{{ app()->getLocale() == 'en' ? 'Draft professional billing email reminders instantly.' : 'Buat draf pengingat email tagihan profesional secara instan.' }}</p>
                 </div>
             </div>
 
@@ -336,24 +336,24 @@
             <!-- Parameters -->
             <div class="mt-6 space-y-4">
                 <div class="space-y-2">
-                    <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Pilih Nada Email (Tone)</label>
+                    <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Select Email Tone' : 'Pilih Nada Email (Tone)' }}</label>
                     <select x-model="tone" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all">
-                        <option value="sopan">Sopan & Profesional (Friendly Reminder)</option>
-                        <option value="tegas">Tegas & Formal (Pembayaran Segera)</option>
-                        <option value="urgent">Mendesak / Urgent (Batas Waktu Lewat)</option>
+                        <option value="sopan">{{ app()->getLocale() == 'en' ? 'Polite & Professional (Friendly Reminder)' : 'Sopan & Profesional (Friendly Reminder)' }}</option>
+                        <option value="tegas">{{ app()->getLocale() == 'en' ? 'Firm & Formal (Immediate Payment)' : 'Tegas & Formal (Pembayaran Segera)' }}</option>
+                        <option value="urgent">{{ app()->getLocale() == 'en' ? 'Urgent (Past Due)' : 'Mendesak / Urgent (Batas Waktu Lewat)' }}</option>
                     </select>
                 </div>
 
                 <button @click="generateDraft()" :disabled="loading" class="w-full py-3 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 transition-all shadow-md shadow-indigo-600/10 flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50">
                     <span x-show="!loading" class="flex items-center gap-2">
-                        <i data-lucide="zap" class="w-4 h-4"></i> Hasilkan Draf AI
+                        <i data-lucide="zap" class="w-4 h-4"></i> {{ app()->getLocale() == 'en' ? 'Generate AI Draft' : 'Hasilkan Draf AI' }}
                     </span>
                     <span x-show="loading" class="flex items-center gap-2" style="display: none;">
                         <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        Menganalisis & Menulis...
+                        {{ app()->getLocale() == 'en' ? 'Analyzing & Writing...' : 'Menganalisis & Menulis...' }}
                     </span>
                 </button>
             </div>
@@ -374,9 +374,9 @@
             <div x-show="!loading && subject" class="mt-8 space-y-6" style="display: none;">
                 <div class="space-y-2">
                     <div class="flex justify-between items-center">
-                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Subjek Email</label>
+                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Email Subject' : 'Subjek Email' }}</label>
                         <button @click="copyToClipboard(subject)" class="text-xs text-indigo-600 hover:text-indigo-800 font-semibold flex items-center gap-1">
-                            <i data-lucide="copy" class="w-3 h-3"></i> Salin
+                            <i data-lucide="copy" class="w-3 h-3"></i> {{ app()->getLocale() == 'en' ? 'Copy' : 'Salin' }}
                         </button>
                     </div>
                     <input type="text" x-model="subject" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all">
@@ -384,9 +384,9 @@
 
                 <div class="space-y-2">
                     <div class="flex justify-between items-center">
-                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Isi Email (Body)</label>
+                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Email Body' : 'Isi Email (Body)' }}</label>
                         <button @click="copyToClipboard(body)" class="text-xs text-indigo-600 hover:text-indigo-800 font-semibold flex items-center gap-1">
-                            <i data-lucide="copy" class="w-3 h-3"></i> Salin
+                            <i data-lucide="copy" class="w-3 h-3"></i> {{ app()->getLocale() == 'en' ? 'Copy' : 'Salin' }}
                         </button>
                     </div>
                     <textarea x-model="body" rows="8" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all leading-relaxed"></textarea>
@@ -394,14 +394,14 @@
 
                 <div class="pt-4 flex justify-between items-center border-t border-slate-100">
                     <span x-show="copied" class="text-xs text-emerald-600 font-bold flex items-center gap-1" style="display: none;">
-                        <i data-lucide="check" class="w-4 h-4"></i> Berhasil disalin!
+                        <i data-lucide="check" class="w-4 h-4"></i> {{ app()->getLocale() == 'en' ? 'Copied successfully!' : 'Berhasil disalin!' }}
                     </span>
                     <span x-show="!copied"></span>
                     
                     <div class="flex gap-2">
-                        <button type="button" @click="$dispatch('close-modal', 'ai-copywriter')" class="px-5 py-2.5 text-sm font-bold text-slate-500 hover:text-slate-800">Tutup</button>
+                        <button type="button" @click="$dispatch('close-modal', 'ai-copywriter')" class="px-5 py-2.5 text-sm font-bold text-slate-500 hover:text-slate-800">{{ app()->getLocale() == 'en' ? 'Close' : 'Tutup' }}</button>
                         <button @click="copyToClipboard('Subject: ' + subject + '\n\n' + body)" class="px-6 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-slate-800 transition-all flex items-center gap-2">
-                            <i data-lucide="copy" class="w-3.5 h-3.5"></i> Salin Semua Draf
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i> {{ app()->getLocale() == 'en' ? 'Copy All Drafts' : 'Salin Semua Draf' }}
                         </button>
                     </div>
                 </div>

@@ -19,7 +19,7 @@
     
     <!-- Mobile Close Button -->
     <div class="lg:hidden flex items-center justify-between p-4 border-b border-slate-100 mb-4">
-        <span class="font-black text-slate-900 text-sm tracking-widest uppercase">Navigation</span>
+        <span class="font-black text-slate-900 text-sm tracking-widest uppercase">{{ app()->getLocale() == 'en' ? 'Navigation' : 'Navigasi' }}</span>
         <button @click="mobileMenuOpen = false" class="p-2 text-slate-400 hover:text-slate-600 rounded-lg bg-slate-50 transition-colors">
             <i data-lucide="x" class="w-5 h-5"></i>
         </button>

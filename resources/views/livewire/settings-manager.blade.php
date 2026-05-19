@@ -3,7 +3,17 @@
         <!-- Sidebar Navigation -->
         <div class="lg:col-span-1 space-y-2">
             <nav class="flex flex-col space-y-1">
-                @foreach(['general' => 'Identity', 'finance' => 'Finance', 'localization' => 'Regional', 'notifications' => 'Communications', 'appearance' => 'Branding', 'security' => 'Security'] as $tab => $label)
+                @php
+                    $localizedTabs = [
+                        'general' => app()->getLocale() == 'en' ? 'Identity' : 'Identitas',
+                        'finance' => app()->getLocale() == 'en' ? 'Finance' : 'Keuangan',
+                        'localization' => app()->getLocale() == 'en' ? 'Regional' : 'Regional',
+                        'notifications' => app()->getLocale() == 'en' ? 'Communications' : 'Komunikasi',
+                        'appearance' => app()->getLocale() == 'en' ? 'Branding' : 'Branding',
+                        'security' => app()->getLocale() == 'en' ? 'Security' : 'Keamanan'
+                    ];
+                @endphp
+                @foreach($localizedTabs as $tab => $label)
                     <button 
                         wire:click="$set('activeTab', '{{ $tab }}')"
                         class="flex items-center gap-3 px-5 py-4 rounded-2xl text-[13px] font-black uppercase tracking-widest transition-all duration-300 w-full text-left
@@ -26,14 +36,14 @@
 
             <div class="mt-8 glass-card p-6 bg-slate-900 text-white overflow-hidden relative">
                 <div class="absolute -right-10 -top-10 w-32 h-32 bg-indigo-500/10 blur-3xl rounded-full"></div>
-                <h3 class="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-4 relative z-10">Telemetry</h3>
+                <h3 class="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-4 relative z-10">{{ app()->getLocale() == 'en' ? 'Telemetry' : 'Telemetri' }}</h3>
                 <div class="space-y-4 relative z-10">
                     <div>
-                        <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Last Backup</p>
+                        <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Last Backup' : 'Pencadangan Terakhir' }}</p>
                         <p class="text-[13px] font-bold text-indigo-400">{{ $lastBackup }}</p>
                     </div>
                     <div>
-                        <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Server Health</p>
+                        <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Server Health' : 'Kesehatan Server' }}</p>
                         <div class="flex items-center gap-2">
                             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                             <span class="text-[13px] font-bold text-emerald-400">{{ $serverStatus }}</span>
@@ -54,22 +64,22 @@
                             <i data-lucide="building-2" class="w-6 h-6"></i>
                         </div>
                         <div>
-                            <h2 class="text-xl font-black text-slate-900 uppercase tracking-tight">Business Identity</h2>
-                            <p class="text-xs text-slate-500 font-medium">Global identification for your enterprise.</p>
+                            <h2 class="text-xl font-black text-slate-900 uppercase tracking-tight">{{ app()->getLocale() == 'en' ? 'Business Identity' : 'Identitas Bisnis' }}</h2>
+                            <p class="text-xs text-slate-500 font-medium">{{ app()->getLocale() == 'en' ? 'Global identification for your enterprise.' : 'Identitas global untuk perusahaan Anda.' }}</p>
                         </div>
                     </div>
 
                     <div class="space-y-8">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div class="space-y-3">
-                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Enterprise Legal Name</label>
+                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Enterprise Legal Name' : 'Nama Hukum Perusahaan' }}</label>
                                 <div class="relative">
                                     <i data-lucide="building" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
                                     <input type="text" wire:model.live="settings.company_name" class="w-full pl-12 pr-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-bold text-slate-900 text-sm">
                                 </div>
                             </div>
                             <div class="space-y-3">
-                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Primary Contact Email</label>
+                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Primary Contact Email' : 'Email Kontak Utama' }}</label>
                                 <div class="relative">
                                     <i data-lucide="mail" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
                                     <input type="email" wire:model.live="settings.company_email" class="w-full pl-12 pr-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-bold text-slate-900 text-sm">
@@ -77,7 +87,7 @@
                             </div>
                         </div>
                         <div class="space-y-3">
-                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Headquarters Address</label>
+                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Headquarters Address' : 'Alamat Kantor Pusat' }}</label>
                             <textarea wire:model.live="settings.company_address" rows="4" class="w-full px-6 py-5 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-bold text-slate-900 text-sm"></textarea>
                         </div>
                     </div>
@@ -92,29 +102,29 @@
                             <i data-lucide="wallet" class="w-6 h-6"></i>
                         </div>
                         <div>
-                            <h2 class="text-xl font-black text-slate-900 uppercase tracking-tight">Financial Governance</h2>
-                            <p class="text-xs text-slate-500 font-medium">Currency, tax, and billing configurations.</p>
+                            <h2 class="text-xl font-black text-slate-900 uppercase tracking-tight">{{ app()->getLocale() == 'en' ? 'Financial Governance' : 'Tata Kelola Keuangan' }}</h2>
+                            <p class="text-xs text-slate-500 font-medium">{{ app()->getLocale() == 'en' ? 'Currency, tax, and billing configurations.' : 'Konfigurasi mata uang, pajak, dan penagihan.' }}</p>
                         </div>
                     </div>
 
                     <div class="space-y-8">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div class="space-y-3">
-                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Currency Symbol</label>
+                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Currency Symbol' : 'Simbol Mata Uang' }}</label>
                                 <input type="text" wire:model.live="settings.currency_symbol" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-bold text-slate-900 text-sm">
                             </div>
                             <div class="space-y-3">
-                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Default VAT / PPN (%)</label>
+                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Default VAT / PPN (%)' : 'PPN Default (%)' }}</label>
                                 <input type="number" wire:model.live="settings.default_tax_percent" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-bold text-slate-900 text-sm">
                             </div>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div class="space-y-3">
-                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Invoice Sequence Prefix</label>
+                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Invoice Sequence Prefix' : 'Awalan Nomor Faktur' }}</label>
                                 <input type="text" wire:model.live="settings.invoice_prefix" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-bold text-slate-900 text-sm">
                             </div>
                             <div class="space-y-3">
-                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Payment Terms (Days)</label>
+                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Payment Terms (Days)' : 'Syarat Pembayaran (Hari)' }}</label>
                                 <select wire:model.live="settings.payment_terms_days" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-bold text-slate-900 text-sm">
                                     <option value="7">Net 7</option>
                                     <option value="15">Net 15</option>
@@ -134,14 +144,14 @@
                             <i data-lucide="palette" class="w-6 h-6"></i>
                         </div>
                         <div>
-                            <h2 class="text-xl font-black text-slate-900 uppercase tracking-tight">Branding & Visuals</h2>
-                            <p class="text-xs text-slate-500 font-medium">Customize the look of your documents.</p>
+                            <h2 class="text-xl font-black text-slate-900 uppercase tracking-tight">{{ app()->getLocale() == 'en' ? 'Branding & Visuals' : 'Branding & Visual' }}</h2>
+                            <p class="text-xs text-slate-500 font-medium">{{ app()->getLocale() == 'en' ? 'Customize the look of your documents.' : 'Sesuaikan tampilan dokumen Anda.' }}</p>
                         </div>
                     </div>
 
                     <div class="space-y-10">
                         <div class="space-y-4">
-                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Invoice PDF Logo</label>
+                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Invoice PDF Logo' : 'Logo PDF Faktur' }}</label>
                             <div class="flex items-start gap-8">
                                 <div class="w-32 h-32 rounded-2xl bg-slate-50 border-2 border-dashed border-slate-200 flex items-center justify-center overflow-hidden group relative">
                                     @if ($companyLogo)
@@ -153,18 +163,18 @@
                                     @endif
                                 </div>
                                 <div class="flex-1 space-y-4">
-                                    <p class="text-xs text-slate-500 leading-relaxed">Upload a high-resolution transparent PNG or SVG for your invoices. Recommended size: 400x120px.</p>
+                                    <p class="text-xs text-slate-500 leading-relaxed">{{ app()->getLocale() == 'en' ? 'Upload a high-resolution transparent PNG or SVG for your invoices. Recommended size: 400x120px.' : 'Unggah file PNG transparan atau SVG resolusi tinggi untuk faktur Anda. Ukuran yang disarankan: 400x120px.' }}</p>
                                     <input type="file" wire:model="companyLogo" class="hidden" id="logo-upload">
                                     <label for="logo-upload" class="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl text-[11px] font-black uppercase tracking-widest cursor-pointer hover:bg-indigo-600 transition-all">
                                         <i data-lucide="upload" class="w-4 h-4"></i>
-                                        Choose File
+                                        {{ app()->getLocale() == 'en' ? 'Choose File' : 'Pilih File' }}
                                     </label>
                                 </div>
                             </div>
                         </div>
 
                         <div class="pt-8 border-t border-slate-100">
-                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest block mb-4">Primary Brand Color</label>
+                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest block mb-4">{{ app()->getLocale() == 'en' ? 'Primary Brand Color' : 'Warna Merek Utama' }}</label>
                             <div class="flex items-center gap-4">
                                 <input type="color" wire:model.live="settings.primary_color" class="w-16 h-16 rounded-xl border-none p-1 bg-white shadow-sm cursor-pointer">
                                 <input type="text" wire:model.live="settings.primary_color" class="px-5 py-3 bg-slate-50 border-transparent rounded-xl font-mono font-bold text-slate-700">
@@ -182,22 +192,22 @@
                             <i data-lucide="globe" class="w-6 h-6"></i>
                         </div>
                         <div>
-                            <h2 class="text-xl font-black text-slate-900 uppercase tracking-tight">Regional Settings</h2>
-                            <p class="text-xs text-slate-500 font-medium">Manage localization and time telemetry.</p>
+                            <h2 class="text-xl font-black text-slate-900 uppercase tracking-tight">{{ app()->getLocale() == 'en' ? 'Regional Settings' : 'Pengaturan Regional' }}</h2>
+                            <p class="text-xs text-slate-500 font-medium">{{ app()->getLocale() == 'en' ? 'Manage localization and time telemetry.' : 'Kelola lokalisasi dan telemetri waktu.' }}</p>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                         <div class="space-y-6">
                             <div class="space-y-2">
-                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Temporal Zone (Timezone)</label>
+                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Temporal Zone (Timezone)' : 'Zona Waktu' }}</label>
                                 <select wire:model.live="settings.timezone" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-bold text-slate-900 text-sm">
                                     <option value="Asia/Jakarta">Jakarta (GMT+7)</option>
                                     <option value="UTC">Universal Coordinated Time (UTC)</option>
                                 </select>
                             </div>
                             <div class="space-y-2">
-                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Date Expression Format</label>
+                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Date Expression Format' : 'Format Tampilan Tanggal' }}</label>
                                 <select wire:model.live="settings.date_format" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-bold text-slate-900 text-sm">
                                     <option value="d M Y">12 May 2026</option>
                                     <option value="Y-m-d">2026-05-12</option>
@@ -207,7 +217,7 @@
                         </div>
                         <div class="space-y-6">
                             <div class="space-y-2">
-                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Primary Language</label>
+                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Primary Language' : 'Bahasa Utama' }}</label>
                                 <div class="flex items-center gap-3">
                                     <button class="flex-1 py-4 rounded-2xl border-2 transition-all font-black uppercase text-[11px] tracking-widest {{ ($settings['language'] ?? 'id') === 'id' ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-transparent bg-slate-50 text-slate-400' }}" wire:click="$set('settings.language', 'id')">Bahasa Indonesia</button>
                                     <button class="flex-1 py-4 rounded-2xl border-2 transition-all font-black uppercase text-[11px] tracking-widest {{ ($settings['language'] ?? 'id') === 'en' ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-transparent bg-slate-50 text-slate-400' }}" wire:click="$set('settings.language', 'en')">English (Global)</button>
@@ -226,32 +236,32 @@
                             <i data-lucide="mail" class="w-6 h-6"></i>
                         </div>
                         <div>
-                            <h2 class="text-xl font-black text-slate-900 uppercase tracking-tight">Communications Hub</h2>
-                            <p class="text-xs text-slate-500 font-medium">Configure SMTP and email delivery templates.</p>
+                            <h2 class="text-xl font-black text-slate-900 uppercase tracking-tight">{{ app()->getLocale() == 'en' ? 'Communications Hub' : 'Pusat Komunikasi' }}</h2>
+                            <p class="text-xs text-slate-500 font-medium">{{ app()->getLocale() == 'en' ? 'Configure SMTP and email delivery templates.' : 'Konfigurasi SMTP dan templat pengiriman email.' }}</p>
                         </div>
                     </div>
 
                     <div class="space-y-10">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div class="space-y-3">
-                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">SMTP Gateway Host</label>
+                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'SMTP Gateway Host' : 'Host Gateway SMTP' }}</label>
                                 <input type="text" wire:model.live="settings.smtp_host" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-bold text-slate-900 text-sm">
                             </div>
                             <div class="space-y-3">
-                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">SMTP Port</label>
+                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'SMTP Port' : 'Port SMTP' }}</label>
                                 <input type="text" wire:model.live="settings.smtp_port" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-bold text-slate-900 text-sm">
                             </div>
                         </div>
                         
                         <div class="space-y-6 pt-8 border-t border-slate-100">
-                            <h3 class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Automated Intelligence Templates</h3>
+                            <h3 class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Automated Intelligence Templates' : 'Templat Kecerdasan Otomatis' }}</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div class="space-y-3">
-                                    <label class="text-[11px] font-black text-slate-500 uppercase tracking-widest">Email Opening Salutation</label>
+                                    <label class="text-[11px] font-black text-slate-500 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Email Opening Salutation' : 'Salam Pembuka Email' }}</label>
                                     <textarea wire:model.live="settings.email_template_header" rows="3" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-bold text-slate-900 text-sm"></textarea>
                                 </div>
                                 <div class="space-y-3">
-                                    <label class="text-[11px] font-black text-slate-500 uppercase tracking-widest">Email Closure Signature</label>
+                                    <label class="text-[11px] font-black text-slate-500 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Email Closure Signature' : 'Tanda Tangan Penutup Email' }}</label>
                                     <textarea wire:model.live="settings.email_template_footer" rows="3" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-bold text-slate-900 text-sm"></textarea>
                                 </div>
                             </div>
@@ -268,16 +278,16 @@
                             <i data-lucide="shield-check" class="w-6 h-6"></i>
                         </div>
                         <div>
-                            <h2 class="text-xl font-black text-slate-900 uppercase tracking-tight">Security & Logs</h2>
-                            <p class="text-xs text-slate-500 font-medium">Monitor system activity and access telemetry.</p>
+                            <h2 class="text-xl font-black text-slate-900 uppercase tracking-tight">{{ app()->getLocale() == 'en' ? 'Security & Logs' : 'Keamanan & Log' }}</h2>
+                            <p class="text-xs text-slate-500 font-medium">{{ app()->getLocale() == 'en' ? 'Monitor system activity and access telemetry.' : 'Pantau aktivitas sistem dan telemetri akses.' }}</p>
                         </div>
                     </div>
 
                     <div class="space-y-6">
                         <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100">
                             <div class="flex items-center justify-between mb-6">
-                                <h4 class="text-xs font-black text-slate-900 uppercase tracking-widest">Recent Activity Pulse</h4>
-                                <span class="px-2 py-0.5 bg-emerald-50 text-emerald-600 text-[9px] font-black rounded uppercase">Encrypted</span>
+                                <h4 class="text-xs font-black text-slate-900 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Recent Activity Pulse' : 'Aktivitas Terbaru' }}</h4>
+                                <span class="px-2 py-0.5 bg-emerald-50 text-emerald-600 text-[9px] font-black rounded uppercase">{{ app()->getLocale() == 'en' ? 'Encrypted' : 'Terenkripsi' }}</span>
                             </div>
                             <div class="space-y-4">
                                 <div class="flex items-center justify-between py-2 border-b border-slate-200/50">
@@ -285,18 +295,18 @@
                                         <div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
                                             <i data-lucide="key" class="w-4 h-4"></i>
                                         </div>
-                                        <span class="text-[12px] font-bold text-slate-700">Owner Login Detected</span>
+                                        <span class="text-[12px] font-bold text-slate-700">{{ app()->getLocale() == 'en' ? 'Owner Login Detected' : 'Login Owner Terdeteksi' }}</span>
                                     </div>
-                                    <span class="text-[10px] text-slate-400 font-bold">12 mins ago</span>
+                                    <span class="text-[10px] text-slate-400 font-bold">{{ app()->getLocale() == 'en' ? '12 mins ago' : '12 menit yang lalu' }}</span>
                                 </div>
                                 <div class="flex items-center justify-between py-2 border-b border-slate-200/50">
                                     <div class="flex items-center gap-3">
                                         <div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
                                             <i data-lucide="database" class="w-4 h-4"></i>
                                         </div>
-                                        <span class="text-[12px] font-bold text-slate-700">Automated SQL Backup</span>
+                                        <span class="text-[12px] font-bold text-slate-700">{{ app()->getLocale() == 'en' ? 'Automated SQL Backup' : 'Pencadangan SQL Otomatis' }}</span>
                                     </div>
-                                    <span class="text-[10px] text-slate-400 font-bold">2 hours ago</span>
+                                    <span class="text-[10px] text-slate-400 font-bold">{{ app()->getLocale() == 'en' ? '2 hours ago' : '2 jam yang lalu' }}</span>
                                 </div>
                             </div>
                         </div>
@@ -321,13 +331,13 @@
                 <i data-lucide="alert-circle" class="w-5 h-5"></i>
             </div>
             <div>
-                <p class="text-sm font-black text-white uppercase tracking-tight">Unsaved Telemetry Changes</p>
-                <p class="text-[11px] text-slate-400 font-medium">You have modified system configurations.</p>
+                <p class="text-sm font-black text-white uppercase tracking-tight">{{ app()->getLocale() == 'en' ? 'Unsaved Telemetry Changes' : 'Perubahan Telemetri Belum Disimpan' }}</p>
+                <p class="text-[11px] text-slate-400 font-medium">{{ app()->getLocale() == 'en' ? 'You have modified system configurations.' : 'Anda telah mengubah konfigurasi sistem.' }}</p>
             </div>
         </div>
         <div class="flex items-center gap-3">
-            <button wire:click="discard" class="px-6 py-3 text-[11px] font-black text-slate-400 uppercase tracking-widest hover:text-white transition-colors">Discard</button>
-            <button wire:click="save" class="px-8 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-[11px] font-black uppercase tracking-widest transition-all shadow-xl shadow-indigo-600/20">Apply Changes</button>
+            <button wire:click="discard" class="px-6 py-3 text-[11px] font-black text-slate-400 uppercase tracking-widest hover:text-white transition-colors">{{ app()->getLocale() == 'en' ? 'Discard' : 'Batalkan' }}</button>
+            <button wire:click="save" class="px-8 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-[11px] font-black uppercase tracking-widest transition-all shadow-xl shadow-indigo-600/20">{{ app()->getLocale() == 'en' ? 'Apply Changes' : 'Terapkan Perubahan' }}</button>
         </div>
     </div>
     @endif

@@ -2,7 +2,7 @@
     <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
             <h1 class="text-3xl font-black text-slate-900 font-outfit tracking-tight">{{ __('ui.reports') }}</h1>
-            <p class="text-sm text-slate-500">Comprehensive financial audit and performance analytics.</p>
+            <p class="text-sm text-slate-500">{{ app()->getLocale() == 'en' ? 'Comprehensive financial audit and performance analytics.' : 'Audit keuangan komprehensif dan analisis kinerja.' }}</p>
         </div>
     </div>
 
@@ -10,24 +10,24 @@
     <div class="glass-card p-6 mb-10">
         <form action="{{ route('reports.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
             <div class="space-y-2">
-                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Start Date</label>
+                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Start Date' : 'Tanggal Mulai' }}</label>
                 <input type="date" name="start_date" value="{{ $startDate }}" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
             </div>
             <div class="space-y-2">
-                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">End Date</label>
+                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'End Date' : 'Tanggal Selesai' }}</label>
                 <input type="date" name="end_date" value="{{ $endDate }}" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
             </div>
             <div class="space-y-2">
-                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Client Account</label>
+                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Client Account' : 'Akun Klien' }}</label>
                 <select name="client_id" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
-                    <option value="">All Clients</option>
+                    <option value="">{{ app()->getLocale() == 'en' ? 'All Clients' : 'Semua Klien' }}</option>
                     @foreach($clients as $client)
                         <option value="{{ $client->id }}" {{ $clientId == $client->id ? 'selected' : '' }}>{{ $client->nama_client }}</option>
                     @endforeach
                 </select>
             </div>
             <div class="flex gap-2">
-                <button type="submit" class="flex-1 btn-premium py-2.5">Apply Filter</button>
+                <button type="submit" class="flex-1 btn-premium py-2.5">{{ app()->getLocale() == 'en' ? 'Apply Filter' : 'Terapkan Filter' }}</button>
                 <a href="{{ route('reports.index') }}" class="btn-secondary py-2.5">Reset</a>
             </div>
         </form>
@@ -36,23 +36,23 @@
     <div x-data="{ tab: 'invoices' }">
         <!-- Tabs -->
         <div class="flex items-center gap-8 border-b border-slate-100 mb-10">
-            <button @click="tab = 'invoices'" :class="tab === 'invoices' ? 'text-indigo-600 border-indigo-600' : 'text-slate-400 border-transparent'" class="pb-4 text-sm font-bold border-b-2 transition-all">Invoice Performance</button>
-            <button @click="tab = 'receipts'" :class="tab === 'receipts' ? 'text-indigo-600 border-indigo-600' : 'text-slate-400 border-transparent'" class="pb-4 text-sm font-bold border-b-2 transition-all">Receipts & Payments</button>
+            <button @click="tab = 'invoices'" :class="tab === 'invoices' ? 'text-indigo-600 border-indigo-600' : 'text-slate-400 border-transparent'" class="pb-4 text-sm font-bold border-b-2 transition-all">{{ app()->getLocale() == 'en' ? 'Invoice Performance' : 'Kinerja Faktur' }}</button>
+            <button @click="tab = 'receipts'" :class="tab === 'receipts' ? 'text-indigo-600 border-indigo-600' : 'text-slate-400 border-transparent'" class="pb-4 text-sm font-bold border-b-2 transition-all">{{ app()->getLocale() == 'en' ? 'Receipts & Payments' : 'Kuitansi & Pembayaran' }}</button>
         </div>
 
         <!-- Invoice Tab -->
         <div x-show="tab === 'invoices'" x-transition>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
                 <div class="glass-card p-8">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Total Invoices</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Total Invoices' : 'Total Faktur' }}</p>
                     <h3 class="text-3xl font-black text-slate-900 font-outfit">{{ $invoiceStats['total_count'] }}</h3>
                 </div>
                 <div class="glass-card p-8">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Gross Billing</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Gross Billing' : 'Total Tagihan Kotor' }}</p>
                     <h3 class="text-3xl font-black text-indigo-600 font-outfit">Rp {{ number_format($invoiceStats['total_value'], 0, ',', '.') }}</h3>
                 </div>
                 <div class="glass-card p-8">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Total Outstanding</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Total Outstanding' : 'Total Tunggakan' }}</p>
                     <h3 class="text-3xl font-black text-rose-500 font-outfit">Rp {{ number_format($totalOutstanding, 0, ',', '.') }}</h3>
                 </div>
             </div>
@@ -60,14 +60,14 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
                 <div class="glass-card overflow-hidden">
                     <div class="px-8 py-6 bg-slate-50 border-b border-slate-100">
-                        <h4 class="font-bold text-slate-900">Status Breakdown</h4>
+                        <h4 class="font-bold text-slate-900">{{ app()->getLocale() == 'en' ? 'Status Breakdown' : 'Rincian Status' }}</h4>
                     </div>
                     <div class="p-8 space-y-6">
                         @foreach($invoiceStats['status_breakdown'] as $stat)
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-3">
                                     <x-badge :status="$stat->status" />
-                                    <span class="text-xs font-bold text-slate-500">{{ $stat->count }} Items</span>
+                                    <span class="text-xs font-bold text-slate-500">{{ $stat->count }} {{ app()->getLocale() == 'en' ? 'Items' : 'Item' }}</span>
                                 </div>
                                 <span class="text-sm font-black text-slate-900">Rp {{ number_format($stat->total, 0, ',', '.') }}</span>
                             </div>
@@ -81,11 +81,11 @@
         <div x-show="tab === 'receipts'" x-transition>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
                 <div class="glass-card p-8">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Total Collected</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Total Collected' : 'Total Terkumpul' }}</p>
                     <h3 class="text-3xl font-black text-emerald-600 font-outfit">Rp {{ number_format($paymentStats['total_collected'], 0, ',', '.') }}</h3>
                 </div>
                 <div class="glass-card p-8">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Collection Rate</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Collection Rate' : 'Tingkat Pengumpulan' }}</p>
                     <h3 class="text-3xl font-black text-slate-900 font-outfit">
                         {{ $invoiceStats['total_value'] > 0 ? round(($paymentStats['total_collected'] / $invoiceStats['total_value']) * 100) : 0 }}%
                     </h3>
@@ -94,17 +94,17 @@
 
             <div class="glass-card overflow-hidden">
                 <div class="px-8 py-6 bg-slate-50 border-b border-slate-100">
-                    <h4 class="font-bold text-slate-900">Recent Payments History</h4>
+                    <h4 class="font-bold text-slate-900">{{ app()->getLocale() == 'en' ? 'Recent Payments History' : 'Riwayat Pembayaran Terbaru' }}</h4>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
                         <thead>
                             <tr class="text-[10px] font-bold uppercase tracking-widest text-slate-400 bg-slate-50/50">
-                                <th class="px-8 py-4">Date</th>
-                                <th class="px-8 py-4">Client</th>
-                                <th class="px-8 py-4">Invoice #</th>
-                                <th class="px-8 py-4 text-right">Amount</th>
-                                <th class="px-8 py-4">Method</th>
+                                <th class="px-8 py-4">{{ app()->getLocale() == 'en' ? 'Date' : 'Tanggal' }}</th>
+                                <th class="px-8 py-4">{{ app()->getLocale() == 'en' ? 'Client' : 'Klien' }}</th>
+                                <th class="px-8 py-4">{{ app()->getLocale() == 'en' ? 'Invoice #' : 'No. Faktur' }}</th>
+                                <th class="px-8 py-4 text-right">{{ app()->getLocale() == 'en' ? 'Amount' : 'Jumlah' }}</th>
+                                <th class="px-8 py-4">{{ app()->getLocale() == 'en' ? 'Method' : 'Metode' }}</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-50">

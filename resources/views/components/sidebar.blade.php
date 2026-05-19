@@ -38,7 +38,7 @@
             <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-400/80">{{ __('ui.terminal') }}</p>
             <nav x-bind:class="collapsed ? 'space-y-4' : 'space-y-1'">
                 <x-sidebar-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')" icon="layout-grid" :label="__('ui.dashboard')" :collapsed="$collapsed" />
-                <x-sidebar-link href="{{ route('ai-assistant.index') }}" :active="request()->routeIs('ai-assistant.*')" icon="bot" label="AI Assistant" :collapsed="$collapsed" />
+                <x-sidebar-link href="{{ route('ai-assistant.index') }}" :active="request()->routeIs('ai-assistant.*')" icon="bot" :label="app()->getLocale() == 'en' ? 'AI Assistant' : 'Asisten AI'" :collapsed="$collapsed" />
                 <x-sidebar-link href="{{ route('clients.index') }}" :active="request()->routeIs('clients.*')" icon="users" :label="__('ui.clients')" :collapsed="$collapsed" />
             </nav>
         </div>
@@ -49,7 +49,7 @@
             <nav x-bind:class="collapsed ? 'space-y-4' : 'space-y-1'">
                 <x-sidebar-link href="{{ route('receipts.index') }}" :active="request()->routeIs('receipts.*')" icon="file-spreadsheet" :label="__('ui.receipts')" :collapsed="$collapsed" />
                 <x-sidebar-link href="{{ route('invoices.index') }}" :active="request()->routeIs('invoices.*')" icon="file-text" :label="__('ui.invoices')" :collapsed="$collapsed" />
-                <x-sidebar-link href="{{ route('chronos.index') }}" :active="request()->routeIs('chronos.*')" icon="calendar-days" label="Chronos Calendar" :collapsed="$collapsed" />
+                <x-sidebar-link href="{{ route('chronos.index') }}" :active="request()->routeIs('chronos.*')" icon="calendar-days" :label="app()->getLocale() == 'en' ? 'Chronos Calendar' : 'Kalender Chronos'" :collapsed="$collapsed" />
             </nav>
         </div>
 
@@ -74,7 +74,7 @@
                     <x-sidebar-link href="{{ route('security.center') }}" :active="request()->routeIs('security.*')" icon="fingerprint" :label="__('ui.security_center')" :collapsed="$collapsed" />
                     <x-sidebar-link href="{{ route('guide.index') }}" :active="request()->routeIs('guide.index')" icon="book-open" :label="__('ui.guide')" :collapsed="$collapsed" />
                 @else
-                    <x-sidebar-link href="{{ route('guide.index') }}?type=sop" :active="request()->routeIs('guide.index')" icon="clipboard-list" label="Operational SOP" :collapsed="$collapsed" />
+                    <x-sidebar-link href="{{ route('guide.index') }}?type=sop" :active="request()->routeIs('guide.index')" icon="clipboard-list" :label="app()->getLocale() == 'en' ? 'Operational SOP' : 'SOP Operasional'" :collapsed="$collapsed" />
                 @endif
             </nav>
         </div>

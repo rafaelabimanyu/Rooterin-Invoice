@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ __('receipt.title') }} #{{ $receipt->receipt_number }}</title>
+    <title>{{ app()->getLocale() == 'en' ? 'Receipt' : 'Kuitansi' }} #{{ $receipt->receipt_number }}</title>
     <style>
         @page { margin: 0; }
         body { 
@@ -104,7 +104,7 @@
 <body>
     <div class="container">
         <!-- Watermark -->
-        <div class="watermark">{{ __('receipt.title') }}</div>
+        <div class="watermark">{{ app()->getLocale() == 'en' ? 'RECEIPT' : 'KUITANSI' }}</div>
 
         <!-- Header / Letterhead -->
         <div class="header clearfix">
@@ -129,11 +129,11 @@
                 </div>
             </div>
             <div class="doc-info">
-                <div class="doc-type">{{ __('receipt.title') }}</div>
+                <div class="doc-type">{{ app()->getLocale() == 'en' ? 'Receipt' : 'Kuitansi' }}</div>
                 <div class="doc-id">#{{ $receipt->receipt_number }}</div>
                 <div class="doc-meta">
-                    {{ __('receipt.date') }}: <b>{{ $receipt->tanggal_kwitansi->format('d M Y') }}</b><br>
-                    {{ __('receipt.expiry_date') }}: <b>{{ $receipt->tanggal_expired->format('d M Y') }}</b>
+                    {{ app()->getLocale() == 'en' ? 'Receipt Date' : 'Tanggal Kuitansi' }}: <b>{{ $receipt->tanggal_receipt->format('d M Y') }}</b><br>
+                    {{ app()->getLocale() == 'en' ? 'Expiry Date' : 'Tanggal Kedaluwarsa' }}: <b>{{ $receipt->expiry_date->format('d M Y') }}</b>
                 </div>
             </div>
         </div>
@@ -143,14 +143,14 @@
         <!-- Addressing -->
         <div class="addressing clearfix">
             <div class="bill-to">
-                <span class="section-label">{{ __('receipt.client') }}</span>
+                <span class="section-label">{{ app()->getLocale() == 'en' ? 'CLIENT' : 'KLIEN' }}</span>
                 <div class="client-card">
                     <div class="client-name">{{ $receipt->client->nama_client }}</div>
                     <div class="client-details">
                         <b>{{ $receipt->client->nama_perusahaan }}</b><br>
                         {{ $receipt->client->alamat }}<br>
                         {{ $receipt->client->kota }}, {{ $receipt->client->provinsi }}<br>
-                        {{ __('ui.contact') }}: {{ $receipt->client->no_hp }}
+                        {{ app()->getLocale() == 'en' ? 'Contact' : 'Kontak' }}: {{ $receipt->client->no_hp }}
                     </div>
                 </div>
             </div>
@@ -160,10 +160,10 @@
         <table class="items-table">
             <thead>
                 <tr>
-                    <th width="50%">{{ __('receipt.description') }}</th>
-                    <th width="10%" class="text-center">{{ __('receipt.quantity') }}</th>
-                    <th width="20%" class="text-right">{{ __('receipt.price') }}</th>
-                    <th width="20%" class="text-right">{{ __('receipt.total') }}</th>
+                    <th width="50%">{{ app()->getLocale() == 'en' ? 'Description' : 'Deskripsi' }}</th>
+                    <th width="10%" class="text-center">{{ app()->getLocale() == 'en' ? 'Qty' : 'Jumlah' }}</th>
+                    <th width="20%" class="text-right">{{ app()->getLocale() == 'en' ? 'Rate' : 'Harga' }}</th>
+                    <th width="20%" class="text-right">{{ app()->getLocale() == 'en' ? 'Total' : 'Total' }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -171,7 +171,7 @@
                 <tr>
                     <td>
                         <div class="item-desc-primary">{{ $item->deskripsi }}</div>
-                        <div class="item-desc-secondary">Service quotation fulfillment</div>
+                        <div class="item-desc-secondary">{{ app()->getLocale() == 'en' ? 'Service quotation fulfillment' : 'Pemenuhan penawaran layanan' }}</div>
                     </td>
                     <td class="text-center">{{ number_format($item->qty, 0) }}</td>
                     <td class="text-right">Rp {{ number_format($item->harga, 0, ',', '.') }}</td>
@@ -185,23 +185,23 @@
         <div class="financials clearfix">
             <div class="summary-box">
                 <div class="summary-line clearfix">
-                    <span class="summary-label">{{ __('receipt.subtotal') }}</span>
+                    <span class="summary-label">Subtotal</span>
                     <span class="summary-value">Rp {{ number_format($receipt->subtotal, 0, ',', '.') }}</span>
                 </div>
                 @if($receipt->tax_percent > 0)
                 <div class="summary-line clearfix">
-                    <span class="summary-label">{{ __('receipt.tax') }} ({{ $receipt->tax_percent }}%)</span>
+                    <span class="summary-label">{{ app()->getLocale() == 'en' ? 'Tax' : 'Pajak' }} ({{ $receipt->tax_percent }}%)</span>
                     <span class="summary-value">+ Rp {{ number_format($receipt->subtotal * ($receipt->tax_percent/100), 0, ',', '.') }}</span>
                 </div>
                 @endif
                 @if($receipt->discount_percent > 0)
                 <div class="summary-line clearfix">
-                    <span class="summary-label">{{ __('receipt.discount') }} ({{ $receipt->discount_percent }}%)</span>
+                    <span class="summary-label">{{ app()->getLocale() == 'en' ? 'Discount' : 'Diskon' }} ({{ $receipt->discount_percent }}%)</span>
                     <span class="summary-value">- Rp {{ number_format($receipt->subtotal * ($receipt->discount_percent/100), 0, ',', '.') }}</span>
                 </div>
                 @endif
                 <div class="summary-line total clearfix">
-                    <span class="summary-label">{{ __('receipt.grand_total') }}</span>
+                    <span class="summary-label">{{ app()->getLocale() == 'en' ? 'Total Amount' : 'Jumlah Total' }}</span>
                     <span class="summary-value">Rp {{ number_format($receipt->total, 0, ',', '.') }}</span>
                 </div>
             </div>
@@ -209,7 +209,7 @@
 
         @if($receipt->notes)
         <div style="margin-top: 40px; clear: both;">
-            <span class="section-label">{{ __('invoice.notes') }}</span>
+            <span class="section-label">{{ app()->getLocale() == 'en' ? 'Notes' : 'Catatan' }}</span>
             <div style="font-size: 10px; color: #64748b; line-height: 1.5;">{{ $receipt->notes }}</div>
         </div>
         @endif
@@ -217,7 +217,7 @@
         <!-- Footer -->
         <div class="footer">
             Rooterin Enterprise Billing &bull; tech-ops@rooterin.com &bull; +62 21 555 1234<br>
-            This document is a formal quotation receipt. Subject to terms and conditions.
+            {{ app()->getLocale() == 'en' ? 'This document is a formal quotation receipt. Subject to terms and conditions.' : 'Dokumen ini adalah kuitansi penawaran resmi. Tunduk pada syarat dan ketentuan.' }}
         </div>
     </div>
 </body>

@@ -75,7 +75,7 @@
                             <span class="text-[10px] font-black bg-indigo-600 text-white px-2 py-0.5 rounded-full uppercase tracking-wider">AI Financial Advisory</span>
                             <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Real-time Analysis</span>
                         </div>
-                        <h4 class="text-base font-bold text-slate-900 leading-snug font-jakarta">Taktik Keuangan & Arus Kas</h4>
+                        <h4 class="text-base font-bold text-slate-900 leading-snug font-jakarta">{{ app()->getLocale() == 'en' ? 'Financial Strategy & Cash Flow' : 'Taktik Keuangan & Arus Kas' }}</h4>
                         <p class="text-sm text-slate-600 leading-relaxed max-w-4xl mt-1">
                             {{ $aiInsight }}
                         </p>
@@ -85,7 +85,7 @@
                 <div class="flex items-center gap-3 shrink-0 relative z-10">
                     <a href="{{ route('dashboard', ['refresh_ai' => 1]) }}" class="px-4 py-2.5 bg-white border border-slate-200 hover:border-indigo-200 hover:text-indigo-600 rounded-xl text-xs font-bold shadow-sm transition-all flex items-center gap-2 active:scale-95">
                         <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
-                        <span>Perbarui Analisis</span>
+                        <span>{{ app()->getLocale() == 'en' ? 'Refresh Analysis' : 'Perbarui Analisis' }}</span>
                     </a>
                 </div>
             </div>
@@ -122,7 +122,7 @@
                         </div>
 
                         <h2 class="text-3xl md:text-5xl font-black font-jakarta tracking-tight leading-tight">
-                            Keep up the great work,<br><span class="text-indigo-300">{{ auth()->user()->name }}</span>
+                            {{ app()->getLocale() == 'en' ? 'Keep up the great work,' : 'Terus tingkatkan kinerja luar biasa Anda,' }}<br><span class="text-indigo-300">{{ auth()->user()->name }}</span>
                         </h2>
 
                         <div class="flex items-center gap-4 py-4 border-l-2 border-indigo-500/30 pl-6">
@@ -139,21 +139,21 @@
                                 <div class="p-1.5 bg-indigo-100 rounded-lg group-hover:scale-110 transition-transform">
                                     <i data-lucide="user-plus" class="w-4 h-4 text-indigo-600"></i>
                                 </div>
-                                New Client
+                                {{ app()->getLocale() == 'en' ? 'New Client' : 'Klien Baru' }}
                             </a>
                             <a href="{{ route('invoices.create') }}"
                                 class="group flex items-center gap-3 px-5 py-3 bg-indigo-600/50 backdrop-blur-md border border-white/20 text-white rounded-xl font-bold text-xs hover:bg-white/20 transition-all shadow-xl hover:-translate-y-1">
                                 <div class="p-1.5 bg-white/20 rounded-lg group-hover:scale-110 transition-transform">
                                     <i data-lucide="file-edit" class="w-4 h-4"></i>
                                 </div>
-                                Draft Invoice
+                                {{ app()->getLocale() == 'en' ? 'Draft Invoice' : 'Draf Invoice' }}
                             </a>
                             <a href="{{ route('guide.index') }}?type=sop"
                                 class="group flex items-center gap-3 px-5 py-3 bg-slate-800/50 backdrop-blur-md border border-white/10 text-white rounded-xl font-bold text-xs hover:bg-white/10 transition-all shadow-xl hover:-translate-y-1">
                                 <div class="p-1.5 bg-white/10 rounded-lg group-hover:scale-110 transition-transform">
                                     <i data-lucide="book-open" class="w-4 h-4"></i>
                                 </div>
-                                Operational SOP
+                                {{ app()->getLocale() == 'en' ? 'Operational SOP' : 'SOP Operasional' }}
                             </a>
                         </div>
                     </div>
@@ -162,7 +162,7 @@
                         <!-- Digital Clock -->
                         <div
                             class="p-6 bg-white/5 backdrop-blur-xl rounded-[32px] border border-white/10 text-right min-w-[200px]">
-                            <p class="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-300/60 mb-2">System Time
+                            <p class="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-300/60 mb-2">{{ app()->getLocale() == 'en' ? 'System Time' : 'Waktu Sistem' }}
                             </p>
                             <p class="text-4xl md:text-5xl font-black font-mono tracking-tighter" x-text="time"></p>
                             <p class="text-[11px] font-bold text-indigo-200 mt-2">{{ date('l, F d, Y') }}</p>
@@ -185,9 +185,8 @@
                                 </div>
                             </div>
                             <div>
-                                <p class="text-[10px] font-black uppercase tracking-widest text-indigo-300/60 mb-1">Daily
-                                    Target</p>
-                                <p class="text-sm font-black">{{ $todayInvoicesCount }} / {{ $dailyGoal }} Invoices</p>
+                                <p class="text-[10px] font-black uppercase tracking-widest text-indigo-300/60 mb-1">{{ app()->getLocale() == 'en' ? 'Daily Target' : 'Target Harian' }}</p>
+                                <p class="text-sm font-black">{{ $todayInvoicesCount }} / {{ $dailyGoal }} {{ app()->getLocale() == 'en' ? 'Invoices' : 'Invoice' }}</p>
                             </div>
                         </div>
                     </div>
@@ -211,9 +210,9 @@
                             <i data-lucide="file-text" class="w-7 h-7 group-hover:animate-bounce"></i>
                         </div>
                         <span
-                            class="text-[9px] font-black bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full uppercase tracking-widest">Invoices</span>
+                            class="text-[9px] font-black bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Invoices' : 'Invoice' }}</span>
                     </div>
-                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Today's Invoices</p>
+                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">{{ app()->getLocale() == 'en' ? "Today's Invoices" : 'Invoice Hari Ini' }}</p>
                     <h3 class="text-4xl font-black text-slate-900 font-jakarta">{{ $todayInvoicesCount }}</h3>
                 </div>
 
@@ -224,9 +223,9 @@
                             <i data-lucide="clipboard-check" class="w-7 h-7 group-hover:scale-110 transition-transform"></i>
                         </div>
                         <span
-                            class="text-[9px] font-black bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full uppercase tracking-widest">Receipts</span>
+                            class="text-[9px] font-black bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Receipts' : 'Kuitansi' }}</span>
                     </div>
-                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Receipts Logged</p>
+                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">{{ app()->getLocale() == 'en' ? 'Receipts Logged' : 'Kuitansi Tercatat' }}</p>
                     <h3 class="text-4xl font-black text-slate-900 font-jakarta">{{ $todayReceiptsCount }}</h3>
                 </div>
 
@@ -237,9 +236,9 @@
                             <i data-lucide="zap" class="w-7 h-7 group-hover:rotate-12 transition-transform"></i>
                         </div>
                         <span
-                            class="text-[9px] font-black bg-amber-50 text-amber-600 px-3 py-1 rounded-full uppercase tracking-widest">Revenue</span>
+                            class="text-[9px] font-black bg-amber-50 text-amber-600 px-3 py-1 rounded-full uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Revenue' : 'Pendapatan' }}</span>
                     </div>
-                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Daily Output Value</p>
+                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">{{ app()->getLocale() == 'en' ? 'Daily Output Value' : 'Nilai Output Harian' }}</p>
                     <h3 class="text-2xl font-black text-slate-900 font-jakarta truncate">Rp
                         {{ number_format($todayRevenue, 0, ',', '.') }}
                     </h3>
@@ -324,10 +323,8 @@
                                             </div>
                                             <h4
                                                 class="text-xl font-black text-slate-900 font-jakarta uppercase tracking-tight mb-2">
-                                                Ready for Lift-off?</h4>
-                                            <p class="text-sm text-slate-500 font-medium leading-relaxed">Your workspace is
-                                                clean and ready. Start your first transaction of the day to see activity
-                                                logs here.</p>
+                                                {{ app()->getLocale() == 'en' ? 'Ready for Lift-off?' : 'Siap Lepas Landas?' }}</h4>
+                                            <p class="text-sm text-slate-500 font-medium leading-relaxed">{{ app()->getLocale() == 'en' ? 'Your workspace is clean and ready. Start your first transaction of the day to see activity logs here.' : 'Ruang kerja Anda bersih dan siap. Mulai transaksi pertama Anda hari ini untuk melihat log aktivitas di sini.' }}</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -344,8 +341,7 @@
             @if($isStaff)
                 <div class="glass-card p-10 flex flex-col w-full min-w-0">
                     <div class="flex items-center justify-between mb-10">
-                        <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg">Activity Feed
-                        </h3>
+                        <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg">{{ app()->getLocale() == 'en' ? 'Activity Feed' : 'Aliran Aktivitas' }}</h3>
                         <span
                             class="px-3 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-black rounded-full uppercase tracking-widest">Live</span>
                     </div>
@@ -370,26 +366,24 @@
                                 <div class="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
                                     <i data-lucide="activity" class="w-8 h-8 text-slate-300"></i>
                                 </div>
-                                <p class="text-xs font-bold text-slate-900 uppercase tracking-widest">No activities recorded</p>
-                                <p class="text-[11px] text-slate-400 mt-2">Activities will appear here once you start processing
-                                    documents.</p>
+                                <p class="text-xs font-bold text-slate-900 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'No activities recorded' : 'Tidak ada aktivitas tercatat' }}</p>
+                                <p class="text-[11px] text-slate-400 mt-2">{{ app()->getLocale() == 'en' ? 'Activities will appear here once you start processing documents.' : 'Aktivitas akan muncul di sini setelah Anda mulai memproses dokumen.' }}</p>
                             </div>
                         @endforelse
                     </div>
 
                     <div class="mt-10 pt-10 border-t border-slate-50">
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 text-center">System
-                            Information</p>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 text-center">{{ app()->getLocale() == 'en' ? 'System Information' : 'Informasi Sistem' }}</p>
                         <div class="p-5 bg-slate-50/50 rounded-2xl border border-slate-100 space-y-4">
                             <div class="flex justify-between items-center text-[11px]">
-                                <span class="text-slate-500 font-bold">Node Identity</span>
+                                <span class="text-slate-500 font-bold">{{ app()->getLocale() == 'en' ? 'Node Identity' : 'Identitas Node' }}</span>
                                 <span
                                     class="font-black text-slate-900">STAFF-{{ str_pad(auth()->id(), 4, '0', STR_PAD_LEFT) }}</span>
                             </div>
                             <div class="flex justify-between items-center text-[11px]">
-                                <span class="text-slate-500 font-bold">Session Integrity</span>
+                                <span class="text-slate-500 font-bold">{{ app()->getLocale() == 'en' ? 'Session Integrity' : 'Integritas Sesi' }}</span>
                                 <span class="font-black text-emerald-500 flex items-center gap-1.5">
-                                    <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Active
+                                    <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> {{ app()->getLocale() == 'en' ? 'Active' : 'Aktif' }}
                                 </span>
                             </div>
                         </div>
@@ -398,11 +392,11 @@
             @else
                 <!-- Admin Stats Side Card (Placeholder or mini charts) -->
                 <div class="glass-card p-10 w-full min-w-0">
-                    <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg mb-8">System Analytics</h3>
+                    <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg mb-8">{{ app()->getLocale() == 'en' ? 'System Analytics' : 'Analitik Sistem' }}</h3>
                     <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100">
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Operational Load</p>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">{{ app()->getLocale() == 'en' ? 'Operational Load' : 'Beban Operasional' }}</p>
                         <div class="flex items-end gap-3 mb-4">
-                            <span class="text-3xl font-black text-slate-900">Optimal</span>
+                            <span class="text-3xl font-black text-slate-900">{{ app()->getLocale() == 'en' ? 'Efficient' : 'Optimal' }}</span>
                         </div>
                         <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
                             <div class="bg-emerald-500 h-full w-[100%] shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
@@ -429,7 +423,7 @@
             open: false,
             input: '',
             messages: [
-                { sender: 'ai', text: 'Halo! Saya Asisten Virtual Rooterin. Ada yang bisa saya bantu terkait tagihan, klien, atau ringkasan keuangan hari ini?' }
+                { sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Hello! I am Rooterin\'s Virtual Assistant. Is there anything I can help you with regarding billing, clients, or financial summary today?" : "Halo! Saya Asisten Virtual Rooterin. Ada yang bisa saya bantu terkait tagihan, klien, atau ringkasan keuangan hari ini?" }}' }
             ],
             loading: false,
             routeMap: {
@@ -446,17 +440,17 @@
                 'chronos.index': '{{ route('chronos.index') }}'
             },
             routeLabels: {
-                'dashboard': '👉 Buka Dashboard',
-                'invoices.index': '👉 Lihat Daftar Invoice',
-                'invoices.create': '👉 Buat Invoice Baru',
-                'clients.index': '👉 Lihat Daftar Klien',
-                'clients.create': '👉 Tambah Klien Baru',
-                'receipts.index': '👉 Lihat Daftar Kuitansi',
-                'receipts.create': '👉 Buat Kuitansi Baru',
-                'settings.index': '👉 Buka Pengaturan',
-                'profile.edit': '👉 Edit Profil Saya',
-                'reports.index': '👉 Lihat Laporan Keuangan',
-                'chronos.index': '👉 Buka Kalender Billing (Chronos)'
+                'dashboard': '{{ app()->getLocale() == "en" ? "👉 Open Dashboard" : "👉 Buka Dashboard" }}',
+                'invoices.index': '{{ app()->getLocale() == "en" ? "👉 View Invoices List" : "👉 Lihat Daftar Invoice" }}',
+                'invoices.create': '{{ app()->getLocale() == "en" ? "👉 Create New Invoice" : "👉 Buat Invoice Baru" }}',
+                'clients.index': '{{ app()->getLocale() == "en" ? "👉 View Clients List" : "👉 Lihat Daftar Klien" }}',
+                'clients.create': '{{ app()->getLocale() == "en" ? "👉 Add New Client" : "👉 Tambah Klien Baru" }}',
+                'receipts.index': '{{ app()->getLocale() == "en" ? "👉 View Receipts List" : "👉 Lihat Daftar Kuitansi" }}',
+                'receipts.create': '{{ app()->getLocale() == "en" ? "👉 Create New Receipt" : "👉 Buat Kuitansi Baru" }}',
+                'settings.index': '{{ app()->getLocale() == "en" ? "👉 Open Settings" : "👉 Buka Pengaturan" }}',
+                'profile.edit': '{{ app()->getLocale() == "en" ? "👉 Edit My Profile" : "👉 Edit Profil Saya" }}',
+                'reports.index': '{{ app()->getLocale() == "en" ? "👉 View Financial Reports" : "👉 Lihat Laporan Keuangan" }}',
+                'chronos.index': '{{ app()->getLocale() == "en" ? "👉 Open Billing Calendar (Chronos)" : "👉 Buka Kalender Billing (Chronos)" }}'
             },
             renderMarkdown(text) {
                 if (typeof marked !== 'undefined') {
@@ -498,7 +492,7 @@
                     if (data.success) {
                         this.processResponse(data.reply);
                     } else {
-                        this.messages.push({ sender: 'ai', text: 'Maaf, terjadi kesalahan saat memproses permintaan Anda.' });
+                        this.messages.push({ sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Sorry, an error occurred while processing your request." : "Maaf, terjadi kesalahan saat memproses permintaan Anda." }}' });
                     }
                     this.$nextTick(() => {
                         const container = this.$refs.chatContainer;
@@ -508,7 +502,7 @@
                 })
                 .catch(err => {
                     this.loading = false;
-                    this.messages.push({ sender: 'ai', text: 'Maaf, gagal memproses: ' + err.message });
+                    this.messages.push({ sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Sorry, failed to process: " : "Maaf, gagal memproses: " }}' + err.message });
                     this.$nextTick(() => {
                         const container = this.$refs.chatContainer;
                         container.scrollTop = container.scrollHeight;
@@ -598,7 +592,7 @@
 
                 <!-- Input Area -->
                 <form @submit.prevent="sendMessage()" class="p-4 bg-white border-t border-slate-100 flex items-center gap-3">
-                    <input x-model="input" type="text" placeholder="Tanyakan total tagihan menunggak..." class="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all text-slate-800" :disabled="loading">
+                    <input x-model="input" type="text" placeholder="{{ app()->getLocale() == 'en' ? 'Ask about total overdue billing...' : 'Tanyakan total tagihan menunggak...' }}" class="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all text-slate-800" :disabled="loading">
                     <button type="submit" class="w-9 h-9 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl flex items-center justify-center shrink-0 transition-all active:scale-95 disabled:opacity-50" :disabled="loading">
                         <i data-lucide="send" class="w-4 h-4"></i>
                     </button>

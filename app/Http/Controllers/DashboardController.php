@@ -59,14 +59,38 @@ class DashboardController extends Controller
 Berikan 2-3 kalimat berisi insight bisnis taktis dan rekomendasi tindakan praktis dalam Bahasa Indonesia yang profesional untuk membantu pemilik bisnis menjaga kelancaran cash flow (arus kas). Jangan gunakan format markdown (seperti tebal/miring atau list), kembalikan langsung paragraf teks bersih.";
 
             try {
-                if (empty(env('GEMINI_API_KEY')) && empty(config('gemini.api_key'))) {
-                    throw new \Exception("Key missing");
+                $apiKey = env('GEMINI_API_KEY') ?: config('gemini.api_key');
+                if (empty($apiKey)) {
+                    throw new \Exception("GEMINI_API_KEY tidak dikonfigurasi");
                 }
-                $result = \Gemini\Laravel\Facades\Gemini::generativeModel('gemini-1.5-flash-latest')->generateContent($prompt);
-                return trim($result->text());
+                
+                $response = \Illuminate\Support\Facades\Http::withHeaders([
+                    'Content-Type' => 'application/json',
+                ])->post('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' . $apiKey, [
+                    'contents' => [
+                        [
+                            'parts' => [
+                                ['text' => $prompt]
+                            ]
+                        ]
+                    ]
+                ]);
+
+                if (!$response->successful()) {
+                    throw new \Exception("HTTP Error: Status " . $response->status());
+                }
+
+                $resData = $response->json();
+                $reply = $resData['candidates'][0]['content']['parts'][0]['text'] ?? null;
+                
+                if (empty($reply)) {
+                    throw new \Exception("Response format invalid");
+                }
+
+                return trim($reply);
             } catch (\Throwable $e) {
                 \Illuminate\Support\Facades\Log::error("DashboardController Gemini Error: " . $e->getMessage(), ['exception' => $e]);
-                $errMsg = " (Advisory Fallback - Detail Error: " . $e->getMessage() . ")";
+                $errMsg = " (Advisory Fallback)";
                 if ($overdueRevenue > $monthlyRevenue) {
                     return "Total tagihan menunggak Anda saat ini cukup tinggi dibandingkan dengan pendapatan bulanan. Prioritaskan penagihan piutang aktif dengan mengirimkan peringatan otomatis menggunakan AI Copywriter, serta tawarkan opsi pembayaran bertahap agar arus kas operasional Anda tetap terjaga." . $errMsg;
                 } else {

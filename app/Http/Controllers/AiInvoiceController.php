@@ -54,13 +54,35 @@ Format output harus berupa JSON murni dengan struktur berikut:
 PENTING: Jangan sertakan blok kode markdown seperti ```json atau pembungkus teks apa pun. Kembalikan langsung string JSON murni agar bisa diparse langsung oleh `json_decode`. Jika kamu tidak bisa melakukannya, kembalikan saja string JSON tanpa formatting.";
 
         try {
-            // Check if GEMINI_API_KEY is configured
-            if (empty(env('GEMINI_API_KEY')) && empty(config('gemini.api_key'))) {
+            $apiKey = env('GEMINI_API_KEY') ?: config('gemini.api_key');
+            if (empty($apiKey)) {
                 throw new \Exception("GEMINI_API_KEY tidak dikonfigurasi di file .env");
             }
 
-            $result = Gemini::generativeModel('gemini-1.5-flash-latest')->generateContent($prompt);
-            $responseText = trim($result->text());
+            $response = \Illuminate\Support\Facades\Http::withHeaders([
+                'Content-Type' => 'application/json',
+            ])->post('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' . $apiKey, [
+                'contents' => [
+                    [
+                        'parts' => [
+                            ['text' => $prompt]
+                        ]
+                    ]
+                ]
+            ]);
+
+            if (!$response->successful()) {
+                throw new \Exception("HTTP Error: Status " . $response->status());
+            }
+
+            $resData = $response->json();
+            $responseText = $resData['candidates'][0]['content']['parts'][0]['text'] ?? null;
+            
+            if (empty($responseText)) {
+                throw new \Exception("Response format invalid");
+            }
+            
+            $responseText = trim($responseText);
 
             // Strip potential markdown wrappers
             if (preg_match('/^```json\s*(.*?)\s*```$/is', $responseText, $matches)) {

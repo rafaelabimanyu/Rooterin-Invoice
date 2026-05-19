@@ -103,6 +103,22 @@ class AiChatController extends Controller
             $context = "You are a Senior Financial Consultant & Business Analyst professional specialized for the Rooterin-Invoice system. Your responses must be crystal clear, based on real data from the system, offer tactical solutions, and use professional business English. Avoid boring, templated answers.
 Always provide relevant and strategic extra insights (for example, after explaining the overdue total, suggest tactical actions to accelerate payment collection or manage cash flow).
 
+Anda dibekali informasi mengenai struktur halaman sistem Rooterin-Invoice untuk role Admin dan Owner. Berikut adalah daftar halaman yang tersedia di sidebar menu:
+- Dashboard (Command Center utama)
+- AI Assistant (Halaman khusus chat ini)
+- Clients (Manajemen data klien)
+- Receipts (Pencatatan kwitansi)
+- Invoices (Manajemen tagihan dan AI Copywriter)
+- Chronos Calendar (Kalender operasional)
+- Owner KPI (Statistik keunggulan operasional)
+- Reports (Laporan analitik keuangan)
+- Team Management (Pengaturan hak akses tim)
+- Settings (Pengaturan sistem)
+- Security Center (Pusat keamanan enkripsi)
+- Rooterin Guide (Panduan SOP sistem)
+
+Jika pengguna bertanya tentang jumlah halaman, fitur menu, atau navigasi, gunakan data di atas untuk menjawab secara cerdas, jelas, bervariasi, dan profesional. Jangan pernah mengulang teks template ringkasan data bisnis jika pertanyaan pengguna tidak relevan dengan jumlah tagihan.
+
 Here is the latest summarized data from the system:
 - Active Clients: {$totalClients}
 - Paid Invoices: {$paidCount} (Total amount: Rp " . number_format($paidTotal, 0, ',', '.') . ")
@@ -134,6 +150,22 @@ Strictly match the user's current application language interface. Since the acti
 
             $context = "Anda adalah Senior Financial Consultant & Business Analyst profesional khusus untuk sistem Rooterin-Invoice. Jawaban Anda harus sangat jelas, berbasis data riil dari sistem, memberikan solusi taktis, dan menggunakan bahasa Indonesia yang sangat profesional. Jangan memberikan jawaban template yang membosankan.
 Pastikan Anda selalu memberikan insight tambahan yang relevan dan strategis (misalnya, setelah menjawab tentang total tunggakan, berikan saran tindakan apa yang harus diambil secara taktis untuk mempercepat pembayaran atau mengelola arus kas).
+
+Anda dibekali informasi mengenai struktur halaman sistem Rooterin-Invoice untuk role Admin dan Owner. Berikut adalah daftar halaman yang tersedia di sidebar menu:
+- Dashboard (Command Center utama)
+- AI Assistant (Halaman khusus chat ini)
+- Clients (Manajemen data klien)
+- Receipts (Pencatatan kwitansi)
+- Invoices (Manajemen tagihan dan AI Copywriter)
+- Chronos Calendar (Kalender operasional)
+- Owner KPI (Statistik keunggulan operasional)
+- Reports (Laporan analitik keuangan)
+- Team Management (Pengaturan hak akses tim)
+- Settings (Pengaturan sistem)
+- Security Center (Pusat keamanan enkripsi)
+- Rooterin Guide (Panduan SOP sistem)
+
+Jika pengguna bertanya tentang jumlah halaman, fitur menu, atau navigasi, gunakan data di atas untuk menjawab secara cerdas, jelas, bervariasi, dan profesional. Jangan pernah mengulang teks template ringkasan data bisnis jika pertanyaan pengguna tidak relevan dengan jumlah tagihan.
 
 Berikut adalah data ringkasan terkini dari sistem:
 - Jumlah Klien Aktif: {$totalClients}
@@ -220,7 +252,39 @@ Strictly match the user's current application language interface. Since the acti
             $reply = "";
             $navigateTag = "";
 
-            if (str_contains($userMsgLower, 'klien') || str_contains($userMsgLower, 'client')) {
+            if (str_contains($userMsgLower, 'halaman') || str_contains($userMsgLower, 'menu') || str_contains($userMsgLower, 'navigasi') || str_contains($userMsgLower, 'fitur') || str_contains($userMsgLower, 'role') || str_contains($userMsgLower, 'page')) {
+                if ($locale === 'en') {
+                    $reply = "The Rooterin-Invoice system provides 12 main pages/menu sections for the Admin and Owner roles:\n" .
+                             "1. **Dashboard** (Main Command Center)\n" .
+                             "2. **AI Assistant** (This dedicated chat assistant)\n" .
+                             "3. **Clients** (Client data management)\n" .
+                             "4. **Receipts** (Receipt records)\n" .
+                             "5. **Invoices** (Invoice management and AI Copywriter)\n" .
+                             "6. **Chronos Calendar** (Operational calendar)\n" .
+                             "7. **Owner KPI** (Operational excellence statistics)\n" .
+                             "8. **Reports** (Financial analytical reports)\n" .
+                             "9. **Team Management** (Team access control configuration)\n" .
+                             "10. **Settings** (System settings)\n" .
+                             "11. **Security Center** (Encryption security hub)\n" .
+                             "12. **Rooterin Guide** (System SOP guide)\n\n" .
+                             "You can navigate to any of these features via the sidebar panel.";
+                } else {
+                    $reply = "Sistem Rooterin-Invoice menyediakan 12 halaman/menu utama untuk role Admin dan Owner:\n" .
+                             "1. **Dashboard** (Command Center utama)\n" .
+                             "2. **AI Assistant** (Halaman khusus chat ini)\n" .
+                             "3. **Clients** (Manajemen data klien)\n" .
+                             "4. **Receipts** (Pencatatan kwitansi)\n" .
+                             "5. **Invoices** (Manajemen tagihan dan AI Copywriter)\n" .
+                             "6. **Chronos Calendar** (Kalender operasional)\n" .
+                             "7. **Owner KPI** (Statistik keunggulan operasional)\n" .
+                             "8. **Reports** (Laporan analitik keuangan)\n" .
+                             "9. **Team Management** (Pengaturan hak akses tim)\n" .
+                             "10. **Settings** (Pengaturan sistem)\n" .
+                             "11. **Security Center** (Pusat keamanan enkripsi)\n" .
+                             "12. **Rooterin Guide** (Panduan SOP sistem)\n\n" .
+                             "Anda dapat mengakses seluruh fitur ini langsung melalui menu navigasi di sidebar kiri.";
+                }
+            } elseif (str_contains($userMsgLower, 'klien') || str_contains($userMsgLower, 'client')) {
                 $reply = "Saat ini sistem mencatat Anda memiliki **{$totalClients} klien aktif**. Anda dapat melihat dan mengelola detail data klien secara lengkap di halaman Klien. Sebagai analisis bisnis, menjaga hubungan baik dengan klien aktif sangat penting untuk repeat order.";
                 $navigateTag = " [NAVIGATE: clients.index]";
             } elseif (str_contains($userMsgLower, 'lunas') || str_contains($userMsgLower, 'paid')) {

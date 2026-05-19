@@ -46,60 +46,63 @@ class DashboardController extends Controller
         }
         $trendText = implode(', ', $trendSummary);
 
-        if (request()->has('refresh_ai')) {
-            \Illuminate\Support\Facades\Cache::forget('ai_financial_insights');
-        }
+        $isStaff = auth()->user()->role === 'staff';
 
-        $aiInsight = \Illuminate\Support\Facades\Cache::remember('ai_financial_insights', 3600, function() use ($monthlyRevenue, $overdueRevenue, $trendText) {
-            $prompt = "Kamu adalah konsultan keuangan bisnis terpercaya. Analisis data ringkasan keuangan berikut secara cerdas dan taktis:
+        $aiInsight = null;
+        if (!$isStaff) {
+            if (request()->has('refresh_ai')) {
+                \Illuminate\Support\Facades\Cache::forget('ai_financial_insights');
+            }
+
+            $aiInsight = \Illuminate\Support\Facades\Cache::remember('ai_financial_insights', 3600, function() use ($monthlyRevenue, $overdueRevenue, $trendText) {
+                $prompt = "Kamu adalah konsultan keuangan bisnis terpercaya. Analisis data ringkasan keuangan berikut secara cerdas dan taktis:
 - Total Invoice Lunas Bulan Ini: Rp " . number_format($monthlyRevenue, 0, ',', '.') . "
 - Total Tagihan Menunggak (Overdue): Rp " . number_format($overdueRevenue, 0, ',', '.') . "
 - Tren Penjualan/Invoice 3 Bulan Terakhir: {$trendText}
 
 Berikan 2-3 kalimat berisi insight bisnis taktis dan rekomendasi tindakan praktis dalam Bahasa Indonesia yang profesional untuk membantu pemilik bisnis menjaga kelancaran cash flow (arus kas). Jangan gunakan format markdown (seperti tebal/miring atau list), kembalikan langsung paragraf teks bersih.";
 
-            try {
-                $apiKey = env('GEMINI_API_KEY') ?: config('gemini.api_key');
-                if (empty($apiKey)) {
-                    throw new \Exception("GEMINI_API_KEY tidak dikonfigurasi");
-                }
-                
-                $response = \Illuminate\Support\Facades\Http::withHeaders([
-                    'Content-Type' => 'application/json',
-                ])->post('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' . $apiKey, [
-                    'contents' => [
-                        [
-                            'parts' => [
-                                ['text' => $prompt]
+                try {
+                    $apiKey = env('GEMINI_API_KEY') ?: config('gemini.api_key');
+                    if (empty($apiKey)) {
+                        throw new \Exception("GEMINI_API_KEY tidak dikonfigurasi");
+                    }
+                    
+                    $response = \Illuminate\Support\Facades\Http::withHeaders([
+                        'Content-Type' => 'application/json',
+                    ])->post('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' . $apiKey, [
+                        'contents' => [
+                            [
+                                'parts' => [
+                                    ['text' => $prompt]
+                                ]
                             ]
                         ]
-                    ]
-                ]);
+                    ]);
 
-                if (!$response->successful()) {
-                    throw new \Exception("HTTP Error: Status " . $response->status());
+                    if (!$response->successful()) {
+                        throw new \Exception("HTTP Error: Status " . $response->status());
+                    }
+
+                    $resData = $response->json();
+                    $reply = $resData['candidates'][0]['content']['parts'][0]['text'] ?? null;
+                    
+                    if (empty($reply)) {
+                        throw new \Exception("Response format invalid");
+                    }
+
+                    return trim($reply);
+                } catch (\Throwable $e) {
+                    \Illuminate\Support\Facades\Log::error("DashboardController Gemini Error: " . $e->getMessage(), ['exception' => $e]);
+                    $errMsg = " (Advisory Fallback)";
+                    if ($overdueRevenue > $monthlyRevenue) {
+                        return "Total tagihan menunggak Anda saat ini cukup tinggi dibandingkan dengan pendapatan bulanan. Prioritaskan penagihan piutang aktif dengan mengirimkan peringatan otomatis menggunakan AI Copywriter, serta tawarkan opsi pembayaran bertahap agar arus kas operasional Anda tetap terjaga." . $errMsg;
+                    } else {
+                        return "Performa keuangan Anda bulan ini stabil dengan piutang tertagih yang baik. Namun, tetap pantau tagihan outstanding Anda secara ketat untuk meminimalkan resiko keterlambatan pembayaran di masa mendatang." . $errMsg;
+                    }
                 }
-
-                $resData = $response->json();
-                $reply = $resData['candidates'][0]['content']['parts'][0]['text'] ?? null;
-                
-                if (empty($reply)) {
-                    throw new \Exception("Response format invalid");
-                }
-
-                return trim($reply);
-            } catch (\Throwable $e) {
-                \Illuminate\Support\Facades\Log::error("DashboardController Gemini Error: " . $e->getMessage(), ['exception' => $e]);
-                $errMsg = " (Advisory Fallback)";
-                if ($overdueRevenue > $monthlyRevenue) {
-                    return "Total tagihan menunggak Anda saat ini cukup tinggi dibandingkan dengan pendapatan bulanan. Prioritaskan penagihan piutang aktif dengan mengirimkan peringatan otomatis menggunakan AI Copywriter, serta tawarkan opsi pembayaran bertahap agar arus kas operasional Anda tetap terjaga." . $errMsg;
-                } else {
-                    return "Performa keuangan Anda bulan ini stabil dengan piutang tertagih yang baik. Namun, tetap pantau tagihan outstanding Anda secara ketat untuk meminimalkan resiko keterlambatan pembayaran di masa mendatang." . $errMsg;
-                }
-            }
-        });
-
-        $isStaff = auth()->user()->role === 'staff';
+            });
+        }
         
         if ($isStaff) {
             $todayInvoicesCount = Invoice::where('created_by', auth()->id())

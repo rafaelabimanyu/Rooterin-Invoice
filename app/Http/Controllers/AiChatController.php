@@ -10,14 +10,70 @@ class AiChatController extends Controller
 {
     public function index()
     {
-        return view('ai-assistant.index');
+        abort_if(!auth()->user()->hasFullAccess(), 403, 'Unauthorized action.');
+
+        $sessions = \App\Models\AiChatHistory::where('user_id', auth()->id())
+            ->select('session_id', \DB::raw('MAX(created_at) as latest_created_at'))
+            ->groupBy('session_id')
+            ->orderBy('latest_created_at', 'desc')
+            ->get()
+            ->map(function ($chat) {
+                $firstChat = \App\Models\AiChatHistory::where('session_id', $chat->session_id)
+                    ->orderBy('created_at', 'asc')
+                    ->first();
+                
+                return [
+                    'session_id' => $chat->session_id,
+                    'title' => $firstChat ? \Str::limit($firstChat->message, 35) : 'Obrolan Baru',
+                    'created_at' => $chat->latest_created_at,
+                    'date_formatted' => Carbon::parse($chat->latest_created_at)->diffForHumans()
+                ];
+            });
+
+        return view('ai-assistant.index', compact('sessions'));
+    }
+
+    public function getSessionChat($sessionId)
+    {
+        abort_if(!auth()->user()->hasFullAccess(), 403, 'Unauthorized action.');
+
+        $chats = \App\Models\AiChatHistory::where('user_id', auth()->id())
+            ->where('session_id', $sessionId)
+            ->orderBy('created_at', 'asc')
+            ->get()
+            ->flatMap(function ($chat) {
+                return [
+                    [
+                        'sender' => 'user',
+                        'text' => $chat->message
+                    ],
+                    [
+                        'sender' => 'ai',
+                        'text' => $chat->response
+                    ]
+                ];
+            })
+            ->values();
+
+        return response()->json([
+            'success' => true,
+            'messages' => $chats
+        ]);
     }
 
     public function handleChat(Request $request)
     {
+        abort_if(!auth()->user()->hasFullAccess(), 403, 'Unauthorized action.');
+
         $request->validate([
             'message' => 'required|string|max:1000',
+            'session_id' => 'nullable|string|max:255'
         ]);
+
+        $sessionId = $request->input('session_id');
+        if (empty($sessionId)) {
+            $sessionId = (string) \Illuminate\Support\Str::uuid();
+        }
 
         $totalClients = \App\Models\Client::where('status', 'aktif')->count();
         $paidCount = \App\Models\Invoice::where('status', 'paid')->count();
@@ -37,7 +93,8 @@ class AiChatController extends Controller
         }
         $overdueText = count($overdueList) > 0 ? implode("\n", $overdueList) : "Tidak ada invoice menunggak.";
 
-        $context = "Kamu adalah Asisten Virtual Rooterin-Invoice. Kamu bertugas membantu Admin/Owner/Staff menganalisis data keuangan, invoice, dan klien.
+        $context = "Anda adalah Senior Financial Consultant & Business Analyst profesional khusus untuk sistem Rooterin-Invoice. Jawaban Anda harus sangat jelas, berbasis data riil dari sistem, memberikan solusi taktis, dan menggunakan bahasa Indonesia yang sangat profesional. Jangan memberikan jawaban template yang membosankan.
+Pastikan Anda selalu memberikan insight tambahan yang relevan dan strategis (misalnya, setelah menjawab tentang total tunggakan, berikan saran tindakan apa yang harus diambil secara taktis untuk mempercepat pembayaran atau mengelola arus kas).
 
 Berikut adalah data ringkasan terkini dari sistem:
 - Jumlah Klien Aktif: {$totalClients}
@@ -47,8 +104,8 @@ Berikut adalah data ringkasan terkini dari sistem:
 Daftar Invoice Menunggak/Overdue:
 {$overdueText}
 
-Aturan Utama:
-Jawablah pertanyaan pengguna secara bervariasi, ramah, dan profesional dalam Bahasa Indonesia menggunakan data tersebut. Jika pengguna menanyakan letak, lokasi, atau cara menuju ke suatu halaman (seperti halaman invoice, klien, dashboard, kuitansi, atau pengaturan), selipkan tag [NAVIGATE: nama.route] di akhir kalimat Anda menggunakan salah satu route yang valid berikut:
+Aturan Navigasi Otomatis:
+Jika pengguna menanyakan letak, lokasi, atau cara menuju ke suatu halaman, atau jika Anda menyarankan mereka untuk pergi ke halaman tersebut guna mengambil tindakan, selipkan tag [NAVIGATE: nama.route] di akhir jawaban Anda menggunakan salah satu route yang valid berikut:
 - `dashboard` -> Dashboard utama
 - `invoices.index` -> Daftar Invoice
 - `invoices.create` -> Buat Invoice Baru
@@ -58,7 +115,10 @@ Jawablah pertanyaan pengguna secara bervariasi, ramah, dan profesional dalam Bah
 - `receipts.create` -> Buat Kuitansi / Tanda Terima Baru
 - `settings.index` -> Pengaturan Aplikasi
 - `profile.edit` -> Profil Pengguna
-Contoh: `[NAVIGATE: invoices.index]` atau `[NAVIGATE: clients.index]`.";
+- `reports.index` -> Halaman Laporan (reports)
+- `chronos.index` -> Halaman Kalender (chronos)
+
+Contoh penggunaan tag navigasi: [NAVIGATE: invoices.index] atau [NAVIGATE: settings.index].";
 
         try {
             $apiKey = env('GEMINI_API_KEY') ?: config('gemini.api_key');
@@ -94,38 +154,47 @@ Contoh: `[NAVIGATE: invoices.index]` atau `[NAVIGATE: clients.index]`.";
 
             $reply = trim($reply);
 
+            // Save to database
+            \App\Models\AiChatHistory::create([
+                'user_id' => auth()->id(),
+                'session_id' => $sessionId,
+                'message' => $userMessage,
+                'response' => $reply
+            ]);
+
             return response()->json([
                 'success' => true,
                 'reply' => $reply,
+                'session_id' => $sessionId,
                 'is_fallback' => false
             ]);
 
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error("AiChatController Error (switching to local fallback): " . $e->getMessage(), ['exception' => $e]);
             
-            // Fallback Engine
+            $userMessage = $request->input('message');
             $userMsgLower = strtolower($userMessage ?? '');
             $reply = "";
             $navigateTag = "";
 
             if (str_contains($userMsgLower, 'klien') || str_contains($userMsgLower, 'client')) {
-                $reply = "Halo! Saat ini sistem mencatat Anda memiliki **{$totalClients} klien aktif**. Anda dapat melihat dan mengelola detail data klien secara lengkap di halaman Klien.";
+                $reply = "Saat ini sistem mencatat Anda memiliki **{$totalClients} klien aktif**. Anda dapat melihat dan mengelola detail data klien secara lengkap di halaman Klien. Sebagai analisis bisnis, menjaga hubungan baik dengan klien aktif sangat penting untuk repeat order.";
                 $navigateTag = " [NAVIGATE: clients.index]";
             } elseif (str_contains($userMsgLower, 'lunas') || str_contains($userMsgLower, 'paid')) {
-                $reply = "Tentu! Total nominal tagihan yang telah lunas (paid) adalah **Rp " . number_format($paidTotal, 0, ',', '.') . "** dari total **{$paidCount} invoice**.";
+                $reply = "Total nominal tagihan yang telah lunas (paid) adalah **Rp " . number_format($paidTotal, 0, ',', '.') . "** dari total **{$paidCount} invoice**. Selamat! Ini menunjukkan likuiditas yang baik. Tetap pertahankan proses collection yang efisien.";
                 $navigateTag = " [NAVIGATE: invoices.index]";
-            } elseif (str_contains($userMsgLower, 'menunggak') || str_contains($userMsgLower, 'overdue') || str_contains($userMsgLower, 'jatuh tempo')) {
+            } elseif (str_contains($userMsgLower, 'menunggak') || str_contains($userMsgLower, 'overdue') || str_contains($userMsgLower, 'jatuh tempo') || str_contains($userMsgLower, 'tunggak')) {
                 $replyList = [];
                 foreach ($overdueInvoices as $inv) {
                     $replyList[] = "* **Invoice #{$inv->invoice_number}** oleh {$inv->client->nama_client} - Rp " . number_format($inv->total, 0, ',', '.') . " (Jatuh tempo: " . $inv->due_date->format('d M Y') . ")";
                 }
-                $reply = "Berikut adalah daftar invoice yang saat ini berstatus menunggak (overdue):\n\n" . (count($replyList) > 0 ? implode("\n", $replyList) : "Tidak ada invoice menunggak saat ini.");
+                $reply = "Berikut adalah daftar invoice yang saat ini berstatus menunggak (overdue):\n\n" . (count($replyList) > 0 ? implode("\n", $replyList) : "Tidak ada invoice menunggak saat ini.") . "\n\n**Rekomendasi Tindakan:** Hubungi klien bersangkutan segera atau gunakan fitur Draf Email Penagihan AI dengan nada *tegas* atau *urgent* untuk mengamankan pembayaran hari ini.";
                 $navigateTag = " [NAVIGATE: invoices.index]";
             } elseif (str_contains($userMsgLower, 'buat invoice') || str_contains($userMsgLower, 'tambah invoice') || str_contains($userMsgLower, 'create invoice')) {
-                $reply = "Untuk membuat invoice baru, Anda dapat langsung mengisi form pembuatan invoice pada halaman yang telah disediakan.";
+                $reply = "Untuk membuat invoice baru, Anda dapat langsung mengisi form pembuatan invoice pada halaman yang telah disediakan. Pastikan detail termin pembayaran ditulis dengan jelas.";
                 $navigateTag = " [NAVIGATE: invoices.create]";
             } elseif (str_contains($userMsgLower, 'tambah klien') || str_contains($userMsgLower, 'buat klien') || str_contains($userMsgLower, 'create client')) {
-                $reply = "Untuk menambahkan klien baru ke dalam sistem, silakan isi form tambah klien pada halaman manajemen klien.";
+                $reply = "Untuk menambahkan klien baru ke dalam sistem, silakan isi form tambah klien pada halaman manajemen klien. Pastikan email dan kontak klien valid untuk kelancaran penagihan.";
                 $navigateTag = " [NAVIGATE: clients.create]";
             } elseif (str_contains($userMsgLower, 'kuitansi') || str_contains($userMsgLower, 'receipt') || str_contains($userMsgLower, 'tanda terima')) {
                 $reply = "Anda dapat melihat daftar kuitansi atau membuat kuitansi baru melalui menu kuitansi.";
@@ -143,18 +212,60 @@ Contoh: `[NAVIGATE: invoices.index]` atau `[NAVIGATE: clients.index]`.";
             } elseif (str_contains($userMsgLower, 'dashboard')) {
                 $reply = "Di halaman dashboard, Anda dapat memantau grafik penjualan bulanan, total tagihan outstanding, ringkasan aktivitas, serta analisis cashflow secara visual.";
                 $navigateTag = " [NAVIGATE: dashboard]";
+            } elseif (str_contains($userMsgLower, 'laporan') || str_contains($userMsgLower, 'report')) {
+                $reply = "Halaman Laporan menyajikan visualisasi data yang mendalam mengenai pendapatan, piutang, dan statistik bisnis bulanan untuk mendukung keputusan strategis.";
+                $navigateTag = " [NAVIGATE: reports.index]";
+            } elseif (str_contains($userMsgLower, 'kalender') || str_contains($userMsgLower, 'chronos')) {
+                $reply = "Kalender Chronos mempermudah Anda dalam memantau timeline invoice berdasarkan tanggal jatuh temponya secara interaktif.";
+                $navigateTag = " [NAVIGATE: chronos.index]";
             } else {
-                // Default sapaan asisten ramah
-                $reply = "Halo! Saya adalah Asisten Virtual Rooterin-Invoice. Saat ini saya beroperasi dalam mode asisten lokal.\n\nBerikut ringkasan data bisnis Anda:\n* **Jumlah Klien Aktif:** {$totalClients}\n* **Invoice Lunas:** {$paidCount} buah (Total: Rp " . number_format($paidTotal, 0, ',', '.') . ")\n* **Invoice Belum Lunas:** {$pendingCount} buah (Total: Rp " . number_format($pendingTotal, 0, ',', '.') . ")\n\nApakah ada hal lain terkait invoice, klien, atau navigasi sistem yang ingin Anda tanyakan?";
+                $reply = "Halo! Saya adalah Senior Financial Consultant Virtual Anda. Berdasarkan ringkasan terkini:\n* **Klien Aktif:** {$totalClients}\n* **Invoice Lunas:** {$paidCount} (Rp " . number_format($paidTotal, 0, ',', '.') . ")\n* **Invoice Pending:** {$pendingCount} (Rp " . number_format($pendingTotal, 0, ',', '.') . ")\n\nAda hal spesifik mengenai analisis kas atau invoice overdue yang ingin Anda diskusikan?";
             }
 
             $reply .= $navigateTag;
 
+            // Save to database
+            \App\Models\AiChatHistory::create([
+                'user_id' => auth()->id(),
+                'session_id' => $sessionId,
+                'message' => $userMessage,
+                'response' => $reply
+            ]);
+
             return response()->json([
                 'success' => true,
                 'reply' => $reply,
+                'session_id' => $sessionId,
                 'is_fallback' => true
             ]);
         }
+    }
+
+    public function getSessionsList()
+    {
+        abort_if(!auth()->user()->hasFullAccess(), 403, 'Unauthorized action.');
+
+        $sessions = \App\Models\AiChatHistory::where('user_id', auth()->id())
+            ->select('session_id', \DB::raw('MAX(created_at) as latest_created_at'))
+            ->groupBy('session_id')
+            ->orderBy('latest_created_at', 'desc')
+            ->get()
+            ->map(function ($chat) {
+                $firstChat = \App\Models\AiChatHistory::where('session_id', $chat->session_id)
+                    ->orderBy('created_at', 'asc')
+                    ->first();
+                
+                return [
+                    'session_id' => $chat->session_id,
+                    'title' => $firstChat ? \Str::limit($firstChat->message, 35) : 'Obrolan Baru',
+                    'created_at' => $chat->latest_created_at,
+                    'date_formatted' => Carbon::parse($chat->latest_created_at)->diffForHumans()
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'sessions' => $sessions
+        ]);
     }
 }

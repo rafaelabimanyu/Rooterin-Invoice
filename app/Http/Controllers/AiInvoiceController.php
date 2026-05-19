@@ -10,6 +10,8 @@ class AiInvoiceController extends Controller
 {
     public function generateEmailDraft(Invoice $invoice, Request $request)
     {
+        abort_if(!auth()->user()->hasFullAccess(), 403, 'Unauthorized action.');
+
         $request->validate([
             'tone' => 'required|string|in:sopan,tegas,urgent',
         ]);

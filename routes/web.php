@@ -51,12 +51,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Invoices
         Route::get('invoices/{invoice}/pdf', [InvoiceController::class, 'downloadPdf'])->name('invoices.pdf');
-        Route::post('invoices/{invoice}/ai-email-draft', [AiInvoiceController::class, 'generateEmailDraft'])->name('invoices.ai-email-draft');
         Route::resource('invoices', InvoiceController::class);
-
-        // AI Chatbot Assistant
-        Route::get('ai-assistant', [AiChatController::class, 'index'])->name('ai-assistant.index');
-        Route::post('ai-assistant/chat', [AiChatController::class, 'handleChat'])->name('ai-assistant.chat');
 
         // Security Intelligence
         Route::get('/intelligence', [\App\Http\Controllers\Admin\IntelligenceController::class, 'index'])->name('intelligence.index');
@@ -102,6 +97,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/security-center', function () {
             return view('security.center');
         })->name('security.center');
+
+        // AI Invoice Assistant
+        Route::post('invoices/{invoice}/ai-email-draft', [AiInvoiceController::class, 'generateEmailDraft'])->name('invoices.ai-email-draft');
+
+        // AI Chatbot Assistant & History
+        Route::get('ai-assistant', [AiChatController::class, 'index'])->name('ai-assistant.index');
+        Route::post('ai-assistant/chat', [AiChatController::class, 'handleChat'])->name('ai-assistant.chat');
+        Route::get('ai-assistant/session/{session_id}', [AiChatController::class, 'getSessionChat'])->name('ai-assistant.session');
+        Route::get('ai-assistant/sessions-list', [AiChatController::class, 'getSessionsList'])->name('ai-assistant.sessions-list');
     });
 });
 

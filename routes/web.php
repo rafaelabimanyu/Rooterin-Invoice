@@ -106,3 +106,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 require __DIR__ . '/auth.php';
+
+Route::get('/test-gemini-models', function() {
+    try {
+        $models = \Gemini\Laravel\Facades\Gemini::models()->list();
+        return response()->json($models);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()]);
+    }
+});

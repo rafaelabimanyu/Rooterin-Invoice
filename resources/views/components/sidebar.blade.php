@@ -82,10 +82,11 @@
 
     <!-- Sidebar Footer -->
     <div class="p-4 border-t border-slate-100 flex justify-center">
-        <div 
+        <a 
+            href="{{ route('profile.edit') }}"
+            wire:navigate.hover
             class="flex items-center gap-3 rounded-2xl bg-slate-50 border border-transparent hover:border-slate-200 transition-all duration-300 cursor-pointer group" 
             x-bind:class="collapsed ? 'justify-center w-12 h-12' : 'p-3 w-full'"
-            onclick="window.location='{{ route('profile.edit') }}'"
         >
             <div class="w-10 h-10 rounded-xl bg-slate-200 flex items-center justify-center text-xs font-black text-slate-500 group-hover:bg-slate-900 group-hover:text-white transition-all duration-300 shrink-0">
                 {{ substr(Auth::user()->name, 0, 1) }}
@@ -98,6 +99,6 @@
                 </div>
             </div>
             <i x-show="!collapsed" data-lucide="chevron-right" class="w-3 h-3 text-slate-300 group-hover:translate-x-1 transition-transform"></i>
-        </div>
+        </a>
     </div>
 </aside>

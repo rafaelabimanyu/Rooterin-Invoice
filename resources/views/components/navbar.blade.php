@@ -75,7 +75,7 @@
                     <p class="text-sm font-bold text-slate-900 truncate">{{ Auth::user()->name }}</p>
                 </div>
                 
-                <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors group">
+                <a href="{{ route('profile.edit') }}" wire:navigate.hover class="flex items-center gap-3 px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors group">
                     <i data-lucide="user" class="w-4 h-4 text-slate-400 group-hover:text-indigo-500"></i>
                     Profile
                 </a>

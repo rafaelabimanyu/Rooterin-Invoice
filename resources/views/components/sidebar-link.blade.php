@@ -2,6 +2,7 @@
 
 <a 
     href="{{ $href }}" 
+    wire:navigate.hover
     {{ $attributes->merge(['class' => 'group flex items-center rounded-xl transition-all duration-300 relative ' . 
         ($active ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/10' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900') .
         ($collapsed ? ' justify-center h-11 w-11 mx-auto' : ' gap-3 px-4 py-2.5')]) }}

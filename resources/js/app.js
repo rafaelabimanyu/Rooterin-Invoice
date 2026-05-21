@@ -1,8 +1,8 @@
 import './bootstrap.js';
-import * as lucide from 'lucide';
+import { createIcons, icons } from 'lucide';
 
-// Make lucide available globally
-window.lucide = lucide;
+// Make it available globally
+window.lucide = { createIcons, icons };
 
 // Livewire v3 handles Alpine initialization automatically.
 // If you need to register plugins, do it before Alpine starts.
@@ -15,15 +15,20 @@ if (!window.Alpine) {
 }
 // Do NOT call Alpine.start() here as Livewire v3 will handle it.
 
-// Re-initialize Lucide icons on Livewire navigation
-document.addEventListener('livewire:navigated', () => { 
-    lucide.createIcons(); 
-});
+function initGlobalIcons() {
+    createIcons({
+        icons
+    });
+}
 
-// Initialize Lucide icons on initial page load
-lucide.createIcons();
+// Initialize on DOM load and Livewire navigation
+document.addEventListener('DOMContentLoaded', initGlobalIcons);
+document.addEventListener('livewire:navigated', initGlobalIcons);
 
-// Re-initialize Lucide icons after Livewire component updates (morph)
+// Run immediately as Vite modules load after DOM construction
+initGlobalIcons();
+
+// Hook into Livewire morph updates to persist icons on component render
 if (window.Livewire) {
     registerLivewireHooks();
 } else {
@@ -33,7 +38,7 @@ if (window.Livewire) {
 }
 
 function registerLivewireHooks() {
-    Livewire.hook('morph.updated', ({ el }) => {
-        lucide.createIcons();
+    Livewire.hook('morph.updated', () => {
+        initGlobalIcons();
     });
 }

@@ -7,22 +7,22 @@
             <p class="text-sm text-slate-500 font-medium tracking-tight">{{ app()->getLocale() == 'en' ? 'Billing Calendar & Operational Workflows' : 'Kalender Penagihan & Alur Kerja Operasional' }}</p>
         </div>
         <div class="flex items-center gap-4">
-            <div class="flex items-center gap-6 px-6 py-3 bg-white/50 backdrop-blur-md rounded-2xl border border-slate-100 shadow-sm">
-                <div class="flex items-center gap-2">
-                    <span class="w-3 h-3 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(79,70,229,0.5)]"></span>
-                    <span class="text-[10px] font-black uppercase text-slate-400">Internal</span>
+            <div class="flex flex-wrap items-center gap-4 px-5 py-2.5 bg-white/40 backdrop-blur-lg rounded-2xl border border-white/20 shadow-lg shadow-indigo-500/5 select-none">
+                <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-indigo-50 border border-indigo-100/60">
+                    <span class="w-2 h-2 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(79,70,229,0.6)]"></span>
+                    <span class="text-[9px] font-black uppercase text-indigo-650 tracking-wider">Internal</span>
                 </div>
-                <div class="flex items-center gap-2">
-                    <span class="w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
-                    <span class="text-[10px] font-black uppercase text-slate-400">{{ app()->getLocale() == 'en' ? 'Paid / Meeting' : 'Lunas / Meeting' }}</span>
+                <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-emerald-50 border border-emerald-100/60">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span>
+                    <span class="text-[9px] font-black uppercase text-emerald-650 tracking-wider">{{ app()->getLocale() == 'en' ? 'Paid / Meeting' : 'Lunas / Meeting' }}</span>
                 </div>
-                <div class="flex items-center gap-2">
-                    <span class="w-3 h-3 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]"></span>
-                    <span class="text-[10px] font-black uppercase text-slate-400">Draft / AI</span>
+                <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-amber-50 border border-amber-100/60">
+                    <span class="w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)]"></span>
+                    <span class="text-[9px] font-black uppercase text-amber-650 tracking-wider">Draft / AI</span>
                 </div>
-                <div class="flex items-center gap-2">
-                    <span class="w-3 h-3 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]"></span>
-                    <span class="text-[10px] font-black uppercase text-slate-400">{{ app()->getLocale() == 'en' ? 'Overdue' : 'Terlambat' }}</span>
+                <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-rose-50 border border-rose-100/60">
+                    <span class="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]"></span>
+                    <span class="text-[9px] font-black uppercase text-rose-650 tracking-wider">{{ app()->getLocale() == 'en' ? 'Overdue' : 'Terlambat' }}</span>
                 </div>
             </div>
         </div>
@@ -101,6 +101,45 @@
     <style>
         .toast-enter { animation: toastSlideIn 0.3s ease-out forwards; }
         @keyframes toastSlideIn { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        /* Premium sheen effect keyframes */
+        @keyframes sheen {
+            0% { transform: translateX(-150%) skewX(-15deg); }
+            50% { transform: translateX(150%) skewX(-15deg); }
+            100% { transform: translateX(150%) skewX(-15deg); }
+        }
+        .animate-sheen {
+            animation: sheen 3.5s infinite ease-in-out;
+        }
+
+        /* Subtle glowing ring pulse for current date cell */
+        .today-pulse {
+            position: relative;
+        }
+        .today-pulse::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 16px;
+            border: 2.5px solid #4f46e5;
+            opacity: 0;
+            animation: todayPulse 3s infinite ease-out;
+            pointer-events: none;
+        }
+        @keyframes todayPulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.6;
+            }
+            60% {
+                transform: scale(1.05);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0;
+            }
+        }
     </style>
     @endpush
 
@@ -108,7 +147,6 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             window.showToast = function(message, type = 'success') {
-                // Remove existing toast if any
                 const existing = document.querySelector('.toast-box');
                 if (existing) existing.remove();
 

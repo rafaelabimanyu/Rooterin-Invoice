@@ -71,7 +71,10 @@
                 </button>
             </div>
             
-            <button wire:click="openAddModal('{{ Carbon\Carbon::create($year, $month, 1)->toDateString() }}')" class="btn-premium flex items-center gap-2">
+            <button wire:click="openAddModal('{{ Carbon\Carbon::create($year, $month, 1)->toDateString() }}')" 
+                class="relative overflow-hidden bg-gradient-to-r from-indigo-650 to-indigo-800 text-white font-extrabold text-xs px-5 py-3.5 rounded-2xl shadow-lg shadow-indigo-650/20 hover:shadow-indigo-650/30 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center gap-2 group"
+            >
+                <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-sheen"></span>
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path>
                 </svg>
@@ -91,7 +94,12 @@
         </div>
 
         <!-- Calendar Days Grid -->
-        <div class="grid grid-cols-7 gap-3 auto-rows-[100px] md:auto-rows-[120px] lg:auto-rows-[140px] xl:auto-rows-[150px]">
+        <div class="grid grid-cols-7 gap-3 auto-rows-[100px] md:auto-rows-[120px] lg:auto-rows-[140px] xl:auto-rows-[150px] transition-all duration-300"
+            wire:key="calendar-grid-{{ $month }}-{{ $year }}"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 translate-y-3"
+            x-transition:enter-end="opacity-100 translate-y-0"
+        >
             @foreach($days as $day)
                 @if($day['date'] === null)
                     <!-- Empty Padding Day -->
@@ -99,8 +107,8 @@
                 @else
                     <!-- Active Calendar Day -->
                     <div wire:click="openAddModal('{{ $day['date'] }}')"
-                        class="relative group border border-slate-100 bg-white hover:bg-slate-50/50 rounded-2xl p-3 transition-all flex flex-col justify-between cursor-pointer min-w-0 select-none
-                        {{ $day['is_today'] ? 'border-2 border-indigo-500/80 bg-indigo-50/10 shadow-sm shadow-indigo-500/5' : '' }}"
+                        class="relative group border border-slate-100 bg-white hover:bg-slate-50/30 hover:border-indigo-100 hover:shadow-lg hover:-translate-y-0.5 rounded-2xl p-3 transition-all duration-300 flex flex-col justify-between cursor-pointer min-w-0 select-none
+                        {{ $day['is_today'] ? 'border-2 border-indigo-500/80 bg-indigo-50/10 shadow-sm shadow-indigo-500/5 today-pulse' : '' }}"
                     >
                         <!-- Date Number & Add Event Trigger -->
                         <div class="flex items-center justify-between w-full">
@@ -122,7 +130,12 @@
 
                         <!-- Events/Reminders List inside Day -->
                         <div class="flex-1 overflow-y-auto space-y-1.5 mt-2.5 chat-scroll">
-                            @foreach($day['events'] as $event)
+                            @php
+                                $displayEvents = array_slice($day['events'], 0, 2);
+                                $remainingCount = count($day['events']) - 2;
+                            @endphp
+
+                            @foreach($displayEvents as $event)
                                 @if($event['type'] === 'invoice')
                                     <button wire:click.stop="viewInvoiceDetails({{ $event['id'] }})"
                                         class="w-full text-left truncate text-[10px] font-bold px-2 py-1.5 rounded-xl border flex items-center gap-1.5 transition-all hover:scale-[1.02] active:scale-98
@@ -163,6 +176,12 @@
                                     </button>
                                 @endif
                             @endforeach
+
+                            @if($remainingCount > 0)
+                                <div class="text-[9px] font-black text-slate-400 bg-slate-50 border border-slate-100 py-1 rounded-xl text-center select-none tracking-wider">
+                                    +{{ $remainingCount }} {{ app()->getLocale() == 'en' ? 'MORE' : 'LAGI' }}
+                                </div>
+                            @endif
                         </div>
                     </div>
                 @endif
@@ -171,13 +190,34 @@
     </div>
 
     <!-- Modal: Add/Edit Reminder -->
-    @if($showModal)
-    <div class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    <div class="fixed inset-0 z-[100] flex items-center justify-center p-4"
+         x-data="{ open: @entangle('showModal') }"
+         x-show="open"
+         x-cloak
+         style="display: none;"
+    >
         <!-- Backdrop -->
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" wire:click="$set('showModal', false)"></div>
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+             x-show="open"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             @click="open = false"
+        ></div>
         
         <!-- Modal Content Container -->
-        <div class="relative bg-white rounded-[32px] shadow-2xl w-full max-w-lg overflow-hidden transform transition-all page-fade-in p-8 border border-slate-100">
+        <div class="relative bg-white rounded-[32px] shadow-2xl w-full max-w-lg overflow-hidden transform p-8 border border-slate-100"
+             x-show="open"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 translate-y-4 scale-95"
+             x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+             x-transition:leave-end="opacity-0 translate-y-4 scale-95"
+        >
             <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-50">
                 <h3 class="text-base font-black text-slate-900 font-jakarta uppercase tracking-wider">
                     {{ $selectedReminderId ? (app()->getLocale() == 'en' ? 'Edit Reminder' : 'Ubah Pengingat') : (app()->getLocale() == 'en' ? 'Add Reminder' : 'Tambah Pengingat') }}
@@ -258,55 +298,76 @@
             </form>
         </div>
     </div>
-    @endif
 
     <!-- Modal: View Invoice Details -->
-    @if($showInvoiceModal && $viewedInvoice)
-    <div class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    <div class="fixed inset-0 z-[100] flex items-center justify-center p-4"
+         x-data="{ open: @entangle('showInvoiceModal') }"
+         x-show="open"
+         x-cloak
+         style="display: none;"
+    >
         <!-- Backdrop -->
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" wire:click="$set('showInvoiceModal', false)"></div>
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+             x-show="open"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             @click="open = false"
+        ></div>
         
         <!-- Modal Content Container -->
-        <div class="relative bg-white rounded-[32px] shadow-2xl w-full max-w-lg overflow-hidden transform transition-all page-fade-in border border-slate-100">
-            <div class="p-8">
-                <div class="flex items-center justify-between mb-8">
-                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-white bg-indigo-600/10 border border-indigo-200/40">
-                        <svg class="w-8 h-8 text-indigo-650" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"></path>
-                        </svg>
+        <div class="relative bg-white rounded-[32px] shadow-2xl w-full max-w-lg overflow-hidden transform border border-slate-100"
+             x-show="open"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 translate-y-4 scale-95"
+             x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+             x-transition:leave-end="opacity-0 translate-y-4 scale-95"
+        >
+            @if($viewedInvoice)
+                <div class="p-8">
+                    <div class="flex items-center justify-between mb-8">
+                        <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-white bg-indigo-600/10 border border-indigo-200/40">
+                            <svg class="w-8 h-8 text-indigo-650" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"></path>
+                            </svg>
+                        </div>
+                        <span class="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest
+                            {{ $viewedInvoice->status === 'paid' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100/50' : '' }}
+                            {{ $viewedInvoice->status === 'overdue' ? 'bg-rose-50 text-rose-700 border border-rose-100/50' : '' }}
+                            {{ $viewedInvoice->status === 'draft' ? 'bg-amber-50 text-amber-700 border border-amber-100/50' : '' }}
+                            {{ $viewedInvoice->status === 'sent' ? 'bg-blue-50 text-blue-700 border border-blue-100/50' : '' }}
+                        ">
+                            {{ $viewedInvoice->status }}
+                        </span>
                     </div>
-                    <span class="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest
-                        {{ $viewedInvoice->status === 'paid' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100/50' : '' }}
-                        {{ $viewedInvoice->status === 'overdue' ? 'bg-rose-50 text-rose-700 border border-rose-100/50' : '' }}
-                        {{ $viewedInvoice->status === 'draft' ? 'bg-amber-50 text-amber-700 border border-amber-100/50' : '' }}
-                        {{ $viewedInvoice->status === 'sent' ? 'bg-blue-50 text-blue-700 border border-blue-100/50' : '' }}
-                    ">
-                        {{ $viewedInvoice->status }}
-                    </span>
+                    
+                    <h3 class="text-2xl font-black text-slate-900 mb-2 font-jakarta">{{ $viewedInvoice->invoice_number }}</h3>
+                    <p class="text-sm text-slate-500 font-medium mb-8">
+                        {{ app()->getLocale() == 'en' ? 'Due on' : 'Jatuh tempo pada' }} {{ $viewedInvoice->due_date->translatedFormat('d F Y') }}
+                    </p>
+                    
+                    <div class="grid grid-cols-2 gap-8 py-8 border-y border-slate-100">
+                        <div>
+                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">{{ app()->getLocale() == 'en' ? 'Total Amount' : 'Jumlah Total' }}</p>
+                            <p class="text-xl font-black text-slate-900 font-jakarta">Rp {{ number_format($viewedInvoice->total, 0, ',', '.') }}</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">{{ app()->getLocale() == 'en' ? 'Client Entity' : 'Entitas Klien' }}</p>
+                            <p class="text-sm font-bold text-slate-800">{{ $viewedInvoice->client?->nama_client }}</p>
+                            <p class="text-[10px] text-slate-450 font-medium mt-0.5">{{ $viewedInvoice->client?->nama_perusahaan }}</p>
+                        </div>
+                    </div>
                 </div>
-                
-                <h3 class="text-2xl font-black text-slate-900 mb-2 font-jakarta">{{ $viewedInvoice->invoice_number }}</h3>
-                <p class="text-sm text-slate-500 font-medium mb-8">
-                    {{ app()->getLocale() == 'en' ? 'Due on' : 'Jatuh tempo pada' }} {{ $viewedInvoice->due_date->translatedFormat('d F Y') }}
-                </p>
-                
-                <div class="grid grid-cols-2 gap-8 py-8 border-y border-slate-100">
-                    <div>
-                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">{{ app()->getLocale() == 'en' ? 'Total Amount' : 'Jumlah Total' }}</p>
-                        <p class="text-xl font-black text-slate-900 font-jakarta">Rp {{ number_format($viewedInvoice->total, 0, ',', '.') }}</p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">{{ app()->getLocale() == 'en' ? 'Client Entity' : 'Entitas Klien' }}</p>
-                        <p class="text-sm font-bold text-slate-800">{{ $viewedInvoice->client?->nama_client }}</p>
-                        <p class="text-[10px] text-slate-450 font-medium mt-0.5">{{ $viewedInvoice->client?->nama_perusahaan }}</p>
-                    </div>
+                <div class="p-6 bg-slate-50 border-t border-slate-100 flex justify-end gap-4">
+                    <button wire:click="$set('showInvoiceModal', false)" class="px-6 py-3 text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors">{{ app()->getLocale() == 'en' ? 'Close' : 'Tutup' }}</button>
+                    <a href="/invoices/{{ $viewedInvoice->id }}" class="btn-premium">{{ app()->getLocale() == 'en' ? 'View Full Invoice' : 'Lihat Faktur Lengkap' }}</a>
                 </div>
-            </div>
-            <div class="p-6 bg-slate-50 border-t border-slate-100 flex justify-end gap-4">
-                <button wire:click="$set('showInvoiceModal', false)" class="px-6 py-3 text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors">{{ app()->getLocale() == 'en' ? 'Close' : 'Tutup' }}</button>
-                <a href="/invoices/{{ $viewedInvoice->id }}" class="btn-premium">{{ app()->getLocale() == 'en' ? 'View Full Invoice' : 'Lihat Faktur Lengkap' }}</a>
-            </div>
+            @endif
         </div>
     </div>
-    @endif
 </div>

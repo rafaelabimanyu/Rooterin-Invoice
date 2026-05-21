@@ -31,9 +31,21 @@
                             <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Real-time Analysis</span>
                         </div>
                         <h4 class="text-base font-bold text-slate-900 leading-snug font-jakarta">{{ app()->getLocale() == 'en' ? 'Financial Strategy & Cash Flow' : 'Taktik Keuangan & Arus Kas' }}</h4>
-                        <p class="text-sm text-slate-600 leading-relaxed max-w-4xl mt-1">
-                            {{ $aiInsight }}
-                        </p>
+                        <div x-data="{ expanded: false }" class="mt-1">
+                            <p 
+                                class="text-sm text-slate-600 leading-relaxed max-w-4xl transition-all duration-300"
+                                :class="expanded ? '' : 'line-clamp-2'"
+                            >
+                                {{ $aiInsight }}
+                            </p>
+                            <button 
+                                @click="expanded = !expanded" 
+                                class="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 hover:text-indigo-700 transition-colors mt-2 focus:outline-none"
+                            >
+                                <span x-text="expanded ? '{{ app()->getLocale() == 'en' ? 'Show Less' : 'Lihat Lebih Sedikit' }}' : '{{ app()->getLocale() == 'en' ? 'Show More' : 'Lihat Selengkapnya' }}'"></span>
+                                <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-300" :class="expanded ? 'rotate-180' : ''"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
 

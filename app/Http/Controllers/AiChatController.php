@@ -24,7 +24,7 @@ class AiChatController extends Controller
                 
                 return [
                     'session_id' => $chat->session_id,
-                    'title' => $firstChat ? \Str::limit($firstChat->message, 35) : 'Obrolan Baru',
+                    'title' => ($firstChat && $firstChat->title) ? $firstChat->title : ($firstChat ? \Str::limit($firstChat->message, 35) : 'Obrolan Baru'),
                     'created_at' => $chat->latest_created_at,
                     'date_formatted' => Carbon::parse($chat->latest_created_at)->diffForHumans()
                 ];
@@ -364,7 +364,7 @@ Strictly match the user's current application language interface. Since the acti
                 
                 return [
                     'session_id' => $chat->session_id,
-                    'title' => $firstChat ? \Str::limit($firstChat->message, 35) : 'Obrolan Baru',
+                    'title' => ($firstChat && $firstChat->title) ? $firstChat->title : ($firstChat ? \Str::limit($firstChat->message, 35) : 'Obrolan Baru'),
                     'created_at' => $chat->latest_created_at,
                     'date_formatted' => Carbon::parse($chat->latest_created_at)->diffForHumans()
                 ];
@@ -373,6 +373,36 @@ Strictly match the user's current application language interface. Since the acti
         return response()->json([
             'success' => true,
             'sessions' => $sessions
+        ]);
+    }
+
+    public function renameSession(Request $request, $sessionId)
+    {
+        abort_if(!auth()->user()->hasFullAccess(), 403, 'Unauthorized action.');
+
+        $request->validate([
+            'title' => 'required|string|max:100'
+        ]);
+
+        \App\Models\AiChatHistory::where('user_id', auth()->id())
+            ->where('session_id', $sessionId)
+            ->update(['title' => $request->input('title')]);
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
+
+    public function deleteSession($sessionId)
+    {
+        abort_if(!auth()->user()->hasFullAccess(), 403, 'Unauthorized action.');
+
+        \App\Models\AiChatHistory::where('user_id', auth()->id())
+            ->where('session_id', $sessionId)
+            ->delete();
+
+        return response()->json([
+            'success' => true
         ]);
     }
 }

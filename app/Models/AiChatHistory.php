@@ -10,6 +10,7 @@ class AiChatHistory extends Model
     protected $fillable = [
         'user_id',
         'session_id',
+        'title',
         'message',
         'response'
     ];

@@ -11,6 +11,13 @@
         .chat-bubble-content li { margin-bottom: 0.35rem; }
         .chat-bubble-content strong { font-weight: 700; color: inherit; }
         .chat-bubble-content code { background-color: rgba(0, 0, 0, 0.05); padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-family: monospace; font-size: 0.875em; }
+        
+        /* Table Styles inside AI response bubbles */
+        .chat-bubble-content table { width: 100%; border-collapse: collapse; margin-top: 0.75rem; margin-bottom: 0.75rem; font-size: 0.85rem; }
+        .chat-bubble-content th { background-color: #f1f5f9; border: 1px solid #e2e8f0; padding: 0.5rem; text-align: left; font-weight: 700; color: #1e293b; }
+        .chat-bubble-content td { border: 1px solid #e2e8f0; padding: 0.5rem; color: #334155; }
+        .chat-bubble-content tr:nth-child(even) { background-color: #f8fafc; }
+        
         .chat-scroll::-webkit-scrollbar { width: 5px; }
         .chat-scroll::-webkit-scrollbar-track { background: transparent; }
         .chat-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
@@ -26,6 +33,9 @@
             loading: false,
             currentSessionId: null,
             sessions: {{ json_encode($sessions) }},
+            editingSessionId: null,
+            editingTitle: '',
+            copiedIndex: null,
             routeMap: {
                 'dashboard': '{{ route('dashboard') }}',
                 'invoices.index': '{{ route('invoices.index') }}',
@@ -73,6 +83,7 @@
                 });
             },
             loadSession(sessionId) {
+                if (this.editingSessionId) return; // Prevent loading while editing
                 this.loading = true;
                 this.currentSessionId = sessionId;
                 
@@ -193,6 +204,84 @@
                 if (typeof lucide !== 'undefined') {
                     lucide.createIcons();
                 }
+            },
+            startRename(sess) {
+                this.editingSessionId = sess.session_id;
+                this.editingTitle = sess.title;
+                this.$nextTick(() => {
+                    const inputEl = document.querySelector('[x-ref=\"renameInput\"]');
+                    if (inputEl) inputEl.focus();
+                });
+            },
+            cancelRename() {
+                this.editingSessionId = null;
+                this.editingTitle = '';
+            },
+            saveRename(sessionId) {
+                if (!this.editingTitle.trim()) return;
+                const newTitle = this.editingTitle.trim();
+                
+                fetch('/ai-assistant/session/' + sessionId + '/rename', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ title: newTitle })
+                })
+                .then(res => {
+                    if (!res.ok) throw new Error('Failed to rename');
+                    return res.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        const index = this.sessions.findIndex(s => s.session_id === sessionId);
+                        if (index !== -1) {
+                            this.sessions[index].title = newTitle;
+                        }
+                        this.cancelRename();
+                    }
+                })
+                .catch(err => {
+                    alert('Error: ' + err.message);
+                });
+            },
+            deleteSession(sessionId) {
+                if (!confirm('{{ app()->getLocale() == "en" ? "Are you sure you want to delete this chat session?" : "Apakah Anda yakin ingin menghapus sesi obrolan ini?" }}')) {
+                    return;
+                }
+                
+                fetch('/ai-assistant/session/' + sessionId, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                })
+                .then(res => {
+                    if (!res.ok) throw new Error('Failed to delete');
+                    return res.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        this.sessions = this.sessions.filter(s => s.session_id !== sessionId);
+                        if (this.currentSessionId === sessionId) {
+                            this.newChat();
+                        }
+                    }
+                })
+                .catch(err => {
+                    alert('Error: ' + err.message);
+                });
+            },
+            copyToClipboard(text, idx) {
+                navigator.clipboard.writeText(text).then(() => {
+                    this.copiedIndex = idx;
+                    setTimeout(() => {
+                        if (this.copiedIndex === idx) {
+                            this.copiedIndex = null;
+                        }
+                    }, 2000);
+                });
             }
         }"
     >
@@ -213,26 +302,72 @@
                 </div>
 
                 <!-- History Items -->
-                <div class="flex-1 overflow-y-auto p-4 space-y-2 chat-scroll">
+                <div class="flex-1 overflow-y-auto p-4 space-y-2.5 chat-scroll">
                     <template x-for="sess in sessions" :key="sess.session_id">
-                        <button @click="loadSession(sess.session_id)"
-                            class="w-full text-left p-3.5 rounded-2xl transition-all flex flex-col gap-1.5 border"
+                        <div class="relative group w-full flex items-center justify-between rounded-2xl border transition-all"
                             :class="currentSessionId === sess.session_id 
                                 ? 'bg-indigo-50/80 border-indigo-200 text-indigo-950 font-semibold shadow-sm' 
-                                : 'bg-white hover:bg-slate-50 border-slate-100 text-slate-700 hover:text-slate-900'"
+                                : 'bg-white hover:bg-slate-50 border-slate-100/90 text-slate-700 hover:text-slate-900'"
                         >
-                            <div class="flex items-center gap-2 w-full">
-                                <i data-lucide="message-square" 
-                                    class="w-4 h-4 shrink-0"
-                                    :class="currentSessionId === sess.session_id ? 'text-indigo-600' : 'text-slate-400'"
-                                ></i>
-                                <span class="text-xs font-bold truncate flex-1 leading-tight" x-text="sess.title"></span>
-                            </div>
-                            <span class="text-[9px] font-medium tracking-wide uppercase self-end"
-                                :class="currentSessionId === sess.session_id ? 'text-indigo-500' : 'text-slate-400'"
-                                x-text="sess.date_formatted"
-                            ></span>
-                        </button>
+                            <!-- If not editing, show the regular button with actions on hover -->
+                            <template x-if="editingSessionId !== sess.session_id">
+                                <div class="flex items-center w-full justify-between p-3.5 gap-2 pr-1">
+                                    <button @click="loadSession(sess.session_id)" class="flex-1 text-left flex flex-col gap-1.5 min-w-0">
+                                        <div class="flex items-center gap-2 w-full">
+                                            <i data-lucide="message-square" 
+                                                class="w-4 h-4 shrink-0"
+                                                :class="currentSessionId === sess.session_id ? 'text-indigo-600' : 'text-slate-400'"
+                                            ></i>
+                                            <span class="text-xs font-bold truncate flex-1 leading-tight" x-text="sess.title"></span>
+                                        </div>
+                                        <span class="text-[9px] font-medium tracking-wide uppercase self-start"
+                                            :class="currentSessionId === sess.session_id ? 'text-indigo-500' : 'text-slate-400'"
+                                            x-text="sess.date_formatted"
+                                        ></span>
+                                    </button>
+                                    
+                                    <!-- Hover actions -->
+                                    <div class="hidden group-hover:flex items-center gap-1.5 shrink-0 px-2 bg-gradient-to-l from-slate-50 via-slate-50/95 to-transparent absolute right-2 top-1/2 -translate-y-1/2 py-1.5 pl-4 rounded-lg"
+                                         :class="currentSessionId === sess.session_id ? 'from-indigo-50 via-indigo-50/95' : ''">
+                                        <!-- Rename Button -->
+                                        <button @click.stop="startRename(sess)" class="p-1 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-all active:scale-90" title="{{ app()->getLocale() == 'en' ? 'Rename' : 'Ubah Nama' }}">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"></path>
+                                            </svg>
+                                        </button>
+                                        <!-- Delete Button -->
+                                        <button @click.stop="deleteSession(sess.session_id)" class="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-all active:scale-90" title="{{ app()->getLocale() == 'en' ? 'Delete' : 'Hapus' }}">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- If editing this item -->
+                            <template x-if="editingSessionId === sess.session_id">
+                                <div class="flex items-center gap-1.5 p-2 w-full">
+                                    <input x-model="editingTitle" 
+                                        @keydown.enter="saveRename(sess.session_id)"
+                                        @keydown.escape="cancelRename()"
+                                        type="text" 
+                                        class="flex-1 px-2.5 py-1.5 text-xs bg-slate-50 border border-indigo-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500/20 font-semibold text-slate-850"
+                                        x-ref="renameInput"
+                                    >
+                                    <button @click="saveRename(sess.session_id)" class="p-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-xl transition-all active:scale-95" title="{{ app()->getLocale() == 'en' ? 'Save' : 'Simpan' }}">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
+                                        </svg>
+                                    </button>
+                                    <button @click="cancelRename()" class="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl transition-all active:scale-95" title="{{ app()->getLocale() == 'en' ? 'Cancel' : 'Batal' }}">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </template>
+                        </div>
                     </template>
                     <template x-if="sessions.length === 0">
                         <div class="text-center py-12 px-4">
@@ -262,7 +397,8 @@
             <!-- Chat Window Header -->
             <div class="px-8 py-5 bg-white border-b border-slate-200/80 flex items-center justify-between shrink-0">
                 <div class="flex items-center gap-4">
-                    <div class="w-11 h-11 rounded-2xl bg-indigo-600/10 flex items-center justify-center text-indigo-600 border border-indigo-200/40 shadow-sm">
+                    <div class="w-11 h-11 rounded-2xl bg-indigo-600/10 flex items-center justify-center text-indigo-600 border border-indigo-200/40 shadow-sm relative transition-all duration-300"
+                        :class="loading ? 'animate-pulse ring-4 ring-indigo-500/25' : ''">
                         <i data-lucide="bot" class="w-6 h-6 text-indigo-600"></i>
                     </div>
                     <div>
@@ -374,6 +510,20 @@
                             <div class="chat-bubble-content" x-html="renderMarkdown(msg.text)"></div>
                         </div>
 
+                        <!-- Copy to Clipboard & Action Bar (AI responses only) -->
+                        <template x-if="msg.sender === 'ai' && idx > 0">
+                            <div class="flex items-center gap-3 mt-1.5 ml-3">
+                                <button @click="copyToClipboard(msg.text, idx)" 
+                                    class="inline-flex items-center gap-1.5 text-[10px] font-bold text-slate-400 hover:text-indigo-650 transition-colors uppercase tracking-wider group"
+                                >
+                                    <svg class="w-3.5 h-3.5 group-hover:scale-105 transition-transform" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5A3.375 3.375 0 006.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0015 2.25h-1.5a2.251 2.251 0 00-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 00-9-9z"></path>
+                                    </svg>
+                                    <span x-text="copiedIndex === idx ? '{{ app()->getLocale() == 'en' ? 'Copied!' : 'Tersalin!' }}' : '{{ app()->getLocale() == 'en' ? 'Copy Text' : 'Salin Teks' }}'"></span>
+                                </button>
+                            </div>
+                        </template>
+
                         <!-- Navigation Link Interceptor -->
                         <template x-if="msg.navigateUrl">
                             <div class="mt-2.5 pl-4">
@@ -388,11 +538,16 @@
                 </template>
 
                 <!-- Loading / Thinking Bubble -->
-                <div x-show="loading" class="flex items-start" style="display: none;">
+                <div x-show="loading" class="flex items-start gap-3.5 transition-all duration-300" style="display: none;">
+                    <div class="w-9 h-9 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shrink-0 relative animate-pulse ring-4 ring-indigo-500/15">
+                        <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M12 17v4m-6-4v4m12-4v4M9 11h.008v.008H9V11zm6 0h.008v.008H15V11zm-9 4a6 6 0 0112 0H6z"></path>
+                        </svg>
+                    </div>
                     <div class="bg-white border border-slate-200 text-slate-400 rounded-3xl rounded-tl-none px-5 py-4 shadow-sm flex items-center gap-1.5">
-                        <span class="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></span>
-                        <span class="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
-                        <span class="w-2 h-2 bg-indigo-600 rounded-full animate-bounce" style="animation-delay: 0.3s"></span>
+                        <span class="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style="animation-delay: 0.1s"></span>
+                        <span class="w-2 h-2 bg-indigo-600 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
+                        <span class="w-2 h-2 bg-indigo-700 rounded-full animate-bounce" style="animation-delay: 0.3s"></span>
                     </div>
                 </div>
             </div>

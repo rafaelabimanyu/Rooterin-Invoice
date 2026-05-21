@@ -1,5 +1,6 @@
 <x-app-layout>
-    <!-- Add marked.js for markdown parsing -->
+    <div class="animate-fade-in-up">
+        <!-- Add marked.js for markdown parsing -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
     <!-- Markdown Custom Styling for Chat Bubbles -->
@@ -578,4 +579,5 @@
             }));
         });
     </script>
+    </div>
 </x-app-layout>

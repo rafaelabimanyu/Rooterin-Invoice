@@ -1,5 +1,6 @@
 <x-app-layout>
-    <!-- Header Section -->
+    <div class="animate-fade-in-up">
+        <!-- Header Section -->
     <div class="mb-12 flex flex-col md:flex-row md:items-center justify-between gap-8">
         <div>
             <div class="flex items-center gap-2 text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-3">
@@ -135,5 +136,6 @@
                 <p class="text-sm font-bold text-slate-900">{{ app()->getLocale() == 'en' ? 'No records found.' : 'Tidak ada data ditemukan.' }}</p>
             </div>
         @endforelse
+    </div>
     </div>
 </x-app-layout>

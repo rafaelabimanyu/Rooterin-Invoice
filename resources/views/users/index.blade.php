@@ -1,5 +1,6 @@
 <x-app-layout>
-    <div x-data="{ 
+    <div class="animate-fade-in-up">
+        <div x-data="{ 
         editModalOpen: false, 
         currentUser: {},
         loading: true,
@@ -323,5 +324,6 @@
                 </div>
             </div>
         </template>
+    </div>
     </div>
 </x-app-layout>

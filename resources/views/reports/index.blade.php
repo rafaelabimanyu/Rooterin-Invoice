@@ -1,5 +1,6 @@
 <x-app-layout>
-    <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+    <div class="animate-fade-in-up">
+        <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
             <h1 class="text-3xl font-black text-slate-900 font-outfit tracking-tight">{{ __('ui.reports') }}</h1>
             <p class="text-sm text-slate-500">{{ app()->getLocale() == 'en' ? 'Comprehensive financial audit and performance analytics.' : 'Audit keuangan komprehensif dan analisis kinerja.' }}</p>
@@ -130,5 +131,6 @@
                 </div>
             </div>
         </div>
+    </div>
     </div>
 </x-app-layout>

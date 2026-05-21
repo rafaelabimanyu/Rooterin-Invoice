@@ -1,5 +1,6 @@
 <x-app-layout>
-    <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-8 page-fade-in">
+    <div class="animate-fade-in-up">
+        <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-8 page-fade-in">
         <div>
             <h1 class="text-3xl font-black text-slate-900 font-jakarta tracking-tight mb-2 uppercase">
                 Rooterin Chronos
@@ -184,4 +185,5 @@
         });
     </script>
     @endpush
+    </div>
 </x-app-layout>

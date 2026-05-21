@@ -1,5 +1,6 @@
 <x-app-layout>
-    <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6 page-fade-in">
+    <div class="animate-fade-in-up">
+        <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6 page-fade-in">
         <div>
             <div class="flex items-center gap-3 mb-3">
                 <div class="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center text-white shadow-xl shadow-slate-900/20 animate-float">
@@ -391,4 +392,5 @@
             });
         });
     </script>
+    </div>
 </x-app-layout>

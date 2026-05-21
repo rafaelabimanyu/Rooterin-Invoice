@@ -4,7 +4,10 @@
         <div class="relative w-full lg:max-w-md">
             <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
             <input type="text" wire:model.live.debounce.300ms="search" placeholder="{{ app()->getLocale() == 'en' ? 'Search by name, company, or ID...' : 'Cari berdasarkan nama, perusahaan, atau ID...' }}" 
-                   class="w-full pl-12 pr-6 py-3.5 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all font-bold text-slate-900 text-sm">
+                   class="w-full pl-12 pr-12 py-3.5 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all font-bold text-slate-900 text-sm">
+            <div wire:loading wire:target="search" class="absolute right-4 top-1/2 -translate-y-1/2">
+                <i data-lucide="loader-2" class="w-4 h-4 text-indigo-600 animate-spin"></i>
+            </div>
         </div>
         
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full lg:w-auto">
@@ -118,11 +121,11 @@
     </div>
 
     <!-- Modal: Create / Edit -->
-    <div x-show="$wire.showEditModal" x-cloak class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 md:p-10">
+    <div x-show="$wire.showEditModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div x-show="$wire.showEditModal" x-transition.opacity class="absolute inset-0 bg-slate-900/60 backdrop-blur-md" @click="$wire.showEditModal = false"></div>
         
         <div x-show="$wire.showEditModal" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" 
-             class="bg-white w-full max-w-3xl rounded-[32px] sm:rounded-[40px] shadow-2xl relative overflow-hidden flex flex-col max-h-[90vh]">
+             class="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl relative flex flex-col">
             
             <div class="px-6 py-5 sm:px-10 sm:py-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
                 <div>
@@ -134,8 +137,8 @@
                 </button>
             </div>
 
-            <form wire:submit.prevent="save" class="flex flex-col h-full overflow-hidden">
-                <div class="px-6 py-6 sm:p-10 overflow-y-auto flex-1 space-y-6 sm:space-y-8">
+            <form wire:submit.prevent="save" class="flex flex-col">
+                <div class="px-6 py-6 sm:p-10 space-y-6 sm:space-y-8">
                     <!-- Client Type & Industry Sector Selection -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
                         <div class="space-y-2">

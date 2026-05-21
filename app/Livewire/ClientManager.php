@@ -51,22 +51,25 @@ class ClientManager extends Component
     public function openEdit(Client $client)
     {
         $this->editingClient = $client;
-        $this->nama_client = $client->nama_client;
-        $this->nama_perusahaan = $client->nama_perusahaan;
-        $this->email = $client->email;
-        $this->no_hp = $client->no_hp;
-        $this->npwp = $client->npwp;
-        $this->alamat = $client->alamat;
-        $this->kota = $client->kota;
-        $this->provinsi = $client->provinsi;
-        $this->catatan = $client->catatan;
+        $this->fill($client->only([
+            'nama_client',
+            'nama_perusahaan',
+            'email',
+            'no_hp',
+            'npwp',
+            'alamat',
+            'kota',
+            'provinsi',
+            'catatan',
+            'kode_client'
+        ]));
         $this->status_field = $client->status;
-        $this->kode_client = $client->kode_client;
 
         // Parse client_type
         $standardTypes = ['individual', 'corporate', 'government', 'foreign'];
-        if (in_array(strtolower($client->client_type ?? ''), $standardTypes)) {
-            $this->client_type = $client->client_type;
+        $clientType = strtolower($client->client_type ?? '');
+        if (in_array($clientType, $standardTypes)) {
+            $this->client_type = $clientType;
             $this->custom_client_type = '';
         } else {
             $this->client_type = 'other';
@@ -75,8 +78,9 @@ class ClientManager extends Component
 
         // Parse industry_sector
         $standardSectors = ['fnb', 'healthcare', 'manufacturing', 'tech', 'education', 'general'];
-        if (in_array(strtolower($client->industry_sector ?? ''), $standardSectors)) {
-            $this->industry_sector = $client->industry_sector;
+        $industrySector = strtolower($client->industry_sector ?? '');
+        if (in_array($industrySector, $standardSectors)) {
+            $this->industry_sector = $industrySector;
             $this->custom_industry_sector = '';
         } else {
             $this->industry_sector = 'other';
@@ -90,9 +94,20 @@ class ClientManager extends Component
     {
         $this->viewingClient = $client;
         
+        // Simple caching for billing stats
+        $stats = \Cache::remember("client_billing_stats_{$client->id}", 60, function () use ($client) {
+            return [
+                'count' => $client->invoices()->count(),
+                'revenue' => (float) $client->invoices()->sum('total')
+            ];
+        });
+
+        $invoiceCount = $stats['count'];
+        $totalRevenue = $stats['revenue'];
+
         $content = "
-            <div class='space-y-8'>
-                <div class='grid grid-cols-2 gap-8'>
+            <div class='space-y-6 sm:space-y-8'>
+                <div class='grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8'>
                     <div>
                         <p class='text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1'>Entity Code</p>
                         <p class='text-sm font-bold text-slate-900'>{$client->kode_client}</p>
@@ -103,7 +118,7 @@ class ClientManager extends Component
                     </div>
                 </div>
 
-                <div class='grid grid-cols-2 gap-8'>
+                <div class='grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8'>
                     <div>
                         <p class='text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1'>" . (app()->getLocale() == 'en' ? 'Client Type' : 'Tipe Klien') . "</p>
                         <p class='text-sm font-bold text-slate-900'>{$client->client_type_label}</p>
@@ -119,7 +134,7 @@ class ClientManager extends Component
                     <p class='text-sm font-bold text-slate-900'>" . ($client->nama_perusahaan ?? 'Personal Account') . "</p>
                 </div>
 
-                <div class='grid grid-cols-2 gap-8'>
+                <div class='grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8'>
                     <div>
                         <p class='text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1'>Communication Channel</p>
                         <p class='text-sm font-bold text-slate-900'>{$client->email}</p>
@@ -136,14 +151,14 @@ class ClientManager extends Component
                         <h4 class='text-[11px] font-black text-slate-900 uppercase tracking-widest'>Billing Summary</h4>
                         <a href='/clients/{$client->id}' class='text-[10px] font-black text-indigo-600 uppercase tracking-widest'>Open Full History</a>
                     </div>
-                    <div class='grid grid-cols-2 gap-4'>
+                    <div class='grid grid-cols-1 sm:grid-cols-2 gap-4'>
                         <div class='p-4 bg-slate-50 rounded-2xl'>
                             <p class='text-[9px] font-bold text-slate-400 uppercase'>Total Invoices</p>
-                            <p class='text-lg font-black text-slate-900'>" . $client->invoices()->count() . "</p>
+                            <p class='text-lg font-black text-slate-900'>{$invoiceCount}</p>
                         </div>
                         <div class='p-4 bg-slate-50 rounded-2xl'>
                             <p class='text-[9px] font-bold text-slate-400 uppercase'>Total Revenue</p>
-                            <p class='text-lg font-black text-slate-900'>Rp " . number_format($client->invoices()->sum('total'), 0, ',', '.') . "</p>
+                            <p class='text-lg font-black text-slate-900'>Rp " . number_format($totalRevenue, 0, ',', '.') . "</p>
                         </div>
                     </div>
                 </div>

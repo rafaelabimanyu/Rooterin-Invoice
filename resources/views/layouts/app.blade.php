@@ -337,7 +337,7 @@
                             @click="slideOverOpen = false"
                         ></div>
 
-                        <div class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
+                        <div class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-0 sm:pl-16">
                             <div 
                                 x-show="slideOverOpen"
                                 x-transition:enter="transform transition ease-in-out duration-500 cubic-bezier-spring sm:duration-700"
@@ -346,23 +346,23 @@
                                 x-transition:leave="transform transition ease-in-out duration-500 cubic-bezier-spring sm:duration-700"
                                 x-transition:leave-start="translate-x-0"
                                 x-transition:leave-end="translate-x-full"
-                                class="pointer-events-auto w-screen max-w-2xl"
+                                class="pointer-events-auto w-screen max-w-full sm:max-w-lg md:max-w-2xl"
                             >
                                 <div class="flex h-full flex-col overflow-y-scroll bg-white shadow-2xl border-l border-slate-200">
-                                    <div class="px-8 py-10 sm:px-10 bg-slate-50/50 border-b border-slate-100">
+                                    <div class="px-6 py-8 sm:px-10 bg-slate-50/50 border-b border-slate-100">
                                         <div class="flex items-start justify-between">
                                             <div>
-                                                <h2 class="text-2xl font-black text-slate-900 font-jakarta tracking-tight uppercase" x-text="slideOverTitle"></h2>
-                                                <p class="text-sm text-slate-500 font-medium mt-1">Detailed Intelligence Report</p>
+                                                <h2 class="text-xl sm:text-2xl font-black text-slate-900 font-jakarta tracking-tight uppercase" x-text="slideOverTitle"></h2>
+                                                <p class="text-xs sm:text-sm text-slate-500 font-medium mt-1">Detailed Intelligence Report</p>
                                             </div>
                                             <div class="ml-3 flex h-7 items-center">
                                                 <button @click="slideOverOpen = false" class="rounded-xl p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all">
-                                                    <i data-lucide="x" class="h-6 w-6"></i>
+                                                    <i data-lucide="x" class="h-5 w-5 sm:h-6 sm:w-6"></i>
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="relative flex-1 px-8 py-10 sm:px-10">
+                                    <div class="relative flex-1 px-6 py-8 sm:px-10">
                                         <!-- Content placeholder -->
                                         <div x-html="slideOverContent"></div>
                                     </div>

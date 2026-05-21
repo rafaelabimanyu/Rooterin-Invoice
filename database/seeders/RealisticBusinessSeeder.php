@@ -530,5 +530,33 @@ class RealisticBusinessSeeder extends Seeder
                 'created_at' => Carbon::now()->subHours($faker->numberBetween(1, 50)),
             ]);
         }
+
+        // 8. Custom Chronos Operational Events & Reminders
+        \App\Models\ChronosEvent::create([
+            'title' => 'Pengerjaan Fitur A & B (Internal Dev)',
+            'description' => 'Selesaikan layout mobile & API untuk client management.',
+            'event_date' => Carbon::create(2026, 5, 25),
+            'color' => 'indigo',
+            'category' => 'internal',
+            'user_id' => $allUsers->firstWhere('role', 'owner')?->id,
+        ]);
+
+        \App\Models\ChronosEvent::create([
+            'title' => 'Meeting Bersama Tim Finansial Klien',
+            'description' => 'Diskusi outstanding receivables dan workflow kuitansi.',
+            'event_date' => Carbon::create(2026, 5, 30),
+            'color' => 'emerald',
+            'category' => 'meeting',
+            'user_id' => $allUsers->firstWhere('role', 'admin')?->id,
+        ]);
+
+        \App\Models\ChronosEvent::create([
+            'title' => 'Implementasi Fitur AI Analytics Upgrade',
+            'description' => 'Integrasikan parser Markdown & dynamic charts.',
+            'event_date' => Carbon::create(2026, 6, 10),
+            'color' => 'amber',
+            'category' => 'ai_update',
+            'user_id' => $allUsers->firstWhere('role', 'owner')?->id,
+        ]);
     }
 }

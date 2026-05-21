@@ -23,9 +23,11 @@
                 mobileOpen: false,
                 slideOverOpen: false,
                 slideOverTitle: '',
-                slideOverContent: ''
+                slideOverContent: '',
+                slideOverLoading: false
             }"
-            @open-slide-over.window="slideOverOpen = true; slideOverTitle = $event.detail.title; slideOverContent = $event.detail.content"
+            @open-slide-over.window="slideOverOpen = true; slideOverTitle = $event.detail.title; slideOverContent = $event.detail.content; slideOverLoading = false"
+            @slide-over-loading-start.window="slideOverOpen = true; slideOverTitle = '{{ app()->getLocale() == 'en' ? 'Loading Details...' : 'Memuat Detail...' }}'; slideOverContent = ''; slideOverLoading = true"
         >
             <!-- Sidebar -->
             <x-sidebar />
@@ -314,9 +316,7 @@
 
                 <!-- Footer -->
                 <x-footer />
-            </div>
-
-            <!-- Global Slide-over Panel -->
+            </div>            <!-- Global Slide-over Panel -->
             <template x-teleport="body">
                 <div 
                     x-show="slideOverOpen" 
@@ -337,7 +337,7 @@
                             @click="slideOverOpen = false"
                         ></div>
 
-                        <div class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-0 sm:pl-16">
+                        <div class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
                             <div 
                                 x-show="slideOverOpen"
                                 x-transition:enter="transform transition ease-in-out duration-500 cubic-bezier-spring sm:duration-700"
@@ -346,7 +346,7 @@
                                 x-transition:leave="transform transition ease-in-out duration-500 cubic-bezier-spring sm:duration-700"
                                 x-transition:leave-start="translate-x-0"
                                 x-transition:leave-end="translate-x-full"
-                                class="pointer-events-auto w-screen max-w-full sm:max-w-lg md:max-w-2xl"
+                                class="pointer-events-auto w-full max-w-md ml-auto"
                             >
                                 <div class="flex h-full flex-col overflow-y-scroll bg-white shadow-2xl border-l border-slate-200">
                                     <div class="px-6 py-8 sm:px-10 bg-slate-50/50 border-b border-slate-100">
@@ -363,8 +363,43 @@
                                         </div>
                                     </div>
                                     <div class="relative flex-1 px-6 py-8 sm:px-10">
+                                        <!-- Loading state skeleton -->
+                                        <div x-show="slideOverLoading" class="space-y-6 animate-pulse" x-cloak>
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div class="space-y-2">
+                                                    <div class="h-3 w-20 bg-slate-200 rounded"></div>
+                                                    <div class="h-5 w-28 bg-slate-200 rounded"></div>
+                                                </div>
+                                                <div class="space-y-2">
+                                                    <div class="h-3 w-16 bg-slate-200 rounded"></div>
+                                                    <div class="h-5 w-24 bg-slate-200 rounded"></div>
+                                                </div>
+                                            </div>
+                                            <div class="space-y-2">
+                                                <div class="h-3 w-24 bg-slate-200 rounded"></div>
+                                                <div class="h-5 w-full bg-slate-200 rounded"></div>
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div class="space-y-2">
+                                                    <div class="h-3 w-20 bg-slate-200 rounded"></div>
+                                                    <div class="h-5 w-32 bg-slate-200 rounded"></div>
+                                                </div>
+                                                <div class="space-y-2">
+                                                    <div class="h-3 w-24 bg-slate-200 rounded"></div>
+                                                    <div class="h-5 w-28 bg-slate-200 rounded"></div>
+                                                </div>
+                                            </div>
+                                            <div class="pt-6 border-t border-slate-100 space-y-4">
+                                                <div class="h-4 w-32 bg-slate-200 rounded"></div>
+                                                <div class="grid grid-cols-2 gap-4">
+                                                    <div class="h-16 bg-slate-200 rounded-2xl"></div>
+                                                    <div class="h-16 bg-slate-200 rounded-2xl"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <!-- Content placeholder -->
-                                        <div x-html="slideOverContent"></div>
+                                        <div x-show="!slideOverLoading" x-html="slideOverContent"></div>
                                     </div>
                                 </div>
                             </div>

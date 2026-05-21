@@ -25,7 +25,7 @@
                 <button wire:click="$set('status', 'aktif')" class="relative z-10 flex-1 sm:flex-none sm:w-24 text-center px-4 py-2 rounded-lg text-[10px] sm:text-[11px] font-black uppercase tracking-widest transition-all duration-300" :class="activeTab === 'aktif' ? 'text-emerald-600 font-black' : 'text-slate-500 hover:text-slate-700'">{{ app()->getLocale() == 'en' ? 'Active' : 'Aktif' }}</button>
                 <button wire:click="$set('status', 'nonaktif')" class="relative z-10 flex-1 sm:flex-none sm:w-24 text-center px-4 py-2 rounded-lg text-[10px] sm:text-[11px] font-black uppercase tracking-widest transition-all duration-300" :class="activeTab === 'nonaktif' ? 'text-rose-600 font-black' : 'text-slate-500 hover:text-slate-700'">{{ app()->getLocale() == 'en' ? 'Inactive' : 'Nonaktif' }}</button>
             </div>
-            <button wire:click="openCreate" class="btn-premium whitespace-nowrap justify-center py-3 sm:py-2.5 w-full sm:w-auto">
+            <button wire:click="openCreate" @click="$wire.showEditModal = true" class="btn-premium whitespace-nowrap justify-center py-3 sm:py-2.5 w-full sm:w-auto">
                 <i data-lucide="user-plus" class="w-4 h-4 mr-2"></i>
                 {{ app()->getLocale() == 'en' ? 'Register Client' : 'Daftarkan Klien' }}
             </button>
@@ -81,10 +81,10 @@
                 <!-- Footer Minimal Action Bar -->
                 <div class="px-5 py-3.5 bg-slate-50/60 border-t border-slate-100 flex items-center justify-between">
                     <div class="flex items-center gap-1">
-                        <button wire:click="openView({{ $client->id }})" class="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50/50 transition-colors rounded-lg">
+                        <button wire:click="openView({{ $client->id }})" @click="$dispatch('slide-over-loading-start')" class="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50/50 transition-colors rounded-lg">
                             <i data-lucide="eye" class="w-4 h-4"></i>
                         </button>
-                        <button wire:click="openEdit({{ $client->id }})" class="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50/50 transition-colors rounded-lg">
+                        <button wire:click="openEdit({{ $client->id }})" @click="$wire.showEditModal = true" class="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50/50 transition-colors rounded-lg">
                             <i data-lucide="edit-3" class="w-4 h-4"></i>
                         </button>
                     </div>
@@ -121,11 +121,11 @@
     </div>
 
     <!-- Modal: Create / Edit -->
-    <div x-show="$wire.showEditModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div x-show="$wire.showEditModal" x-transition.opacity class="absolute inset-0 bg-slate-900/60 backdrop-blur-md" @click="$wire.showEditModal = false"></div>
+    <div x-show="$wire.showEditModal" x-cloak class="fixed inset-0 z-50 bg-gray-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="absolute inset-0" @click="$wire.showEditModal = false"></div>
         
         <div x-show="$wire.showEditModal" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" 
-             class="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl relative flex flex-col">
+             class="bg-white rounded-2xl w-full max-w-xl max-h-[85vh] overflow-y-auto shadow-xl flex flex-col transform transition-all relative z-10">
             
             <div class="px-6 py-5 sm:px-10 sm:py-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
                 <div>
@@ -137,7 +137,39 @@
                 </button>
             </div>
 
-            <form wire:submit.prevent="save" class="flex flex-col">
+            <!-- Loading Skeleton -->
+            <div wire:loading wire:target="openEdit, openCreate" class="px-6 py-8 sm:p-10 space-y-6 animate-pulse">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <div class="h-3 w-16 bg-slate-200 rounded"></div>
+                        <div class="h-10 bg-slate-100 rounded-xl"></div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="h-3 w-16 bg-slate-200 rounded"></div>
+                        <div class="h-10 bg-slate-100 rounded-xl"></div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <div class="h-3 w-20 bg-slate-200 rounded"></div>
+                        <div class="h-10 bg-slate-100 rounded-xl"></div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="h-3 w-24 bg-slate-200 rounded"></div>
+                        <div class="h-10 bg-slate-100 rounded-xl"></div>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <div class="h-3 w-28 bg-slate-200 rounded"></div>
+                    <div class="h-20 bg-slate-100 rounded-xl"></div>
+                </div>
+                <div class="flex justify-end gap-3 pt-4">
+                    <div class="h-10 w-24 bg-slate-200 rounded-xl animate-pulse"></div>
+                    <div class="h-10 w-36 bg-slate-200 rounded-xl animate-pulse"></div>
+                </div>
+            </div>
+
+            <form wire:loading.class="hidden" wire:target="openEdit, openCreate" wire:submit.prevent="save" class="flex flex-col">
                 <div class="px-6 py-6 sm:p-10 space-y-6 sm:space-y-8">
                     <!-- Client Type & Industry Sector Selection -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">

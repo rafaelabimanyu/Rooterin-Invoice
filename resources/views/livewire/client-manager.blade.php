@@ -120,12 +120,24 @@
         {{ $clients->links() }}
     </div>
 
+    @teleport('body')
     <!-- Modal: Create / Edit -->
-    <div x-show="$wire.showEditModal" x-cloak class="fixed inset-0 z-50 bg-gray-900/50 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="absolute inset-0" @click="$wire.showEditModal = false"></div>
+    <div x-show="$wire.showEditModal" x-cloak 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         @click.self="$wire.showEditModal = false"
+         class="fixed inset-0 z-[999] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
         
-        <div x-show="$wire.showEditModal" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" 
-             class="bg-white rounded-2xl w-full max-w-xl max-h-[85vh] overflow-y-auto shadow-xl flex flex-col transform transition-all relative z-10">
+        <!-- Card Modal -->
+        <div x-show="$wire.showEditModal" 
+             x-transition:enter="ease-out duration-300" 
+             x-transition:enter-start="opacity-0 scale-95" 
+             x-transition:enter-end="opacity-100 scale-100" 
+             class="relative bg-white rounded-2xl w-full max-w-xl max-h-[85vh] overflow-y-auto shadow-2xl flex flex-col transform transition-all my-auto">
             
             <div class="px-6 py-5 sm:px-10 sm:py-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
                 <div>
@@ -300,4 +312,5 @@
             </form>
         </div>
     </div>
+    @endteleport
 </div>

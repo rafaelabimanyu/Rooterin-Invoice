@@ -58,7 +58,7 @@
             <div class="glass-card p-10 min-h-[600px]">
                 <!-- General Tab -->
                 @if($activeTab === 'general')
-                <div x-transition:enter="fade-in">
+                <div x-data x-init="lucide.createIcons()" x-transition:enter="fade-in">
                     <div class="flex items-center gap-4 mb-10 pb-6 border-b border-slate-100">
                         <div class="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
                             <i data-lucide="building-2" class="w-6 h-6"></i>
@@ -96,7 +96,7 @@
 
                 <!-- Finance Tab -->
                 @if($activeTab === 'finance')
-                <div x-transition:enter="fade-in">
+                <div x-data x-init="lucide.createIcons()" x-transition:enter="fade-in">
                     <div class="flex items-center gap-4 mb-10 pb-6 border-b border-slate-100">
                         <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
                             <i data-lucide="wallet" class="w-6 h-6"></i>
@@ -138,7 +138,7 @@
 
                 <!-- Appearance Tab -->
                 @if($activeTab === 'appearance')
-                <div x-transition:enter="fade-in">
+                <div x-data x-init="lucide.createIcons()" x-transition:enter="fade-in">
                     <div class="flex items-center gap-4 mb-10 pb-6 border-b border-slate-100">
                         <div class="w-12 h-12 rounded-xl bg-rose-50 flex items-center justify-center text-rose-600">
                             <i data-lucide="palette" class="w-6 h-6"></i>
@@ -186,7 +186,7 @@
 
                 <!-- Localization Tab -->
                 @if($activeTab === 'localization')
-                <div x-transition:enter="fade-in">
+                <div x-data x-init="lucide.createIcons()" x-transition:enter="fade-in">
                     <div class="flex items-center gap-4 mb-10 pb-6 border-b border-slate-100">
                         <div class="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
                             <i data-lucide="globe" class="w-6 h-6"></i>
@@ -230,7 +230,7 @@
 
                 <!-- Notifications Tab -->
                 @if($activeTab === 'notifications')
-                <div x-transition:enter="fade-in">
+                <div x-data x-init="lucide.createIcons()" x-transition:enter="fade-in">
                     <div class="flex items-center gap-4 mb-10 pb-6 border-b border-slate-100">
                         <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
                             <i data-lucide="mail" class="w-6 h-6"></i>
@@ -272,7 +272,7 @@
 
                 <!-- Security Tab -->
                 @if($activeTab === 'security')
-                <div x-transition:enter="fade-in">
+                <div x-data x-init="lucide.createIcons()" x-transition:enter="fade-in">
                     <div class="flex items-center gap-4 mb-10 pb-6 border-b border-slate-100">
                         <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-900">
                             <i data-lucide="shield-check" class="w-6 h-6"></i>

@@ -13,14 +13,10 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-        <script src="https://unpkg.com/lucide@latest"></script>
     </head>
     <body class="font-inter text-slate-900 antialiased">
         <div class="min-h-screen bg-white">
             {{ $slot }}
         </div>
-        <script>
-            lucide.createIcons();
-        </script>
     </body>
 </html>

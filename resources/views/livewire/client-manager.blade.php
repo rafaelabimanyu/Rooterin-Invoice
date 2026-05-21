@@ -33,9 +33,12 @@
     </div>
 
     <!-- Results Display -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+         wire:loading.class="opacity-40 pointer-events-none transition-opacity duration-200"
+         wire:target="status"
+         wire:key="client-grid-{{ $status }}-{{ $search }}-{{ $clients->currentPage() }}">
         @forelse($clients as $client)
-            <div wire:key="client-{{ $client->id }}" class="glass-card group hover:-translate-y-1.5 hover:shadow-xl hover:border-indigo-500/20 hover:ring-4 hover:ring-indigo-500/5 transition-all duration-300 relative overflow-hidden border-transparent flex flex-col justify-between">
+            <div wire:key="client-{{ $client->id }}" class="glass-card group hover:-translate-y-1.5 hover:shadow-xl hover:border-indigo-500/20 hover:ring-4 hover:ring-indigo-500/5 transition-all duration-300 relative overflow-hidden border-transparent flex flex-col justify-between animate-fade-in-up">
                 <div class="p-6 space-y-4">
                     <div class="flex items-start justify-between">
                         <div class="flex items-center gap-4">
@@ -108,7 +111,7 @@
                 </div>
             </div>
         @empty
-            <div class="col-span-full py-20 bg-white border border-slate-200/80 rounded-[32px]">
+            <div class="col-span-full py-20 bg-white border border-slate-200/80 rounded-[32px] animate-fade-in-up">
                 <x-empty-state icon="users" :title="app()->getLocale() == 'en' ? 'No matching clients found' : 'Tidak ada klien yang cocok ditemukan'" :description="app()->getLocale() == 'en' ? 'Adjust your filters or register a new client.' : 'Sesuaikan filter Anda atau daftarkan klien baru.'" />
             </div>
         @endforelse

@@ -1,6 +1,6 @@
 <div class="space-y-6">
     <!-- Top Actions & Filters -->
-    <div class="glass-card p-4 sm:p-6 flex flex-col lg:flex-row items-center justify-between gap-4 sm:gap-6">
+    <div class="glass-card p-4 sm:p-6 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 sm:gap-6">
         <div class="relative w-full lg:max-w-md">
             <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
             <input type="text" wire:model.live.debounce.300ms="search" placeholder="{{ app()->getLocale() == 'en' ? 'Search by name, company, or ID...' : 'Cari berdasarkan nama, perusahaan, atau ID...' }}" 
@@ -8,10 +8,19 @@
         </div>
         
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full lg:w-auto">
-            <div class="flex items-center p-1 bg-slate-100 rounded-xl font-jakarta w-full sm:w-auto">
-                <button wire:click="$set('status', '')" class="flex-1 sm:flex-none text-center px-4 py-2 rounded-lg text-[10px] sm:text-[11px] font-black uppercase tracking-widest transition-all {{ $status === '' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700' }}">{{ app()->getLocale() == 'en' ? 'All' : 'Semua' }}</button>
-                <button wire:click="$set('status', 'aktif')" class="flex-1 sm:flex-none text-center px-4 py-2 rounded-lg text-[10px] sm:text-[11px] font-black uppercase tracking-widest transition-all {{ $status === 'aktif' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-slate-700' }}">{{ app()->getLocale() == 'en' ? 'Active' : 'Aktif' }}</button>
-                <button wire:click="$set('status', 'nonaktif')" class="flex-1 sm:flex-none text-center px-4 py-2 rounded-lg text-[10px] sm:text-[11px] font-black uppercase tracking-widest transition-all {{ $status === 'nonaktif' ? 'bg-white text-rose-600 shadow-sm' : 'text-slate-500 hover:text-slate-700' }}">{{ app()->getLocale() == 'en' ? 'Inactive' : 'Nonaktif' }}</button>
+            <div class="relative flex items-center p-1 bg-slate-100 rounded-xl font-jakarta w-full sm:w-auto" x-data="{ activeTab: @entangle('status') }">
+                <!-- Sliding background indicator -->
+                <div class="absolute top-1 bottom-1 rounded-lg bg-white shadow-sm transition-all duration-300 ease-in-out"
+                     :class="{
+                         'left-1 w-[calc(33.333%-6px)] sm:w-24': activeTab === '',
+                         'left-[calc(33.333%+2px)] w-[calc(33.333%-6px)] sm:left-[104px] sm:w-24': activeTab === 'aktif',
+                         'left-[calc(66.666%+3px)] w-[calc(33.333%-6px)] sm:left-[204px] sm:w-24': activeTab === 'nonaktif'
+                     }">
+                </div>
+
+                <button wire:click="$set('status', '')" class="relative z-10 flex-1 sm:flex-none sm:w-24 text-center px-4 py-2 rounded-lg text-[10px] sm:text-[11px] font-black uppercase tracking-widest transition-all duration-300" :class="activeTab === '' ? 'text-slate-950 font-black' : 'text-slate-500 hover:text-slate-700'">{{ app()->getLocale() == 'en' ? 'All' : 'Semua' }}</button>
+                <button wire:click="$set('status', 'aktif')" class="relative z-10 flex-1 sm:flex-none sm:w-24 text-center px-4 py-2 rounded-lg text-[10px] sm:text-[11px] font-black uppercase tracking-widest transition-all duration-300" :class="activeTab === 'aktif' ? 'text-emerald-600 font-black' : 'text-slate-500 hover:text-slate-700'">{{ app()->getLocale() == 'en' ? 'Active' : 'Aktif' }}</button>
+                <button wire:click="$set('status', 'nonaktif')" class="relative z-10 flex-1 sm:flex-none sm:w-24 text-center px-4 py-2 rounded-lg text-[10px] sm:text-[11px] font-black uppercase tracking-widest transition-all duration-300" :class="activeTab === 'nonaktif' ? 'text-rose-600 font-black' : 'text-slate-500 hover:text-slate-700'">{{ app()->getLocale() == 'en' ? 'Inactive' : 'Nonaktif' }}</button>
             </div>
             <button wire:click="openCreate" class="btn-premium whitespace-nowrap justify-center py-3 sm:py-2.5 w-full sm:w-auto">
                 <i data-lucide="user-plus" class="w-4 h-4 mr-2"></i>
@@ -21,10 +30,11 @@
     </div>
 
     <!-- Results Display -->
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
         @forelse($clients as $client)
-            <div wire:key="client-{{ $client->id }}" class="glass-card group hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 relative overflow-hidden border-transparent hover:border-indigo-500/10">
+            <div wire:key="client-{{ $client->id }}" class="glass-card group hover:-translate-y-1.5 hover:shadow-xl hover:border-indigo-500/20 hover:ring-4 hover:ring-indigo-500/5 transition-all duration-300 relative overflow-hidden border-transparent">
                 <div class="p-5 sm:p-6">
+
                     <div class="flex items-start justify-between mb-4">
                         <div class="flex items-center gap-3 sm:gap-4">
                             <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-black text-xs sm:text-sm shadow-inner group-hover:bg-slate-900 group-hover:text-white transition-colors duration-500">

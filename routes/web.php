@@ -109,6 +109,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('ai-assistant/sessions-list', [AiChatController::class, 'getSessionsList'])->name('ai-assistant.sessions-list');
         Route::post('ai-assistant/session/{session_id}/rename', [AiChatController::class, 'renameSession'])->name('ai-assistant.session.rename');
         Route::delete('ai-assistant/session/{session_id}', [AiChatController::class, 'deleteSession'])->name('ai-assistant.session.delete');
+        Route::post('ai-assistant/upload', [AiChatController::class, 'handleUpload'])->name('ai-assistant.upload');
+        Route::get('ai-assistant/proactive-check', [AiChatController::class, 'proactiveCheck'])->name('ai-assistant.proactive-check');
     });
 });
 

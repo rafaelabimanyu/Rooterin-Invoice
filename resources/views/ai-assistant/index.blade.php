@@ -1,7 +1,8 @@
 <x-app-layout>
     <div class="animate-fade-in-up">
-        <!-- Add marked.js for markdown parsing -->
+        <!-- Add marked.js and apexcharts -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
     <!-- Markdown Custom Styling for Chat Bubbles -->
     <style>
@@ -146,7 +147,11 @@
         </div>
 
         <!-- Chat Area (Right Side) -->
-        <div class="flex-1 flex flex-col h-2/3 md:h-full bg-slate-50/20">
+        <div class="flex-1 flex flex-col h-2/3 md:h-full bg-slate-50/20 relative"
+             @dragover.prevent="isDragging = true"
+             @dragleave.prevent="isDragging = false"
+             @drop.prevent="handleDrop($event)"
+        >
             <!-- Chat Window Header -->
             <div class="px-8 py-5 bg-white border-b border-slate-200/80 flex items-center justify-between shrink-0">
                 <div class="flex items-center gap-4">
@@ -261,6 +266,16 @@
                                 : 'bg-white border border-slate-200 text-slate-800 rounded-tl-none shadow-sm'"
                         >
                             <div class="chat-bubble-content" x-html="renderMarkdown(msg.text)"></div>
+                            
+                            <!-- Cash Flow Forecast Chart -->
+                            <template x-if="msg.chart_data">
+                                <div class="mt-4 p-4 bg-slate-50 rounded-2xl border border-slate-250 min-w-[280px] sm:min-w-[400px]">
+                                    <div :id="'chart-' + idx" 
+                                         x-init="$nextTick(() => renderChart(msg.chart_data, 'chart-' + idx))"
+                                         class="w-full h-64 text-slate-800">
+                                    </div>
+                                </div>
+                            </template>
                         </div>
 
                         <!-- Copy to Clipboard & Action Bar (AI responses only) -->
@@ -305,35 +320,74 @@
                 </div>
             </div>
 
-            <!-- Speech Wave Animation Indicator -->
-            <div x-show="isListening" 
-                x-transition:enter="transition ease-out duration-300"
-                x-transition:enter-start="opacity-0 translate-y-2"
-                x-transition:enter-end="opacity-100 translate-y-0"
-                x-transition:leave="transition ease-in duration-200"
-                x-transition:leave-start="opacity-100 translate-y-0"
-                x-transition:leave-end="opacity-0 translate-y-2"
-                class="px-8 py-3 bg-rose-50 border-t border-rose-100 flex items-center justify-between shrink-0"
-                style="display: none;"
+            <!-- Glassmorphic Listening Overlay -->
+            <div x-show="isListening"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 backdrop-blur-0"
+                 x-transition:enter-end="opacity-100 backdrop-blur-md"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100 backdrop-blur-md"
+                 x-transition:leave-end="opacity-0 backdrop-blur-0"
+                 class="absolute inset-0 z-[55] bg-indigo-950/40 flex flex-col items-center justify-center gap-6"
+                 style="display: none;"
             >
-                <div class="flex items-center gap-2.5 text-rose-700 text-[10px] font-bold uppercase tracking-wider">
-                    <span class="relative flex h-2 w-2">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
-                    </span>
-                    <span>{{ app()->getLocale() == 'en' ? 'Listening to voice...' : 'Mendengarkan suara...' }}</span>
+                <div class="relative flex items-center justify-center">
+                    <div class="absolute w-28 h-28 bg-rose-500/20 rounded-full animate-ping" style="animation-duration: 2s;"></div>
+                    <div class="absolute w-24 h-24 bg-rose-500/30 rounded-full animate-ping" style="animation-duration: 1.5s;"></div>
+                    <div class="relative w-20 h-20 bg-rose-500 rounded-full flex items-center justify-center text-white shadow-lg shadow-rose-500/40">
+                        <i data-lucide="mic" class="w-10 h-10 animate-bounce"></i>
+                    </div>
                 </div>
-                <!-- Audio Wave Bars -->
-                <div class="flex items-center gap-0.5 h-4">
-                    <span class="w-0.5 bg-rose-500 rounded-full animate-audio-wave-1 h-3"></span>
-                    <span class="w-0.5 bg-rose-500 rounded-full animate-audio-wave-2 h-4"></span>
-                    <span class="w-0.5 bg-rose-500 rounded-full animate-audio-wave-3 h-2"></span>
-                    <span class="w-0.5 bg-rose-500 rounded-full animate-audio-wave-4 h-3.5"></span>
+                <div class="text-center space-y-2">
+                    <p class="text-white font-black text-sm uppercase tracking-widest font-jakarta">
+                        {{ app()->getLocale() == 'en' ? 'Listening...' : 'Mendengarkan...' }}
+                    </p>
+                    <p class="text-indigo-200/80 text-[10px] font-bold uppercase tracking-wide">
+                        {{ app()->getLocale() == 'en' ? 'Speak now, it will submit automatically' : 'Bicaralah sekarang, sistem akan mengirim otomatis' }}
+                    </p>
+                </div>
+                <div class="flex items-end gap-1.5 h-10 mt-2">
+                    <span class="w-1 bg-white rounded-full animate-audio-wave-1 h-6"></span>
+                    <span class="w-1 bg-white rounded-full animate-audio-wave-2 h-9"></span>
+                    <span class="w-1 bg-white rounded-full animate-audio-wave-3 h-5"></span>
+                    <span class="w-1 bg-white rounded-full animate-audio-wave-4 h-8"></span>
+                    <span class="w-1 bg-white rounded-full animate-audio-wave-2 h-4"></span>
+                    <span class="w-1 bg-white rounded-full animate-audio-wave-1 h-7"></span>
+                </div>
+                <button type="button" @click="toggleSpeech()" class="mt-6 px-6 py-2.5 bg-white/10 hover:bg-white/20 text-white rounded-full border border-white/20 text-xs font-bold uppercase tracking-wider transition-all active:scale-95">
+                    {{ app()->getLocale() == 'en' ? 'Cancel' : 'Batal' }}
+                </button>
+            </div>
+
+            <!-- Drag Over Overlay -->
+            <div x-show="isDragging"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100"
+                 class="absolute inset-0 z-50 bg-indigo-600/10 backdrop-blur-sm border-2 border-dashed border-indigo-500 m-4 rounded-3xl flex flex-col items-center justify-center gap-4 text-indigo-700"
+                 style="display: none;"
+            >
+                <div class="w-16 h-16 bg-white rounded-2xl shadow-md border border-indigo-100 flex items-center justify-center text-indigo-600">
+                    <i data-lucide="upload-cloud" class="w-8 h-8 animate-bounce"></i>
+                </div>
+                <div class="text-center">
+                    <p class="font-bold text-sm">{{ app()->getLocale() == 'en' ? 'Drop your receipt here' : 'Lepaskan kuitansi Anda di sini' }}</p>
+                    <p class="text-xs text-slate-500 mt-1">{{ app()->getLocale() == 'en' ? 'Supports JPG, PNG, PDF up to 10MB' : 'Mendukung JPG, PNG, PDF hingga 10MB' }}</p>
                 </div>
             </div>
 
             <!-- Input Area -->
             <form @submit.prevent="sendMessage()" class="p-6 bg-white border-t border-slate-200 flex items-center gap-4 shrink-0">
+                <input type="file" x-ref="fileInput" @change="handleFileSelect($event)" class="hidden" accept="image/*,application/pdf">
+                
+                <!-- Attachment Button -->
+                <button type="button" 
+                    @click="$refs.fileInput.click()"
+                    class="w-12 h-12 bg-slate-50 hover:bg-slate-100 text-slate-500 border border-slate-200 hover:border-slate-300 rounded-2xl flex items-center justify-center shrink-0 transition-all active:scale-95"
+                    title="{{ app()->getLocale() == 'en' ? 'Attach receipt' : 'Lampirkan kuitansi' }}">
+                    <i data-lucide="paperclip" class="w-5 h-5"></i>
+                </button>
+
                 <input x-model="input" 
                     type="text" 
                     placeholder="{{ app()->getLocale() == 'en' ? 'Ask financial analysis, overdue bills, or run navigation commands...' : 'Tanyakan analisis keuangan, tagihan overdue, atau jalankan perintah navigasi...' }}" 
@@ -376,6 +430,7 @@
                 copiedIndex: null,
                 isListening: false,
                 recognition: null,
+                isDragging: false,
                 routeMap: {
                     'dashboard': '{{ route('dashboard') }}',
                     'invoices.index': '{{ route('invoices.index') }}',
@@ -407,6 +462,28 @@
                         { sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Hello! I am your Virtual Senior Financial Consultant & Business Analyst. Is there anything I can help you with regarding cash flow analysis, overdue clients, financial forecasts, or system navigation today?" : "Halo! Saya Senior Financial Consultant & Business Analyst Virtual Anda. Ada yang bisa saya bantu terkait analisis arus kas, klien overdue, prediksi keuangan, atau navigasi sistem hari ini?" }}' }
                     ];
                     this.initSpeech();
+
+                    // Proactive anomaly detection check on page load if no active conversation
+                    if (!this.currentSessionId || this.messages.length <= 1) {
+                        this.loading = true;
+                        fetch('{{ route('ai-assistant.proactive-check') }}')
+                            .then(res => res.json())
+                            .then(data => {
+                                this.loading = false;
+                                if (data.success && data.reply) {
+                                    this.messages = [
+                                        { sender: 'ai', text: data.reply }
+                                    ];
+                                    if (data.speak_text) {
+                                        this.speakText(data.speak_text);
+                                    }
+                                }
+                            })
+                            .catch(err => {
+                                this.loading = false;
+                                console.error('Gagal menjalankan proactive check:', err);
+                            });
+                    }
                 },
                 initSpeech() {
                     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -425,12 +502,9 @@
 
                     this.recognition.onresult = (event) => {
                         const transcript = event.results[0][0].transcript;
-                        if (transcript) {
-                            if (this.input.trim()) {
-                                this.input += ' ' + transcript;
-                            } else {
-                                this.input = transcript;
-                            }
+                        if (transcript && transcript.trim()) {
+                            // Directly submit voice command to backend
+                            this.sendMessage(transcript);
                         }
                     };
 
@@ -460,6 +534,181 @@
                             console.error(err);
                         }
                     }
+                },
+                speakText(text) {
+                    if (!text) return;
+                    // Stop any ongoing speech synthesis
+                    if (window.speechSynthesis) {
+                        window.speechSynthesis.cancel();
+                        
+                        // Clean markdown tags, double asterisks, brackets etc. for clean pronunciation
+                        let cleanText = text.replace(/\*\*?/g, '')
+                                            .replace(/\[NAVIGATE:[^\]]+\]/g, '')
+                                            .replace(/#+/g, '')
+                                            .replace(/`+/g, '')
+                                            .replace(/-\s+/g, '')
+                                            .replace(/Rp\s*([0-9\.]+)/g, function(match, p1) {
+                                                return p1.replace(/\./g, '') + ' Rupiah';
+                                            });
+
+                        const utterance = new SpeechSynthesisUtterance(cleanText);
+                        utterance.lang = '{{ app()->getLocale() == "en" ? "en-US" : "id-ID" }}';
+                        
+                        // Adjust voice to sound more premium if possible
+                        const voices = window.speechSynthesis.getVoices();
+                        const targetLang = '{{ app()->getLocale() == "en" ? "en" : "id" }}';
+                        const voice = voices.find(v => v.lang.startsWith(targetLang));
+                        if (voice) {
+                            utterance.voice = voice;
+                        }
+                        
+                        window.speechSynthesis.speak(utterance);
+                    }
+                },
+                renderChart(chartData, elementId) {
+                    if (!chartData || !chartData.labels || !chartData.data) return;
+                    const el = document.getElementById(elementId);
+                    if (!el) return;
+                    
+                    // Clear previous chart content
+                    el.innerHTML = '';
+
+                    const options = {
+                        series: [{
+                            name: '{{ app()->getLocale() == "en" ? "Projected Cash Flow" : "Proyeksi Arus Kas" }}',
+                            data: chartData.data
+                        }],
+                        chart: {
+                            type: 'line',
+                            height: 250,
+                            toolbar: { show: false },
+                            fontFamily: 'Plus Jakarta Sans, sans-serif'
+                        },
+                        stroke: {
+                            curve: 'smooth',
+                            width: 3.5,
+                            colors: ['#4f46e5']
+                        },
+                        grid: {
+                            borderColor: '#f1f5f9',
+                            strokeDashArray: 4
+                        },
+                        markers: {
+                            size: 6,
+                            colors: ['#4f46e5'],
+                            strokeColors: '#ffffff',
+                            strokeWidth: 2,
+                            hover: { size: 8 }
+                        },
+                        xaxis: {
+                            categories: chartData.labels,
+                            labels: {
+                                style: {
+                                    colors: '#64748b',
+                                    fontSize: '11px',
+                                    fontWeight: 600
+                                }
+                            },
+                            axisBorder: { show: false },
+                            axisTicks: { show: false }
+                        },
+                        yaxis: {
+                            labels: {
+                                style: {
+                                    colors: '#64748b',
+                                    fontSize: '11px',
+                                    fontWeight: 600
+                                },
+                                formatter: function (value) {
+                                    return "Rp " + new Intl.NumberFormat('id-ID').format(value);
+                                }
+                            }
+                        },
+                        tooltip: {
+                            y: {
+                                formatter: function (val) {
+                                    return "Rp " + new Intl.NumberFormat('id-ID').format(val);
+                                }
+                            }
+                        }
+                    };
+
+                    const chart = new ApexCharts(el, options);
+                    chart.render();
+                },
+                handleFileSelect(event) {
+                    const files = event.target.files;
+                    if (files.length > 0) {
+                        this.uploadFile(files[0]);
+                    }
+                },
+                handleDrop(event) {
+                    this.isDragging = false;
+                    const files = event.dataTransfer.files;
+                    if (files.length > 0) {
+                        this.uploadFile(files[0]);
+                    }
+                },
+                uploadFile(file) {
+                    if (!file) return;
+                    
+                    // Verify size (10MB max)
+                    if (file.size > 10 * 1024 * 1024) {
+                        alert('{{ app()->getLocale() == "en" ? "File is too large. Maximum size is 10MB." : "File terlalu besar. Ukuran maksimum adalah 10MB." }}');
+                        return;
+                    }
+
+                    this.loading = true;
+                    this.messages.push({
+                        sender: 'user',
+                        text: '{{ app()->getLocale() == "en" ? "Uploading receipt: " : "Mengunggah kuitansi: " }}' + file.name
+                    });
+                    this.scrollToBottom();
+
+                    const formData = new FormData();
+                    formData.append('file', file);
+
+                    fetch('{{ route('ai-assistant.upload') }}', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: formData
+                    })
+                    .then(res => {
+                        if (!res.ok) {
+                            return res.json().then(errData => {
+                                throw new Error(errData.error || 'Upload failed');
+                            });
+                        }
+                        return res.json();
+                    })
+                    .then(data => {
+                        this.loading = false;
+                        if (data.success) {
+                            this.messages.push({
+                                sender: 'ai',
+                                text: data.reply
+                            });
+                            if (data.speak_text) {
+                                this.speakText(data.speak_text);
+                            }
+                        } else {
+                            this.messages.push({
+                                sender: 'ai',
+                                text: '{{ app()->getLocale() == "en" ? "Failed to extract receipt data." : "Gagal mengekstrak data kuitansi." }}'
+                            });
+                        }
+                        this.scrollToBottom();
+                    })
+                    .catch(err => {
+                        this.loading = false;
+                        this.messages.push({
+                            sender: 'ai',
+                            text: '{{ app()->getLocale() == "en" ? "Error processing receipt: " : "Error memproses kuitansi: " }}' + err.message
+                        });
+                        this.scrollToBottom();
+                    });
                 },
                 renderMarkdown(text) {
                     if (typeof marked !== 'undefined') {
@@ -514,11 +763,15 @@
                             this.$nextTick(() => this.scrollToBottom());
                         });
                 },
-                sendMessage() {
-                    if (!this.input.trim()) return;
-                    const userMsg = this.input;
+                sendMessage(customMsg = null) {
+                    const userMsg = customMsg !== null ? customMsg : this.input;
+                    if (!userMsg.trim()) return;
+                    
+                    if (customMsg === null) {
+                        this.input = '';
+                    }
+                    
                     this.messages.push({ sender: 'user', text: userMsg });
-                    this.input = '';
                     this.loading = true;
                     
                     this.$nextTick(() => {
@@ -547,13 +800,23 @@
                     .then(data => {
                         this.loading = false;
                         if (data.success) {
-                            this.processResponse(data.reply);
+                            this.processResponse(data.reply, data.chart_data, data.speak_text);
                             
                             const isNewSession = !this.currentSessionId;
                             this.currentSessionId = data.session_id;
                             
                             if (isNewSession) {
                                 this.refreshSessionsList();
+                            }
+
+                            // Trigger floating notification for new invoice if created
+                            if (data.created_invoice_number) {
+                                window.dispatchEvent(new CustomEvent('notify', {
+                                    detail: {
+                                        type: 'success',
+                                        message: '{{ app()->getLocale() == "en" ? "Invoice successfully created: " : "Invoice berhasil dibuat: " }}' + data.created_invoice_number
+                                    }
+                                }));
                             }
                         } else {
                             this.messages.push({ sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Sorry, an error occurred while processing your request." : "Maaf, terjadi kesalahan saat memproses permintaan Anda." }}' });
@@ -570,7 +833,7 @@
                         });
                     });
                 },
-                processResponse(reply) {
+                processResponse(reply, chartData = null, speakText = null) {
                     let routeName = null;
                     let text = reply;
                     const navRegex = /\[NAVIGATE:\s*([a-zA-Z0-9_\.-]+)\]/;
@@ -585,8 +848,15 @@
                         msg.navigateUrl = this.routeMap[routeName];
                         msg.navigateLabel = this.routeLabels[routeName] || '{{ app()->getLocale() == "en" ? "👉 Open Page" : "👉 Buka Halaman" }}';
                     }
+                    if (chartData) {
+                        msg.chart_data = chartData;
+                    }
                     
                     this.messages.push(msg);
+
+                    if (speakText) {
+                        this.speakText(speakText);
+                    }
                 },
                 refreshSessionsList() {
                     fetch('{{ route('ai-assistant.sessions-list') }}')

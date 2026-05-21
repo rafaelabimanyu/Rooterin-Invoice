@@ -39,6 +39,10 @@ class ClientController extends Controller
     {
         $validated = $request->validate([
             'kode_client' => 'required|unique:clients,kode_client',
+            'client_type' => 'required|string|max:100',
+            'industry_sector' => 'required|string|max:100',
+            'custom_client_type' => 'required_if:client_type,other|nullable|string|max:100',
+            'custom_industry_sector' => 'required_if:industry_sector,other|nullable|string|max:100',
             'nama_client' => 'required|string|max:255',
             'nama_perusahaan' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255',
@@ -50,6 +54,15 @@ class ClientController extends Controller
             'catatan' => 'nullable|string',
             'status' => 'required|in:aktif,nonaktif',
         ]);
+
+        if ($validated['client_type'] === 'other') {
+            $validated['client_type'] = $request->custom_client_type ?: 'Other';
+        }
+        if ($validated['industry_sector'] === 'other') {
+            $validated['industry_sector'] = $request->custom_industry_sector ?: 'Other';
+        }
+
+        unset($validated['custom_client_type'], $validated['custom_industry_sector']);
 
         Client::create($validated);
 
@@ -69,6 +82,10 @@ class ClientController extends Controller
     public function update(Request $request, Client $client)
     {
         $validated = $request->validate([
+            'client_type' => 'required|string|max:100',
+            'industry_sector' => 'required|string|max:100',
+            'custom_client_type' => 'required_if:client_type,other|nullable|string|max:100',
+            'custom_industry_sector' => 'required_if:industry_sector,other|nullable|string|max:100',
             'nama_client' => 'required|string|max:255',
             'nama_perusahaan' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255',
@@ -81,9 +98,19 @@ class ClientController extends Controller
             'status' => 'required|in:aktif,nonaktif',
         ]);
 
+        if ($validated['client_type'] === 'other') {
+            $validated['client_type'] = $request->custom_client_type ?: 'Other';
+        }
+        if ($validated['industry_sector'] === 'other') {
+            $validated['industry_sector'] = $request->custom_industry_sector ?: 'Other';
+        }
+
+        unset($validated['custom_client_type'], $validated['custom_industry_sector']);
+
         $client->update($validated);
 
         return redirect()->route('clients.index')->with('success', 'Client updated successfully.');
+
     }
 
     public function destroy(Client $client)

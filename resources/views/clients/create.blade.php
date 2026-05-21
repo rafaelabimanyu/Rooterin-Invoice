@@ -30,7 +30,48 @@
                     </div>
 
                     <x-input label="{{ app()->getLocale() == 'en' ? 'NPWP (Optional)' : 'NPWP (Opsional)' }}" name="npwp" placeholder="00.000.000.0-000.000" />
+
+                    <div x-data="{ clientType: '{{ old('client_type', 'individual') }}', industrySector: '{{ old('industry_sector', 'general') }}' }" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-1.5">
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">{{ __('ui.client_type_label') }}</label>
+                                <select name="client_type" x-model="clientType" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none text-slate-900 font-bold text-sm">
+                                    <option value="individual">{{ __('ui.individual') }}</option>
+                                    <option value="corporate">{{ __('ui.corporate') }}</option>
+                                    <option value="government">{{ __('ui.government') }}</option>
+                                    <option value="foreign">{{ __('ui.foreign') }}</option>
+                                    <option value="other">{{ __('ui.other_type') }}</option>
+                                </select>
+                            </div>
+                            
+                            <div class="space-y-1.5">
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">{{ __('ui.industry_sector_label') }}</label>
+                                <select name="industry_sector" x-model="industrySector" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none text-slate-900 font-bold text-sm">
+                                    <option value="general">{{ __('ui.general') }}</option>
+                                    <option value="fnb">{{ __('ui.fnb') }}</option>
+                                    <option value="healthcare">{{ __('ui.healthcare') }}</option>
+                                    <option value="manufacturing">{{ __('ui.manufacturing') }}</option>
+                                    <option value="tech">{{ __('ui.tech') }}</option>
+                                    <option value="education">{{ __('ui.education') }}</option>
+                                    <option value="other">{{ __('ui.other_sector') }}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Custom Inputs (Dynamic using Alpine) -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6" x-show="clientType === 'other' || industrySector === 'other'" x-cloak>
+                            <div class="space-y-1.5" x-show="clientType === 'other'">
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">{{ __('ui.other_type') }}</label>
+                                <input type="text" name="custom_client_type" value="{{ old('custom_client_type') }}" placeholder="{{ app()->getLocale() == 'en' ? 'e.g. Co-op, Foundation' : 'Misal: Koperasi, Yayasan' }}" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none text-slate-900 font-bold text-sm">
+                            </div>
+                            <div class="space-y-1.5" x-show="industrySector === 'other'">
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">{{ __('ui.other_sector') }}</label>
+                                <input type="text" name="custom_industry_sector" value="{{ old('custom_industry_sector') }}" placeholder="{{ app()->getLocale() == 'en' ? 'e.g. Agriculture, Energy' : 'Misal: Pertanian, Energi' }}" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none text-slate-900 font-bold text-sm">
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
 
                 <!-- Address -->
                 <div class="bg-white p-8 rounded-3xl border border-slate-200/80 shadow-sm space-y-6">

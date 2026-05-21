@@ -99,4 +99,23 @@ return [
     'error_auth' => 'Akses ditolak. Izin terbatas.',
     'empty_data' => 'Tidak ada data ditemukan dalam kategori ini.',
     'confirm_delete' => 'Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.',
+
+    // Client Types
+    'individual' => 'Rumahan / Personal',
+    'corporate' => 'Badan Usaha (PT/CV)',
+    'government' => 'Instansi Pemerintah',
+    'foreign' => 'Perusahaan Asing',
+    'other_type' => 'Tipe Kustom',
+    
+    // Industry Sectors
+    'fnb' => 'FnB / Kuliner',
+    'healthcare' => 'Kesehatan / RS',
+    'manufacturing' => 'Manufaktur / Pabrik',
+    'tech' => 'Teknologi / IT',
+    'education' => 'Pendidikan / Sekolah',
+    'general' => 'Jasa / Umum',
+    'other_sector' => 'Sektor Kustom',
+    'client_type_label' => 'Tipe Klien',
+    'industry_sector_label' => 'Sektor Industri',
 ];
+

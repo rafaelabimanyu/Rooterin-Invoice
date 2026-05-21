@@ -99,4 +99,23 @@ return [
     'error_auth' => 'Unauthorized access. Access restricted.',
     'empty_data' => 'No records found in this category.',
     'confirm_delete' => 'Are you sure you want to delete this item? This action cannot be undone.',
+
+    // Client Types
+    'individual' => 'Individual / Personal',
+    'corporate' => 'Corporate (PT/CV)',
+    'government' => 'Government Institution',
+    'foreign' => 'Foreign Enterprise',
+    'other_type' => 'Custom Type',
+    
+    // Industry Sectors
+    'fnb' => 'Food & Beverage',
+    'healthcare' => 'Healthcare & Medical',
+    'manufacturing' => 'Manufacturing & Factory',
+    'tech' => 'Technology & IT',
+    'education' => 'Education & Academy',
+    'general' => 'General Services',
+    'other_sector' => 'Custom Sector',
+    'client_type_label' => 'Client Type',
+    'industry_sector_label' => 'Industry Sector',
 ];
+

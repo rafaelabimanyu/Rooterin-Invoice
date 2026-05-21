@@ -18,7 +18,7 @@ class ClientManager extends Component
     public $viewingClient = null;
     
     // Form fields
-    public $nama_client, $nama_perusahaan, $email, $no_hp, $npwp, $alamat, $kota, $provinsi, $catatan, $status_field, $kode_client;
+    public $nama_client, $nama_perusahaan, $email, $no_hp, $npwp, $alamat, $kota, $provinsi, $catatan, $status_field, $kode_client, $client_type, $industry_sector, $custom_client_type, $custom_industry_sector;
 
     protected $queryString = ['search', 'status'];
 
@@ -42,6 +42,8 @@ class ClientManager extends Component
         $this->resetFields();
         $this->kode_client = Client::generateCode();
         $this->status_field = 'aktif';
+        $this->client_type = 'individual';
+        $this->industry_sector = 'general';
         $this->showEditModal = true;
         $this->editingClient = null;
     }
@@ -60,6 +62,27 @@ class ClientManager extends Component
         $this->catatan = $client->catatan;
         $this->status_field = $client->status;
         $this->kode_client = $client->kode_client;
+
+        // Parse client_type
+        $standardTypes = ['individual', 'corporate', 'government', 'foreign'];
+        if (in_array(strtolower($client->client_type ?? ''), $standardTypes)) {
+            $this->client_type = $client->client_type;
+            $this->custom_client_type = '';
+        } else {
+            $this->client_type = 'other';
+            $this->custom_client_type = $client->client_type;
+        }
+
+        // Parse industry_sector
+        $standardSectors = ['fnb', 'healthcare', 'manufacturing', 'tech', 'education', 'general'];
+        if (in_array(strtolower($client->industry_sector ?? ''), $standardSectors)) {
+            $this->industry_sector = $client->industry_sector;
+            $this->custom_industry_sector = '';
+        } else {
+            $this->industry_sector = 'other';
+            $this->custom_industry_sector = $client->industry_sector;
+        }
+
         $this->showEditModal = true;
     }
 
@@ -77,6 +100,17 @@ class ClientManager extends Component
                     <div>
                         <p class='text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1'>Status</p>
                         <span class='px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest " . ($client->status === 'aktif' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-400') . "'>{$client->status}</span>
+                    </div>
+                </div>
+
+                <div class='grid grid-cols-2 gap-8'>
+                    <div>
+                        <p class='text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1'>" . (app()->getLocale() == 'en' ? 'Client Type' : 'Tipe Klien') . "</p>
+                        <p class='text-sm font-bold text-slate-900'>{$client->client_type_label}</p>
+                    </div>
+                    <div>
+                        <p class='text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1'>" . (app()->getLocale() == 'en' ? 'Industry Sector' : 'Sektor Industri') . "</p>
+                        <p class='text-sm font-bold text-slate-900'>{$client->industry_sector_label}</p>
                     </div>
                 </div>
 
@@ -132,6 +166,10 @@ class ClientManager extends Component
             'provinsi' => 'nullable|string|max:100',
             'catatan' => 'nullable|string',
             'status_field' => 'required|in:aktif,nonaktif',
+            'client_type' => 'required|string',
+            'industry_sector' => 'required|string',
+            'custom_client_type' => 'required_if:client_type,other|nullable|string|max:100',
+            'custom_industry_sector' => 'required_if:industry_sector,other|nullable|string|max:100',
         ];
 
         if (!$this->editingClient) {
@@ -140,6 +178,22 @@ class ClientManager extends Component
 
         $validated = $this->validate($rules);
         $validated['status'] = $this->status_field;
+
+        // Apply custom logic for type/sector
+        if ($this->client_type === 'other') {
+            $validated['client_type'] = $this->custom_client_type ?: 'Other';
+        } else {
+            $validated['client_type'] = $this->client_type;
+        }
+
+        if ($this->industry_sector === 'other') {
+            $validated['industry_sector'] = $this->custom_industry_sector ?: 'Other';
+        } else {
+            $validated['industry_sector'] = $this->industry_sector;
+        }
+
+        // Remove helper form state variables from model insertion array
+        unset($validated['status_field'], $validated['custom_client_type'], $validated['custom_industry_sector']);
 
         if ($this->editingClient) {
             $this->editingClient->update($validated);
@@ -172,7 +226,12 @@ class ClientManager extends Component
         $this->catatan = '';
         $this->status_field = 'aktif';
         $this->kode_client = '';
+        $this->client_type = 'individual';
+        $this->industry_sector = 'general';
+        $this->custom_client_type = '';
+        $this->custom_industry_sector = '';
     }
+
 
     public function getInitial($name)
     {

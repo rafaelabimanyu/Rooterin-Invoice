@@ -51,6 +51,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Invoices
         Route::get('invoices/{invoice}/pdf', [InvoiceController::class, 'downloadPdf'])->name('invoices.pdf');
+        Route::post('invoices/{invoice}/ai-email-draft', [AiInvoiceController::class, 'generateEmailDraft'])->name('invoices.ai-email-draft');
         Route::resource('invoices', InvoiceController::class);
 
         // Security Intelligence
@@ -97,9 +98,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/security-center', function () {
             return view('security.center');
         })->name('security.center');
-
-        // AI Invoice Assistant
-        Route::post('invoices/{invoice}/ai-email-draft', [AiInvoiceController::class, 'generateEmailDraft'])->name('invoices.ai-email-draft');
 
         // AI Chatbot Assistant & History
         Route::get('ai-assistant', [AiChatController::class, 'index'])->name('ai-assistant.index');

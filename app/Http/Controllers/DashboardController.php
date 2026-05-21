@@ -107,17 +107,18 @@ Berikan 2-3 kalimat berisi insight bisnis taktis dan rekomendasi tindakan prakti
                 } catch (\Throwable $e) {
                     \Illuminate\Support\Facades\Log::error("DashboardController Gemini Error: " . $e->getMessage(), ['exception' => $e]);
                     $errMsg = " (Advisory Fallback)";
+                    $overdueFormatted = "Rp " . number_format($overdueRevenue, 0, ',', '.');
                     if ($locale === 'en') {
-                        if ($overdueRevenue > $monthlyRevenue) {
-                            return "Your total overdue invoices are currently quite high compared to monthly revenue. Prioritize active collections by sending automated reminders, and offer installment options to maintain operational cash flow." . $errMsg;
+                        if ($overdueRevenue > 0) {
+                            return "Your total active arrears are currently at {$overdueFormatted}. We recommend prioritizing collection efforts on major corporate and government entities (e.g., Dinas Kesehatan or Yayasan Pendidikan) using AI Billing Copywriter to stabilize operational cash flow." . $errMsg;
                         } else {
-                            return "Your financial performance this month is stable with good collection rates. However, continue to monitor outstanding invoices closely to minimize future payment delays." . $errMsg;
+                            return "Your financial performance this month is stable with a 100% invoice collection rate. Continue to monitor incoming billings closely to sustain this cash flow efficiency." . $errMsg;
                         }
                     } else {
-                        if ($overdueRevenue > $monthlyRevenue) {
-                            return "Total tagihan menunggak Anda saat ini cukup tinggi dibandingkan dengan pendapatan bulanan. Prioritaskan penagihan piutang aktif dengan mengirimkan peringatan otomatis menggunakan AI Copywriter, serta tawarkan opsi pembayaran bertahap agar arus kas operasional Anda tetap terjaga." . $errMsg;
+                        if ($overdueRevenue > 0) {
+                            return "Total tagihan menunggak (piutang aktif) saat ini mencapai {$overdueFormatted}. Direkomendasikan untuk memprioritaskan penagihan aktif pada klien besar seperti Dinas Kesehatan Kota atau Yayasan Pendidikan dengan mengirimkan email pengingat menggunakan AI Billing Copywriter agar arus kas tetap stabil." . $errMsg;
                         } else {
-                            return "Performa keuangan Anda bulan ini stabil dengan piutang tertagih yang baik. Namun, tetap pantau tagihan outstanding Anda secara ketat untuk meminimalkan resiko keterlambatan pembayaran di masa mendatang." . $errMsg;
+                            return "Performa keuangan Anda bulan ini sangat sehat dengan tingkat kolektibilitas piutang 100%. Tetap pantau penagihan baru secara berkala untuk menjaga efisiensi arus kas operasional." . $errMsg;
                         }
                     }
                 }

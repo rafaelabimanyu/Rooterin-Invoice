@@ -25,265 +25,7 @@
     </style>
 
     <div class="bg-slate-50/50 rounded-[2.5rem] border border-slate-200/80 shadow-sm overflow-hidden flex flex-col md:flex-row h-[calc(100vh-12rem)] min-h-[600px] font-sans"
-        x-data="{
-            input: '',
-            messages: [
-                { sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Hello! I am your Virtual Senior Financial Consultant & Business Analyst. Is there anything I can help you with regarding cash flow analysis, overdue clients, financial forecasts, or system navigation today?" : "Halo! Saya Senior Financial Consultant & Business Analyst Virtual Anda. Ada yang bisa saya bantu terkait analisis arus kas, klien overdue, prediksi keuangan, atau navigasi sistem hari ini?" }}' }
-            ],
-            loading: false,
-            currentSessionId: null,
-            sessions: {{ json_encode($sessions) }},
-            editingSessionId: null,
-            editingTitle: '',
-            copiedIndex: null,
-            routeMap: {
-                'dashboard': '{{ route('dashboard') }}',
-                'invoices.index': '{{ route('invoices.index') }}',
-                'invoices.create': '{{ route('invoices.create') }}',
-                'clients.index': '{{ route('clients.index') }}',
-                'clients.create': '{{ route('clients.create') }}',
-                'receipts.index': '{{ route('receipts.index') }}',
-                'receipts.create': '{{ route('receipts.create') }}',
-                'settings.index': '{{ route('settings.index') }}',
-                'profile.edit': '{{ route('profile.edit') }}',
-                'reports.index': '{{ route('reports.index') }}',
-                'chronos.index': '{{ route('chronos.index') }}'
-            },
-            routeLabels: {
-                'dashboard': '{{ app()->getLocale() == "en" ? "👉 Open Main Dashboard" : "👉 Buka Dashboard Utama" }}',
-                'invoices.index': '{{ app()->getLocale() == "en" ? "👉 View Invoices List" : "👉 Lihat Daftar Invoice" }}',
-                'invoices.create': '{{ app()->getLocale() == "en" ? "👉 Create New Invoice" : "👉 Buat Invoice Baru" }}',
-                'clients.index': '{{ app()->getLocale() == "en" ? "👉 View Clients List" : "👉 Lihat Daftar Klien" }}',
-                'clients.create': '{{ app()->getLocale() == "en" ? "👉 Add New Client" : "👉 Tambah Klien Baru" }}',
-                'receipts.index': '{{ app()->getLocale() == "en" ? "👉 View Receipts List" : "👉 Lihat Daftar Kuitansi" }}',
-                'receipts.create': '{{ app()->getLocale() == "en" ? "👉 Create New Receipt" : "👉 Buat Kuitansi Baru" }}',
-                'settings.index': '{{ app()->getLocale() == "en" ? "👉 Open Settings" : "👉 Buka Pengaturan" }}',
-                'profile.edit': '{{ app()->getLocale() == "en" ? "👉 Edit My Profile" : "👉 Edit Profil Saya" }}',
-                'reports.index': '{{ app()->getLocale() == "en" ? "👉 Open Financial Reports" : "👉 Buka Laporan Keuangan" }}',
-                'chronos.index': '{{ app()->getLocale() == "en" ? "👉 Open Billing Calendar (Chronos)" : "👉 Buka Kalender Billing (Chronos)" }}'
-            },
-            renderMarkdown(text) {
-                if (typeof marked !== 'undefined') {
-                    return marked.parse(text);
-                }
-                return text.replace(/\n/g, '<br>');
-            },
-            sendSuggestion(suggestionText) {
-                this.input = suggestionText;
-                this.sendMessage();
-            },
-            newChat() {
-                this.messages = [
-                    { sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Hello! I am your Virtual Senior Financial Consultant & Business Analyst. Is there anything I can help you with regarding cash flow analysis, overdue clients, financial forecasts, or system navigation today?" : "Halo! Saya Senior Financial Consultant & Business Analyst Virtual Anda. Ada yang bisa saya bantu terkait analisis arus kas, klien overdue, prediksi keuangan, atau navigasi sistem hari ini?" }}' }
-                ];
-                this.currentSessionId = null;
-                this.input = '';
-                this.$nextTick(() => {
-                    if (typeof lucide !== 'undefined') lucide.createIcons();
-                });
-            },
-            loadSession(sessionId) {
-                if (this.editingSessionId) return; // Prevent loading while editing
-                this.loading = true;
-                this.currentSessionId = sessionId;
-                
-                fetch('/ai-assistant/session/' + sessionId)
-                    .then(res => {
-                        if (!res.ok) throw new Error('Failed to load session');
-                        return res.json();
-                    })
-                    .then(data => {
-                        this.loading = false;
-                        if (data.success) {
-                            this.messages = data.messages.length > 0 ? data.messages : [
-                                { sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Hello! I am your Virtual Senior Financial Consultant & Business Analyst. Is there anything I can help you with regarding financial analysis today?" : "Halo! Saya Senior Financial Consultant & Business Analyst Virtual Anda. Ada yang bisa saya bantu terkait analisis keuangan hari ini?" }}' }
-                            ];
-                            this.$nextTick(() => {
-                                this.scrollToBottom();
-                            });
-                        }
-                    })
-                    .catch(err => {
-                        this.loading = false;
-                        this.messages.push({ sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Sorry, failed to load chat history: " : "Maaf, gagal memuat riwayat obrolan: " }}' + err.message });
-                        this.$nextTick(() => this.scrollToBottom());
-                    });
-            },
-            sendMessage() {
-                if (!this.input.trim()) return;
-                const userMsg = this.input;
-                this.messages.push({ sender: 'user', text: userMsg });
-                this.input = '';
-                this.loading = true;
-                
-                this.$nextTick(() => {
-                    this.scrollToBottom();
-                });
-
-                fetch('{{ route('ai-assistant.chat') }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({ 
-                        message: userMsg,
-                        session_id: this.currentSessionId
-                    })
-                })
-                .then(res => {
-                    if (!res.ok) {
-                        return res.json().then(errData => {
-                            throw new Error(errData.error || 'Server error');
-                        });
-                    }
-                    return res.json();
-                })
-                .then(data => {
-                    this.loading = false;
-                    if (data.success) {
-                        this.processResponse(data.reply);
-                        
-                        const isNewSession = !this.currentSessionId;
-                        this.currentSessionId = data.session_id;
-                        
-                        if (isNewSession) {
-                            this.refreshSessionsList();
-                        }
-                    } else {
-                        this.messages.push({ sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Sorry, an error occurred while processing your request." : "Maaf, terjadi kesalahan saat memproses permintaan Anda." }}' });
-                    }
-                    this.$nextTick(() => {
-                        this.scrollToBottom();
-                    });
-                })
-                .catch(err => {
-                    this.loading = false;
-                    this.messages.push({ sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Sorry, failed to process. " : "Maaf, gagal memproses. " }}' + err.message });
-                    this.$nextTick(() => {
-                        this.scrollToBottom();
-                    });
-                });
-            },
-            processResponse(reply) {
-                let routeName = null;
-                let text = reply;
-                const navRegex = /\[NAVIGATE:\s*([a-zA-Z0-9_\.-]+)\]/;
-                const match = reply.match(navRegex);
-                if (match) {
-                    routeName = match[1].trim();
-                    text = reply.replace(navRegex, '').trim();
-                }
-                
-                const msg = { sender: 'ai', text: text };
-                if (routeName && this.routeMap[routeName]) {
-                    msg.navigateUrl = this.routeMap[routeName];
-                    msg.navigateLabel = this.routeLabels[routeName] || '{{ app()->getLocale() == "en" ? "👉 Open Page" : "👉 Buka Halaman" }}';
-                }
-                
-                this.messages.push(msg);
-            },
-            refreshSessionsList() {
-                fetch('{{ route('ai-assistant.sessions-list') }}')
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            this.sessions = data.sessions;
-                            this.$nextTick(() => {
-                                if (typeof lucide !== 'undefined') lucide.createIcons();
-                            });
-                        }
-                    })
-                    .catch(err => console.error('Gagal me-refresh list session:', err));
-            },
-            scrollToBottom() {
-                const container = this.$refs.chatContainer;
-                if (container) {
-                    container.scrollTop = container.scrollHeight;
-                }
-                if (typeof lucide !== 'undefined') {
-                    lucide.createIcons();
-                }
-            },
-            startRename(sess) {
-                this.editingSessionId = sess.session_id;
-                this.editingTitle = sess.title;
-                this.$nextTick(() => {
-                    const inputEl = document.querySelector('[x-ref=\"renameInput\"]');
-                    if (inputEl) inputEl.focus();
-                });
-            },
-            cancelRename() {
-                this.editingSessionId = null;
-                this.editingTitle = '';
-            },
-            saveRename(sessionId) {
-                if (!this.editingTitle.trim()) return;
-                const newTitle = this.editingTitle.trim();
-                
-                fetch('/ai-assistant/session/' + sessionId + '/rename', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({ title: newTitle })
-                })
-                .then(res => {
-                    if (!res.ok) throw new Error('Failed to rename');
-                    return res.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        const index = this.sessions.findIndex(s => s.session_id === sessionId);
-                        if (index !== -1) {
-                            this.sessions[index].title = newTitle;
-                        }
-                        this.cancelRename();
-                    }
-                })
-                .catch(err => {
-                    alert('Error: ' + err.message);
-                });
-            },
-            deleteSession(sessionId) {
-                if (!confirm('{{ app()->getLocale() == "en" ? "Are you sure you want to delete this chat session?" : "Apakah Anda yakin ingin menghapus sesi obrolan ini?" }}')) {
-                    return;
-                }
-                
-                fetch('/ai-assistant/session/' + sessionId, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    }
-                })
-                .then(res => {
-                    if (!res.ok) throw new Error('Failed to delete');
-                    return res.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        this.sessions = this.sessions.filter(s => s.session_id !== sessionId);
-                        if (this.currentSessionId === sessionId) {
-                            this.newChat();
-                        }
-                    }
-                })
-                .catch(err => {
-                    alert('Error: ' + err.message);
-                });
-            },
-            copyToClipboard(text, idx) {
-                navigator.clipboard.writeText(text).then(() => {
-                    this.copiedIndex = idx;
-                    setTimeout(() => {
-                        if (this.copiedIndex === idx) {
-                            this.copiedIndex = null;
-                        }
-                    }, 2000);
-                });
-            }
-        }"
+        x-data="aiChat()"
     >
         <!-- Sidebar: Chat History List -->
         <div class="w-full md:w-80 bg-white border-b md:border-b-0 md:border-r border-slate-200/80 flex flex-col justify-between shrink-0 h-1/3 md:h-full">
@@ -514,7 +256,7 @@
                         <template x-if="msg.sender === 'ai' && idx > 0">
                             <div class="flex items-center gap-3 mt-1.5 ml-3">
                                 <button @click="copyToClipboard(msg.text, idx)" 
-                                    class="inline-flex items-center gap-1.5 text-[10px] font-bold text-slate-400 hover:text-indigo-650 transition-colors uppercase tracking-wider group"
+                                    class="inline-flex items-center gap-1.5 text-[10px] font-bold text-slate-400 hover:text-indigo-655 transition-colors uppercase tracking-wider group"
                                 >
                                     <svg class="w-3.5 h-3.5 group-hover:scale-105 transition-transform" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5A3.375 3.375 0 006.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0015 2.25h-1.5a2.251 2.251 0 00-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 00-9-9z"></path>
@@ -568,4 +310,272 @@
             </form>
         </div>
     </div>
+
+    <!-- Move Javascript to proper script tag using Alpine.data -->
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('aiChat', () => ({
+                input: '',
+                messages: [],
+                loading: false,
+                currentSessionId: null,
+                sessions: @js($sessions),
+                editingSessionId: null,
+                editingTitle: '',
+                copiedIndex: null,
+                routeMap: {
+                    'dashboard': '{{ route('dashboard') }}',
+                    'invoices.index': '{{ route('invoices.index') }}',
+                    'invoices.create': '{{ route('invoices.create') }}',
+                    'clients.index': '{{ route('clients.index') }}',
+                    'clients.create': '{{ route('clients.create') }}',
+                    'receipts.index': '{{ route('receipts.index') }}',
+                    'receipts.create': '{{ route('receipts.create') }}',
+                    'settings.index': '{{ route('settings.index') }}',
+                    'profile.edit': '{{ route('profile.edit') }}',
+                    'reports.index': '{{ route('reports.index') }}',
+                    'chronos.index': '{{ route('chronos.index') }}'
+                },
+                routeLabels: {
+                    'dashboard': '{{ app()->getLocale() == "en" ? "👉 Open Main Dashboard" : "👉 Buka Dashboard Utama" }}',
+                    'invoices.index': '{{ app()->getLocale() == "en" ? "👉 View Invoices List" : "👉 Lihat Daftar Invoice" }}',
+                    'invoices.create': '{{ app()->getLocale() == "en" ? "👉 Create New Invoice" : "👉 Buat Invoice Baru" }}',
+                    'clients.index': '{{ app()->getLocale() == "en" ? "👉 View Clients List" : "👉 Lihat Daftar Klien" }}',
+                    'clients.create': '{{ app()->getLocale() == "en" ? "👉 Add New Client" : "👉 Tambah Klien Baru" }}',
+                    'receipts.index': '{{ app()->getLocale() == "en" ? "👉 View Receipts List" : "👉 Lihat Daftar Kuitansi" }}',
+                    'receipts.create': '{{ app()->getLocale() == "en" ? "👉 Create New Receipt" : "👉 Buat Kuitansi Baru" }}',
+                    'settings.index': '{{ app()->getLocale() == "en" ? "👉 Open Settings" : "👉 Buka Pengaturan" }}',
+                    'profile.edit': '{{ app()->getLocale() == "en" ? "👉 Edit My Profile" : "👉 Edit Profil Saya" }}',
+                    'reports.index': '{{ app()->getLocale() == "en" ? "👉 Open Financial Reports" : "👉 Buka Laporan Keuangan" }}',
+                    'chronos.index': '{{ app()->getLocale() == "en" ? "👉 Open Billing Calendar (Chronos)" : "👉 Buka Kalender Billing (Chronos)" }}'
+                },
+                init() {
+                    this.messages = [
+                        { sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Hello! I am your Virtual Senior Financial Consultant & Business Analyst. Is there anything I can help you with regarding cash flow analysis, overdue clients, financial forecasts, or system navigation today?" : "Halo! Saya Senior Financial Consultant & Business Analyst Virtual Anda. Ada yang bisa saya bantu terkait analisis arus kas, klien overdue, prediksi keuangan, atau navigasi sistem hari ini?" }}' }
+                    ];
+                },
+                renderMarkdown(text) {
+                    if (typeof marked !== 'undefined') {
+                        return marked.parse(text);
+                    }
+                    return text.replace(/\n/g, '<br>');
+                },
+                sendSuggestion(suggestionText) {
+                    this.input = suggestionText;
+                    this.sendMessage();
+                },
+                newChat() {
+                    this.messages = [
+                        { sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Hello! I am your Virtual Senior Financial Consultant & Business Analyst. Is there anything I can help you with regarding cash flow analysis, overdue clients, financial forecasts, or system navigation today?" : "Halo! Saya Senior Financial Consultant & Business Analyst Virtual Anda. Ada yang bisa saya bantu terkait analisis arus kas, klien overdue, prediksi keuangan, atau navigasi sistem hari ini?" }}' }
+                    ];
+                    this.currentSessionId = null;
+                    this.input = '';
+                    this.$nextTick(() => {
+                        if (typeof lucide !== 'undefined') lucide.createIcons();
+                    });
+                },
+                loadSession(sessionId) {
+                    if (this.editingSessionId) return;
+                    this.loading = true;
+                    this.currentSessionId = sessionId;
+                    
+                    fetch('/ai-assistant/session/' + sessionId)
+                        .then(res => {
+                            if (!res.ok) throw new Error('Failed to load session');
+                            return res.json();
+                        })
+                        .then(data => {
+                            this.loading = false;
+                            if (data.success) {
+                                this.messages = data.messages.length > 0 ? data.messages : [
+                                    { sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Hello! I am your Virtual Senior Financial Consultant & Business Analyst. Is there anything I can help you with regarding financial analysis today?" : "Halo! Saya Senior Financial Consultant & Business Analyst Virtual Anda. Ada yang bisa saya bantu terkait analisis keuangan hari ini?" }}' }
+                                ];
+                                this.$nextTick(() => {
+                                    this.scrollToBottom();
+                                });
+                            }
+                        })
+                        .catch(err => {
+                            this.loading = false;
+                            this.messages.push({ sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Sorry, failed to load chat history: " : "Maaf, gagal memuat riwayat obrolan: " }}' + err.message });
+                            this.$nextTick(() => this.scrollToBottom());
+                        });
+                },
+                sendMessage() {
+                    if (!this.input.trim()) return;
+                    const userMsg = this.input;
+                    this.messages.push({ sender: 'user', text: userMsg });
+                    this.input = '';
+                    this.loading = true;
+                    
+                    this.$nextTick(() => {
+                        this.scrollToBottom();
+                    });
+
+                    fetch('{{ route('ai-assistant.chat') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({ 
+                            message: userMsg,
+                            session_id: this.currentSessionId
+                        })
+                    })
+                    .then(res => {
+                        if (!res.ok) {
+                            return res.json().then(errData => {
+                                throw new Error(errData.error || 'Server error');
+                            });
+                        }
+                        return res.json();
+                    })
+                    .then(data => {
+                        this.loading = false;
+                        if (data.success) {
+                            this.processResponse(data.reply);
+                            
+                            const isNewSession = !this.currentSessionId;
+                            this.currentSessionId = data.session_id;
+                            
+                            if (isNewSession) {
+                                this.refreshSessionsList();
+                            }
+                        } else {
+                            this.messages.push({ sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Sorry, an error occurred while processing your request." : "Maaf, terjadi kesalahan saat memproses permintaan Anda." }}' });
+                        }
+                        this.$nextTick(() => {
+                            this.scrollToBottom();
+                        });
+                    })
+                    .catch(err => {
+                        this.loading = false;
+                        this.messages.push({ sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Sorry, failed to process. " : "Maaf, gagal memproses. " }}' + err.message });
+                        this.$nextTick(() => {
+                            this.scrollToBottom();
+                        });
+                    });
+                },
+                processResponse(reply) {
+                    let routeName = null;
+                    let text = reply;
+                    const navRegex = /\[NAVIGATE:\s*([a-zA-Z0-9_\.-]+)\]/;
+                    const match = reply.match(navRegex);
+                    if (match) {
+                        routeName = match[1].trim();
+                        text = reply.replace(navRegex, '').trim();
+                    }
+                    
+                    const msg = { sender: 'ai', text: text };
+                    if (routeName && this.routeMap[routeName]) {
+                        msg.navigateUrl = this.routeMap[routeName];
+                        msg.navigateLabel = this.routeLabels[routeName] || '{{ app()->getLocale() == "en" ? "👉 Open Page" : "👉 Buka Halaman" }}';
+                    }
+                    
+                    this.messages.push(msg);
+                },
+                refreshSessionsList() {
+                    fetch('{{ route('ai-assistant.sessions-list') }}')
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                this.sessions = data.sessions;
+                                this.$nextTick(() => {
+                                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                                });
+                            }
+                        })
+                        .catch(err => console.error('Gagal me-refresh list session:', err));
+                },
+                scrollToBottom() {
+                    const container = this.$refs.chatContainer;
+                    if (container) {
+                        container.scrollTop = container.scrollHeight;
+                    }
+                    if (typeof lucide !== 'undefined') {
+                        lucide.createIcons();
+                    }
+                },
+                startRename(sess) {
+                    this.editingSessionId = sess.session_id;
+                    this.editingTitle = sess.title;
+                    this.$nextTick(() => {
+                        const inputEl = document.querySelector('[x-ref=renameInput]');
+                        if (inputEl) inputEl.focus();
+                    });
+                },
+                cancelRename() {
+                    this.editingSessionId = null;
+                    this.editingTitle = '';
+                },
+                saveRename(sessionId) {
+                    if (!this.editingTitle.trim()) return;
+                    const newTitle = this.editingTitle.trim();
+                    
+                    fetch('/ai-assistant/session/' + sessionId + '/rename', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({ title: newTitle })
+                    })
+                    .then(res => {
+                        if (!res.ok) throw new Error('Failed to rename');
+                        return res.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            const index = this.sessions.findIndex(s => s.session_id === sessionId);
+                            if (index !== -1) {
+                                this.sessions[index].title = newTitle;
+                            }
+                            this.cancelRename();
+                        }
+                    })
+                    .catch(err => {
+                        alert('Error: ' + err.message);
+                    });
+                },
+                deleteSession(sessionId) {
+                    if (!confirm('{{ app()->getLocale() == "en" ? "Are you sure you want to delete this chat session?" : "Apakah Anda yakin ingin menghapus sesi obrolan ini?" }}')) {
+                        return;
+                    }
+                    
+                    fetch('/ai-assistant/session/' + sessionId, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    })
+                    .then(res => {
+                        if (!res.ok) throw new Error('Failed to delete');
+                        return res.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            this.sessions = this.sessions.filter(s => s.session_id !== sessionId);
+                            if (this.currentSessionId === sessionId) {
+                                this.newChat();
+                            }
+                        }
+                    })
+                    .catch(err => {
+                        alert('Error: ' + err.message);
+                    });
+                },
+                copyToClipboard(text, idx) {
+                    navigator.clipboard.writeText(text).then(() => {
+                        this.copiedIndex = idx;
+                        setTimeout(() => {
+                            if (this.copiedIndex === idx) {
+                                this.copiedIndex = null;
+                            }
+                        }, 2000);
+                    });
+                }
+            }));
+        });
+    </script>
 </x-app-layout>

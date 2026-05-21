@@ -23,6 +23,16 @@
         .chat-scroll::-webkit-scrollbar-track { background: transparent; }
         .chat-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .chat-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* CSS Audio Wave Keyframes & Animations */
+        @keyframes audioWave {
+            0%, 100% { transform: scaleY(0.3); }
+            50% { transform: scaleY(1); }
+        }
+        .animate-audio-wave-1 { animation: audioWave 0.8s ease-in-out infinite; transform-origin: bottom; }
+        .animate-audio-wave-2 { animation: audioWave 0.5s ease-in-out infinite; transform-origin: bottom; animation-delay: 0.15s; }
+        .animate-audio-wave-3 { animation: audioWave 0.7s ease-in-out infinite; transform-origin: bottom; animation-delay: 0.3s; }
+        .animate-audio-wave-4 { animation: audioWave 0.6s ease-in-out infinite; transform-origin: bottom; animation-delay: 0.45s; }
     </style>
 
     <div class="bg-slate-50/50 rounded-[2.5rem] border border-slate-200/80 shadow-sm overflow-hidden flex flex-col md:flex-row h-[calc(100vh-12rem)] min-h-[600px] font-sans"
@@ -295,6 +305,33 @@
                 </div>
             </div>
 
+            <!-- Speech Wave Animation Indicator -->
+            <div x-show="isListening" 
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 translate-y-2"
+                x-transition:enter-end="opacity-100 translate-y-0"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100 translate-y-0"
+                x-transition:leave-end="opacity-0 translate-y-2"
+                class="px-8 py-3 bg-rose-50 border-t border-rose-100 flex items-center justify-between shrink-0"
+                style="display: none;"
+            >
+                <div class="flex items-center gap-2.5 text-rose-700 text-[10px] font-bold uppercase tracking-wider">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+                    </span>
+                    <span>{{ app()->getLocale() == 'en' ? 'Listening to voice...' : 'Mendengarkan suara...' }}</span>
+                </div>
+                <!-- Audio Wave Bars -->
+                <div class="flex items-center gap-0.5 h-4">
+                    <span class="w-0.5 bg-rose-500 rounded-full animate-audio-wave-1 h-3"></span>
+                    <span class="w-0.5 bg-rose-500 rounded-full animate-audio-wave-2 h-4"></span>
+                    <span class="w-0.5 bg-rose-500 rounded-full animate-audio-wave-3 h-2"></span>
+                    <span class="w-0.5 bg-rose-500 rounded-full animate-audio-wave-4 h-3.5"></span>
+                </div>
+            </div>
+
             <!-- Input Area -->
             <form @submit.prevent="sendMessage()" class="p-6 bg-white border-t border-slate-200 flex items-center gap-4 shrink-0">
                 <input x-model="input" 
@@ -303,6 +340,19 @@
                     class="flex-1 px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500/80 transition-all text-slate-800 font-medium" 
                     :disabled="loading"
                     autofocus>
+                
+                <!-- Mic Button -->
+                <button type="button" 
+                    @click="toggleSpeech()"
+                    class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 transition-all active:scale-95 border"
+                    :class="isListening 
+                        ? 'bg-rose-500 hover:bg-rose-600 text-white border-rose-600 animate-pulse shadow-md shadow-rose-500/20' 
+                        : 'bg-slate-50 hover:bg-slate-100 text-slate-500 border-slate-200 hover:border-slate-300'"
+                    :disabled="loading"
+                    title="{{ app()->getLocale() == 'en' ? 'Voice input (Speech to Text)' : 'Input suara (Speech to Text)' }}">
+                    <i data-lucide="mic" class="w-5 h-5"></i>
+                </button>
+
                 <button type="submit" 
                     class="w-12 h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl flex items-center justify-center shrink-0 transition-all active:scale-95 disabled:opacity-50 shadow-md shadow-indigo-600/10" 
                     :disabled="loading">
@@ -324,6 +374,8 @@
                 editingSessionId: null,
                 editingTitle: '',
                 copiedIndex: null,
+                isListening: false,
+                recognition: null,
                 routeMap: {
                     'dashboard': '{{ route('dashboard') }}',
                     'invoices.index': '{{ route('invoices.index') }}',
@@ -354,6 +406,60 @@
                     this.messages = [
                         { sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Hello! I am your Virtual Senior Financial Consultant & Business Analyst. Is there anything I can help you with regarding cash flow analysis, overdue clients, financial forecasts, or system navigation today?" : "Halo! Saya Senior Financial Consultant & Business Analyst Virtual Anda. Ada yang bisa saya bantu terkait analisis arus kas, klien overdue, prediksi keuangan, atau navigasi sistem hari ini?" }}' }
                     ];
+                    this.initSpeech();
+                },
+                initSpeech() {
+                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    if (!SpeechRecognition) {
+                        console.warn('Speech Recognition API not supported in this browser.');
+                        return;
+                    }
+                    this.recognition = new SpeechRecognition();
+                    this.recognition.continuous = false;
+                    this.recognition.interimResults = false;
+                    this.recognition.lang = '{{ app()->getLocale() == "en" ? "en-US" : "id-ID" }}';
+
+                    this.recognition.onstart = () => {
+                        this.isListening = true;
+                    };
+
+                    this.recognition.onresult = (event) => {
+                        const transcript = event.results[0][0].transcript;
+                        if (transcript) {
+                            if (this.input.trim()) {
+                                this.input += ' ' + transcript;
+                            } else {
+                                this.input = transcript;
+                            }
+                        }
+                    };
+
+                    this.recognition.onerror = (event) => {
+                        console.error('Speech recognition error:', event.error);
+                        this.isListening = false;
+                    };
+
+                    this.recognition.onend = () => {
+                        this.isListening = false;
+                    };
+                },
+                toggleSpeech() {
+                    if (!this.recognition) {
+                        this.initSpeech();
+                    }
+                    if (!this.recognition) {
+                        alert('Speech Recognition is not supported by your browser.');
+                        return;
+                    }
+                    if (this.isListening) {
+                        this.recognition.stop();
+                    } else {
+                        try {
+                            this.recognition.start();
+                        } catch (err) {
+                            console.error(err);
+                        }
+                    }
                 },
                 renderMarkdown(text) {
                     if (typeof marked !== 'undefined') {

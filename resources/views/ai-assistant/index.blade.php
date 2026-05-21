@@ -45,7 +45,7 @@
                 </div>
 
                 <!-- History Items -->
-                <div class="flex-1 overflow-y-auto p-4 space-y-2.5 chat-scroll">
+                <div x-ref="historyContainer" class="flex-1 overflow-y-auto p-4 space-y-2.5 chat-scroll">
                     <template x-for="sess in sessions" :key="sess.session_id">
                         <div class="relative group w-full flex items-center justify-between rounded-2xl border transition-all"
                             :class="currentSessionId === sess.session_id 
@@ -372,7 +372,13 @@
                     this.currentSessionId = null;
                     this.input = '';
                     this.$nextTick(() => {
-                        if (typeof lucide !== 'undefined') lucide.createIcons();
+                        const container = this.$refs.chatContainer;
+                        if (typeof lucide !== 'undefined' && container) {
+                            lucide.createIcons({
+                                icons: lucide.icons,
+                                root: container
+                            });
+                        }
                     });
                 },
                 loadSession(sessionId) {
@@ -483,7 +489,13 @@
                             if (data.success) {
                                 this.sessions = data.sessions;
                                 this.$nextTick(() => {
-                                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                                    if (typeof lucide !== 'undefined') {
+                                        const hist = this.$refs.historyContainer;
+                                        lucide.createIcons({
+                                            icons: lucide.icons,
+                                            root: hist || document
+                                        });
+                                    }
                                 });
                             }
                         })
@@ -493,9 +505,12 @@
                     const container = this.$refs.chatContainer;
                     if (container) {
                         container.scrollTop = container.scrollHeight;
-                    }
-                    if (typeof lucide !== 'undefined') {
-                        lucide.createIcons();
+                        if (typeof lucide !== 'undefined') {
+                            lucide.createIcons({
+                                icons: lucide.icons,
+                                root: container
+                            });
+                        }
                     }
                 },
                 startRename(sess) {
@@ -577,6 +592,28 @@
                     });
                 }
             }));
+        });
+    </script>
+
+    <script>
+        document.addEventListener('livewire:navigated', () => {
+            const chatContainer = document.querySelector('[x-ref="chatContainer"]');
+            const chatInput = document.querySelector('form input[type="text"]');
+            if (chatContainer) {
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+            if (chatInput) {
+                chatInput.focus();
+            }
+            if (typeof lucide !== 'undefined') {
+                const container = document.querySelector('[x-data="aiChat()"]');
+                if (container) {
+                    lucide.createIcons({
+                        icons: lucide.icons,
+                        root: container
+                    });
+                }
+            }
         });
     </script>
     </div>

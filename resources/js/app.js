@@ -21,6 +21,23 @@ function initGlobalIcons() {
     });
 }
 
+function initIconsInElement(el) {
+    if (!el) return;
+    
+    // Check if the element itself has data-lucide or contains descendants with data-lucide
+    const hasIcons = el.hasAttribute('data-lucide') || el.querySelector('[data-lucide]');
+    if (!hasIcons) return;
+
+    // If the mutated element itself is the icon element, use its parent as the root.
+    // Otherwise, use the mutated element itself as the root to optimize/scope.
+    const rootEl = el.hasAttribute('data-lucide') ? (el.parentElement || el) : el;
+    
+    createIcons({
+        icons,
+        root: rootEl
+    });
+}
+
 // Initialize on DOM load and Livewire navigation
 document.addEventListener('DOMContentLoaded', initGlobalIcons);
 document.addEventListener('livewire:navigated', initGlobalIcons);
@@ -38,7 +55,7 @@ if (window.Livewire) {
 }
 
 function registerLivewireHooks() {
-    Livewire.hook('morph.updated', () => {
-        initGlobalIcons();
+    Livewire.hook('morph.updated', ({ el }) => {
+        initIconsInElement(el);
     });
 }

@@ -12,23 +12,7 @@ class AiChatController extends Controller
     {
         abort_if(!auth()->user()->hasFullAccess(), 403, 'Unauthorized action.');
 
-        $sessions = \App\Models\AiChatHistory::where('user_id', auth()->id())
-            ->select('session_id', \DB::raw('MAX(created_at) as latest_created_at'))
-            ->groupBy('session_id')
-            ->orderBy('latest_created_at', 'desc')
-            ->get()
-            ->map(function ($chat) {
-                $firstChat = \App\Models\AiChatHistory::where('session_id', $chat->session_id)
-                    ->orderBy('created_at', 'asc')
-                    ->first();
-                
-                return [
-                    'session_id' => $chat->session_id,
-                    'title' => ($firstChat && $firstChat->title) ? $firstChat->title : ($firstChat ? \Str::limit($firstChat->message, 35) : 'Obrolan Baru'),
-                    'created_at' => $chat->latest_created_at,
-                    'date_formatted' => Carbon::parse($chat->latest_created_at)->diffForHumans()
-                ];
-            });
+        $sessions = $this->getOptimizedSessions();
 
         return view('ai-assistant.index', compact('sessions'));
     }
@@ -352,23 +336,7 @@ Strictly match the user's current application language interface. Since the acti
     {
         abort_if(!auth()->user()->hasFullAccess(), 403, 'Unauthorized action.');
 
-        $sessions = \App\Models\AiChatHistory::where('user_id', auth()->id())
-            ->select('session_id', \DB::raw('MAX(created_at) as latest_created_at'))
-            ->groupBy('session_id')
-            ->orderBy('latest_created_at', 'desc')
-            ->get()
-            ->map(function ($chat) {
-                $firstChat = \App\Models\AiChatHistory::where('session_id', $chat->session_id)
-                    ->orderBy('created_at', 'asc')
-                    ->first();
-                
-                return [
-                    'session_id' => $chat->session_id,
-                    'title' => ($firstChat && $firstChat->title) ? $firstChat->title : ($firstChat ? \Str::limit($firstChat->message, 35) : 'Obrolan Baru'),
-                    'created_at' => $chat->latest_created_at,
-                    'date_formatted' => Carbon::parse($chat->latest_created_at)->diffForHumans()
-                ];
-            });
+        $sessions = $this->getOptimizedSessions();
 
         return response()->json([
             'success' => true,
@@ -549,5 +517,40 @@ Jika perintah tersebut berupa keinginan melihat data atau bernavigasi yang tidak
         return response()->json([
             'success' => true
         ]);
+    }
+
+    private function getOptimizedSessions()
+    {
+        $sessions = \App\Models\AiChatHistory::where('user_id', auth()->id())
+            ->select('session_id', \DB::raw('MAX(created_at) as latest_created_at'))
+            ->groupBy('session_id')
+            ->orderBy('latest_created_at', 'desc')
+            ->get();
+
+        if ($sessions->isEmpty()) {
+            return collect();
+        }
+
+        $sessionIds = $sessions->pluck('session_id');
+
+        $firstChatIds = \App\Models\AiChatHistory::whereIn('session_id', $sessionIds)
+            ->select(\DB::raw('MIN(id) as first_id'))
+            ->groupBy('session_id')
+            ->pluck('first_id');
+
+        $firstChats = \App\Models\AiChatHistory::whereIn('id', $firstChatIds)
+            ->get()
+            ->keyBy('session_id');
+
+        return $sessions->map(function ($chat) use ($firstChats) {
+            $firstChat = $firstChats->get($chat->session_id);
+            
+            return [
+                'session_id' => $chat->session_id,
+                'title' => ($firstChat && $firstChat->title) ? $firstChat->title : ($firstChat ? \Str::limit($firstChat->message, 35) : 'Obrolan Baru'),
+                'created_at' => $chat->latest_created_at,
+                'date_formatted' => Carbon::parse($chat->latest_created_at)->diffForHumans()
+            ];
+        });
     }
 }

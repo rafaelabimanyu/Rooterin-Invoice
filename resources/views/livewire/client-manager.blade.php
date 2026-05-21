@@ -30,18 +30,17 @@
     </div>
 
     <!-- Results Display -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @forelse($clients as $client)
-            <div wire:key="client-{{ $client->id }}" class="glass-card group hover:-translate-y-1.5 hover:shadow-xl hover:border-indigo-500/20 hover:ring-4 hover:ring-indigo-500/5 transition-all duration-300 relative overflow-hidden border-transparent">
-                <div class="p-5 sm:p-6">
-
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="flex items-center gap-3 sm:gap-4">
-                            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-black text-xs sm:text-sm shadow-inner group-hover:bg-slate-900 group-hover:text-white transition-colors duration-500">
+            <div wire:key="client-{{ $client->id }}" class="glass-card group hover:-translate-y-1.5 hover:shadow-xl hover:border-indigo-500/20 hover:ring-4 hover:ring-indigo-500/5 transition-all duration-300 relative overflow-hidden border-transparent flex flex-col justify-between">
+                <div class="p-6 space-y-4">
+                    <div class="flex items-start justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-black text-sm shadow-inner group-hover:bg-slate-900 group-hover:text-white transition-colors duration-500">
                                 {{ $this->getInitial($client->nama_client) }}
                             </div>
                             <div>
-                                <h3 class="text-sm font-black text-slate-900 leading-tight truncate max-w-[120px] sm:max-w-[140px]">{{ $client->nama_client }}</h3>
+                                <h3 class="text-sm font-black text-slate-800 leading-tight truncate max-w-[150px]">{{ $client->nama_client }}</h3>
                                 <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">{{ $client->kode_client }}</p>
                             </div>
                         </div>
@@ -49,7 +48,7 @@
                     </div>
 
                     <!-- Client Type & Industry Sector Badges -->
-                    <div class="flex flex-wrap gap-1.5 mb-4">
+                    <div class="flex flex-wrap gap-1.5">
                         @if($client->client_type)
                             <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-wider bg-indigo-50/60 text-indigo-700 border border-indigo-100/50">
                                 <i data-lucide="{{ $client->type_icon }}" class="w-3 h-3"></i>
@@ -64,40 +63,42 @@
                         @endif
                     </div>
 
-                    <div class="space-y-2 mb-4">
+                    <div class="space-y-2.5 pt-2">
                         <div class="flex items-center gap-3 text-slate-500">
-                            <i data-lucide="building" class="w-3.5 h-3.5"></i>
+                            <i data-lucide="building" class="w-3.5 h-3.5 text-slate-400"></i>
                             <span class="text-[12px] font-bold truncate">{{ $client->nama_perusahaan ?? (app()->getLocale() == 'en' ? 'Personal Account' : 'Akun Pribadi') }}</span>
                         </div>
-                        <div class="flex items-center gap-3 text-slate-500">
-                            <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
+                        <div class="flex items-center gap-3 text-slate-400">
+                            <i data-lucide="map-pin" class="w-3.5 h-3.5 text-slate-400"></i>
                             <span class="text-[12px] font-bold truncate">{{ $client->kota ? $client->kota . ', ' . $client->provinsi : '-' }}</span>
                         </div>
                     </div>
+                </div>
 
-                    <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
-                        <div class="flex items-center gap-1 sm:gap-2">
-                            <button wire:click="openView({{ $client->id }})" class="p-2 text-slate-400 hover:text-indigo-600 transition-colors">
-                                <i data-lucide="eye" class="w-4 h-4"></i>
-                            </button>
-                            <button wire:click="openEdit({{ $client->id }})" class="p-2 text-slate-400 hover:text-indigo-600 transition-colors">
-                                <i data-lucide="edit-3" class="w-4 h-4"></i>
-                            </button>
-                        </div>
-                        <div class="flex items-center gap-1.5 sm:translate-x-10 sm:group-hover:translate-x-0 transition-all duration-500 sm:opacity-0 sm:group-hover:opacity-100 opacity-100">
-                            @if($client->email)
-                                <a href="mailto:{{ $client->email }}" class="p-2 bg-slate-50 text-slate-600 rounded-lg hover:bg-slate-900 hover:text-white transition-all shadow-sm">
-                                    <i data-lucide="mail" class="w-3.5 h-3.5"></i>
-                                </a>
-                            @endif
-                            @if($client->no_hp)
-                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $client->no_hp) }}" target="_blank" class="p-2 bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-600 hover:text-white transition-all shadow-sm">
-                                    <i data-lucide="phone" class="w-3.5 h-3.5"></i>
-                                </a>
-                            @endif
-                        </div>
+                <!-- Footer Minimal Action Bar -->
+                <div class="px-5 py-3.5 bg-slate-50/60 border-t border-slate-100 flex items-center justify-between">
+                    <div class="flex items-center gap-1">
+                        <button wire:click="openView({{ $client->id }})" class="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50/50 transition-colors rounded-lg">
+                            <i data-lucide="eye" class="w-4 h-4"></i>
+                        </button>
+                        <button wire:click="openEdit({{ $client->id }})" class="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50/50 transition-colors rounded-lg">
+                            <i data-lucide="edit-3" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        @if($client->email)
+                            <a href="mailto:{{ $client->email }}" class="p-1.5 bg-white text-slate-600 border border-slate-200/60 rounded-lg hover:bg-slate-900 hover:text-white transition-all shadow-sm">
+                                <i data-lucide="mail" class="w-3.5 h-3.5"></i>
+                            </a>
+                        @endif
+                        @if($client->no_hp)
+                            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $client->no_hp) }}" target="_blank" class="p-1.5 bg-emerald-50 text-emerald-600 border border-emerald-100/50 rounded-lg hover:bg-emerald-600 hover:text-white transition-all shadow-sm">
+                                <i data-lucide="phone" class="w-3.5 h-3.5"></i>
+                            </a>
+                        @endif
                     </div>
                 </div>
+
                 <!-- Progress Line Mock -->
                 <div class="absolute bottom-0 left-0 w-full h-1 bg-slate-100">
                     <div class="h-full bg-indigo-500/20 group-hover:bg-indigo-500 transition-all duration-700" style="width: 100%"></div>
@@ -109,6 +110,7 @@
             </div>
         @endforelse
     </div>
+
 
     <!-- Pagination -->
     <div class="mt-10">

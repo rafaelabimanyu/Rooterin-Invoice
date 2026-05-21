@@ -393,6 +393,151 @@ Strictly match the user's current application language interface. Since the acti
         ]);
     }
 
+    public function handleVoiceCommand(Request $request)
+    {
+        $request->validate([
+            'command' => 'required|string|max:500',
+        ]);
+
+        $command = trim($request->input('command'));
+        $commandLower = strtolower($command);
+
+        // 1. Navigation intents
+        if (str_contains($commandLower, 'kalender') || str_contains($commandLower, 'chronos')) {
+            return response()->json([
+                'success' => true,
+                'redirect' => route('chronos.index'),
+                'message' => 'Mengalihkan ke halaman Kalender Chronos...'
+            ]);
+        }
+        
+        if (str_contains($commandLower, 'buka dashboard') || str_contains($commandLower, 'halaman dashboard') || $commandLower === 'dashboard') {
+            return response()->json([
+                'success' => true,
+                'redirect' => route('dashboard'),
+                'message' => 'Mengalihkan ke Dashboard Utama...'
+            ]);
+        }
+
+        if (str_contains($commandLower, 'buka halaman invoice') || str_contains($commandLower, 'buka invoice') || str_contains($commandLower, 'daftar invoice')) {
+            return response()->json([
+                'success' => true,
+                'redirect' => route('invoices.index'),
+                'message' => 'Mengalihkan ke Daftar Invoice...'
+            ]);
+        }
+
+        if (str_contains($commandLower, 'buka halaman klien') || str_contains($commandLower, 'buka klien') || str_contains($commandLower, 'daftar klien')) {
+            return response()->json([
+                'success' => true,
+                'redirect' => route('clients.index'),
+                'message' => 'Mengalihkan ke Daftar Klien...'
+            ]);
+        }
+
+        if (str_contains($commandLower, 'buka halaman kuitansi') || str_contains($commandLower, 'buka kuitansi') || str_contains($commandLower, 'daftar kuitansi') || str_contains($commandLower, 'receipt')) {
+            return response()->json([
+                'success' => true,
+                'redirect' => route('receipts.index'),
+                'message' => 'Mengalihkan ke Daftar Kuitansi...'
+            ]);
+        }
+
+        if (str_contains($commandLower, 'buka pengaturan') || str_contains($commandLower, 'buka setting') || str_contains($commandLower, 'halaman settings')) {
+            return response()->json([
+                'success' => true,
+                'redirect' => route('settings.index'),
+                'message' => 'Mengalihkan ke Pengaturan Sistem...'
+            ]);
+        }
+
+        // 2. Query Invoice Terbesar yang Belum Dibayar
+        if (str_contains($commandLower, 'invoice terbesar') || str_contains($commandLower, 'tagihan terbesar')) {
+            $largest = \App\Models\Invoice::with('client')
+                ->whereIn('status', ['sent', 'pending', 'dp'])
+                ->orderBy('total', 'desc')
+                ->first();
+
+            if ($largest) {
+                $clientName = $largest->client->nama_client;
+                $company = $largest->client->nama_perusahaan ? " ({$largest->client->nama_perusahaan})" : '';
+                $amount = 'Rp ' . number_format($largest->total, 0, ',', '.');
+                $number = $largest->invoice_number;
+                $dueDate = $largest->due_date ? $largest->due_date->format('d M Y') : '-';
+
+                return response()->json([
+                    'success' => true,
+                    'title' => 'Invoice Terbesar Belum Dibayar',
+                    'message' => "Invoice terbesar yang belum dibayar adalah **{$number}** atas nama **{$clientName}{$company}** sebesar **{$amount}** (Jatuh tempo: {$dueDate})."
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'title' => 'Invoice Terbesar Belum Dibayar',
+                'message' => 'Luar biasa! Tidak ada tagihan tertunggak (belum dibayar) yang terdaftar di sistem saat ini.'
+            ]);
+        }
+
+        // 3. Query Total Tunggakan Aktif
+        if (str_contains($commandLower, 'total tunggakan') || str_contains($commandLower, 'tunggakan aktif') || str_contains($commandLower, 'tunggakan minggu ini') || str_contains($commandLower, 'jumlah tunggakan')) {
+            $totalArrears = \App\Models\Invoice::whereIn('status', ['sent', 'pending', 'dp'])->sum('total');
+            $formatted = 'Rp ' . number_format($totalArrears, 0, ',', '.');
+            $count = \App\Models\Invoice::whereIn('status', ['sent', 'pending', 'dp'])->count();
+
+            return response()->json([
+                'success' => true,
+                'title' => 'Total Tunggakan Aktif',
+                'message' => "Total tunggakan aktif saat ini adalah **{$formatted}** dari total **{$count} invoice** yang belum diselesaikan."
+            ]);
+        }
+
+        // 4. Default AI or General Fallback
+        try {
+            $apiKey = env('GEMINI_API_KEY') ?: config('gemini.api_key');
+            if (empty($apiKey)) {
+                throw new \Exception("Key empty");
+            }
+
+            $prompt = "Kamu adalah sistem CFO Suara (Voice Command Processing) untuk Rooterin-Invoice.
+Proses teks suara berikut dari user: \"{$command}\".
+Berikan respons suara singkat, taktis, dan informatif (maksimal 2-3 kalimat) dalam Bahasa Indonesia.
+Jika perintah tersebut berupa keinginan melihat data atau bernavigasi yang tidak terdeteksi secara otomatis, sarankan menu yang tepat.";
+
+            $response = \Illuminate\Support\Facades\Http::withHeaders([
+                'Content-Type' => 'application/json',
+            ])->post('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' . $apiKey, [
+                'contents' => [
+                    [
+                        'parts' => [
+                            ['text' => $prompt]
+                        ]
+                    ]
+                ]
+            ]);
+
+            if ($response->successful()) {
+                $resData = $response->json();
+                $reply = $resData['candidates'][0]['content']['parts'][0]['text'] ?? null;
+                if (!empty($reply)) {
+                    return response()->json([
+                        'success' => true,
+                        'title' => 'CFO Suara Respon',
+                        'message' => trim($reply)
+                    ]);
+                }
+            }
+        } catch (\Throwable $e) {
+            // Ignore & drop to local fallback
+        }
+
+        return response()->json([
+            'success' => true,
+            'title' => 'Perintah Suara Diterima',
+            'message' => "Saya mendengar: \"{$command}\". Maaf, perintah spesifik ini belum dikonfigurasi. Anda dapat mencoba perintah seperti \"Buka halaman kalender\" atau \"Berapa total tunggakan aktif minggu ini?\"."
+        ]);
+    }
+
     public function deleteSession($sessionId)
     {
         abort_if(!auth()->user()->hasFullAccess(), 403, 'Unauthorized action.');

@@ -77,6 +77,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/chronos', [ChronosController::class, 'index'])->name('chronos.index');
         Route::get('/api/chronos/events', [ChronosController::class, 'events'])->name('chronos.events');
         Route::post('/chronos/update-date/{invoice}', [ChronosController::class, 'updateDate'])->name('chronos.update');
+
+        // AI Voice Command Intent Router
+        Route::post('ai-assistant/voice-command', [AiChatController::class, 'handleVoiceCommand'])->name('ai-assistant.voice-command');
     });
 
     // Elevated Roles (Owner, Admin)

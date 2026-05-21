@@ -140,6 +140,15 @@
                 opacity: 0;
             }
         }
+
+        /* Hide scrollbar utility */
+        .scrollbar-none::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-none {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
     @endpush
 

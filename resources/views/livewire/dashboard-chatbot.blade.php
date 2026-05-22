@@ -49,8 +49,8 @@
         class="chatbot-trigger-btn w-14 h-14 bg-gradient-to-tr from-indigo-600 via-indigo-700 to-violet-800 text-white rounded-full flex items-center justify-center border-2 border-white shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 group focus:outline-none"
     >
         <span class="relative flex items-center justify-center">
-            <!-- Message square icon when closed -->
-            <i x-show="!open" data-lucide="message-square" class="w-6 h-6 transition-transform group-hover:rotate-6"></i>
+            <!-- Bot icon when closed -->
+            <i x-show="!open" data-lucide="bot" class="w-6 h-6 transition-transform group-hover:rotate-6"></i>
             <!-- Close icon when open -->
             <i x-show="open" data-lucide="x" class="w-6 h-6 transition-transform group-hover:scale-90" style="display: none;"></i>
         </span>
@@ -70,14 +70,14 @@
         style="display: none;"
     >
         <!-- Header -->
-        <div class="px-6 py-4.5 bg-slate-950/40 text-white flex items-center justify-between border-b border-slate-800/50">
+        <div class="px-6 py-5 bg-slate-950/40 text-white flex items-center justify-between border-b border-slate-800/50">
             <div class="flex items-center gap-3">
                 <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 to-violet-650 flex items-center justify-center text-white shadow-md border border-indigo-400/20">
                     <i data-lucide="bot" class="w-5 h-5"></i>
                 </div>
                 <div>
                     <h4 class="text-xs md:text-sm font-black font-jakarta leading-none uppercase tracking-wide">Rooterin AI Assistant</h4>
-                    <div class="flex items-center gap-1.5 mt-1.5">
+                    <div class="flex items-center gap-1.5 mt-2">
                         <span class="relative flex h-2 w-2">
                             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                             <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>

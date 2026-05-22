@@ -377,9 +377,9 @@
             @endif
         </div>
     </div>
+    </div>
 
     @if(auth()->user()->hasFullAccess())
         <livewire:dashboard-chatbot />
     @endif
-    </div>
 </x-app-layout>

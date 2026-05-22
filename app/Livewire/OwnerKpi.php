@@ -9,14 +9,14 @@ use App\Models\Client;
 use Carbon\Carbon;
 class OwnerKpi extends Component
 {
+    public $minimal = false;
     public $activeCardType = null;
     public $activeId = null;
 
     public function openModal($cardType, $id = null)
     {
         // Reset component state properties to prevent stale state issues
-        $this->activeCardType = null;
-        $this->activeId = null;
+        $this->reset(['activeCardType', 'activeId']);
 
         // 1. Dispatch immediate loading state to the slide-over
         $this->dispatch('slide-over-loading-start');
@@ -45,6 +45,34 @@ class OwnerKpi extends Component
         $lastMonth = $now->copy()->subMonth()->startOfMonth();
 
         switch ($cardType) {
+            case 'total-revenue':
+                $totalRevenue = Invoice::where('status', 'paid')->sum('total');
+                $paidInvoices = Invoice::with('client')
+                    ->where('status', 'paid')
+                    ->orderByDesc('updated_at')
+                    ->take(10)
+                    ->get();
+                return compact('totalRevenue', 'paidInvoices');
+
+            case 'collection-rate':
+                $totalInvoicesCount = Invoice::count();
+                $paidInvoicesCount = Invoice::where('status', 'paid')->count();
+                $collectionRate = $totalInvoicesCount > 0 ? ($paidInvoicesCount / $totalInvoicesCount) * 100 : 0;
+                
+                $recentPaidInvoices = Invoice::with('client')
+                    ->where('status', 'paid')
+                    ->orderByDesc('updated_at')
+                    ->take(5)
+                    ->get();
+                    
+                $recentUnpaidInvoices = Invoice::with('client')
+                    ->where('status', '!=', 'paid')
+                    ->orderByDesc('due_date')
+                    ->take(5)
+                    ->get();
+                
+                return compact('totalInvoicesCount', 'paidInvoicesCount', 'collectionRate', 'recentPaidInvoices', 'recentUnpaidInvoices');
+
             case 'revenue':
                 $currentMonthRevenue = Payment::whereMonth('payment_date', $now->month)
                     ->whereYear('payment_date', $now->year)
@@ -197,6 +225,10 @@ class OwnerKpi extends Component
     {
         $isEn = app()->getLocale() == 'en';
         switch ($cardType) {
+            case 'total-revenue':
+                return $isEn ? 'Total Billing Detail' : 'Detail Total Penagihan';
+            case 'collection-rate':
+                return $isEn ? 'Collection Rate Detail' : 'Detail Tingkat Koleksi';
             case 'revenue':
                 return $isEn ? 'Revenue Detail' : 'Detail Pendapatan';
             case 'risks':
@@ -223,6 +255,14 @@ class OwnerKpi extends Component
     {
         $now = Carbon::now();
         $lastMonth = $now->copy()->subMonth()->startOfMonth();
+
+        // Total Lifetime Metrics for Dashboard
+        $totalRevenue = Invoice::where('status', 'paid')->sum('total');
+        $pendingRevenue = Invoice::whereIn('status', ['sent', 'pending', 'dp', 'partial'])->get()->sum(fn($inv) => $inv->total - $inv->payments->sum('amount'));
+        $totalClientsCount = Client::where('status', 'aktif')->count();
+        $totalInvoicesCount = Invoice::count();
+        $paidInvoicesCount = Invoice::where('status', 'paid')->count();
+        $collectionRate = $totalInvoicesCount > 0 ? ($paidInvoicesCount / $totalInvoicesCount) * 100 : 0;
 
         // 1. Monthly Revenue & Mom Comparison
         $currentMonthRevenue = Payment::whereMonth('payment_date', $now->month)
@@ -314,7 +354,13 @@ class OwnerKpi extends Component
             'revenueTrend',
             'recentLargePayments',
             'monthlyPerformance',
-            'totalClients'
+            'totalClients',
+            'totalRevenue',
+            'pendingRevenue',
+            'totalClientsCount',
+            'collectionRate',
+            'totalInvoicesCount',
+            'paidInvoicesCount'
         ));
     }
 }

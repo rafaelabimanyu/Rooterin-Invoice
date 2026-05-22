@@ -1,5 +1,110 @@
 <div>
-    <div class="animate-fade-in-up">
+    @if($minimal)
+        <!-- Refreshed Dashboard Metrics Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 animate-fade-in-up">
+            <!-- Card 1: Pendapatan Kotor -->
+            <div class="glass-card p-6 group hover:-translate-y-1 hover:shadow-lg hover:border-indigo-500/20 transition-all duration-300 ease-out cursor-pointer relative overflow-hidden border border-slate-200/50"
+                 @click="$dispatch('slide-over-loading-start')"
+                 wire:click="openModal('total-revenue')">
+                <div class="absolute -right-10 -top-10 w-32 h-32 bg-indigo-500/5 blur-3xl group-hover:bg-indigo-500/15 transition-colors duration-500 rounded-full"></div>
+                <div class="flex items-center justify-between mb-6 relative z-10">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500/10 to-indigo-500/5 text-indigo-600 flex items-center justify-center border border-indigo-500/10 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                        <i data-lucide="bar-chart-3" class="w-7 h-7"></i>
+                    </div>
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-indigo-50 text-indigo-600 shadow-sm">
+                        {{ app()->getLocale() == 'en' ? 'Lifetime' : 'Selamanya' }}
+                    </span>
+                </div>
+                <div class="relative z-10">
+                    <p class="text-[10px] md:text-[11px] font-black text-slate-500 uppercase tracking-[0.25em] mb-2">
+                        {{ __('ui.total_billing') }}
+                    </p>
+                    <h3 class="text-2xl md:text-3xl font-black text-slate-900 font-jakarta tracking-tight group-hover:translate-x-1 transition-transform duration-500">
+                        Rp {{ number_format($totalRevenue, 0, ',', '.') }}
+                    </h3>
+                </div>
+                <div class="absolute inset-0 shimmer opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+            </div>
+
+            <!-- Card 2: Invois Tertunggak -->
+            <div class="glass-card p-6 group hover:-translate-y-1 hover:shadow-lg hover:border-amber-500/20 transition-all duration-300 ease-out cursor-pointer relative overflow-hidden border border-slate-200/50"
+                 @click="$dispatch('slide-over-loading-start')"
+                 wire:click="openModal('risks')">
+                <div class="absolute -right-10 -top-10 w-32 h-32 bg-amber-500/5 blur-3xl group-hover:bg-amber-500/15 transition-colors duration-500 rounded-full"></div>
+                <div class="flex items-center justify-between mb-6 relative z-10">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500/10 to-amber-500/5 text-amber-600 flex items-center justify-center border border-amber-500/10 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                        <i data-lucide="clock" class="w-7 h-7"></i>
+                    </div>
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-amber-50 text-amber-600 shadow-sm">
+                        {{ app()->getLocale() == 'en' ? 'Receivable' : 'Piutang' }}
+                    </span>
+                </div>
+                <div class="relative z-10">
+                    <p class="text-[10px] md:text-[11px] font-black text-slate-500 uppercase tracking-[0.25em] mb-2">
+                        {{ __('ui.amount_due') }}
+                    </p>
+                    <h3 class="text-2xl md:text-3xl font-black text-slate-900 font-jakarta tracking-tight group-hover:translate-x-1 transition-transform duration-500">
+                        Rp {{ number_format($pendingRevenue, 0, ',', '.') }}
+                    </h3>
+                </div>
+                <div class="absolute inset-0 shimmer opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+            </div>
+
+            <!-- Card 3: Klien -->
+            <div class="glass-card p-6 group hover:-translate-y-1 hover:shadow-lg hover:border-emerald-500/20 transition-all duration-300 ease-out cursor-pointer relative overflow-hidden border border-slate-200/50"
+                 @click="$dispatch('slide-over-loading-start')"
+                 wire:click="openModal('loyalty')">
+                <div class="absolute -right-10 -top-10 w-32 h-32 bg-emerald-500/5 blur-3xl group-hover:bg-emerald-500/15 transition-colors duration-500 rounded-full"></div>
+                <div class="flex items-center justify-between mb-6 relative z-10">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 text-emerald-600 flex items-center justify-center border border-emerald-500/10 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                        <i data-lucide="users" class="w-7 h-7"></i>
+                    </div>
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-600 shadow-sm">
+                        {{ app()->getLocale() == 'en' ? 'Active' : 'Aktif' }}
+                    </span>
+                </div>
+                <div class="relative z-10">
+                    <p class="text-[10px] md:text-[11px] font-black text-slate-500 uppercase tracking-[0.25em] mb-2">
+                        {{ __('ui.clients') }}
+                    </p>
+                    <h3 class="text-2xl md:text-3xl font-black text-slate-900 font-jakarta tracking-tight group-hover:translate-x-1 transition-transform duration-500">
+                        {{ $totalClientsCount }}
+                    </h3>
+                </div>
+                <div class="absolute inset-0 shimmer opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+            </div>
+
+            <!-- Card 4: Rasio Pengumpulan -->
+            <div class="glass-card p-6 group hover:-translate-y-1 hover:shadow-lg hover:border-indigo-500/20 transition-all duration-300 ease-out cursor-pointer relative overflow-hidden border border-slate-200/50"
+                 @click="$dispatch('slide-over-loading-start')"
+                 wire:click="openModal('collection-rate')">
+                <div class="absolute -right-10 -top-10 w-32 h-32 bg-indigo-500/5 blur-3xl group-hover:bg-indigo-500/15 transition-colors duration-500 rounded-full"></div>
+                <div class="flex items-center justify-between mb-6 relative z-10">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500/10 to-indigo-500/5 text-indigo-600 flex items-center justify-center border border-indigo-500/10 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                        <i data-lucide="check-circle-2" class="w-7 h-7"></i>
+                    </div>
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-indigo-50 text-indigo-600 shadow-sm">
+                        {{ __('ui.efficiency') }}
+                    </span>
+                </div>
+                <div class="relative z-10">
+                    <p class="text-[10px] md:text-[11px] font-black text-slate-500 uppercase tracking-[0.25em] mb-2">
+                        {{ __('ui.collection_rate') }}
+                    </p>
+                    <h3 class="text-2xl md:text-3xl font-black text-slate-900 font-jakarta tracking-tight group-hover:translate-x-1 transition-transform duration-500">
+                        {{ round($collectionRate) }}%
+                    </h3>
+                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden shadow-inner mt-4">
+                        <div class="bg-indigo-600 h-full progress-bar-fill shadow-[0_0_12px_rgba(79,70,229,0.5)]"
+                            style="width: {{ $collectionRate }}%">
+                        </div>
+                    </div>
+                </div>
+                <div class="absolute inset-0 shimmer opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+            </div>
+        </div>
+    @else
+        <div class="animate-fade-in-up">
         <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6 page-fade-in">
             <div>
                 <div class="flex items-center gap-3 mb-3">
@@ -304,173 +409,177 @@
                 </div>
             </div>
         </div>
-    </div>
+    @endif
 
     <!-- Chart Scripts & Event Listeners -->
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    <script>
-        (function() {
-            window.initChart = function() {
-                if (typeof ApexCharts === 'undefined') {
-                    setTimeout(window.initChart, 50);
-                    return;
-                }
+    @if(!$minimal)
+        <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+        <script>
+            (function() {
+                window.initChart = function() {
+                    if (typeof ApexCharts === 'undefined') {
+                        setTimeout(window.initChart, 50);
+                        return;
+                    }
 
-                const chartEl = document.querySelector("#revenueChart");
-                if (!chartEl) return;
+                    const chartEl = document.querySelector("#revenueChart");
+                    if (!chartEl) return;
 
-                const categories = {!! json_encode($revenueTrend->pluck('month')) !!};
-                const data = {!! json_encode($revenueTrend->pluck('revenue')) !!};
-                const categoriesStr = JSON.stringify(categories);
-                const dataStr = JSON.stringify(data);
+                    const categories = {!! json_encode($revenueTrend->pluck('month')) !!};
+                    const data = {!! json_encode($revenueTrend->pluck('revenue')) !!};
+                    const categoriesStr = JSON.stringify(categories);
+                    const dataStr = JSON.stringify(data);
 
-                // Prevent destroying and recreating the chart if it already exists and data has not changed
-                if (window.ownerRevenueChart && window.lastChartCategories === categoriesStr && window.lastChartData === dataStr) {
-                    return;
-                }
+                    // Prevent destroying and recreating the chart if it already exists and data has not changed
+                    if (window.ownerRevenueChart && window.lastChartCategories === categoriesStr && window.lastChartData === dataStr) {
+                        return;
+                    }
 
-                window.lastChartCategories = categoriesStr;
-                window.lastChartData = dataStr;
-                
-                if (window.ownerRevenueChart) {
-                    try {
-                        window.ownerRevenueChart.destroy();
-                    } catch(e) {}
-                }
-                
-                const options = {
-                    series: [{
-                        name: '{{ app()->getLocale() == 'en' ? "Enterprise Revenue" : "Pendapatan Perusahaan" }}',
-                        data: data
-                    }],
-                    chart: {
-                        type: 'area',
-                        height: '100%',
-                        width: '100%',
-                        toolbar: { show: false },
-                        zoom: { enabled: false },
-                        fontFamily: 'Plus Jakarta Sans, sans-serif'
-                    },
-                    colors: ['#6366f1'],
-                    fill: {
-                        type: 'gradient',
-                        gradient: {
-                            shadeIntensity: 1,
-                            opacityFrom: 0.5,
-                            opacityTo: 0.05,
-                            stops: [0, 90, 100]
-                        }
-                    },
-                    dataLabels: { enabled: false },
-                    stroke: {
-                        curve: 'smooth',
-                        width: 4,
-                        lineCap: 'round'
-                    },
-                    xaxis: {
-                        categories: categories,
-                        axisBorder: { show: false },
-                        axisTicks: { show: false },
-                        labels: {
-                            style: {
-                                colors: '#94a3b8',
-                                fontSize: '11px',
-                                tracking: 800
+                    window.lastChartCategories = categoriesStr;
+                    window.lastChartData = dataStr;
+                    
+                    if (window.ownerRevenueChart) {
+                        try {
+                            window.ownerRevenueChart.destroy();
+                        } catch(e) {}
+                    }
+                    
+                    const options = {
+                        series: [{
+                            name: '{{ app()->getLocale() == 'en' ? "Enterprise Revenue" : "Pendapatan Perusahaan" }}',
+                            data: data
+                        }],
+                        chart: {
+                            type: 'area',
+                            height: '100%',
+                            width: '100%',
+                            toolbar: { show: false },
+                            zoom: { enabled: false },
+                            fontFamily: 'Plus Jakarta Sans, sans-serif'
+                        },
+                        colors: ['#6366f1'],
+                        fill: {
+                            type: 'gradient',
+                            gradient: {
+                                shadeIntensity: 1,
+                                opacityFrom: 0.5,
+                                opacityTo: 0.05,
+                                stops: [0, 90, 100]
                             }
-                        }
-                    },
-                    yaxis: {
-                        labels: {
-                            formatter: function(val) {
-                                return 'Rp ' + (val/1000000).toFixed(1) + 'M';
-                            },
-                            style: {
-                                colors: '#94a3b8',
-                                fontSize: '11px',
-                                tracking: 800
+                        },
+                        dataLabels: { enabled: false },
+                        stroke: {
+                            curve: 'smooth',
+                            width: 4,
+                            lineCap: 'round'
+                        },
+                        xaxis: {
+                            categories: categories,
+                            axisBorder: { show: false },
+                            axisTicks: { show: false },
+                            labels: {
+                                style: {
+                                    colors: '#94a3b8',
+                                    fontSize: '11px',
+                                    tracking: 800
+                                }
                             }
-                        }
-                    },
-                    grid: {
-                        borderColor: document.documentElement.classList.contains('dark') ? 'rgba(255,255,255,0.05)' : '#f1f5f9',
-                        strokeDashArray: 6,
-                        padding: { left: 20, right: 20 }
-                    },
-                    markers: {
-                        size: 0,
-                        hover: { size: 6 }
-                    },
-                    tooltip: {
-                        theme: 'dark',
-                        y: {
-                            formatter: function(val) {
-                                return 'Rp ' + val.toLocaleString('id-ID');
+                        },
+                        yaxis: {
+                            labels: {
+                                formatter: function(val) {
+                                    return 'Rp ' + (val/1000000).toFixed(1) + 'M';
+                                },
+                                style: {
+                                    colors: '#94a3b8',
+                                    fontSize: '11px',
+                                    tracking: 800
+                                }
                             }
-                        }
-                    },
-                    responsive: [{
-                        breakpoint: 480,
-                        options: {
-                            chart: {
-                                height: 300
+                        },
+                        grid: {
+                            borderColor: document.documentElement.classList.contains('dark') ? 'rgba(255,255,255,0.05)' : '#f1f5f9',
+                            strokeDashArray: 6,
+                            padding: { left: 20, right: 20 }
+                        },
+                        markers: {
+                            size: 0,
+                            hover: { size: 6 }
+                        },
+                        tooltip: {
+                            theme: 'dark',
+                            y: {
+                                formatter: function(val) {
+                                    return 'Rp ' + val.toLocaleString('id-ID');
+                                }
                             }
-                        }
-                    }],
-                    responsive_enabled: true,
-                    maintainAspectRatio: false
+                        },
+                        responsive: [{
+                            breakpoint: 480,
+                            options: {
+                                chart: {
+                                    height: 300
+                                }
+                            }
+                        }],
+                        responsive_enabled: true,
+                        maintainAspectRatio: false
+                    };
+
+                    window.ownerRevenueChart = new ApexCharts(chartEl, options);
+                    window.ownerRevenueChart.render();
                 };
 
-                window.ownerRevenueChart = new ApexCharts(chartEl, options);
-                window.ownerRevenueChart.render();
-            };
-
-            // Call immediately if DOM is ready
-            if (document.readyState === 'complete' || document.readyState === 'interactive') {
-                window.initChart();
-            }
-
-            // Guard listener registration to prevent registering duplicate listeners during morph updates
-            if (window.ownerChartListenersRegistered) {
-                return;
-            }
-            window.ownerChartListenersRegistered = true;
-
-            // Initial and reactive boots
-            document.addEventListener('DOMContentLoaded', () => { window.initChart(); });
-            document.addEventListener('livewire:navigated', () => { window.initChart(); });
-            
-            // Re-init chart when Livewire component is updated
-            window.addEventListener('init-chart', () => { window.initChart(); });
-
-            window.addEventListener('dark-mode-toggled', function() {
-                if (window.ownerRevenueChart) {
-                    window.ownerRevenueChart.updateOptions({
-                        grid: {
-                            borderColor: document.documentElement.classList.contains('dark') ? 'rgba(255,255,255,0.05)' : '#f1f5f9'
-                        }
-                    });
+                // Call immediately if DOM is ready
+                if (document.readyState === 'complete' || document.readyState === 'interactive') {
+                    window.initChart();
                 }
-            });
 
-            // Register Livewire hook to re-initialize on component update morphs
-            const registerChartHook = () => {
-                if (typeof Livewire !== 'undefined') {
-                    Livewire.hook('morph.updated', ({ el, component }) => {
-                        if (component && (component.name === 'owner-kpi' || component.name === 'OwnerKpi')) {
-                            window.initChart();
-                        }
-                    });
+                // Guard listener registration to prevent registering duplicate listeners during morph updates
+                if (window.ownerChartListenersRegistered) {
+                    return;
                 }
-            };
-            if (window.Livewire) {
-                registerChartHook();
-            } else {
-                document.addEventListener('livewire:init', () => {
-                    registerChartHook();
+                window.ownerChartListenersRegistered = true;
+
+                // Initial and reactive boots
+                document.addEventListener('DOMContentLoaded', () => { window.initChart(); });
+                document.addEventListener('livewire:navigated', () => { window.initChart(); });
+                
+                // Re-init chart when Livewire component is updated
+                window.addEventListener('init-chart', () => { window.initChart(); });
+
+                window.addEventListener('dark-mode-toggled', function() {
+                    if (window.ownerRevenueChart) {
+                        window.ownerRevenueChart.updateOptions({
+                            grid: {
+                                borderColor: document.documentElement.classList.contains('dark') ? 'rgba(255,255,255,0.05)' : '#f1f5f9'
+                            }
+                        });
+                    }
                 });
-            }
-        })();
 
+                // Register Livewire hook to re-initialize on component update morphs
+                const registerChartHook = () => {
+                    if (typeof Livewire !== 'undefined') {
+                        Livewire.hook('morph.updated', ({ el, component }) => {
+                            if (component && (component.name === 'owner-kpi' || component.name === 'OwnerKpi')) {
+                                window.initChart();
+                            }
+                        });
+                    }
+                };
+                if (window.Livewire) {
+                    registerChartHook();
+                } else {
+                    document.addEventListener('livewire:init', () => {
+                        registerChartHook();
+                    });
+                }
+            })();
+        </script>
+    @endif
+
+    <script>
         // Lucide reinitialization event listener
         window.addEventListener('init-lucide-icons', () => {
             setTimeout(() => {

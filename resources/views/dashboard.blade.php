@@ -60,49 +60,7 @@
         </div>
 
         <!-- KPI Metrics (Admin/Owner Only) -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-            <div class="page-fade-in stagger-2">
-                <x-stats-card :title="__('ui.total_billing')" value="Rp {{ number_format($totalRevenue, 0, ',', '.') }}"
-                    change="+12.5%" icon="bar-chart-3" color="indigo" detail="..." />
-            </div>
-            <div class="page-fade-in stagger-3">
-                <x-stats-card :title="__('ui.amount_due')" value="Rp {{ number_format($pendingRevenue, 0, ',', '.') }}"
-                    change="-5.2%" icon="clock" color="amber" detail="..." />
-            </div>
-            <div class="page-fade-in stagger-4">
-                <x-stats-card :title="__('ui.clients')" value="{{ $totalClients }}" change="+3" icon="users" color="emerald"
-                    detail="..." />
-            </div>
-            <div
-                class="page-fade-in stagger-5 glass-card p-7 group hover:-translate-y-3 hover:shadow-[0_20px_50px_rgba(79,70,229,0.15)] hover:border-indigo-500/30 transition-all duration-500 relative overflow-hidden cursor-pointer">
-                <!-- Efficiency card content -->
-                <div class="flex items-center justify-between mb-6 relative z-10">
-                    <div
-                        class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500/10 to-indigo-500/5 text-indigo-600 flex items-center justify-center border border-indigo-500/10 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
-                        <i data-lucide="check-circle-2" class="w-7 h-7"></i>
-                    </div>
-                    <span
-                        class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-indigo-50 text-indigo-600 shadow-sm">
-                        {{ __('ui.efficiency') }}
-                    </span>
-                </div>
-                <div class="relative z-10">
-                    <p class="text-[11px] font-black text-slate-400 uppercase tracking-[0.25em] mb-2">
-                        {{ __('ui.collection_rate') }}
-                    </p>
-                    <div class="flex items-end justify-between mb-2">
-                        <h3 class="text-3xl font-black text-slate-900 font-jakarta tracking-tight">
-                            {{ $totalInvoices > 0 ? round(($paidInvoicesCount / $totalInvoices) * 100) : 0 }}%
-                        </h3>
-                    </div>
-                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden shadow-inner">
-                        <div class="bg-indigo-600 h-full progress-bar-fill shadow-[0_0_12px_rgba(79,70,229,0.5)]"
-                            style="width: {{ $totalInvoices > 0 ? ($paidInvoicesCount / $totalInvoices) * 100 : 0 }}%">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <livewire:owner-kpi :minimal="true" />
     @else
         <!-- Staff: Premium Interactive Dashboard -->
         <div class="mb-12 page-fade-in" x-data="{ 

@@ -27,6 +27,74 @@
     <!-- Notification Popover / Bottom Sheet -->
     <div 
         x-show="open"
+        x-ref="bottomSheet"
+        x-data="{ 
+            startY: 0, 
+            translateY: 0, 
+            isDragging: false,
+            resetDrag() {
+                this.isDragging = false;
+                this.translateY = 0;
+                if (this.$refs.bottomSheet) {
+                    this.$refs.bottomSheet.style.transform = '';
+                    this.$refs.bottomSheet.style.transition = '';
+                }
+            },
+            handleTouchStart(e) {
+                const scrollContainer = this.$refs.scrollContainer;
+                const onHandle = e.target.closest('.mobile-drag-handle');
+                if (onHandle || (scrollContainer && scrollContainer.scrollTop <= 0)) {
+                    this.startY = e.touches[0].clientY;
+                    this.isDragging = true;
+                    if (this.$refs.bottomSheet) {
+                        this.$refs.bottomSheet.style.transition = 'none';
+                    }
+                }
+            },
+            handleTouchMove(e) {
+                if (!this.isDragging) return;
+                const clientY = e.touches[0].clientY;
+                const diffY = clientY - this.startY;
+                const scrollContainer = this.$refs.scrollContainer;
+
+                if (diffY > 0) {
+                    if (scrollContainer && scrollContainer.scrollTop <= 0) {
+                        e.preventDefault();
+                        this.translateY = diffY;
+                        if (this.$refs.bottomSheet) {
+                            this.$refs.bottomSheet.style.transform = `translateY(${diffY}px)`;
+                        }
+                    }
+                } else {
+                    const onHandle = e.target.closest('.mobile-drag-handle');
+                    if (onHandle) {
+                        e.preventDefault();
+                    } else {
+                        this.isDragging = false;
+                    }
+                }
+            },
+            handleTouchEnd(e) {
+                if (!this.isDragging) return;
+                this.isDragging = false;
+                
+                if (this.translateY > 75) {
+                    if (this.$refs.bottomSheet) {
+                        this.$refs.bottomSheet.style.transition = 'transform 0.2s ease-out';
+                        this.$refs.bottomSheet.style.transform = 'translateY(100%)';
+                    }
+                    setTimeout(() => {
+                        open = false;
+                        this.resetDrag();
+                    }, 200);
+                } else {
+                    this.resetDrag();
+                }
+            }
+        }"
+        @touchstart="if (window.innerWidth < 768) handleTouchStart($event)"
+        @touchmove="if (window.innerWidth < 768) handleTouchMove($event)"
+        @touchend="if (window.innerWidth < 768) handleTouchEnd($event)"
         x-transition:enter="transition-all transform ease-out duration-300"
         x-transition:enter-start="translate-y-full md:opacity-0 md:translate-y-4 md:scale-95"
         x-transition:enter-end="translate-y-0 md:opacity-100 md:scale-100"
@@ -37,10 +105,7 @@
         x-cloak
     >
         <!-- Mobile drag handle with swipe-to-close micro-interaction -->
-        <div class="w-full flex justify-center pt-4 pb-2 md:hidden bg-slate-50/50 cursor-grab active:cursor-grabbing select-none" 
-             x-data="{ startY: 0 }"
-             @touchstart="startY = $event.touches[0].clientY"
-             @touchmove="let diffY = $event.touches[0].clientY - startY; if(diffY > 60) { open = false; }"
+        <div class="mobile-drag-handle w-full flex justify-center pt-4 pb-2 md:hidden bg-slate-50/50 cursor-grab active:cursor-grabbing select-none" 
              @click="open = false">
             <div class="w-12 h-1.5 bg-slate-200 rounded-full"></div>
         </div>
@@ -59,7 +124,7 @@
         </div>
 
         <!-- Body -->
-        <div class="max-h-[60vh] md:max-h-96 overflow-y-auto custom-scrollbar">
+        <div x-ref="scrollContainer" class="max-h-[60vh] md:max-h-96 overflow-y-auto custom-scrollbar">
             @forelse($notifications as $notification)
                 @php
                     $type = $notification->data['type'] ?? 'system';

@@ -1,4 +1,4 @@
-<div class="relative" x-data="{ open: false }" @click.away="open = false" wire:poll.30s="loadNotifications">
+<div class="relative" x-data="{ open: false }" x-init="$watch('open', value => $dispatch('notification-toggle', { open: value }))" @click.away="open = false" wire:poll.30s="loadNotifications">
     <!-- Trigger Button -->
     <button @click="open = !open" class="relative p-2.5 rounded-xl bg-slate-50 text-slate-400 hover:text-slate-900 hover:bg-white hover:shadow-sm transition-all group">
         <i data-lucide="bell" class="w-5 h-5 group-hover:rotate-12 transition-transform"></i>
@@ -36,8 +36,12 @@
         class="fixed inset-x-0 bottom-0 z-[100] w-full bg-white rounded-t-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] overflow-hidden md:absolute md:left-auto md:-right-4 md:bottom-auto md:top-full md:mt-4 md:w-96 md:rounded-[32px] md:border md:border-slate-100 md:shadow-xl md:origin-top flex flex-col max-h-[85vh] md:max-h-[32rem]"
         x-cloak
     >
-        <!-- Mobile drag handle -->
-        <div class="w-full flex justify-center pt-4 pb-2 md:hidden bg-slate-50/50 cursor-grab active:cursor-grabbing" @click="open = false">
+        <!-- Mobile drag handle with swipe-to-close micro-interaction -->
+        <div class="w-full flex justify-center pt-4 pb-2 md:hidden bg-slate-50/50 cursor-grab active:cursor-grabbing select-none" 
+             x-data="{ startY: 0 }"
+             @touchstart="startY = $event.touches[0].clientY"
+             @touchmove="let diffY = $event.touches[0].clientY - startY; if(diffY > 60) { open = false; }"
+             @click="open = false">
             <div class="w-12 h-1.5 bg-slate-200 rounded-full"></div>
         </div>
 

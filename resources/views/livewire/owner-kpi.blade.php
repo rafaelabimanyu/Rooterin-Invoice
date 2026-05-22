@@ -1,7 +1,7 @@
 <div>
     @if($minimal)
         <!-- Refreshed Dashboard Metrics Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 animate-fade-in-up">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-12 animate-fade-in-up">
             <!-- Card 1: Pendapatan Kotor -->
             <div class="glass-card p-6 group hover:-translate-y-1 hover:shadow-lg hover:border-indigo-500/20 transition-all duration-300 ease-out cursor-pointer relative overflow-hidden border border-slate-200/50"
                  @click="$dispatch('slide-over-loading-start')"
@@ -131,7 +131,7 @@
         </div>
 
         <!-- KPI Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 page-fade-in" style="animation-delay: 100ms">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8 page-fade-in" style="animation-delay: 100ms">
             <!-- Monthly Revenue -->
             <div class="glass-card p-6 group hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 relative overflow-hidden border-indigo-500/10 cursor-pointer"
                  @click="$dispatch('slide-over-loading-start')"

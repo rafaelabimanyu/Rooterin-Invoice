@@ -41,12 +41,19 @@
     }
 </style>
 
-<div x-data="{ open: false, maximized: false }" class="fixed bottom-6 right-6 z-50">
+<div x-data="{ open: false, isFullSize: false, notificationOpen: false }" @notification-toggle.window="notificationOpen = $event.detail.open">
     
     <!-- Floating Trigger Button -->
     <button 
+        x-show="!notificationOpen"
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 scale-95"
+        x-transition:enter-end="opacity-100 scale-100"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100 scale-100"
+        x-transition:leave-end="opacity-0 scale-95"
         @click="open = !open; if(open) { $nextTick(() => { const container = $refs.chatContainer; if(container) container.scrollTop = container.scrollHeight; }) }" 
-        class="chatbot-trigger-btn w-14 h-14 bg-gradient-to-tr from-indigo-600 via-indigo-700 to-violet-800 text-white rounded-full flex items-center justify-center border-2 border-white shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 group focus:outline-none"
+        class="chatbot-trigger-btn fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[45] w-14 h-14 bg-gradient-to-tr from-indigo-600 via-indigo-700 to-violet-800 text-white rounded-full flex items-center justify-center border-2 border-white shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 group focus:outline-none"
     >
         <span class="relative flex items-center justify-center">
             <!-- Bot icon when closed -->
@@ -65,12 +72,12 @@
         x-transition:leave="transition ease-in duration-200" 
         x-transition:leave-start="opacity-100 scale-100 translate-y-0" 
         x-transition:leave-end="opacity-0 scale-90 translate-y-4" 
-        class="absolute bottom-20 right-0 bg-slate-900/95 backdrop-blur-md border border-slate-800/80 shadow-[0_32px_64px_rgba(15,23,42,0.3)] overflow-hidden flex flex-col transition-all duration-300 ease-out-spring"
-        :class="maximized ? 'w-[90vw] md:w-[580px] h-[680px] rounded-[2.25rem]' : 'w-[85vw] sm:w-[380px] md:w-[400px] h-[510px] rounded-[2rem]'"
+        class="fixed z-50 bg-slate-900/95 backdrop-blur-md border border-slate-800/80 shadow-[0_32px_64px_rgba(15,23,42,0.3)] overflow-hidden flex flex-col transition-all duration-300 ease-in-out"
+        :class="isFullSize ? 'inset-0 h-screen w-screen rounded-none' : 'inset-0 w-full h-full rounded-none sm:inset-auto sm:bottom-24 sm:right-6 sm:h-[580px] sm:w-[380px] sm:md:w-[400px] sm:rounded-[2rem]'"
         style="display: none;"
     >
         <!-- Header -->
-        <div class="px-6 py-5 bg-slate-950/40 text-white flex items-center justify-between border-b border-slate-800/50">
+        <div class="px-6 py-5 bg-slate-950/40 text-white flex items-center justify-between border-b border-slate-800/50 shrink-0">
             <div class="flex items-center gap-3">
                 <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 to-violet-650 flex items-center justify-center text-white shadow-md border border-indigo-400/20">
                     <i data-lucide="bot" class="w-5 h-5"></i>
@@ -91,12 +98,12 @@
             <div class="flex items-center gap-1.5">
                 <!-- Maximize/Minimize size toggle -->
                 <button 
-                    @click="maximized = !maximized; $nextTick(() => { const container = $refs.chatContainer; if(container) container.scrollTop = container.scrollHeight; })" 
+                    @click="isFullSize = !isFullSize; $nextTick(() => { const container = $refs.chatContainer; if(container) container.scrollTop = container.scrollHeight; })" 
                     class="p-1.5 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-white transition-all active:scale-95" 
-                    :title="maximized ? '{{ app()->getLocale() == 'en' ? 'Normal size' : 'Ukuran normal' }}' : '{{ app()->getLocale() == 'en' ? 'Maximize size' : 'Perbesar ukuran' }}'"
+                    :title="isFullSize ? '{{ app()->getLocale() == 'en' ? 'Normal size' : 'Ukuran normal' }}' : '{{ app()->getLocale() == 'en' ? 'Maximize size' : 'Perbesar ukuran' }}'"
                 >
-                    <i x-show="!maximized" data-lucide="maximize-2" class="w-3.5 h-3.5"></i>
-                    <i x-show="maximized" data-lucide="minimize-2" class="w-3.5 h-3.5" style="display: none;"></i>
+                    <i x-show="!isFullSize" data-lucide="maximize-2" class="w-3.5 h-3.5"></i>
+                    <i x-show="isFullSize" data-lucide="minimize-2" class="w-3.5 h-3.5" style="display: none;"></i>
                 </button>
                 
                 <!-- Link to full AI Assistant page -->
@@ -173,7 +180,7 @@
                 </div>
                 <div class="bg-slate-800 text-slate-400 rounded-2xl rounded-tl-none px-4 py-3 border border-slate-700/50 shadow-sm flex items-center gap-1.5">
                     <span class="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></span>
-                    <span class="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
+                    <span class="w-1.5 h-1.5 bg-indigo-50 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
                     <span class="w-1.5 h-1.5 bg-indigo-600 rounded-full animate-bounce" style="animation-delay: 0.3s"></span>
                 </div>
             </div>
@@ -212,7 +219,7 @@
                 >
                 <button 
                     type="submit" 
-                    class="absolute right-1.5 w-9 h-9 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full flex items-center justify-center transition-all active:scale-90 disabled:opacity-50 shadow-md shadow-indigo-600/15 focus:outline-none"
+                    class="absolute right-1.5 w-9 h-9 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full flex items-center justify-center transition-all active:scale-95 disabled:opacity-50 shadow-md shadow-indigo-600/15 focus:outline-none"
                     wire:loading.attr="disabled"
                     wire:target="sendMessage"
                 >

@@ -361,22 +361,322 @@
                     </div>
                 </div>
             @else
-                <!-- Admin Stats Side Card (Placeholder or mini charts) -->
-                <div class="glass-card p-10 w-full min-w-0">
-                    <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg mb-8">{{ app()->getLocale() == 'en' ? 'System Analytics' : 'Analitik Sistem' }}</h3>
-                    <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100">
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">{{ app()->getLocale() == 'en' ? 'Operational Load' : 'Beban Operasional' }}</p>
-                        <div class="flex items-end gap-3 mb-4">
-                            <span class="text-3xl font-black text-slate-900">{{ app()->getLocale() == 'en' ? 'Efficient' : 'Optimal' }}</span>
-                        </div>
-                        <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
-                            <div class="bg-emerald-500 h-full w-[100%] shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
-                        </div>
-                    </div>
-                </div>
+                <!-- Admin Stats Side Card (Moved to bottom grid) -->
             @endif
         </div>
     </div>
+
+    @if(!$isStaff)
+        <!-- Bottom Grid Container -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6 page-fade-in stagger-6">
+            <!-- Chart Arus Kas Bulanan -->
+            <div class="lg:col-span-6 bg-white border border-slate-100 rounded-2xl p-6 shadow-sm flex flex-col justify-between min-w-0">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-sm">
+                                {{ app()->getLocale() == 'en' ? 'Cash Flow & Financial Projections' : 'Arus Kas & Proyeksi Keuangan' }}
+                            </h3>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">
+                                {{ app()->getLocale() == 'en' ? 'Trends comparison over the last 6 months' : 'Tren perbandingan 6 bulan terakhir' }}
+                            </p>
+                        </div>
+                        <div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+                            <i data-lucide="trending-up" class="w-4.5 h-4.5"></i>
+                        </div>
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="flex items-center gap-4 text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-6 mt-2">
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-2.5 h-2.5 rounded-sm bg-indigo-600 block"></span>
+                            <span>{{ app()->getLocale() == 'en' ? 'Revenue (Incoming)' : 'Uang Masuk (Revenue)' }}</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-2.5 h-2.5 rounded-sm bg-amber-500 block"></span>
+                            <span>{{ app()->getLocale() == 'en' ? 'Receivables' : 'Proyeksi Piutang' }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Chart Container -->
+                    <div class="relative flex items-end justify-between h-48 w-full border-b border-slate-100 pb-2 mt-8">
+                        <!-- Y-Axis Gridlines -->
+                        <div class="absolute inset-0 flex flex-col justify-between pointer-events-none pb-2">
+                            <div class="w-full border-t border-slate-100/70"></div>
+                            <div class="w-full border-t border-slate-100/70"></div>
+                            <div class="w-full border-t border-slate-100/70"></div>
+                            <div class="w-full border-t border-slate-100/70"></div>
+                        </div>
+
+                        <!-- Month: Dec -->
+                        <div class="flex flex-col items-center flex-1 h-full justify-end z-10">
+                            <div class="flex items-end gap-1.5 h-full w-full justify-center px-1">
+                                <!-- Bar 1 (Revenue) -->
+                                <div class="w-2.5 sm:w-3.5 bg-gradient-to-t from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 rounded-t-sm transition-all duration-300 relative group/bar cursor-pointer" style="height: 53%">
+                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-900 text-white text-[10px] font-mono font-bold py-1 px-2 rounded opacity-0 invisible group-hover/bar:opacity-100 group-hover/bar:visible transition-all duration-200 pointer-events-none whitespace-nowrap shadow-lg z-30">
+                                        Rp 85.0M
+                                    </div>
+                                </div>
+                                <!-- Bar 2 (Receivables) -->
+                                <div class="w-2.5 sm:w-3.5 bg-gradient-to-t from-amber-500 to-amber-450 hover:from-amber-600 hover:to-amber-500 rounded-t-sm transition-all duration-300 relative group/bar cursor-pointer" style="height: 19%">
+                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-900 text-white text-[10px] font-mono font-bold py-1 px-2 rounded opacity-0 invisible group-hover/bar:opacity-100 group-hover/bar:visible transition-all duration-200 pointer-events-none whitespace-nowrap shadow-lg z-30">
+                                        Rp 30.0M
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-[9px] font-black text-slate-400 mt-2 tracking-wider uppercase">Dec</span>
+                        </div>
+
+                        <!-- Month: Jan -->
+                        <div class="flex flex-col items-center flex-1 h-full justify-end z-10">
+                            <div class="flex items-end gap-1.5 h-full w-full justify-center px-1">
+                                <!-- Bar 1 (Revenue) -->
+                                <div class="w-2.5 sm:w-3.5 bg-gradient-to-t from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 rounded-t-sm transition-all duration-300 relative group/bar cursor-pointer" style="height: 59%">
+                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-900 text-white text-[10px] font-mono font-bold py-1 px-2 rounded opacity-0 invisible group-hover/bar:opacity-100 group-hover/bar:visible transition-all duration-200 pointer-events-none whitespace-nowrap shadow-lg z-30">
+                                        Rp 95.0M
+                                    </div>
+                                </div>
+                                <!-- Bar 2 (Receivables) -->
+                                <div class="w-2.5 sm:w-3.5 bg-gradient-to-t from-amber-500 to-amber-450 hover:from-amber-600 hover:to-amber-500 rounded-t-sm transition-all duration-300 relative group/bar cursor-pointer" style="height: 28%">
+                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-900 text-white text-[10px] font-mono font-bold py-1 px-2 rounded opacity-0 invisible group-hover/bar:opacity-100 group-hover/bar:visible transition-all duration-200 pointer-events-none whitespace-nowrap shadow-lg z-30">
+                                        Rp 45.0M
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-[9px] font-black text-slate-400 mt-2 tracking-wider uppercase">Jan</span>
+                        </div>
+
+                        <!-- Month: Feb -->
+                        <div class="flex flex-col items-center flex-1 h-full justify-end z-10">
+                            <div class="flex items-end gap-1.5 h-full w-full justify-center px-1">
+                                <!-- Bar 1 (Revenue) -->
+                                <div class="w-2.5 sm:w-3.5 bg-gradient-to-t from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 rounded-t-sm transition-all duration-300 relative group/bar cursor-pointer" style="height: 75%">
+                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-900 text-white text-[10px] font-mono font-bold py-1 px-2 rounded opacity-0 invisible group-hover/bar:opacity-100 group-hover/bar:visible transition-all duration-200 pointer-events-none whitespace-nowrap shadow-lg z-30">
+                                        Rp 120.0M
+                                    </div>
+                                </div>
+                                <!-- Bar 2 (Receivables) -->
+                                <div class="w-2.5 sm:w-3.5 bg-gradient-to-t from-amber-500 to-amber-450 hover:from-amber-600 hover:to-amber-500 rounded-t-sm transition-all duration-300 relative group/bar cursor-pointer" style="height: 16%">
+                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-900 text-white text-[10px] font-mono font-bold py-1 px-2 rounded opacity-0 invisible group-hover/bar:opacity-100 group-hover/bar:visible transition-all duration-200 pointer-events-none whitespace-nowrap shadow-lg z-30">
+                                        Rp 25.0M
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-[9px] font-black text-slate-400 mt-2 tracking-wider uppercase">Feb</span>
+                        </div>
+
+                        <!-- Month: Mar -->
+                        <div class="flex flex-col items-center flex-1 h-full justify-end z-10">
+                            <div class="flex items-end gap-1.5 h-full w-full justify-center px-1">
+                                <!-- Bar 1 (Revenue) -->
+                                <div class="w-2.5 sm:w-3.5 bg-gradient-to-t from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 rounded-t-sm transition-all duration-300 relative group/bar cursor-pointer" style="height: 69%">
+                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-900 text-white text-[10px] font-mono font-bold py-1 px-2 rounded opacity-0 invisible group-hover/bar:opacity-100 group-hover/bar:visible transition-all duration-200 pointer-events-none whitespace-nowrap shadow-lg z-30">
+                                        Rp 110.0M
+                                    </div>
+                                </div>
+                                <!-- Bar 2 (Receivables) -->
+                                <div class="w-2.5 sm:w-3.5 bg-gradient-to-t from-amber-500 to-amber-450 hover:from-amber-600 hover:to-amber-500 rounded-t-sm transition-all duration-300 relative group/bar cursor-pointer" style="height: 34%">
+                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-900 text-white text-[10px] font-mono font-bold py-1 px-2 rounded opacity-0 invisible group-hover/bar:opacity-100 group-hover/bar:visible transition-all duration-200 pointer-events-none whitespace-nowrap shadow-lg z-30">
+                                        Rp 55.0M
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-[9px] font-black text-slate-400 mt-2 tracking-wider uppercase">Mar</span>
+                        </div>
+
+                        <!-- Month: Apr -->
+                        <div class="flex flex-col items-center flex-1 h-full justify-end z-10">
+                            <div class="flex items-end gap-1.5 h-full w-full justify-center px-1">
+                                <!-- Bar 1 (Revenue) -->
+                                <div class="w-2.5 sm:w-3.5 bg-gradient-to-t from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 rounded-t-sm transition-all duration-300 relative group/bar cursor-pointer" style="height: 91%">
+                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-900 text-white text-[10px] font-mono font-bold py-1 px-2 rounded opacity-0 invisible group-hover/bar:opacity-100 group-hover/bar:visible transition-all duration-200 pointer-events-none whitespace-nowrap shadow-lg z-30">
+                                        Rp 145.0M
+                                    </div>
+                                </div>
+                                <!-- Bar 2 (Receivables) -->
+                                <div class="w-2.5 sm:w-3.5 bg-gradient-to-t from-amber-500 to-amber-450 hover:from-amber-600 hover:to-amber-500 rounded-t-sm transition-all duration-300 relative group/bar cursor-pointer" style="height: 25%">
+                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-900 text-white text-[10px] font-mono font-bold py-1 px-2 rounded opacity-0 invisible group-hover/bar:opacity-100 group-hover/bar:visible transition-all duration-200 pointer-events-none whitespace-nowrap shadow-lg z-30">
+                                        Rp 40.0M
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-[9px] font-black text-slate-400 mt-2 tracking-wider uppercase">Apr</span>
+                        </div>
+
+                        <!-- Month: May -->
+                        <div class="flex flex-col items-center flex-1 h-full justify-end z-10">
+                            <div class="flex items-end gap-1.5 h-full w-full justify-center px-1">
+                                <!-- Bar 1 (Revenue) -->
+                                <div class="w-2.5 sm:w-3.5 bg-gradient-to-t from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 rounded-t-sm transition-all duration-300 relative group/bar cursor-pointer" style="height: 100%">
+                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-900 text-white text-[10px] font-mono font-bold py-1 px-2 rounded opacity-0 invisible group-hover/bar:opacity-100 group-hover/bar:visible transition-all duration-200 pointer-events-none whitespace-nowrap shadow-lg z-30">
+                                        Rp 160.0M
+                                    </div>
+                                </div>
+                                <!-- Bar 2 (Receivables) -->
+                                <div class="w-2.5 sm:w-3.5 bg-gradient-to-t from-amber-500 to-amber-450 hover:from-amber-600 hover:to-amber-500 rounded-t-sm transition-all duration-300 relative group/bar cursor-pointer" style="height: 22%">
+                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-900 text-white text-[10px] font-mono font-bold py-1 px-2 rounded opacity-0 invisible group-hover/bar:opacity-100 group-hover/bar:visible transition-all duration-200 pointer-events-none whitespace-nowrap shadow-lg z-30">
+                                        Rp 35.0M
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-[9px] font-black text-slate-400 mt-2 tracking-wider uppercase">May</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Log Aktivitas Keamanan Tim -->
+            <div class="lg:col-span-4 bg-white border border-slate-100 rounded-2xl p-6 shadow-sm flex flex-col min-w-0 max-h-[340px]">
+                <div class="flex items-center justify-between mb-4 shrink-0">
+                    <div>
+                        <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-sm">
+                            {{ app()->getLocale() == 'en' ? 'Team Activity Log' : 'Log Aktivitas Tim' }}
+                        </h3>
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">
+                            {{ app()->getLocale() == 'en' ? 'Staff operational audit trail' : 'Audit pengawasan operasional staf' }}
+                        </p>
+                    </div>
+                    <div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+                        <i data-lucide="shield-check" class="w-4.5 h-4.5"></i>
+                    </div>
+                </div>
+
+                <!-- Scrollable Timeline Feed -->
+                <div class="overflow-y-auto pr-1 space-y-4 scroll-smooth mt-4 flex-1 scrollbar-thin">
+                    @php
+                        $securityLogs = [
+                            [
+                                'time' => '10 mins ago',
+                                'user' => 'Rian Wijaya',
+                                'role' => 'Staff',
+                                'action' => 'Success Login',
+                                'details' => 'Logged in from authorized IP: 192.168.1.45',
+                                'type' => 'success'
+                            ],
+                            [
+                                'time' => '45 mins ago',
+                                'user' => 'Budi Santoso',
+                                'role' => 'Staff',
+                                'action' => 'Invoice Updated',
+                                'details' => 'Updated total for INV-2026-089 (PT Sukses Jaya)',
+                                'type' => 'info'
+                            ],
+                            [
+                                'time' => '2 hours ago',
+                                'user' => 'System Monitor',
+                                'role' => 'Security',
+                                'action' => 'Security Alert',
+                                'details' => 'Detected high rate of API requests from Node-02',
+                                'type' => 'danger'
+                            ],
+                            [
+                                'time' => '3 hours ago',
+                                'user' => 'Amalia Putri',
+                                'role' => 'Staff',
+                                'action' => 'Invoice Created',
+                                'details' => 'Created draft invoice INV-2026-092',
+                                'type' => 'info'
+                            ],
+                            [
+                                'time' => '5 hours ago',
+                                'user' => 'Budi Santoso',
+                                'role' => 'Staff',
+                                'action' => 'Success Login',
+                                'details' => 'Session verified under token BST-4929',
+                                'type' => 'success'
+                            ],
+                            [
+                                'time' => '8 hours ago',
+                                'user' => 'System Monitor',
+                                'role' => 'Security',
+                                'action' => 'Security Alert',
+                                'details' => 'Failed admin login attempt from IP 182.253.140.23',
+                                'type' => 'danger'
+                            ]
+                        ];
+                    @endphp
+
+                    <div class="relative pl-6 border-l-2 border-slate-100 space-y-5 ml-1">
+                        @foreach($securityLogs as $log)
+                            <div class="relative">
+                                <!-- Circle Timeline Bullet -->
+                                <div class="absolute -left-[31px] top-1.5 w-2 h-2 rounded-full border-2 border-white
+                                    @if($log['type'] == 'success') bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]
+                                    @elseif($log['type'] == 'info') bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.6)]
+                                    @else bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]
+                                    @endif
+                                "></div>
+                                
+                                <!-- Header: Action & Time -->
+                                <div class="flex items-center justify-between gap-2 flex-wrap">
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="text-[10px] font-black uppercase tracking-wider
+                                            @if($log['type'] == 'success') text-emerald-600
+                                            @elseif($log['type'] == 'info') text-blue-600
+                                            @else text-rose-600
+                                            @endif
+                                        ">
+                                            {{ $log['action'] }}
+                                        </span>
+                                        <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest bg-slate-50 px-1.5 py-0.5 rounded">
+                                            {{ $log['user'] }}
+                                        </span>
+                                    </div>
+                                    <span class="font-mono text-[9px] font-bold text-slate-400">
+                                        {{ $log['time'] }}
+                                    </span>
+                                </div>
+
+                                <!-- Description -->
+                                <p class="text-slate-600 text-xs font-semibold mt-1 leading-snug">
+                                    {{ $log['details'] }}
+                                </p>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Analytics (Widget Lama) -->
+            <div class="lg:col-span-2 bg-white border border-slate-100 rounded-2xl p-6 shadow-sm flex flex-col justify-between min-w-0">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-xs">
+                            {{ app()->getLocale() == 'en' ? 'System Analytics' : 'Analitik Sistem' }}
+                        </h3>
+                        <div class="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
+                            <i data-lucide="activity" class="w-4 h-4"></i>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-100/60 mt-4">
+                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">
+                            {{ app()->getLocale() == 'en' ? 'Operational Load' : 'Beban Operasional' }}
+                        </p>
+                        <div class="flex items-end gap-2 mb-3">
+                            <span class="text-xl font-black text-slate-900 leading-none">
+                                {{ app()->getLocale() == 'en' ? 'Efficient' : 'Optimal' }}
+                            </span>
+                        </div>
+                        <div class="w-full bg-slate-200 h-1 rounded-full overflow-hidden">
+                            <div class="bg-emerald-500 h-full w-[100%] shadow-[0_0_6px_rgba(16,185,129,0.4)]"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4 pt-4 border-t border-slate-50 flex flex-col gap-2">
+                    <div class="flex justify-between items-center text-[10px]">
+                        <span class="text-slate-400 font-bold">API Latency</span>
+                        <span class="font-mono font-black text-emerald-500">14ms</span>
+                    </div>
+                    <div class="flex justify-between items-center text-[10px]">
+                        <span class="text-slate-400 font-bold">Database</span>
+                        <span class="font-mono font-black text-emerald-500">99.9%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
     </div>
 
     @if(auth()->user()->hasFullAccess())

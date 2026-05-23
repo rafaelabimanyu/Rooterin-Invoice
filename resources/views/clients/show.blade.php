@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout :title="app()->getLocale() == 'en' ? 'Client & Partner Management' : 'Manajemen Klien & Mitra'">
     <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
             <div class="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">

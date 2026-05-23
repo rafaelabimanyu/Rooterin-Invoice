@@ -79,8 +79,8 @@
         <!-- Header -->
         <div class="px-6 py-5 bg-slate-950/40 text-white flex items-center justify-between border-b border-slate-800/50 shrink-0">
             <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 to-violet-650 flex items-center justify-center text-white shadow-md border border-indigo-400/20">
-                    <i data-lucide="bot" class="w-5 h-5"></i>
+                <div class="w-9 h-9 rounded-xl bg-slate-900 flex items-center justify-center text-white shadow-md border border-slate-800 overflow-hidden p-1 shrink-0">
+                    <img src="{{ asset('img/logo-rooterin.png') }}" alt="Rooterin Logo" class="w-full h-full object-contain">
                 </div>
                 <div>
                     <h4 class="text-xs md:text-sm font-black font-jakarta leading-none uppercase tracking-wide">Rooterin AI Assistant</h4>
@@ -135,8 +135,8 @@
                 <div class="flex items-start gap-2.5 w-full {{ $msg['sender'] === 'user' ? 'justify-end' : 'justify-start' }}">
                     <!-- AI Avatar -->
                     @if($msg['sender'] === 'ai')
-                        <div class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700/60 flex items-center justify-center text-indigo-400 shrink-0 shadow-sm mt-0.5">
-                            <i data-lucide="bot" class="w-4 h-4"></i>
+                        <div class="w-7 h-7 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center shrink-0 shadow-sm mt-0.5 overflow-hidden p-0.5">
+                            <img src="{{ asset('img/logo-rooterin.png') }}" alt="Rooterin Logo" class="w-full h-full object-contain">
                         </div>
                     @endif
 
@@ -175,8 +175,8 @@
 
             <!-- Loading indicator for Livewire -->
             <div wire:loading wire:target="sendMessage" class="flex items-start gap-2.5">
-                <div class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700/60 flex items-center justify-center text-indigo-400 shrink-0 shadow-sm mt-0.5 animate-pulse">
-                    <i data-lucide="bot" class="w-4 h-4"></i>
+                <div class="w-7 h-7 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center shrink-0 shadow-sm mt-0.5 animate-pulse overflow-hidden p-0.5">
+                    <img src="{{ asset('img/logo-rooterin.png') }}" alt="Rooterin Logo" class="w-full h-full object-contain">
                 </div>
                 <div class="bg-slate-800 text-slate-400 rounded-2xl rounded-tl-none px-4 py-3 border border-slate-700/50 shadow-sm flex items-center gap-1.5">
                     <span class="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></span>

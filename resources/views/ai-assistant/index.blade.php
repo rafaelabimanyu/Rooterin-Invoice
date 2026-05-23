@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout title="Rooterin AI Assistant">
     <div class="animate-fade-in-up">
         <!-- Add marked.js for markdown parsing -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>

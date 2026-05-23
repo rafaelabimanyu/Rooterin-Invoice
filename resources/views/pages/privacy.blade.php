@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout :title="app()->getLocale() == 'en' ? 'Privacy Policy' : 'Kebijakan Privasi'">
     <div class="page-fade-in py-12">
         <div class="max-w-4xl mx-auto">
             <div class="glass-card overflow-hidden">

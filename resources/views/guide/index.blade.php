@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout :title="app()->getLocale() == 'en' ? 'Guide Center & Documentation' : 'Pusat Panduan & Dokumentasi'">
     <div class="animate-fade-in-up">
         <div x-data="{ mobileMenuOpen: false }" class="relative">
             

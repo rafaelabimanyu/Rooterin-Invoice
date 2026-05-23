@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout :title="app()->getLocale() == 'en' ? 'Billing & Invoice List' : 'Daftar Penagihan & Invoice'">
     <div class="animate-fade-in-up">
         <!-- Header Section -->
     <div class="mb-12 flex flex-col md:flex-row md:items-center justify-between gap-8">

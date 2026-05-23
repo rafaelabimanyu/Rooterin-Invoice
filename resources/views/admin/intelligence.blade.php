@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout :title="app()->getLocale() == 'en' ? 'Business Intelligence & Owner KPI' : 'Intelijen Bisnis & KPI Pemilik'">
     <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 page-fade-in">
         <div>
             <div class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">

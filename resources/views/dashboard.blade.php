@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout :title="app()->getLocale() == 'en' ? 'Main Dashboard' : 'Dashboard Utama'">
     <div class="animate-fade-in-up">
         <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-8 page-fade-in">
         <div>

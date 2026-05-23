@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout :title="app()->getLocale() == 'en' ? 'System Settings' : 'Pengaturan Sistem'">
     <div class="animate-fade-in-up">
         <div class="mb-10">
             <div class="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">

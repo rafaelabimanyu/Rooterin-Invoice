@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout :title="app()->getLocale() == 'en' ? 'Team & Staff Management' : 'Manajemen Tim & Staf Operasional'">
     <div class="mb-10">
         <div class="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">
             <a href="{{ route('users.index') }}" class="hover:text-indigo-600 transition-colors">{{ app()->getLocale() == 'en' ? 'Team Management' : 'Manajemen Tim' }}</a>

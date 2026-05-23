@@ -32,8 +32,8 @@
             <div class="w-full max-w-md space-y-12">
                 <!-- Brand -->
                 <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white shadow-2xl shadow-slate-900/20 transition-transform hover:scale-110 duration-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-check text-indigo-500"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
+                    <div class="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center shadow-2xl shadow-slate-900/20 transition-transform hover:scale-110 duration-500 overflow-hidden p-2 shrink-0">
+                        <img src="{{ asset('img/logo-rooterin.png') }}" alt="Rooterin Logo" class="w-full h-full object-contain">
                     </div>
                     <div>
                         <span class="text-2xl font-black tracking-tighter uppercase">Rooterin<span class="text-indigo-600">.</span></span>
@@ -147,8 +147,8 @@
             </div>
             
             <div class="relative z-20 text-center px-24 page-fade-in stagger-2">
-                <div class="w-32 h-32 bg-white/5 border border-white/10 rounded-[40px] flex items-center justify-center mb-16 mx-auto backdrop-blur-2xl shadow-2xl">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap fill-white/10"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <div class="w-32 h-32 bg-white/5 border border-white/10 rounded-[40px] flex items-center justify-center mb-16 mx-auto backdrop-blur-2xl shadow-2xl overflow-hidden p-6">
+                    <img src="{{ asset('img/logo-rooterin.png') }}" alt="Rooterin Logo" class="w-full h-full object-contain">
                 </div>
                 
                 <div class="space-y-6">

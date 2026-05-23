@@ -18,8 +18,8 @@
         x-bind:class="collapsed ? 'justify-center px-0 mb-0' : 'px-6 mb-6'"
     >
         <div class="flex items-center gap-4 group cursor-pointer" onclick="window.location='{{ route('dashboard') }}'">
-            <div class="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white shrink-0 shadow-xl shadow-slate-900/10 group-hover:rotate-12 transition-transform duration-300">
-                <i data-lucide="zap" class="w-6 h-6 fill-current"></i>
+            <div class="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center shrink-0 shadow-xl shadow-slate-900/10 group-hover:rotate-12 transition-transform duration-300 overflow-hidden p-2">
+                <img src="{{ asset('img/logo-rooterin.png') }}" alt="Rooterin Logo" class="w-full h-full object-contain">
             </div>
             <div x-show="!collapsed" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-x-4" x-transition:enter-end="opacity-100 translate-x-0" class="flex flex-col">
                 <span class="text-lg font-black text-slate-900 tracking-tighter font-jakarta leading-none uppercase">Rooterin<span class="text-indigo-500">.</span></span>

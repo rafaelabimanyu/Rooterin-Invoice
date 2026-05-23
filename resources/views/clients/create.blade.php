@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout :title="app()->getLocale() == 'en' ? 'Client & Partner Management' : 'Manajemen Klien & Mitra'">
     <div class="mb-8">
         <a href="{{ route('clients.index') }}" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-indigo-600 transition-colors mb-4 font-jakarta font-bold">
             <i data-lucide="arrow-left" class="w-4 h-4"></i>

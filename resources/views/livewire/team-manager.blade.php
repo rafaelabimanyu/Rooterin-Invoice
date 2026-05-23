@@ -1,4 +1,8 @@
-<div>
+<div x-data="{ 
+    showPermissionsModal: @entangle('showPermissionsModal'),
+    showSuspendModal: @entangle('showSuspendModal'),
+    showEditModal: @entangle('showEditModal') 
+}">
     <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 page-fade-in">
         <div>
             <div class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">
@@ -106,6 +110,7 @@
                         <!-- Action 1: Sliders (Permissions settings) -->
                         <button 
                             wire:click="openPermissions({{ $user->id }})"
+                            @click="showPermissionsModal = true"
                             class="p-2.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all relative flex items-center justify-center"
                             title="{{ app()->getLocale() == 'en' ? 'Atur Hak Akses Staf' : 'Atur Hak Akses Staf' }}"
                             wire:loading.class="opacity-50 pointer-events-none"
@@ -121,6 +126,7 @@
                         <!-- Action 2: Settings (Profile settings) -->
                         <button 
                             wire:click="openEditModal({{ $user->id }})"
+                            @click="showEditModal = true"
                             class="p-2.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all relative flex items-center justify-center"
                             title="{{ app()->getLocale() == 'en' ? 'Edit Profil & Kredensial' : 'Edit Profil & Kredensial' }}"
                             wire:loading.class="opacity-50 pointer-events-none"
@@ -137,6 +143,7 @@
                         @if($user->id !== auth()->id())
                             <button 
                                 wire:click="confirmSuspend({{ $user->id }})"
+                                @click="showSuspendModal = true"
                                 class="p-2.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all relative flex items-center justify-center"
                                 title="{{ app()->getLocale() == 'en' ? 'Nonaktifkan Akses Staf' : 'Nonaktifkan Akses Staf' }}"
                                 wire:loading.class="opacity-50 pointer-events-none"
@@ -156,27 +163,21 @@
     </div>
 
     <!-- Modal 1: Manage Staff Permissions (Spatie integration) -->
-    <div class="fixed inset-0 z-[110] flex items-center justify-center p-6"
-         x-data="{ open: @entangle('showPermissionsModal') }"
-         x-show="open"
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm"
+         x-show="showPermissionsModal"
          x-cloak
          style="display: none;"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         @click.self="showPermissionsModal = false"
     >
-        <!-- Backdrop -->
-        <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-xl"
-             x-show="open"
-             x-transition:enter="transition ease-out duration-200"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100"
-             x-transition:leave="transition ease-in duration-150"
-             x-transition:leave-start="opacity-100"
-             x-transition:leave-end="opacity-0"
-             wire:click="$set('showPermissionsModal', false)"
-        ></div>
-
         <!-- Modal Content Container -->
-        <div class="relative w-full max-w-2xl bg-white rounded-[40px] shadow-2xl overflow-hidden border border-slate-200 transform"
-             x-show="open"
+        <div class="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-200 transform"
+             x-show="showPermissionsModal"
              x-transition:enter="transition ease-out duration-200"
              x-transition:enter-start="opacity-0 scale-95"
              x-transition:enter-end="opacity-100 scale-100"
@@ -252,10 +253,21 @@
                     </button>
                 </div>
 
+                <!-- Loading Overlay when opening permissions -->
+                <div wire:loading wire:target="openPermissions" class="absolute inset-0 bg-white/70 flex items-center justify-center z-50">
+                    <div class="flex flex-col items-center gap-3">
+                        <svg class="animate-spin w-10 h-10 text-indigo-600" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span class="text-xs font-black text-slate-500 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Loading Permissions...' : 'Memuat Hak Akses...' }}</span>
+                    </div>
+                </div>
+
                 <!-- Saving Overlay -->
                 <div class="absolute inset-0 bg-white/60 backdrop-blur-[1px] flex items-center justify-center z-50" wire:loading wire:target="savePermissions">
                     <div class="flex flex-col items-center gap-3">
-                        <svg class="animate-spin w-10 h-10 text-indigo-650" fill="none" viewBox="0 0 24 24">
+                        <svg class="animate-spin w-10 h-10 text-indigo-600" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
@@ -266,27 +278,21 @@
         </div>
 
     <!-- Modal 2: Suspend/Restore Confirmation Modal -->
-    <div class="fixed inset-0 z-[110] flex items-center justify-center p-6"
-         x-data="{ open: @entangle('showSuspendModal') }"
-         x-show="open"
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm"
+         x-show="showSuspendModal"
          x-cloak
          style="display: none;"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         @click.self="showSuspendModal = false"
     >
-        <!-- Backdrop -->
-        <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-xl"
-             x-show="open"
-             x-transition:enter="transition ease-out duration-200"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100"
-             x-transition:leave="transition ease-in duration-150"
-             x-transition:leave-start="opacity-100"
-             x-transition:leave-end="opacity-0"
-             wire:click="$set('showSuspendModal', false)"
-        ></div>
-
         <!-- Modal Content Container -->
-        <div class="relative w-full max-w-md bg-white rounded-[32px] shadow-2xl overflow-hidden border border-slate-200 transform"
-             x-show="open"
+        <div class="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-200 transform"
+             x-show="showSuspendModal"
              x-transition:enter="transition ease-out duration-200"
              x-transition:enter-start="opacity-0 scale-95"
              x-transition:enter-end="opacity-100 scale-100"
@@ -322,6 +328,17 @@
                 <button type="button" wire:click="toggleSuspend" class="flex-1 py-3 text-xs font-black uppercase tracking-wider text-white rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 {{ $userToSuspend?->is_active ? 'bg-rose-600 hover:bg-rose-500 shadow-rose-600/10' : 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-600/10' }}">
                     {{ $userToSuspend?->is_active ? (app()->getLocale() == 'en' ? 'Suspend Account' : 'Nonaktifkan Akses') : (app()->getLocale() == 'en' ? 'Restore Account' : 'Pulihkan Akses') }}
                 </button>
+                <!-- Loading Overlay when confirming suspend -->
+                <div wire:loading wire:target="confirmSuspend" class="absolute inset-0 bg-white/70 flex items-center justify-center z-50">
+                    <div class="flex flex-col items-center gap-3">
+                        <svg class="animate-spin w-10 h-10 text-rose-600" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span class="text-xs font-black text-slate-500 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Loading Clearance...' : 'Memuat Status...' }}</span>
+                    </div>
+                </div>
+
                 <!-- Processing Overlay -->
                 <div class="absolute inset-0 bg-white/60 backdrop-blur-[1px] flex items-center justify-center z-50" wire:loading wire:target="toggleSuspend">
                     <div class="flex flex-col items-center gap-3">
@@ -337,27 +354,21 @@
     </div>
 
     <!-- Modal 3: Advanced Profile / Credentials Management Modal -->
-    <div class="fixed inset-0 z-[110] flex items-center justify-center p-6"
-         x-data="{ open: @entangle('showEditModal') }"
-         x-show="open"
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm"
+         x-show="showEditModal"
          x-cloak
          style="display: none;"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         @click.self="showEditModal = false"
     >
-        <!-- Backdrop -->
-        <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-xl"
-             x-show="open"
-             x-transition:enter="transition ease-out duration-200"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100"
-             x-transition:leave="transition ease-in duration-150"
-             x-transition:leave-start="opacity-100"
-             x-transition:leave-end="opacity-0"
-             wire:click="$set('showEditModal', false)"
-        ></div>
-
         <!-- Modal Content Container -->
-        <div class="relative w-full max-w-4xl bg-white rounded-[40px] shadow-2xl overflow-hidden border border-slate-200 transform"
-             x-show="open"
+        <div class="relative w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-200 transform"
+             x-show="showEditModal"
              x-transition:enter="transition ease-out duration-200"
              x-transition:enter-start="opacity-0 scale-95"
              x-transition:enter-end="opacity-100 scale-100"
@@ -531,10 +542,21 @@
                     </div>
                 </div>
 
+                <!-- Loading Overlay when opening profile edit -->
+                <div wire:loading wire:target="openEditModal" class="absolute inset-0 bg-white/70 flex items-center justify-center z-50">
+                    <div class="flex flex-col items-center gap-3">
+                        <svg class="animate-spin w-10 h-10 text-indigo-600" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span class="text-xs font-black text-slate-500 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Loading Operative...' : 'Memuat Data Pelaksana...' }}</span>
+                    </div>
+                </div>
+
                 <!-- Saving Profile Overlay -->
                 <div class="absolute inset-0 bg-white/60 backdrop-blur-[1px] flex items-center justify-center z-50" wire:loading wire:target="saveEdit, generatePassword">
                     <div class="flex flex-col items-center gap-3">
-                        <svg class="animate-spin w-10 h-10 text-indigo-650" fill="none" viewBox="0 0 24 24">
+                        <svg class="animate-spin w-10 h-10 text-indigo-600" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>

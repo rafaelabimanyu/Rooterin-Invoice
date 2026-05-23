@@ -22,10 +22,10 @@
     </div>
     
     <div class="prose prose-slate max-w-none space-y-6 break-words" x-data="{ expanded: window.innerWidth >= 1024 }" @resize.window="if(window.innerWidth >= 1024) expanded = true">
-        <p class="text-slate-500 leading-relaxed text-base lg:text-lg break-words">{{ is_array(__($activeSectionData['content'])) ? $activeSectionData['content'] : __($activeSectionData['content']) }}</p>
+        <p class="text-slate-500 text-base leading-relaxed px-4 lg:px-0 lg:text-lg break-words">{{ is_array(__($activeSectionData['content'])) ? $activeSectionData['content'] : __($activeSectionData['content']) }}</p>
         
         @if(isset($activeSectionData['pro_tip']))
-        <div class="bg-amber-50 p-5 lg:p-6 rounded-2xl border border-amber-100 flex gap-4 mt-6">
+        <div class="bg-amber-50 mx-4 lg:mx-0 p-5 lg:p-6 rounded-2xl border border-amber-100 flex gap-4 mt-6">
             <i data-lucide="lightbulb" class="w-6 h-6 text-amber-600 shrink-0 mt-0.5"></i>
             <p class="text-sm text-amber-900 leading-relaxed">
                 <strong class="font-black tracking-wide uppercase text-[10px] lg:text-xs">Pro Tip:</strong><br> 
@@ -47,11 +47,36 @@
              x-transition:enter="transition ease-out duration-300" 
              x-transition:enter-start="opacity-0 -translate-y-4" 
              x-transition:enter-end="opacity-100 translate-y-0" 
-             class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 mt-6 lg:mt-10 lg:pt-6 lg:border-t border-slate-100">
+             class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 mt-6 lg:mt-10 lg:pt-6 lg:border-t border-slate-100 px-4 lg:px-0">
             @foreach($activeSectionData['sub_sections'] as $subKey => $subSec)
-            <div id="{{ $subKey }}" class="glass-card p-5 lg:p-6 border-l-4 border-l-slate-300 hover:border-l-indigo-500 hover:-translate-y-1 transition-all duration-300 scroll-mt-32 cursor-default group">
-                <h5 class="font-bold text-slate-900 text-base mb-3 group-hover:text-indigo-700 transition-colors">{{ is_array(__($subSec['title'])) ? $subSec['title'] : __($subSec['title']) }}</h5>
-                <p class="text-sm text-slate-600 leading-relaxed">{{ is_array(__($subSec['content'])) ? $subSec['content'] : __($subSec['content']) }}</p>
+            <div id="{{ $subKey }}" 
+                 x-data="{ open: window.innerWidth >= 1024 }" 
+                 @resize.window="if(window.innerWidth >= 1024) open = true"
+                 class="glass-card p-0 overflow-hidden border-l-4 border-l-slate-350 hover:border-l-indigo-500 hover:-translate-y-0.5 transition-all duration-300 scroll-mt-32 cursor-pointer lg:cursor-default group"
+                 @click="if(window.innerWidth < 1024) open = !open"
+            >
+                <!-- Accordion Header -->
+                <div class="px-4 lg:px-6 py-5 flex items-center justify-between gap-4 select-none">
+                    <h5 class="font-bold text-slate-900 text-sm lg:text-base group-hover:text-indigo-700 transition-colors">
+                        {{ is_array(__($subSec['title'])) ? $subSec['title'] : __($subSec['title']) }}
+                    </h5>
+                    <!-- Mobile toggle chevron indicator -->
+                    <div class="lg:hidden p-1 bg-slate-50 text-slate-400 group-hover:text-indigo-600 rounded-lg">
+                        <i data-lucide="chevron-down" class="w-4 h-4 transition-transform duration-300" :class="open ? 'rotate-180' : ''"></i>
+                    </div>
+                </div>
+                
+                <!-- Accordion Content -->
+                <div x-show="open"
+                     x-transition:enter="transition ease-out duration-200"
+                     x-transition:enter-start="opacity-0 -translate-y-2"
+                     x-transition:enter-end="opacity-100 translate-y-0"
+                     class="pb-5 pt-0 border-t border-slate-50 lg:border-t-0"
+                >
+                    <p class="text-base leading-relaxed text-slate-600 lg:text-sm font-medium px-4 lg:px-6">
+                        {{ is_array(__($subSec['content'])) ? $subSec['content'] : __($subSec['content']) }}
+                    </p>
+                </div>
             </div>
             @endforeach
         </div>

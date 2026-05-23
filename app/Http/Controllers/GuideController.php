@@ -11,8 +11,11 @@ class GuideController extends Controller
         $user = auth()->user();
         $role = $user->role; // 'owner', 'admin', 'staff'
         
-        // Ambil data dokumentasi dari config
-        $docs = config('docs.roles');
+        // Ambil data dokumentasi dari file trans (lang) berdasarkan bahasa aktif, dengan fallback ke config
+        $docs = __('guide.roles');
+        if (!is_array($docs)) {
+            $docs = config('docs.roles');
+        }
         
         if (!isset($docs[$role])) {
             abort(403, 'Dokumentasi untuk role ini tidak tersedia.');

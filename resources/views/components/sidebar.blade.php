@@ -14,12 +14,12 @@
 >
     <!-- Brand Area -->
     <div 
-        class="flex items-center transition-all duration-500 cubic-bezier-spring h-20"
-        x-bind:class="collapsed ? 'justify-center mb-0 px-0' : 'justify-start mb-6 px-6'"
+        class="flex items-center transition-all duration-500 cubic-bezier-spring"
+        x-bind:class="collapsed ? 'justify-center mb-0 px-0 h-20' : 'justify-start mb-6 pl-6 pr-4 py-4 h-24'"
     >
         <div class="flex items-center w-full cursor-pointer group" x-bind:class="collapsed ? 'justify-center' : 'justify-start'" onclick="window.location='{{ route('dashboard') }}'">
             <!-- Expanded Long Logo -->
-            <img src="{{ asset('img/logo-rooterin-long.png') }}" alt="Rooterin Logo" class="h-9 w-auto object-contain transition-transform duration-300 group-hover:scale-105" x-show="!collapsed">
+            <img src="{{ asset('img/logo-rooterin-long.png') }}" alt="Rooterin Logo" class="h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105" x-show="!collapsed">
             <!-- Collapsed Square Logo -->
             <img src="{{ asset('img/logo-rooterin.png') }}" alt="Rooterin Logo" class="h-8 w-auto object-contain transition-transform duration-300 group-hover:scale-105" x-show="collapsed" x-cloak>
         </div>

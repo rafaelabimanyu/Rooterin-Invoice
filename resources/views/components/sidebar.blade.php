@@ -14,17 +14,11 @@
 >
     <!-- Brand Area -->
     <div 
-        class="flex items-center h-20 transition-all duration-500 cubic-bezier-spring"
-        x-bind:class="collapsed ? 'justify-center px-0 mb-0' : 'px-6 mb-6'"
+        class="flex items-center justify-center h-20 transition-all duration-500 cubic-bezier-spring"
+        x-bind:class="collapsed ? 'mb-0' : 'mb-6 px-6'"
     >
-        <div class="flex items-center gap-4 group cursor-pointer" onclick="window.location='{{ route('dashboard') }}'">
-            <div class="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center shrink-0 shadow-xl shadow-slate-900/10 group-hover:rotate-12 transition-transform duration-300 overflow-hidden p-2">
-                <img src="{{ asset('img/logo-rooterin.png') }}" alt="Rooterin Logo" class="w-full h-full object-contain">
-            </div>
-            <div x-show="!collapsed" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-x-4" x-transition:enter-end="opacity-100 translate-x-0" class="flex flex-col">
-                <span class="text-lg font-black text-slate-900 tracking-tighter font-jakarta leading-none uppercase">Rooterin<span class="text-indigo-500">.</span></span>
-                <span class="text-[8px] font-black text-slate-400 uppercase tracking-[0.3em] mt-1 leading-none">{{ __('ui.system_live') }}</span>
-            </div>
+        <div class="flex items-center justify-center w-full cursor-pointer group" onclick="window.location='{{ route('dashboard') }}'">
+            <img src="{{ asset('img/logo-rooterin.png') }}" alt="Rooterin Logo" class="object-contain transition-transform duration-300 group-hover:scale-105" x-bind:class="collapsed ? 'h-8' : 'h-10'">
         </div>
     </div>
 

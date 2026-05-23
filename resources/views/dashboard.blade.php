@@ -375,10 +375,10 @@
                     <div class="flex items-center justify-between mb-4">
                         <div>
                             <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-sm">
-                                {{ app()->getLocale() == 'en' ? 'Cash Flow & Financial Projections' : 'Arus Kas & Proyeksi Keuangan' }}
+                                {{ __('dashboard.cash_flow_title') }}
                             </h3>
                             <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">
-                                {{ app()->getLocale() == 'en' ? 'Trends comparison over the last 6 months' : 'Tren perbandingan 6 bulan terakhir' }}
+                                {{ __('dashboard.cash_flow_subtitle') }}
                             </p>
                         </div>
                         <div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
@@ -390,11 +390,11 @@
                     <div class="flex items-center gap-4 text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-6 mt-2">
                         <div class="flex items-center gap-1.5">
                             <span class="w-2.5 h-2.5 rounded-sm bg-indigo-600 block"></span>
-                            <span>{{ app()->getLocale() == 'en' ? 'Revenue (Incoming)' : 'Uang Masuk (Revenue)' }}</span>
+                            <span>{{ __('dashboard.revenue') }}</span>
                         </div>
                         <div class="flex items-center gap-1.5">
                             <span class="w-2.5 h-2.5 rounded-sm bg-amber-500 block"></span>
-                            <span>{{ app()->getLocale() == 'en' ? 'Receivables' : 'Proyeksi Piutang' }}</span>
+                            <span>{{ __('dashboard.receivables') }}</span>
                         </div>
                     </div>
 
@@ -424,7 +424,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <span class="text-[9px] font-black text-slate-400 mt-2 tracking-wider uppercase">Dec</span>
+                            <span class="text-[9px] font-black text-slate-400 mt-2 tracking-wider uppercase">{{ __('dashboard.month_dec') }}</span>
                         </div>
 
                         <!-- Month: Jan -->
@@ -443,7 +443,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <span class="text-[9px] font-black text-slate-400 mt-2 tracking-wider uppercase">Jan</span>
+                            <span class="text-[9px] font-black text-slate-400 mt-2 tracking-wider uppercase">{{ __('dashboard.month_jan') }}</span>
                         </div>
 
                         <!-- Month: Feb -->
@@ -462,7 +462,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <span class="text-[9px] font-black text-slate-400 mt-2 tracking-wider uppercase">Feb</span>
+                            <span class="text-[9px] font-black text-slate-400 mt-2 tracking-wider uppercase">{{ __('dashboard.month_feb') }}</span>
                         </div>
 
                         <!-- Month: Mar -->
@@ -481,7 +481,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <span class="text-[9px] font-black text-slate-400 mt-2 tracking-wider uppercase">Mar</span>
+                            <span class="text-[9px] font-black text-slate-400 mt-2 tracking-wider uppercase">{{ __('dashboard.month_mar') }}</span>
                         </div>
 
                         <!-- Month: Apr -->
@@ -500,7 +500,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <span class="text-[9px] font-black text-slate-400 mt-2 tracking-wider uppercase">Apr</span>
+                            <span class="text-[9px] font-black text-slate-400 mt-2 tracking-wider uppercase">{{ __('dashboard.month_apr') }}</span>
                         </div>
 
                         <!-- Month: May -->
@@ -519,7 +519,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <span class="text-[9px] font-black text-slate-400 mt-2 tracking-wider uppercase">May</span>
+                            <span class="text-[9px] font-black text-slate-400 mt-2 tracking-wider uppercase">{{ __('dashboard.month_may') }}</span>
                         </div>
                     </div>
                 </div>
@@ -530,10 +530,10 @@
                 <div class="flex items-center justify-between mb-4 shrink-0">
                     <div>
                         <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-sm">
-                            {{ app()->getLocale() == 'en' ? 'Team Activity Log' : 'Log Aktivitas Tim' }}
+                            {{ __('dashboard.team_log_title') }}
                         </h3>
                         <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">
-                            {{ app()->getLocale() == 'en' ? 'Staff operational audit trail' : 'Audit pengawasan operasional staf' }}
+                            {{ __('dashboard.team_log_subtitle') }}
                         </p>
                     </div>
                     <div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
@@ -546,51 +546,57 @@
                     @php
                         $securityLogs = [
                             [
-                                'time' => '10 mins ago',
+                                'time' => now()->subMinutes(10),
                                 'user' => 'Rian Wijaya',
                                 'role' => 'Staff',
-                                'action' => 'Success Login',
-                                'details' => 'Logged in from authorized IP: 192.168.1.45',
+                                'action' => 'success_login',
+                                'details_key' => 'logged_in_ip',
+                                'details_params' => ['ip' => '192.168.1.45'],
                                 'type' => 'success'
                             ],
                             [
-                                'time' => '45 mins ago',
+                                'time' => now()->subMinutes(45),
                                 'user' => 'Budi Santoso',
                                 'role' => 'Staff',
-                                'action' => 'Invoice Updated',
-                                'details' => 'Updated total for INV-2026-089 (PT Sukses Jaya)',
+                                'action' => 'invoice_updated',
+                                'details_key' => 'updated_invoice',
+                                'details_params' => ['inv' => 'INV-2026-089', 'client' => 'PT Sukses Jaya'],
                                 'type' => 'info'
                             ],
                             [
-                                'time' => '2 hours ago',
+                                'time' => now()->subHours(2),
                                 'user' => 'System Monitor',
                                 'role' => 'Security',
-                                'action' => 'Security Alert',
-                                'details' => 'Detected high rate of API requests from Node-02',
+                                'action' => 'security_alert',
+                                'details_key' => 'high_api_rate',
+                                'details_params' => ['node' => 'Node-02'],
                                 'type' => 'danger'
                             ],
                             [
-                                'time' => '3 hours ago',
+                                'time' => now()->subHours(3),
                                 'user' => 'Amalia Putri',
                                 'role' => 'Staff',
-                                'action' => 'Invoice Created',
-                                'details' => 'Created draft invoice INV-2026-092',
+                                'action' => 'invoice_created',
+                                'details_key' => 'created_invoice',
+                                'details_params' => ['inv' => 'INV-2026-092'],
                                 'type' => 'info'
                             ],
                             [
-                                'time' => '5 hours ago',
+                                'time' => now()->subHours(5),
                                 'user' => 'Budi Santoso',
                                 'role' => 'Staff',
-                                'action' => 'Success Login',
-                                'details' => 'Session verified under token BST-4929',
+                                'action' => 'success_login',
+                                'details_key' => 'session_verified',
+                                'details_params' => ['token' => 'BST-4929'],
                                 'type' => 'success'
                             ],
                             [
-                                'time' => '8 hours ago',
+                                'time' => now()->subHours(8),
                                 'user' => 'System Monitor',
                                 'role' => 'Security',
-                                'action' => 'Security Alert',
-                                'details' => 'Failed admin login attempt from IP 182.253.140.23',
+                                'action' => 'security_alert',
+                                'details_key' => 'failed_admin_login',
+                                'details_params' => ['ip' => '182.253.140.23'],
                                 'type' => 'danger'
                             ]
                         ];
@@ -616,20 +622,20 @@
                                             @else text-rose-600
                                             @endif
                                         ">
-                                            {{ $log['action'] }}
+                                            {{ __('dashboard.' . $log['action']) }}
                                         </span>
                                         <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest bg-slate-50 px-1.5 py-0.5 rounded">
                                             {{ $log['user'] }}
                                         </span>
                                     </div>
                                     <span class="font-mono text-[9px] font-bold text-slate-400">
-                                        {{ $log['time'] }}
+                                        {{ $log['time']->diffForHumans() }}
                                     </span>
                                 </div>
 
                                 <!-- Description -->
                                 <p class="text-slate-600 text-xs font-semibold mt-1 leading-snug">
-                                    {{ $log['details'] }}
+                                    {{ __('dashboard.' . $log['details_key'], $log['details_params']) }}
                                 </p>
                             </div>
                         @endforeach

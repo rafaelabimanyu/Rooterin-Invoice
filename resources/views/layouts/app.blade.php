@@ -6,6 +6,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>{{ isset($title) && $title ? $title . ' | Rooterin - Sistem Operasional' : 'Rooterin - Sistem Operasional' }}</title>
+        <link rel="icon" type="image/png" href="{{ asset('img/logo-rooterin.png') }}">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">

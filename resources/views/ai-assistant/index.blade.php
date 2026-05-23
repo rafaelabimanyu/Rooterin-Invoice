@@ -37,6 +37,7 @@
 
     <div class="bg-slate-50/50 rounded-3xl lg:rounded-[2.5rem] border border-slate-200/80 shadow-sm overflow-hidden flex flex-col lg:flex-row h-[calc(100vh-9rem)] lg:h-[calc(100vh-12rem)] min-h-[500px] lg:min-h-[600px] font-sans"
         x-data="aiChat()"
+        x-init="initChat()"
     >
         <!-- Mobile Chat History Drawer (Sliding Sidebar) -->
         <div x-show="showDrawer" 
@@ -509,7 +510,7 @@
 
     <!-- Move Javascript to proper script tag using Alpine.data -->
     <script>
-        document.addEventListener('alpine:init', () => {
+        const registerAiChat = () => {
             Alpine.data('aiChat', () => ({
                 input: '',
                 messages: [],
@@ -548,11 +549,28 @@
                     'reports.index': '{{ app()->getLocale() == "en" ? "👉 Open Financial Reports" : "👉 Buka Laporan Keuangan" }}',
                     'chronos.index': '{{ app()->getLocale() == "en" ? "👉 Open Billing Calendar (Chronos)" : "👉 Buka Kalender Billing (Chronos)" }}'
                 },
-                init() {
+                initChat() {
                     this.messages = [
                         { sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Hello! I am your Virtual Senior Financial Consultant & Business Analyst. Is there anything I can help you with regarding cash flow analysis, overdue clients, financial forecasts, or system navigation today?" : "Halo! Saya Senior Financial Consultant & Business Analyst Virtual Anda. Ada yang bisa saya bantu terkait analisis arus kas, klien overdue, prediksi keuangan, atau navigasi sistem hari ini?" }}' }
                     ];
                     this.initSpeech();
+                    
+                    this.$nextTick(() => {
+                        this.scrollToBottom();
+                        // Focus on chat input
+                        const inputEl = this.$el.querySelector('form input[type="text"]');
+                        if (inputEl) {
+                            inputEl.focus();
+                        }
+                        
+                        // Initialize all lucide icons in the component
+                        if (typeof lucide !== 'undefined') {
+                            lucide.createIcons({
+                                icons: lucide.icons,
+                                root: this.$el
+                            });
+                        }
+                    });
                 },
                 initSpeech() {
                     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -855,7 +873,13 @@
                     });
                 }
             }));
-        });
+        };
+
+        if (window.Alpine) {
+            registerAiChat();
+        } else {
+            document.addEventListener('alpine:init', registerAiChat);
+        }
     </script>
 
     <script>

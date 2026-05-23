@@ -106,29 +106,47 @@
                         <!-- Action 1: Sliders (Permissions settings) -->
                         <button 
                             wire:click="openPermissions({{ $user->id }})"
-                            class="p-2.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
+                            class="p-2.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all relative flex items-center justify-center"
                             title="{{ app()->getLocale() == 'en' ? 'Atur Hak Akses Staf' : 'Atur Hak Akses Staf' }}"
+                            wire:loading.class="opacity-50 pointer-events-none"
+                            wire:target="openPermissions({{ $user->id }})"
                         >
-                            <i data-lucide="sliders" class="w-5 h-5"></i>
+                            <i data-lucide="sliders" class="w-5 h-5" wire:loading.remove wire:target="openPermissions({{ $user->id }})"></i>
+                            <svg class="animate-spin w-5 h-5 text-indigo-600 hidden" wire:loading.class="!block" wire:target="openPermissions({{ $user->id }})" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
                         </button>
 
                         <!-- Action 2: Settings (Profile settings) -->
                         <button 
                             wire:click="openEditModal({{ $user->id }})"
-                            class="p-2.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
+                            class="p-2.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all relative flex items-center justify-center"
                             title="{{ app()->getLocale() == 'en' ? 'Edit Profil & Kredensial' : 'Edit Profil & Kredensial' }}"
+                            wire:loading.class="opacity-50 pointer-events-none"
+                            wire:target="openEditModal({{ $user->id }})"
                         >
-                            <i data-lucide="settings-2" class="w-5 h-5"></i>
+                            <i data-lucide="settings-2" class="w-5 h-5" wire:loading.remove wire:target="openEditModal({{ $user->id }})"></i>
+                            <svg class="animate-spin w-5 h-5 text-indigo-600 hidden" wire:loading.class="!block" wire:target="openEditModal({{ $user->id }})" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
                         </button>
 
                         <!-- Action 3: Shield Off (Suspend/Deactivate) -->
                         @if($user->id !== auth()->id())
                             <button 
                                 wire:click="confirmSuspend({{ $user->id }})"
-                                class="p-2.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
+                                class="p-2.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all relative flex items-center justify-center"
                                 title="{{ app()->getLocale() == 'en' ? 'Nonaktifkan Akses Staf' : 'Nonaktifkan Akses Staf' }}"
+                                wire:loading.class="opacity-50 pointer-events-none"
+                                wire:target="confirmSuspend({{ $user->id }})"
                             >
-                                <i data-lucide="shield-off" class="w-5 h-5"></i>
+                                <i data-lucide="shield-off" class="w-5 h-5" wire:loading.remove wire:target="confirmSuspend({{ $user->id }})"></i>
+                                <svg class="animate-spin w-5 h-5 text-rose-600 hidden" wire:loading.class="!block" wire:target="confirmSuspend({{ $user->id }})" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
                             </button>
                         @endif
                     </div>
@@ -138,27 +156,50 @@
     </div>
 
     <!-- Modal 1: Manage Staff Permissions (Spatie integration) -->
-    @if($showPermissionsModal && $selectedUser)
-        <div class="fixed inset-0 z-[110] flex items-center justify-center p-6">
-            <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-xl transition-opacity duration-300" wire:click="$set('showPermissionsModal', false)"></div>
+    <div class="fixed inset-0 z-[110] flex items-center justify-center p-6"
+         x-data="{ open: @entangle('showPermissionsModal') }"
+         x-show="open"
+         x-cloak
+         style="display: none;"
+    >
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-xl"
+             x-show="open"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             wire:click="$set('showPermissionsModal', false)"
+        ></div>
 
-            <div class="relative w-full max-w-2xl bg-white rounded-[40px] shadow-2xl overflow-hidden border border-slate-200 transition-all duration-300 transform">
-                <div class="px-10 py-8 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between">
-                    <div class="flex items-center gap-4">
-                        <div class="p-3 bg-indigo-600 text-white rounded-2xl">
-                            <i data-lucide="sliders" class="w-6 h-6"></i>
-                        </div>
-                        <div>
-                            <h2 class="text-xl font-black text-slate-900 uppercase tracking-tight">{{ app()->getLocale() == 'en' ? 'Manage Staff Permissions' : 'Manajemen Hak Akses Staf' }}</h2>
-                            <p class="text-xs text-slate-500 font-bold uppercase tracking-widest">
-                                {{ $selectedUser->name }} • {{ $selectedUser->email }}
-                            </p>
-                        </div>
+        <!-- Modal Content Container -->
+        <div class="relative w-full max-w-2xl bg-white rounded-[40px] shadow-2xl overflow-hidden border border-slate-200 transform"
+             x-show="open"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 scale-100"
+             x-transition:leave-end="opacity-0 scale-95"
+        >
+            <div class="px-10 py-8 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="p-3 bg-indigo-600 text-white rounded-2xl">
+                        <i data-lucide="sliders" class="w-6 h-6"></i>
                     </div>
-                    <button wire:click="$set('showPermissionsModal', false)" class="p-3 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-2xl transition-all">
-                        <i data-lucide="x" class="w-6 h-6"></i>
-                    </button>
+                    <div>
+                        <h2 class="text-xl font-black text-slate-900 uppercase tracking-tight">{{ app()->getLocale() == 'en' ? 'Manage Staff Permissions' : 'Manajemen Hak Akses Staf' }}</h2>
+                        <p class="text-xs text-slate-500 font-bold uppercase tracking-widest">
+                            {{ $selectedUser?->name }} • {{ $selectedUser?->email }}
+                        </p>
+                    </div>
                 </div>
+                <button wire:click="$set('showPermissionsModal', false)" class="p-3 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-2xl transition-all">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
 
                 <div class="p-10 space-y-8">
                     <!-- Access Role Select -->
@@ -210,84 +251,149 @@
                         {{ app()->getLocale() == 'en' ? 'Deploy Permissions' : 'Terapkan Hak Akses' }}
                     </button>
                 </div>
+
+                <!-- Saving Overlay -->
+                <div class="absolute inset-0 bg-white/60 backdrop-blur-[1px] flex items-center justify-center z-50" wire:loading wire:target="savePermissions">
+                    <div class="flex flex-col items-center gap-3">
+                        <svg class="animate-spin w-10 h-10 text-indigo-650" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span class="text-xs font-black text-slate-500 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Updating Permissions...' : 'Memperbarui Hak Akses...' }}</span>
+                    </div>
+                </div>
             </div>
         </div>
-    @endif
 
     <!-- Modal 2: Suspend/Restore Confirmation Modal -->
-    @if($showSuspendModal && $userToSuspend)
-        <div class="fixed inset-0 z-[110] flex items-center justify-center p-6">
-            <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-xl transition-opacity duration-300" wire:click="$set('showSuspendModal', false)"></div>
+    <div class="fixed inset-0 z-[110] flex items-center justify-center p-6"
+         x-data="{ open: @entangle('showSuspendModal') }"
+         x-show="open"
+         x-cloak
+         style="display: none;"
+    >
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-xl"
+             x-show="open"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             wire:click="$set('showSuspendModal', false)"
+        ></div>
 
-            <div class="relative w-full max-w-md bg-white rounded-[32px] shadow-2xl overflow-hidden border border-slate-200 transition-all duration-300 transform">
-                <div class="p-8 text-center space-y-6">
-                    <div class="w-16 h-16 rounded-3xl mx-auto flex items-center justify-center border-2 {{ $userToSuspend->is_active ? 'bg-rose-50 border-rose-200 text-rose-600' : 'bg-emerald-50 border-emerald-200 text-emerald-600' }}">
-                        <i data-lucide="{{ $userToSuspend->is_active ? 'shield-off' : 'shield' }}" class="w-8 h-8"></i>
+        <!-- Modal Content Container -->
+        <div class="relative w-full max-w-md bg-white rounded-[32px] shadow-2xl overflow-hidden border border-slate-200 transform"
+             x-show="open"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 scale-100"
+             x-transition:leave-end="opacity-0 scale-95"
+        >
+            <div class="p-8 text-center space-y-6">
+                <div class="w-16 h-16 rounded-3xl mx-auto flex items-center justify-center border-2 {{ $userToSuspend?->is_active ? 'bg-rose-50 border-rose-200 text-rose-600' : 'bg-emerald-50 border-emerald-200 text-emerald-600' }}">
+                    <i data-lucide="{{ $userToSuspend?->is_active ? 'shield-off' : 'shield' }}" class="w-8 h-8"></i>
+                </div>
+                
+                <div class="space-y-2">
+                    <h3 class="text-lg font-black text-slate-900 uppercase tracking-tight">
+                        {{ $userToSuspend?->is_active ? (app()->getLocale() == 'en' ? 'Suspend Access?' : 'Nonaktifkan Akses?') : (app()->getLocale() == 'en' ? 'Restore Access?' : 'Pulihkan Akses?') }}
+                    </h3>
+                    <p class="text-xs text-slate-500 font-medium leading-relaxed">
+                        @if($userToSuspend?->is_active)
+                            {{ app()->getLocale() == 'en' ? 'Are you sure you want to suspend security clearance for ' : 'Apakah Anda yakin ingin menonaktifkan izin masuk untuk ' }}
+                            <strong>{{ $userToSuspend?->name }}</strong>?
+                            {{ app()->getLocale() == 'en' ? 'They will be locked out of the Rooterin system immediately.' : 'Staf ini akan langsung terblokir dan tidak dapat login ke sistem Rooterin.' }}
+                        @else
+                            {{ app()->getLocale() == 'en' ? 'Are you sure you want to restore access clearance for ' : 'Apakah Anda yakin ingin memulihkan kembali izin masuk untuk ' }}
+                            <strong>{{ $userToSuspend?->name }}</strong>?
+                            {{ app()->getLocale() == 'en' ? 'They will be allowed to log back in.' : 'Staf ini akan diizinkan kembali untuk masuk ke sistem.' }}
+                        @endif
+                    </p>
+                </div>
+            </div>
+
+            <div class="px-8 py-5 bg-slate-50/50 border-t border-slate-100 flex items-center justify-center gap-3">
+                <button type="button" wire:click="$set('showSuspendModal', false)" class="flex-1 py-3 text-xs font-bold text-slate-500 hover:text-slate-800 bg-white border border-slate-200 rounded-xl transition-all">{{ app()->getLocale() == 'en' ? 'Cancel' : 'Batal' }}</button>
+                <button type="button" wire:click="toggleSuspend" class="flex-1 py-3 text-xs font-black uppercase tracking-wider text-white rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 {{ $userToSuspend?->is_active ? 'bg-rose-600 hover:bg-rose-500 shadow-rose-600/10' : 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-600/10' }}">
+                    {{ $userToSuspend?->is_active ? (app()->getLocale() == 'en' ? 'Suspend Account' : 'Nonaktifkan Akses') : (app()->getLocale() == 'en' ? 'Restore Account' : 'Pulihkan Akses') }}
+                </button>
+                <!-- Processing Overlay -->
+                <div class="absolute inset-0 bg-white/60 backdrop-blur-[1px] flex items-center justify-center z-50" wire:loading wire:target="toggleSuspend">
+                    <div class="flex flex-col items-center gap-3">
+                        <svg class="animate-spin w-10 h-10 text-rose-600" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span class="text-xs font-black text-slate-500 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Synchronizing Clearance...' : 'Menyelaraskan Status...' }}</span>
                     </div>
-                    
-                    <div class="space-y-2">
-                        <h3 class="text-lg font-black text-slate-900 uppercase tracking-tight">
-                            {{ $userToSuspend->is_active ? (app()->getLocale() == 'en' ? 'Suspend Access?' : 'Nonaktifkan Akses?') : (app()->getLocale() == 'en' ? 'Restore Access?' : 'Pulihkan Akses?') }}
-                        </h3>
-                        <p class="text-xs text-slate-500 font-medium leading-relaxed">
-                            @if($userToSuspend->is_active)
-                                {{ app()->getLocale() == 'en' ? 'Are you sure you want to suspend security clearance for ' : 'Apakah Anda yakin ingin menonaktifkan izin masuk untuk ' }}
-                                <strong>{{ $userToSuspend->name }}</strong>?
-                                {{ app()->getLocale() == 'en' ? 'They will be locked out of the Rooterin system immediately.' : 'Staf ini akan langsung terblokir dan tidak dapat login ke sistem Rooterin.' }}
-                            @else
-                                {{ app()->getLocale() == 'en' ? 'Are you sure you want to restore access clearance for ' : 'Apakah Anda yakin ingin memulihkan kembali izin masuk untuk ' }}
-                                <strong>{{ $userToSuspend->name }}</strong>?
-                                {{ app()->getLocale() == 'en' ? 'They will be allowed to log back in.' : 'Staf ini akan diizinkan kembali untuk masuk ke sistem.' }}
-                            @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 3: Advanced Profile / Credentials Management Modal -->
+    <div class="fixed inset-0 z-[110] flex items-center justify-center p-6"
+         x-data="{ open: @entangle('showEditModal') }"
+         x-show="open"
+         x-cloak
+         style="display: none;"
+    >
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-xl"
+             x-show="open"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             wire:click="$set('showEditModal', false)"
+        ></div>
+
+        <!-- Modal Content Container -->
+        <div class="relative w-full max-w-4xl bg-white rounded-[40px] shadow-2xl overflow-hidden border border-slate-200 transform"
+             x-show="open"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 scale-100"
+             x-transition:leave-end="opacity-0 scale-95"
+        >
+            <div class="px-10 py-8 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="p-3 bg-slate-900 text-white rounded-2xl">
+                        <i data-lucide="shield" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-black text-slate-900 uppercase tracking-tight">{{ app()->getLocale() == 'en' ? 'Security & Command Center' : 'Pusat Keamanan & Kontrol' }}</h2>
+                        <p class="text-xs text-slate-500 font-bold uppercase tracking-widest">
+                            ID: {{ $editingUser?->id }} • 
+                            Status: <span class="{{ $editingIsActive ? 'text-emerald-600' : 'text-rose-600' }}">{{ $editingIsActive ? (app()->getLocale() == 'en' ? 'Authorized' : 'Diizinkan') : (app()->getLocale() == 'en' ? 'Suspended' : 'Ditangguhkan') }}</span> • 
+                            Presence: <span class="{{ $editingUser?->isOnline() ? 'text-emerald-500' : 'text-slate-400' }}">{{ $editingUser?->isOnline() ? 'Online' : 'Offline' }}</span>
                         </p>
                     </div>
                 </div>
-
-                <div class="px-8 py-5 bg-slate-50/50 border-t border-slate-100 flex items-center justify-center gap-3">
-                    <button type="button" wire:click="$set('showSuspendModal', false)" class="flex-1 py-3 text-xs font-bold text-slate-500 hover:text-slate-800 bg-white border border-slate-200 rounded-xl transition-all">{{ app()->getLocale() == 'en' ? 'Cancel' : 'Batal' }}</button>
-                    <button type="button" wire:click="toggleSuspend" class="flex-1 py-3 text-xs font-black uppercase tracking-wider text-white rounded-xl shadow-lg transition-all {{ $userToSuspend->is_active ? 'bg-rose-600 hover:bg-rose-500 shadow-rose-600/10' : 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-600/10' }}">
-                        {{ $userToSuspend->is_active ? (app()->getLocale() == 'en' ? 'Suspend Account' : 'Nonaktifkan Akses') : (app()->getLocale() == 'en' ? 'Restore Account' : 'Pulihkan Akses') }}
-                    </button>
-                </div>
+                <button wire:click="$set('showEditModal', false)" class="p-3 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-2xl transition-all">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
             </div>
-        </div>
-    @endif
 
-    <!-- Modal 3: Advanced Profile / Credentials Management Modal -->
-    @if($showEditModal && $editingUser)
-        <div class="fixed inset-0 z-[110] flex items-center justify-center p-6">
-            <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-xl transition-opacity duration-300" wire:click="$set('showEditModal', false)"></div>
-
-            <div class="relative w-full max-w-4xl bg-white rounded-[40px] shadow-2xl overflow-hidden border border-slate-200 transition-all duration-300 transform">
-                <div class="px-10 py-8 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between">
-                    <div class="flex items-center gap-4">
-                        <div class="p-3 bg-slate-900 text-white rounded-2xl">
-                            <i data-lucide="shield" class="w-6 h-6"></i>
-                        </div>
+            <div class="flex flex-col lg:flex-row h-[600px] overflow-hidden">
+                <!-- Left Column: Settings -->
+                <div class="lg:w-1/2 p-10 space-y-8 overflow-y-auto border-r border-slate-100 custom-scrollbar">
+                    <div class="flex items-center gap-6 mb-10">
+                        <img src="{{ $editingUser?->profile_photo_url }}" class="w-20 h-20 rounded-[28px] object-cover shadow-lg border-4 border-white ring-1 ring-slate-100">
                         <div>
-                            <h2 class="text-xl font-black text-slate-900 uppercase tracking-tight">{{ app()->getLocale() == 'en' ? 'Security & Command Center' : 'Pusat Keamanan & Kontrol' }}</h2>
-                            <p class="text-xs text-slate-500 font-bold uppercase tracking-widest">
-                                ID: {{ $editingUser->id }} • 
-                                Status: <span class="{{ $editingIsActive ? 'text-emerald-600' : 'text-rose-600' }}">{{ $editingIsActive ? (app()->getLocale() == 'en' ? 'Authorized' : 'Diizinkan') : (app()->getLocale() == 'en' ? 'Suspended' : 'Ditangguhkan') }}</span> • 
-                                Presence: <span class="{{ $editingUser->isOnline() ? 'text-emerald-500' : 'text-slate-400' }}">{{ $editingUser->isOnline() ? 'Online' : 'Offline' }}</span>
-                            </p>
+                            <h3 class="text-lg font-black text-slate-900">{{ $editingName }}</h3>
+                            <p class="text-sm text-slate-500 font-medium">{{ $editingEmail }}</p>
                         </div>
                     </div>
-                    <button wire:click="$set('showEditModal', false)" class="p-3 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-2xl transition-all">
-                        <i data-lucide="x" class="w-6 h-6"></i>
-                    </button>
-                </div>
-
-                <div class="flex flex-col lg:flex-row h-[600px] overflow-hidden">
-                    <!-- Left Column: Settings -->
-                    <div class="lg:w-1/2 p-10 space-y-8 overflow-y-auto border-r border-slate-100 custom-scrollbar">
-                        <div class="flex items-center gap-6 mb-10">
-                            <img src="{{ $editingUser->profile_photo_url }}" class="w-20 h-20 rounded-[28px] object-cover shadow-lg border-4 border-white ring-1 ring-slate-100">
-                            <div>
-                                <h3 class="text-lg font-black text-slate-900">{{ $editingName }}</h3>
-                                <p class="text-sm text-slate-500 font-medium">{{ $editingEmail }}</p>
-                            </div>
-                        </div>
 
                         <div class="grid grid-cols-1 gap-6">
                             <div class="space-y-2">
@@ -356,13 +462,13 @@
                         </div>
 
                         <!-- Archive Option -->
-                        @if($editingUser->id !== auth()->id())
+                        @if($editingUser?->id !== auth()->id())
                             <div class="pt-6 border-t border-slate-100 flex justify-between items-center">
                                 <div class="space-y-1">
                                     <h4 class="text-xs font-black text-rose-600 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Purge Record' : 'Hapus Akun' }}</h4>
                                     <p class="text-[10px] text-slate-400 font-medium">{{ app()->getLocale() == 'en' ? 'Permanently remove this team member from the registry.' : 'Hapus data pelaksana ini secara permanen dari sistem.' }}</p>
                                 </div>
-                                <button type="button" wire:confirm="{{ app()->getLocale() == 'en' ? 'Deep purge this operative data?' : 'Hapus permanen data pelaksana ini?' }}" wire:click="deleteUser({{ $editingUser->id }})" class="px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl text-xs font-bold transition-all">
+                                <button type="button" wire:confirm="{{ app()->getLocale() == 'en' ? 'Deep purge this operative data?' : 'Hapus permanen data pelaksana ini?' }}" wire:click="deleteUser({{ $editingUser?->id ?? 0 }})" class="px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl text-xs font-bold transition-all">
                                     {{ app()->getLocale() == 'en' ? 'Delete Operative' : 'Hapus Pelaksana' }}
                                 </button>
                             </div>
@@ -376,13 +482,12 @@
                             <div class="grid grid-cols-2 gap-4">
                                 <div class="p-5 bg-white rounded-[24px] border border-slate-100 shadow-sm">
                                     <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Last Sync' : 'Sinkronisasi Terakhir' }}</p>
-                                    <p class="text-sm font-black text-slate-900">{{ $editingUser->last_seen ? $editingUser->last_seen->format('M d, H:i') : (app()->getLocale() == 'en' ? 'Never' : 'Tidak Pernah') }}</p>
-                                    <p class="text-[10px] text-slate-400 font-bold">IP: {{ $editingUser->last_login_ip ?? 'N/A' }}</p>
+                                    <p class="text-sm font-black text-slate-900">{{ $editingUser?->last_seen ? $editingUser->last_seen->format('M d, H:i') : (app()->getLocale() == 'en' ? 'Never' : 'Tidak Pernah') }}</p>
+                                    <p class="text-[10px] text-slate-400 font-bold">IP: {{ $editingUser?->last_login_ip ?? 'N/A' }}</p>
                                 </div>
                                 <div class="p-5 bg-white rounded-[24px] border border-slate-100 shadow-sm">
                                     <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Pass Age' : 'Umur Sandi' }}</p>
-                                    <p class="text-sm font-black text-slate-900">{{ $editingUser->last_password_change_at ? $editingUser->last_password_change_at->diffForHumans() : (app()->getLocale() == 'en' ? 'Never' : 'Tidak Pernah') }}</p>
-                                    <p class="text-[10px] text-slate-400 font-bold">{{ app()->getLocale() == 'en' ? 'Last Identity Reset' : 'Reset Identitas Terakhir' }}</p>
+                                    <p class="text-sm font-black text-slate-900">{{ $editingUser?->last_password_change_at ? $editingUser->last_password_change_at->diffForHumans() : (app()->getLocale() == 'en' ? 'Never' : 'Tidak Pernah') }}</p>
                                 </div>
                             </div>
                         </div>
@@ -409,16 +514,35 @@
                         </div>
 
                         <div class="mt-10">
-                            <button type="button" wire:click="saveEdit" class="w-full btn-premium py-5 rounded-[24px] text-white flex items-center justify-center">
-                                <span class="text-sm font-black uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Deploy Changes' : 'Terapkan Perubahan' }}</span>
-                                <i data-lucide="send" class="w-5 h-5 ml-2"></i>
+                            <button type="button" wire:click="saveEdit" class="w-full btn-premium py-5 rounded-[24px] text-white flex items-center justify-center" wire:loading.attr="disabled" wire:target="saveEdit">
+                                <span wire:loading.remove wire:target="saveEdit" class="flex items-center justify-center">
+                                    <span class="text-sm font-black uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Deploy Changes' : 'Terapkan Perubahan' }}</span>
+                                    <i data-lucide="send" class="w-5 h-5 ml-2"></i>
+                                </span>
+                                <span wire:loading wire:target="saveEdit" class="flex items-center gap-2">
+                                    <svg class="animate-spin w-4 h-4 text-white" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    {{ app()->getLocale() == 'en' ? 'Saving Changes...' : 'Menyimpan Perubahan...' }}
+                                </span>
                             </button>
                         </div>
                     </div>
                 </div>
+
+                <!-- Saving Profile Overlay -->
+                <div class="absolute inset-0 bg-white/60 backdrop-blur-[1px] flex items-center justify-center z-50" wire:loading wire:target="saveEdit, generatePassword">
+                    <div class="flex flex-col items-center gap-3">
+                        <svg class="animate-spin w-10 h-10 text-indigo-650" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span class="text-xs font-black text-slate-500 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Updating Operative...' : 'Memperbarui Data Pelaksana...' }}</span>
+                    </div>
+                </div>
             </div>
         </div>
-    @endif
 
     <script>
         window.addEventListener('notify', () => {

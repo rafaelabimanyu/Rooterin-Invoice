@@ -47,6 +47,8 @@ class DashboardController extends Controller
         $trendText = implode(', ', $trendSummary);
 
         $isStaff = auth()->user()->role === 'staff';
+        $securityLogs = collect();
+        $cashFlowData = [];
 
         $aiInsight = null;
         if (!$isStaff) {
@@ -172,8 +174,145 @@ Berikan 2-3 kalimat berisi insight bisnis taktis dan rekomendasi tindakan prakti
             $goalProgress = null;
             $randomQuote = null;
             $activityLogs = collect();
-        }
 
+            // Dynamic Security Logs for Admin/Owner Dashboard
+            $rawSecurityLogs = \App\Models\SecurityLog::with('user')
+                ->latest()
+                ->take(10)
+                ->get();
+
+            $rawActivityLogs = \App\Models\ActivityLog::with('user')
+                ->whereIn('action', ['login', 'create_invoice', 'update_invoice'])
+                ->latest()
+                ->take(10)
+                ->get();
+
+            $mergedLogs = collect()
+                ->merge($rawSecurityLogs)
+                ->merge($rawActivityLogs)
+                ->sortByDesc('created_at')
+                ->take(6);
+
+            $securityLogs = $mergedLogs->map(function ($log) {
+                $time = $log->created_at;
+                $user = $log->user ? $log->user->name : 'System Monitor';
+                $role = $log->user ? ucfirst($log->user->role) : 'Security';
+                
+                if ($log instanceof \App\Models\SecurityLog) {
+                    $isSuspicious = $log->is_suspicious;
+                    if ($isSuspicious) {
+                        $action = 'security_alert';
+                        $type = 'danger';
+                        
+                        if (stripos($log->activity, 'failed') !== false) {
+                            $details_key = 'failed_admin_login';
+                            $details_params = ['ip' => $log->ip_address];
+                        } else {
+                            $details_key = 'high_api_rate';
+                            $details_params = ['node' => $log->location ?: 'Node-02'];
+                        }
+                    } else {
+                        $action = 'success_login';
+                        $type = 'success';
+                        $details_key = 'logged_in_ip';
+                        $details_params = ['ip' => $log->ip_address];
+                    }
+                } else {
+                    $type = 'info';
+                    
+                    if ($log->action === 'create_invoice' || $log->action === 'created_invoice') {
+                        $action = 'invoice_created';
+                        preg_match('/ROOT-INV-\d+/i', $log->description, $matches);
+                        $invNum = $matches[0] ?? 'ROOT-INV-XXXX';
+                        
+                        $details_key = 'created_invoice';
+                        $details_params = ['inv' => $invNum];
+                    } elseif ($log->action === 'update_invoice' || $log->action === 'updated_invoice') {
+                        $action = 'invoice_updated';
+                        preg_match('/ROOT-INV-\d+/i', $log->description, $matches);
+                        $invNum = $matches[0] ?? 'ROOT-INV-XXXX';
+                        
+                        $clientName = 'Klien';
+                        if ($log->model_type === 'App\Models\Invoice') {
+                            $inv = \App\Models\Invoice::with('client')->find($log->model_id);
+                            if ($inv && $inv->client) {
+                                $clientName = $inv->client->nama_perusahaan ?: $inv->client->nama_client;
+                            }
+                        }
+                        
+                        $details_key = 'updated_invoice';
+                        $details_params = ['inv' => $invNum, 'client' => $clientName];
+                    } else {
+                        $action = 'invoice_created';
+                        $details_key = 'created_invoice';
+                        $details_params = ['inv' => $log->description];
+                    }
+                }
+                
+                return [
+                    'time' => $time,
+                    'user' => $user,
+                    'role' => $role,
+                    'action' => $action,
+                    'details_key' => $details_key,
+                    'details_params' => $details_params,
+                    'type' => $type
+                ];
+            });
+
+            // Dynamic Cash Flow Data (Last 6 Months)
+            $rawCashFlow = [];
+            $maxVal = 0;
+            for ($i = 5; $i >= 0; $i--) {
+                $monthDate = Carbon::now()->subMonths($i);
+                
+                $revenue = (float) \App\Models\Payment::whereMonth('payment_date', $monthDate->month)
+                    ->whereYear('payment_date', $monthDate->year)
+                    ->sum('amount');
+                    
+                $receivables = (float) Invoice::whereMonth('tanggal_invoice', $monthDate->month)
+                    ->whereYear('tanggal_invoice', $monthDate->year)
+                    ->where('status', '!=', 'paid')
+                    ->get()
+                    ->sum(fn($inv) => $inv->total - $inv->payments->sum('amount'));
+                    
+                $maxVal = max($maxVal, $revenue, $receivables);
+                
+                $rawCashFlow[] = [
+                    'date' => $monthDate,
+                    'revenue' => $revenue,
+                    'receivables' => $receivables,
+                ];
+            }
+            
+            if ($maxVal <= 0) {
+                $maxVal = 1;
+            }
+            
+            $locale = app()->getLocale();
+            $monthNamesId = [
+                1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'Mei', 6 => 'Jun',
+                7 => 'Jul', 8 => 'Agu', 9 => 'Sep', 10 => 'Okt', 11 => 'Nov', 12 => 'Des'
+            ];
+            $monthNamesEn = [
+                1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'May', 6 => 'Jun',
+                7 => 'Jul', 8 => 'Aug', 9 => 'Sep', 10 => 'Oct', 11 => 'Nov', 12 => 'Dec'
+            ];
+            
+            foreach ($rawCashFlow as $item) {
+                $monthNum = $item['date']->month;
+                $label = $locale === 'id' ? $monthNamesId[$monthNum] : $monthNamesEn[$monthNum];
+                
+                $cashFlowData[] = [
+                    'month_label' => $label,
+                    'revenue_height' => round(($item['revenue'] / $maxVal) * 100),
+                    'receivables_height' => round(($item['receivables'] / $maxVal) * 100),
+                    'revenue_formatted' => $this->formatChartAmount($item['revenue'], $locale),
+                    'receivables_formatted' => $this->formatChartAmount($item['receivables'], $locale),
+                ];
+            }
+        }
+        
         return view('dashboard', compact(
             'totalClients', 
             'totalInvoices', 
@@ -193,7 +332,22 @@ Berikan 2-3 kalimat berisi insight bisnis taktis dan rekomendasi tindakan prakti
             'goalProgress',
             'randomQuote',
             'activityLogs',
+            'securityLogs',
+            'cashFlowData',
             'aiInsight'
         ));
+    }
+
+    private function formatChartAmount($amount, $locale)
+    {
+        if ($amount >= 1000000000) {
+            return 'Rp ' . number_format($amount / 1000000000, 1, ',', '.') . ($locale == 'en' ? 'B' : ' Miliar');
+        } elseif ($amount >= 1000000) {
+            return 'Rp ' . number_format($amount / 1000000, 1, ',', '.') . ($locale == 'en' ? 'M' : ' Juta');
+        } elseif ($amount >= 1000) {
+            return 'Rp ' . number_format($amount / 1000, 1, ',', '.') . ($locale == 'en' ? 'K' : ' Ribu');
+        } else {
+            return 'Rp ' . number_format($amount, 0, ',', '.');
+        }
     }
 }

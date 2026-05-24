@@ -408,119 +408,29 @@
                             <div class="w-full border-t border-slate-100/70"></div>
                         </div>
 
-                        <!-- Month: Dec -->
-                        <div class="flex flex-col items-center flex-1 h-full justify-end z-10">
-                            <div class="flex items-end gap-1.5 h-full w-full justify-center px-1">
-                                <!-- Bar 1 (Revenue) -->
-                                <div class="w-2.5 sm:w-3.5 bg-gradient-to-t from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 rounded-t-sm transition-all duration-300 relative group/bar cursor-pointer" style="height: 53%">
-                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-900 text-white text-[10px] font-mono font-bold py-1 px-2 rounded opacity-0 invisible group-hover/bar:opacity-100 group-hover/bar:visible transition-all duration-200 pointer-events-none whitespace-nowrap shadow-lg z-30">
-                                        Rp 85.0M
+                        @forelse($cashFlowData as $data)
+                            <div class="flex flex-col items-center flex-1 h-full justify-end z-10">
+                                <div class="flex items-end gap-1.5 h-full w-full justify-center px-1">
+                                    <!-- Bar 1 (Revenue) -->
+                                    <div class="w-2.5 sm:w-3.5 bg-gradient-to-t from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 rounded-t-sm transition-all duration-300 relative group/bar cursor-pointer" style="height: {{ $data['revenue_height'] }}%">
+                                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-900 text-white text-[10px] font-mono font-bold py-1 px-2 rounded opacity-0 invisible group-hover/bar:opacity-100 group-hover/bar:visible transition-all duration-200 pointer-events-none whitespace-nowrap shadow-lg z-30">
+                                            {{ $data['revenue_formatted'] }}
+                                        </div>
+                                    </div>
+                                    <!-- Bar 2 (Receivables) -->
+                                    <div class="w-2.5 sm:w-3.5 bg-gradient-to-t from-amber-500 to-amber-450 hover:from-amber-600 hover:to-amber-500 rounded-t-sm transition-all duration-300 relative group/bar cursor-pointer" style="height: {{ $data['receivables_height'] }}%">
+                                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-900 text-white text-[10px] font-mono font-bold py-1 px-2 rounded opacity-0 invisible group-hover/bar:opacity-100 group-hover/bar:visible transition-all duration-200 pointer-events-none whitespace-nowrap shadow-lg z-30">
+                                            {{ $data['receivables_formatted'] }}
+                                        </div>
                                     </div>
                                 </div>
-                                <!-- Bar 2 (Receivables) -->
-                                <div class="w-2.5 sm:w-3.5 bg-gradient-to-t from-amber-500 to-amber-450 hover:from-amber-600 hover:to-amber-500 rounded-t-sm transition-all duration-300 relative group/bar cursor-pointer" style="height: 19%">
-                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-900 text-white text-[10px] font-mono font-bold py-1 px-2 rounded opacity-0 invisible group-hover/bar:opacity-100 group-hover/bar:visible transition-all duration-200 pointer-events-none whitespace-nowrap shadow-lg z-30">
-                                        Rp 30.0M
-                                    </div>
-                                </div>
+                                <span class="text-[9px] font-black text-slate-400 mt-2 tracking-wider uppercase">{{ $data['month_label'] }}</span>
                             </div>
-                            <span class="text-[9px] font-black text-slate-400 mt-2 tracking-wider uppercase">{{ __('dashboard.month_dec') }}</span>
-                        </div>
-
-                        <!-- Month: Jan -->
-                        <div class="flex flex-col items-center flex-1 h-full justify-end z-10">
-                            <div class="flex items-end gap-1.5 h-full w-full justify-center px-1">
-                                <!-- Bar 1 (Revenue) -->
-                                <div class="w-2.5 sm:w-3.5 bg-gradient-to-t from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 rounded-t-sm transition-all duration-300 relative group/bar cursor-pointer" style="height: 59%">
-                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-900 text-white text-[10px] font-mono font-bold py-1 px-2 rounded opacity-0 invisible group-hover/bar:opacity-100 group-hover/bar:visible transition-all duration-200 pointer-events-none whitespace-nowrap shadow-lg z-30">
-                                        Rp 95.0M
-                                    </div>
-                                </div>
-                                <!-- Bar 2 (Receivables) -->
-                                <div class="w-2.5 sm:w-3.5 bg-gradient-to-t from-amber-500 to-amber-450 hover:from-amber-600 hover:to-amber-500 rounded-t-sm transition-all duration-300 relative group/bar cursor-pointer" style="height: 28%">
-                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-900 text-white text-[10px] font-mono font-bold py-1 px-2 rounded opacity-0 invisible group-hover/bar:opacity-100 group-hover/bar:visible transition-all duration-200 pointer-events-none whitespace-nowrap shadow-lg z-30">
-                                        Rp 45.0M
-                                    </div>
-                                </div>
+                        @empty
+                            <div class="flex items-center justify-center w-full h-full text-slate-400 text-xs italic">
+                                {{ app()->getLocale() == 'en' ? 'No financial data available' : 'Tidak ada data keuangan tersedia' }}
                             </div>
-                            <span class="text-[9px] font-black text-slate-400 mt-2 tracking-wider uppercase">{{ __('dashboard.month_jan') }}</span>
-                        </div>
-
-                        <!-- Month: Feb -->
-                        <div class="flex flex-col items-center flex-1 h-full justify-end z-10">
-                            <div class="flex items-end gap-1.5 h-full w-full justify-center px-1">
-                                <!-- Bar 1 (Revenue) -->
-                                <div class="w-2.5 sm:w-3.5 bg-gradient-to-t from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 rounded-t-sm transition-all duration-300 relative group/bar cursor-pointer" style="height: 75%">
-                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-900 text-white text-[10px] font-mono font-bold py-1 px-2 rounded opacity-0 invisible group-hover/bar:opacity-100 group-hover/bar:visible transition-all duration-200 pointer-events-none whitespace-nowrap shadow-lg z-30">
-                                        Rp 120.0M
-                                    </div>
-                                </div>
-                                <!-- Bar 2 (Receivables) -->
-                                <div class="w-2.5 sm:w-3.5 bg-gradient-to-t from-amber-500 to-amber-450 hover:from-amber-600 hover:to-amber-500 rounded-t-sm transition-all duration-300 relative group/bar cursor-pointer" style="height: 16%">
-                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-900 text-white text-[10px] font-mono font-bold py-1 px-2 rounded opacity-0 invisible group-hover/bar:opacity-100 group-hover/bar:visible transition-all duration-200 pointer-events-none whitespace-nowrap shadow-lg z-30">
-                                        Rp 25.0M
-                                    </div>
-                                </div>
-                            </div>
-                            <span class="text-[9px] font-black text-slate-400 mt-2 tracking-wider uppercase">{{ __('dashboard.month_feb') }}</span>
-                        </div>
-
-                        <!-- Month: Mar -->
-                        <div class="flex flex-col items-center flex-1 h-full justify-end z-10">
-                            <div class="flex items-end gap-1.5 h-full w-full justify-center px-1">
-                                <!-- Bar 1 (Revenue) -->
-                                <div class="w-2.5 sm:w-3.5 bg-gradient-to-t from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 rounded-t-sm transition-all duration-300 relative group/bar cursor-pointer" style="height: 69%">
-                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-900 text-white text-[10px] font-mono font-bold py-1 px-2 rounded opacity-0 invisible group-hover/bar:opacity-100 group-hover/bar:visible transition-all duration-200 pointer-events-none whitespace-nowrap shadow-lg z-30">
-                                        Rp 110.0M
-                                    </div>
-                                </div>
-                                <!-- Bar 2 (Receivables) -->
-                                <div class="w-2.5 sm:w-3.5 bg-gradient-to-t from-amber-500 to-amber-450 hover:from-amber-600 hover:to-amber-500 rounded-t-sm transition-all duration-300 relative group/bar cursor-pointer" style="height: 34%">
-                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-900 text-white text-[10px] font-mono font-bold py-1 px-2 rounded opacity-0 invisible group-hover/bar:opacity-100 group-hover/bar:visible transition-all duration-200 pointer-events-none whitespace-nowrap shadow-lg z-30">
-                                        Rp 55.0M
-                                    </div>
-                                </div>
-                            </div>
-                            <span class="text-[9px] font-black text-slate-400 mt-2 tracking-wider uppercase">{{ __('dashboard.month_mar') }}</span>
-                        </div>
-
-                        <!-- Month: Apr -->
-                        <div class="flex flex-col items-center flex-1 h-full justify-end z-10">
-                            <div class="flex items-end gap-1.5 h-full w-full justify-center px-1">
-                                <!-- Bar 1 (Revenue) -->
-                                <div class="w-2.5 sm:w-3.5 bg-gradient-to-t from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 rounded-t-sm transition-all duration-300 relative group/bar cursor-pointer" style="height: 91%">
-                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-900 text-white text-[10px] font-mono font-bold py-1 px-2 rounded opacity-0 invisible group-hover/bar:opacity-100 group-hover/bar:visible transition-all duration-200 pointer-events-none whitespace-nowrap shadow-lg z-30">
-                                        Rp 145.0M
-                                    </div>
-                                </div>
-                                <!-- Bar 2 (Receivables) -->
-                                <div class="w-2.5 sm:w-3.5 bg-gradient-to-t from-amber-500 to-amber-450 hover:from-amber-600 hover:to-amber-500 rounded-t-sm transition-all duration-300 relative group/bar cursor-pointer" style="height: 25%">
-                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-900 text-white text-[10px] font-mono font-bold py-1 px-2 rounded opacity-0 invisible group-hover/bar:opacity-100 group-hover/bar:visible transition-all duration-200 pointer-events-none whitespace-nowrap shadow-lg z-30">
-                                        Rp 40.0M
-                                    </div>
-                                </div>
-                            </div>
-                            <span class="text-[9px] font-black text-slate-400 mt-2 tracking-wider uppercase">{{ __('dashboard.month_apr') }}</span>
-                        </div>
-
-                        <!-- Month: May -->
-                        <div class="flex flex-col items-center flex-1 h-full justify-end z-10">
-                            <div class="flex items-end gap-1.5 h-full w-full justify-center px-1">
-                                <!-- Bar 1 (Revenue) -->
-                                <div class="w-2.5 sm:w-3.5 bg-gradient-to-t from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 rounded-t-sm transition-all duration-300 relative group/bar cursor-pointer" style="height: 100%">
-                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-900 text-white text-[10px] font-mono font-bold py-1 px-2 rounded opacity-0 invisible group-hover/bar:opacity-100 group-hover/bar:visible transition-all duration-200 pointer-events-none whitespace-nowrap shadow-lg z-30">
-                                        Rp 160.0M
-                                    </div>
-                                </div>
-                                <!-- Bar 2 (Receivables) -->
-                                <div class="w-2.5 sm:w-3.5 bg-gradient-to-t from-amber-500 to-amber-450 hover:from-amber-600 hover:to-amber-500 rounded-t-sm transition-all duration-300 relative group/bar cursor-pointer" style="height: 22%">
-                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-900 text-white text-[10px] font-mono font-bold py-1 px-2 rounded opacity-0 invisible group-hover/bar:opacity-100 group-hover/bar:visible transition-all duration-200 pointer-events-none whitespace-nowrap shadow-lg z-30">
-                                        Rp 35.0M
-                                    </div>
-                                </div>
-                            </div>
-                            <span class="text-[9px] font-black text-slate-400 mt-2 tracking-wider uppercase">{{ __('dashboard.month_may') }}</span>
-                        </div>
+                        @endforelse
                     </div>
                 </div>
             </div>
@@ -543,67 +453,8 @@
 
                 <!-- Scrollable Timeline Feed -->
                 <div class="overflow-y-auto pr-1 space-y-4 scroll-smooth mt-4 flex-1 scrollbar-thin">
-                    @php
-                        $securityLogs = [
-                            [
-                                'time' => now()->subMinutes(10),
-                                'user' => 'Rian Wijaya',
-                                'role' => 'Staff',
-                                'action' => 'success_login',
-                                'details_key' => 'logged_in_ip',
-                                'details_params' => ['ip' => '192.168.1.45'],
-                                'type' => 'success'
-                            ],
-                            [
-                                'time' => now()->subMinutes(45),
-                                'user' => 'Budi Santoso',
-                                'role' => 'Staff',
-                                'action' => 'invoice_updated',
-                                'details_key' => 'updated_invoice',
-                                'details_params' => ['inv' => 'INV-2026-089', 'client' => 'PT Sukses Jaya'],
-                                'type' => 'info'
-                            ],
-                            [
-                                'time' => now()->subHours(2),
-                                'user' => 'System Monitor',
-                                'role' => 'Security',
-                                'action' => 'security_alert',
-                                'details_key' => 'high_api_rate',
-                                'details_params' => ['node' => 'Node-02'],
-                                'type' => 'danger'
-                            ],
-                            [
-                                'time' => now()->subHours(3),
-                                'user' => 'Amalia Putri',
-                                'role' => 'Staff',
-                                'action' => 'invoice_created',
-                                'details_key' => 'created_invoice',
-                                'details_params' => ['inv' => 'INV-2026-092'],
-                                'type' => 'info'
-                            ],
-                            [
-                                'time' => now()->subHours(5),
-                                'user' => 'Budi Santoso',
-                                'role' => 'Staff',
-                                'action' => 'success_login',
-                                'details_key' => 'session_verified',
-                                'details_params' => ['token' => 'BST-4929'],
-                                'type' => 'success'
-                            ],
-                            [
-                                'time' => now()->subHours(8),
-                                'user' => 'System Monitor',
-                                'role' => 'Security',
-                                'action' => 'security_alert',
-                                'details_key' => 'failed_admin_login',
-                                'details_params' => ['ip' => '182.253.140.23'],
-                                'type' => 'danger'
-                            ]
-                        ];
-                    @endphp
-
                     <div class="relative pl-6 border-l-2 border-slate-100 space-y-5 ml-1">
-                        @foreach($securityLogs as $log)
+                        @forelse($securityLogs as $log)
                             <div class="relative">
                                 <!-- Circle Timeline Bullet -->
                                 <div class="absolute -left-[31px] top-1.5 w-2 h-2 rounded-full border-2 border-white
@@ -638,7 +489,11 @@
                                     {{ __('dashboard.' . $log['details_key'], $log['details_params']) }}
                                 </p>
                             </div>
-                        @endforeach
+                        @empty
+                            <div class="py-8 text-center text-slate-400 italic text-xs">
+                                {{ app()->getLocale() == 'en' ? 'No recent security activities.' : 'Tidak ada aktivitas keamanan terbaru.' }}
+                            </div>
+                        @endforelse
                     </div>
                 </div>
             </div>

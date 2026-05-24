@@ -41,7 +41,10 @@
     }
 </style>
 
-<div x-data="{ open: false, isFullSize: false, notificationOpen: false }" @notification-toggle.window="notificationOpen = $event.detail.open" @close-chatbot.window="open = false; isFullSize = false">
+<div x-data="{ open: false, isFullSize: false, notificationOpen: false }" 
+     @notification-toggle.window="notificationOpen = $event.detail.open" 
+     @close-chatbot.window="open = false; isFullSize = false"
+     @close-chat.window="open = false; isFullSize = false">
     
     <!-- Floating Trigger Button -->
     <button 
@@ -53,7 +56,8 @@
         x-transition:leave-start="opacity-100 scale-100"
         x-transition:leave-end="opacity-0 scale-95"
         @click="open = !open; if(open) { $nextTick(() => { const container = $refs.chatContainer; if(container) container.scrollTop = container.scrollHeight; }) }" 
-        class="chatbot-trigger-btn fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[45] w-14 h-14 bg-gradient-to-tr from-indigo-600 via-indigo-700 to-violet-800 text-white rounded-full flex items-center justify-center border-2 border-white shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 group focus:outline-none"
+        class="chatbot-trigger-btn fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[45] w-14 h-14 bg-gradient-to-tr from-indigo-600 via-indigo-700 to-violet-800 text-white rounded-full items-center justify-center border-2 border-white shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 group focus:outline-none"
+        :class="open ? 'hidden sm:flex' : 'flex'"
     >
         <span class="relative flex items-center justify-center">
             <!-- Bot icon when closed -->
@@ -72,8 +76,8 @@
         x-transition:leave="transition ease-in duration-200" 
         x-transition:leave-start="opacity-100 scale-100 translate-y-0" 
         x-transition:leave-end="opacity-0 scale-90 translate-y-4" 
-        class="fixed z-50 bg-white border border-slate-200 shadow-[0_32px_64px_rgba(15,23,42,0.15)] overflow-hidden flex flex-col transition-all duration-300 ease-in-out text-slate-800"
-        :class="isFullSize ? 'top-16 right-0 left-0 bottom-0 h-[calc(100vh-4rem)] w-full rounded-none md:inset-auto md:right-4 md:top-20 md:bottom-4 md:h-[calc(100vh-6rem)] md:w-[600px] md:max-w-[40%] md:rounded-[2rem]' : 'inset-0 w-full h-full rounded-none sm:inset-auto sm:bottom-24 sm:right-6 sm:h-[580px] sm:w-[380px] sm:md:w-[400px] sm:rounded-[2rem]'"
+        class="fixed z-40 bg-white border border-slate-200 shadow-[0_32px_64px_rgba(15,23,42,0.15)] overflow-hidden flex flex-col transition-all duration-300 ease-in-out text-slate-800"
+        :class="isFullSize ? 'top-16 right-0 left-0 bottom-0 h-[calc(100vh-4rem)] w-full rounded-none md:inset-auto md:right-4 md:top-16 md:bottom-0 md:h-[calc(100vh-4rem)] md:w-[600px] md:max-w-[40%] md:rounded-t-[2rem]' : 'top-16 right-0 left-0 bottom-0 h-[calc(100vh-4rem)] w-full rounded-none sm:inset-auto sm:bottom-24 sm:right-6 sm:h-[580px] sm:w-[380px] sm:md:w-[400px] sm:rounded-[2rem]'"
         style="display: none;"
     >
         <!-- Header -->
@@ -99,7 +103,7 @@
                 <!-- Maximize/Minimize size toggle -->
                 <button 
                     @click="isFullSize = !isFullSize; $nextTick(() => { const container = $refs.chatContainer; if(container) container.scrollTop = container.scrollHeight; })" 
-                    class="p-1.5 hover:bg-slate-200/60 rounded-lg text-slate-500 hover:text-slate-800 transition-all active:scale-95" 
+                    class="hidden sm:inline-flex p-1.5 hover:bg-slate-200/60 rounded-lg text-slate-500 hover:text-slate-800 transition-all active:scale-95" 
                     :title="isFullSize ? '{{ app()->getLocale() == 'en' ? 'Normal size' : 'Ukuran normal' }}' : '{{ app()->getLocale() == 'en' ? 'Maximize size' : 'Perbesar ukuran' }}'"
                 >
                     <i x-show="!isFullSize" data-lucide="maximize-2" class="w-3.5 h-3.5"></i>

@@ -73,7 +73,7 @@
         x-transition:leave-start="opacity-100 scale-100 translate-y-0" 
         x-transition:leave-end="opacity-0 scale-90 translate-y-4" 
         class="fixed z-50 bg-white border border-slate-200 shadow-[0_32px_64px_rgba(15,23,42,0.15)] overflow-hidden flex flex-col transition-all duration-300 ease-in-out text-slate-800"
-        :class="isFullSize ? 'inset-0 h-screen w-screen rounded-none md:inset-auto md:right-6 md:top-6 md:bottom-6 md:h-[calc(100vh-3rem)] md:w-[600px] md:max-w-[40%] md:rounded-[2rem]' : 'inset-0 w-full h-full rounded-none sm:inset-auto sm:bottom-24 sm:right-6 sm:h-[580px] sm:w-[380px] sm:md:w-[400px] sm:rounded-[2rem]'"
+        :class="isFullSize ? 'top-16 right-0 left-0 bottom-0 h-[calc(100vh-4rem)] w-full rounded-none md:inset-auto md:right-4 md:top-20 md:bottom-4 md:h-[calc(100vh-6rem)] md:w-[600px] md:max-w-[40%] md:rounded-[2rem]' : 'inset-0 w-full h-full rounded-none sm:inset-auto sm:bottom-24 sm:right-6 sm:h-[580px] sm:w-[380px] sm:md:w-[400px] sm:rounded-[2rem]'"
         style="display: none;"
     >
         <!-- Header -->

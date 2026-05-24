@@ -1,4 +1,4 @@
-<div class="relative" x-data="{ open: false }" x-init="$watch('open', value => $dispatch('notification-toggle', { open: value }))" @click.away="open = false" wire:poll.30s="loadNotifications">
+<div class="relative" x-data="{ open: false }" x-init="$watch('open', value => { $dispatch('notification-toggle', { open: value }); if (value) $dispatch('close-chatbot'); })" @click.away="open = false" wire:poll.30s="loadNotifications">
     <!-- Trigger Button -->
     <button @click="open = !open" class="relative p-2.5 rounded-xl bg-slate-50 text-slate-400 hover:text-slate-900 hover:bg-white hover:shadow-sm transition-all group">
         <i data-lucide="bell" class="w-5 h-5 group-hover:rotate-12 transition-transform"></i>

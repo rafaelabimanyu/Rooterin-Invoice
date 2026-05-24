@@ -61,7 +61,7 @@
                             <i data-lucide="menu" class="w-5 h-5 group-hover:rotate-180 transition-transform duration-300"></i>
                         </button>
                         <!-- Mobile Toggle -->
-                        <button @click="mobileOpen = true" class="lg:hidden p-2 -ml-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-colors">
+                        <button @click="mobileOpen = true; $dispatch('close-chatbot')" class="lg:hidden p-2 -ml-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-colors">
                             <i data-lucide="menu" class="w-5 h-5"></i>
                         </button>
                         
@@ -81,8 +81,8 @@
                     <div class="flex items-center gap-3 md:gap-6 shrink-0">
                         <!-- Language Switcher -->
                         <div class="flex items-center bg-slate-50 rounded-lg p-1 border border-slate-200">
-                            <a href="{{ route('lang.switch', 'id') }}" class="px-2.5 py-1 text-[10px] font-black rounded-md transition-all {{ App::getLocale() == 'id' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600' }}">ID</a>
-                            <a href="{{ route('lang.switch', 'en') }}" class="px-2.5 py-1 text-[10px] font-black rounded-md transition-all {{ App::getLocale() == 'en' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600' }}">EN</a>
+                            <a href="{{ route('lang.switch', 'id') }}" @click="$dispatch('close-chatbot')" class="px-2.5 py-1 text-[10px] font-black rounded-md transition-all {{ App::getLocale() == 'id' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600' }}">ID</a>
+                            <a href="{{ route('lang.switch', 'en') }}" @click="$dispatch('close-chatbot')" class="px-2.5 py-1 text-[10px] font-black rounded-md transition-all {{ App::getLocale() == 'en' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600' }}">EN</a>
                         </div>
 
                         <!-- Notifications -->
@@ -92,7 +92,7 @@
 
                         <!-- User Profile -->
                         <div class="relative" x-data="{ open: false }">
-                            <button @click="open = !open" class="flex items-center gap-3.5 group focus:outline-none">
+                            <button @click="open = !open; if (open) $dispatch('close-chatbot')" class="flex items-center gap-3.5 group focus:outline-none">
                                 <div class="flex flex-col text-right hidden md:flex">
                                     <span class="text-[11px] font-black text-slate-900 leading-tight">{{ Auth::user()->name }}</span>
                                     <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{{ Auth::user()->role }}</span>

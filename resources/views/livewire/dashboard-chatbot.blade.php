@@ -41,7 +41,7 @@
     }
 </style>
 
-<div x-data="{ open: false, isFullSize: false, notificationOpen: false }" @notification-toggle.window="notificationOpen = $event.detail.open">
+<div x-data="{ open: false, isFullSize: false, notificationOpen: false }" @notification-toggle.window="notificationOpen = $event.detail.open" @close-chatbot.window="open = false; isFullSize = false">
     
     <!-- Floating Trigger Button -->
     <button 

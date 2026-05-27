@@ -15,6 +15,7 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
+        @stack('styles')
     </head>
     <body class="h-full bg-[#f8f9fa] font-sans antialiased overflow-x-hidden">
         <div 
@@ -243,6 +244,7 @@
             });
         </script>
         @livewireScripts
+        @stack('scripts')
         <script>
             window.addEventListener('notify', event => {
                 const data = event.detail[0] || event.detail;

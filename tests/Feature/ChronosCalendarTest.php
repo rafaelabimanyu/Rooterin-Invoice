@@ -40,9 +40,9 @@ class ChronosCalendarTest extends TestCase
 
         $this->assertDatabaseHas('chronos_events', [
             'title' => 'Dev Sprint meeting',
-            'category' => 'meeting',
+            'status_type' => 'meeting',
             'color' => 'emerald',
-            'event_date' => '2026-05-25 00:00:00',
+            'start_date' => '2026-05-25 00:00:00',
         ]);
     }
 
@@ -52,10 +52,10 @@ class ChronosCalendarTest extends TestCase
         $reminder = ChronosEvent::create([
             'title' => 'Old Title',
             'description' => 'Old description',
-            'category' => 'internal',
+            'status_type' => 'internal',
             'color' => 'indigo',
-            'event_date' => '2026-05-25',
-            'user_id' => $user->id,
+            'start_date' => '2026-05-25',
+            'responsible_staff_id' => $user->id,
         ]);
 
         Livewire::actingAs($user)
@@ -79,10 +79,10 @@ class ChronosCalendarTest extends TestCase
         $user = User::factory()->create(['role' => 'owner']);
         $reminder = ChronosEvent::create([
             'title' => 'To be deleted',
-            'category' => 'internal',
+            'status_type' => 'internal',
             'color' => 'slate',
-            'event_date' => '2026-05-25',
-            'user_id' => $user->id,
+            'start_date' => '2026-05-25',
+            'responsible_staff_id' => $user->id,
         ]);
 
         Livewire::actingAs($user)

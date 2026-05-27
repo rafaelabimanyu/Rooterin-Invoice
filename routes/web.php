@@ -76,7 +76,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Chronos (Billing Calendar)
         Route::get('/chronos', [ChronosController::class, 'index'])->name('chronos.index');
         Route::get('/api/chronos/events', [ChronosController::class, 'events'])->name('chronos.events');
-        Route::post('/chronos/update-date/{invoice}', [ChronosController::class, 'updateDate'])->name('chronos.update');
+        Route::post('/api/chronos/update-event', [ChronosController::class, 'updateEventDate'])->name('chronos.update-event');
 
         // AI Voice Command Intent Router
         Route::post('ai-assistant/voice-command', [AiChatController::class, 'handleVoiceCommand'])->name('ai-assistant.voice-command');

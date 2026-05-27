@@ -10,15 +10,17 @@ class ChronosEvent extends Model
     protected $fillable = [
         'title',
         'description',
-        'event_date',
+        'start_date',
+        'end_date',
+        'status_type',
         'color',
-        'category',
         'client_id',
-        'user_id',
+        'responsible_staff_id',
     ];
 
     protected $casts = [
-        'event_date' => 'date',
+        'start_date' => 'date',
+        'end_date' => 'date',
     ];
 
     public function client(): BelongsTo
@@ -28,6 +30,11 @@ class ChronosEvent extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'responsible_staff_id');
+    }
+
+    public function responsibleStaff(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'responsible_staff_id');
     }
 }

@@ -535,28 +535,31 @@ class RealisticBusinessSeeder extends Seeder
         \App\Models\ChronosEvent::create([
             'title' => 'Pengerjaan Fitur A & B (Internal Dev)',
             'description' => 'Selesaikan layout mobile & API untuk client management.',
-            'event_date' => Carbon::create(2026, 5, 25),
+            'start_date' => Carbon::create(2026, 5, 25),
+            'end_date' => Carbon::create(2026, 5, 27),
             'color' => 'indigo',
-            'category' => 'internal',
-            'user_id' => $allUsers->firstWhere('role', 'owner')?->id,
+            'status_type' => 'internal',
+            'responsible_staff_id' => $allUsers->firstWhere('role', 'owner')?->id,
         ]);
 
         \App\Models\ChronosEvent::create([
             'title' => 'Meeting Bersama Tim Finansial Klien',
             'description' => 'Diskusi outstanding receivables dan workflow kuitansi.',
-            'event_date' => Carbon::create(2026, 5, 30),
+            'start_date' => Carbon::create(2026, 5, 30),
+            'end_date' => Carbon::create(2026, 5, 30),
             'color' => 'emerald',
-            'category' => 'meeting',
-            'user_id' => $allUsers->firstWhere('role', 'admin')?->id,
+            'status_type' => 'meeting',
+            'responsible_staff_id' => $allUsers->firstWhere('role', 'admin')?->id,
         ]);
 
         \App\Models\ChronosEvent::create([
             'title' => 'Implementasi Fitur AI Analytics Upgrade',
             'description' => 'Integrasikan parser Markdown & dynamic charts.',
-            'event_date' => Carbon::create(2026, 6, 10),
+            'start_date' => Carbon::create(2026, 6, 10),
+            'end_date' => Carbon::create(2026, 6, 12),
             'color' => 'amber',
-            'category' => 'ai_update',
-            'user_id' => $allUsers->firstWhere('role', 'owner')?->id,
+            'status_type' => 'draft',
+            'responsible_staff_id' => $allUsers->firstWhere('role', 'owner')?->id,
         ]);
     }
 }

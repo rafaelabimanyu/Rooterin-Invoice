@@ -143,141 +143,49 @@
     </div>
 
     <!-- Main Calendar Card -->
-    <div class="glass-card p-6 md:p-8 shadow-2xl shadow-indigo-500/10 border-slate-100 bg-white/80 backdrop-blur-md rounded-3xl flex flex-col w-full min-w-0">
+    <div class="glass-card p-6 md:p-8 shadow-2xl shadow-indigo-500/10 border-slate-100 bg-white/80 backdrop-blur-md rounded-3xl flex flex-col w-full min-w-0"
+         x-data="chronosCalendar()"
+    >
         <!-- Calendar Header -->
-        <div class="flex items-center justify-between mb-8">
-            <div class="flex items-center gap-4">
-                <button wire:click="prevMonth" class="p-2.5 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-xl transition-all border border-slate-200/60 active:scale-95">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"></path>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+            <div class="flex items-center gap-4 flex-wrap">
+                <div class="flex items-center gap-2">
+                    <button @click="goToPrevMonth()" class="p-2.5 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-xl transition-all border border-slate-200/60 active:scale-95">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"></path>
+                        </svg>
+                    </button>
+                    <h2 id="calendar-title" class="text-md font-black text-slate-850 font-jakarta uppercase tracking-wider min-w-[180px] text-center select-none">
+                        ...
+                    </h2>
+                    <button @click="goToNextMonth()" class="p-2.5 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-xl transition-all border border-slate-200/60 active:scale-95">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <button @click="openCreateModalForToday()" 
+                    class="flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-slate-50 text-slate-700 font-extrabold text-xs border border-slate-200/80 rounded-2xl shadow-sm hover:shadow transition-all duration-200 active:scale-95"
+                >
+                    <svg class="w-4 h-4 text-indigo-650" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path>
                     </svg>
-                </button>
-                <h2 class="text-md font-black text-slate-850 font-jakarta uppercase tracking-wider min-w-[140px] text-center select-none">
-                    {{ Carbon\Carbon::create($year, $month, 1)->translatedFormat('F Y') }}
-                </h2>
-                <button wire:click="nextMonth" class="p-2.5 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-xl transition-all border border-slate-200/60 active:scale-95">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"></path>
-                    </svg>
+                    <span>+ Add Event / Reminder</span>
                 </button>
             </div>
             
-            <button wire:click="openAddModal('{{ Carbon\Carbon::create($year, $month, 1)->toDateString() }}')" 
-                class="relative overflow-hidden bg-gradient-to-r from-indigo-650 to-indigo-800 text-white font-extrabold text-xs px-5 py-3.5 rounded-2xl shadow-lg shadow-indigo-650/20 hover:shadow-indigo-650/30 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center gap-2 group"
-            >
-                <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-sheen"></span>
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path>
-                </svg>
-                <span>{{ app()->getLocale() == 'en' ? 'Add Reminder' : 'Tambah Pengingat' }}</span>
-            </button>
+            <div class="flex items-center gap-2">
+                <button @click="goToToday()" 
+                    class="px-4 py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-extrabold text-xs rounded-2xl transition-all duration-200 active:scale-95"
+                >
+                    {{ app()->getLocale() == 'en' ? 'Today' : 'Hari Ini' }}
+                </button>
+            </div>
         </div>
 
-        <!-- Days of Week Header -->
-        <div class="grid grid-cols-7 gap-3 text-center text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4 border-b border-slate-100 pb-3">
-            <div>Mon</div>
-            <div>Tue</div>
-            <div>Wed</div>
-            <div>Thu</div>
-            <div>Fri</div>
-            <div class="text-rose-450">Sat</div>
-            <div class="text-rose-450">Sun</div>
-        </div>
-
-        <!-- Calendar Days Grid -->
-        <div class="grid grid-cols-7 gap-3 auto-rows-[100px] md:auto-rows-[120px] lg:auto-rows-[140px] xl:auto-rows-[150px] transition-all duration-300"
-            wire:key="calendar-grid-{{ $month }}-{{ $year }}"
-            x-transition:enter="transition ease-out duration-300"
-            x-transition:enter-start="opacity-0 translate-y-3"
-            x-transition:enter-end="opacity-100 translate-y-0"
-        >
-            @foreach($days as $day)
-                @if($day['date'] === null)
-                    <!-- Empty Padding Day -->
-                    <div class="bg-slate-50/20 border border-dashed border-slate-200/50 rounded-2xl"></div>
-                @else
-                    <!-- Active Calendar Day -->
-                    <div wire:click="openAddModal('{{ $day['date'] }}')"
-                        class="relative group border border-slate-100 bg-white hover:bg-slate-50/30 hover:border-indigo-100 hover:shadow-lg hover:-translate-y-0.5 rounded-2xl p-3 transition-all duration-300 flex flex-col justify-between cursor-pointer min-w-0 select-none
-                        {{ $day['is_today'] ? 'border-2 border-indigo-500/80 bg-indigo-50/10 shadow-sm shadow-indigo-500/5 today-pulse' : '' }}"
-                    >
-                        <!-- Date Number & Add Event Trigger -->
-                        <div class="flex items-center justify-between w-full">
-                            <span class="text-xs font-extrabold 
-                                {{ $day['is_today'] ? 'text-indigo-650 bg-indigo-50 px-2 py-0.5 rounded-lg border border-indigo-100/50' : 'text-slate-700' }}"
-                            >
-                                {{ $day['day'] }}
-                            </span>
-                            
-                            <button wire:click.stop="openAddModal('{{ $day['date'] }}')" 
-                                class="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-all active:scale-90"
-                                title="Add reminder for this day"
-                            >
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path>
-                                </svg>
-                            </button>
-                        </div>
-
-                        <!-- Events/Reminders List inside Day -->
-                        <div class="flex-1 overflow-y-auto space-y-1.5 mt-2.5 chat-scroll">
-                            @php
-                                $displayEvents = array_slice($day['events'], 0, 2);
-                                $remainingCount = count($day['events']) - 2;
-                            @endphp
-
-                            @foreach($displayEvents as $event)
-                                @if($event['type'] === 'invoice')
-                                    <button wire:click.stop="viewInvoiceDetails({{ $event['id'] }})"
-                                        class="w-full text-left truncate text-[10px] font-bold px-2 py-1.5 rounded-xl border flex items-center gap-1.5 transition-all hover:scale-[1.02] active:scale-98
-                                        {{ $event['color'] === 'emerald' ? 'bg-emerald-50 text-emerald-700 border-emerald-100/80' : '' }}
-                                        {{ $event['color'] === 'rose' ? 'bg-rose-50 text-rose-700 border-rose-100/80' : '' }}
-                                        {{ $event['color'] === 'amber' ? 'bg-amber-50 text-amber-700 border-amber-100/80' : '' }}
-                                        {{ $event['color'] === 'slate' ? 'bg-slate-50 text-slate-700 border-slate-200/80' : '' }}
-                                        "
-                                        title="{{ $event['title'] }} - {{ $event['client_name'] }}"
-                                    >
-                                        <span class="w-1.5 h-1.5 rounded-full shrink-0
-                                            {{ $event['color'] === 'emerald' ? 'bg-emerald-500' : '' }}
-                                            {{ $event['color'] === 'rose' ? 'bg-rose-500' : '' }}
-                                            {{ $event['color'] === 'amber' ? 'bg-amber-500' : '' }}
-                                            {{ $event['color'] === 'slate' ? 'bg-slate-400' : '' }}
-                                        "></span>
-                                        <span class="truncate flex-1 tracking-tight">{{ $event['title'] }}</span>
-                                    </button>
-                                @else
-                                    <button wire:click.stop="openEditModal({{ $event['id'] }})"
-                                        class="w-full text-left truncate text-[10px] font-bold px-2 py-1.5 rounded-xl border flex items-center gap-1.5 transition-all hover:scale-[1.02] active:scale-98
-                                        {{ $event['color'] === 'indigo' ? 'bg-indigo-50 text-indigo-700 border-indigo-100/80' : '' }}
-                                        {{ $event['color'] === 'emerald' ? 'bg-emerald-50 text-emerald-700 border-emerald-100/80' : '' }}
-                                        {{ $event['color'] === 'amber' ? 'bg-amber-50 text-amber-700 border-amber-100/80' : '' }}
-                                        {{ $event['color'] === 'rose' ? 'bg-rose-50 text-rose-700 border-rose-100/80' : '' }}
-                                        {{ $event['color'] === 'slate' ? 'bg-slate-50 text-slate-700 border-slate-200/80' : '' }}
-                                        "
-                                        title="{{ $event['title'] }}"
-                                    >
-                                        <span class="w-1.5 h-1.5 rounded-full shrink-0
-                                            {{ $event['color'] === 'indigo' ? 'bg-indigo-500' : '' }}
-                                            {{ $event['color'] === 'emerald' ? 'bg-emerald-500' : '' }}
-                                            {{ $event['color'] === 'amber' ? 'bg-amber-500' : '' }}
-                                            {{ $event['color'] === 'rose' ? 'bg-rose-500' : '' }}
-                                            {{ $event['color'] === 'slate' ? 'bg-slate-400' : '' }}
-                                        "></span>
-                                        <span class="truncate flex-1 tracking-tight">{{ $event['title'] }}</span>
-                                    </button>
-                                @endif
-                            @endforeach
-
-                            @if($remainingCount > 0)
-                                <div class="text-[9px] font-black text-slate-400 bg-slate-50 border border-slate-100 py-1 rounded-xl text-center select-none tracking-wider">
-                                    +{{ $remainingCount }} {{ app()->getLocale() == 'en' ? 'MORE' : 'LAGI' }}
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-                @endif
-            @endforeach
-        </div>
+        <!-- FullCalendar Render Target -->
+        <div wire:ignore class="w-full min-w-0" id="fullcalendar-target"></div>
     </div>
 
     <!-- Modal: Add/Edit Reminder -->
@@ -337,7 +245,8 @@
                         <select wire:model="reminderCategory" class="premium-input w-full">
                             <option value="internal">Internal Dev</option>
                             <option value="meeting">Meeting</option>
-                            <option value="ai_update">AI Update</option>
+                            <option value="draft">Draft / Planning</option>
+                            <option value="overdue">Overdue Task</option>
                             <option value="other">Other</option>
                         </select>
                     </div>
@@ -355,6 +264,17 @@
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Start Date</label>
+                        <input type="date" wire:model="selectedDate" class="premium-input w-full" required>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">End Date (Inclusive)</label>
+                        <input type="date" wire:model="selectedEndDate" class="premium-input w-full">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
                         <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Related Client (Optional)</label>
                         <select wire:model="reminderClientId" class="premium-input w-full">
                             <option value="">None / General</option>
@@ -364,8 +284,13 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Reminder Date</label>
-                        <input type="date" wire:model="selectedDate" class="premium-input w-full" required>
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Assignee (Staff)</label>
+                        <select wire:model="reminderUserId" class="premium-input w-full">
+                            <option value="">Assign to Me</option>
+                            @foreach($staffs as $s)
+                                <option value="{{ $s->id }}">{{ $s->name }}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
                 
@@ -461,4 +386,344 @@
             @endif
         </div>
     </div>
+
+    <!-- Floating Preview Card Tooltip -->
+    <div id="calendar-tooltip" class="absolute hidden z-[200] w-72 bg-white/95 backdrop-blur-md border border-slate-200/50 shadow-2xl rounded-2xl p-4 pointer-events-none transition-all duration-200">
+        <div class="flex items-center justify-between mb-2">
+            <span id="tooltip-badge" class="px-2.5 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider"></span>
+            <span id="tooltip-date" class="text-[9px] font-bold text-slate-400"></span>
+        </div>
+        <h4 id="tooltip-title" class="text-xs font-black text-slate-900 font-jakarta leading-snug mb-1"></h4>
+        <p id="tooltip-desc" class="text-[10px] text-slate-500 font-medium leading-relaxed mb-2.5"></p>
+        <div class="grid grid-cols-2 gap-2 pt-2.5 border-t border-slate-100">
+            <div>
+                <p class="text-[8px] font-black uppercase text-slate-400 mb-0.5">Client</p>
+                <p id="tooltip-client" class="text-[9px] font-bold text-slate-800 truncate"></p>
+            </div>
+            <div>
+                <p class="text-[8px] font-black uppercase text-slate-400 mb-0.5">Assignee</p>
+                <p id="tooltip-staff" class="text-[9px] font-bold text-slate-800 truncate"></p>
+            </div>
+        </div>
+    </div>
 </div>
+
+@push('styles')
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet" />
+<style>
+    .fc {
+        font-family: 'Outfit', 'Inter', sans-serif;
+    }
+    .fc-theme-standard td, .fc-theme-standard th {
+        border-color: #f1f5f9 !important;
+    }
+    .fc-theme-standard .fc-scrollgrid {
+        border-color: #e2e8f0 !important;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+    .fc .fc-col-header-cell {
+        background-color: #f8fafc;
+        padding: 12px 0 !important;
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #64748b !important;
+    }
+    .fc .fc-daygrid-day-top {
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 8px 10px 0 10px;
+    }
+    .fc-daygrid-day-number {
+        font-size: 12px;
+        font-weight: 800;
+        color: #334155 !important;
+        padding: 4px 8px !important;
+        border-radius: 8px;
+    }
+    .fc-daygrid-day:hover {
+        background-color: rgba(248, 250, 252, 0.5) !important;
+    }
+    .fc-daygrid-day {
+        position: relative;
+    }
+    .fc-daygrid-day::after {
+        content: '+';
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+        font-size: 14px;
+        font-weight: bold;
+        color: #6366f1;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        pointer-events: none;
+    }
+    .fc-daygrid-day:hover::after {
+        opacity: 0.4;
+    }
+    .fc-day-today {
+        background-color: rgba(79, 70, 229, 0.03) !important;
+        border: 2px solid rgba(79, 70, 229, 0.4) !important;
+        box-shadow: inset 0 0 12px rgba(79, 70, 229, 0.03), 4px 4px 20px rgba(79, 70, 229, 0.06) !important;
+        position: relative;
+    }
+    .fc-day-today .fc-daygrid-day-number {
+        color: #4f46e5 !important;
+        background-color: #f5f3ff;
+        border: 1px solid #ddd6fe;
+    }
+    .fc-event {
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+    }
+    #calendar-tooltip {
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+        border: 1px solid #f1f5f9;
+        transition: opacity 0.15s ease-out, transform 0.15s ease-out;
+    }
+    .fc-header-toolbar {
+        display: none !important;
+    }
+    .fc-daygrid-event-harness {
+        margin: 2px 4px !important;
+    }
+</style>
+@endpush
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+<script>
+    function chronosCalendar() {
+        return {
+            calendar: null,
+            init() {
+                this.initCalendar();
+                this.$watch('$wire.clientId', () => this.refetch());
+                this.$watch('$wire.status', () => this.refetch());
+                this.$watch('$wire.staffId', () => this.refetch());
+                
+                window.addEventListener('reminderSaved', e => this.refetch());
+                window.addEventListener('refreshCalendar', e => this.refetch());
+            },
+            initCalendar() {
+                const calendarEl = document.getElementById('fullcalendar-target');
+                this.calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+                    locale: '{{ app()->getLocale() }}',
+                    firstDay: 1,
+                    editable: true,
+                    droppable: true,
+                    selectable: false,
+                    dayMaxEvents: 3,
+                    events: (info, successCallback, failureCallback) => {
+                        let url = '{{ route("chronos.events") }}';
+                        let params = new URLSearchParams({
+                            start: info.startStr,
+                            end: info.endStr,
+                            client_id: this.$wire.clientId || '',
+                            status: this.$wire.status || '',
+                            staff_id: this.$wire.staffId || ''
+                        });
+                        
+                        axios.get(url + '?' + params.toString())
+                            .then(response => successCallback(response.data))
+                            .catch(error => {
+                                console.error(error);
+                                if (typeof window.showToast === 'function') {
+                                    window.showToast('Failed to fetch events', 'danger');
+                                }
+                                failureCallback(error);
+                            });
+                    },
+                    datesSet: (info) => {
+                        document.getElementById('calendar-title').innerText = info.view.title;
+                    },
+                    dateClick: (info) => {
+                        this.$wire.openAddModal(info.dateStr);
+                    },
+                    eventClick: (info) => {
+                        let type = info.event.extendedProps.type;
+                        let dbId = info.event.extendedProps.dbId;
+                        if (type === 'invoice') {
+                            this.$wire.viewInvoiceDetails(dbId);
+                        } else if (type === 'reminder') {
+                            this.$wire.openEditModal(dbId);
+                        }
+                    },
+                    eventDrop: (info) => {
+                        this.updateEventDate(info.event, info.oldEvent, info.revert);
+                    },
+                    eventResize: (info) => {
+                        this.updateEventDate(info.event, info.oldEvent, info.revert);
+                    },
+                    eventMouseEnter: (info) => {
+                        this.showTooltip(info);
+                    },
+                    eventMouseLeave: (info) => {
+                        this.hideTooltip();
+                    },
+                    eventContent: (arg) => {
+                        let type = arg.event.extendedProps.type;
+                        let status = arg.event.extendedProps.status || arg.event.extendedProps.status_type;
+                        let title = arg.event.title;
+                        
+                        let colorClass = 'bg-slate-50 text-slate-700 border-slate-200/80';
+                        let bulletColor = 'bg-slate-400';
+                        
+                        if (type === 'invoice') {
+                            if (status === 'paid') {
+                                colorClass = 'bg-emerald-50 text-emerald-700 border-emerald-100/80';
+                                bulletColor = 'bg-emerald-500';
+                            } else if (status === 'overdue') {
+                                colorClass = 'bg-rose-50 text-rose-700 border-rose-100/80';
+                                bulletColor = 'bg-rose-500';
+                            } else if (status === 'draft') {
+                                colorClass = 'bg-amber-50 text-amber-700 border-amber-100/80';
+                                bulletColor = 'bg-amber-500';
+                            } else if (status === 'sent') {
+                                colorClass = 'bg-blue-50 text-blue-700 border-blue-100/80';
+                                bulletColor = 'bg-blue-500';
+                            }
+                        } else {
+                            if (status === 'internal') {
+                                colorClass = 'bg-indigo-50 text-indigo-700 border-indigo-100/80';
+                                bulletColor = 'bg-indigo-500';
+                            } else if (status === 'meeting') {
+                                colorClass = 'bg-emerald-50 text-emerald-700 border-emerald-100/80';
+                                bulletColor = 'bg-emerald-500';
+                            } else if (status === 'draft') {
+                                colorClass = 'bg-amber-50 text-amber-700 border-amber-100/80';
+                                bulletColor = 'bg-amber-500';
+                            } else if (status === 'overdue') {
+                                colorClass = 'bg-rose-50 text-rose-700 border-rose-100/80';
+                                bulletColor = 'bg-rose-500';
+                            }
+                        }
+
+                        return {
+                            html: `
+                                <div class="w-full text-left truncate text-[10px] font-extrabold px-2 py-1 rounded-lg border flex items-center gap-1.5 transition-all hover:scale-[1.02] active:scale-98 ${colorClass}">
+                                    <span class="w-1.5 h-1.5 rounded-full shrink-0 ${bulletColor}"></span>
+                                    <span class="truncate flex-1 tracking-tight">${title}</span>
+                                </div>
+                            `
+                        };
+                    }
+                });
+                this.calendar.render();
+            },
+            refetch() {
+                if (this.calendar) this.calendar.refetchEvents();
+            },
+            goToPrevMonth() {
+                if (this.calendar) this.calendar.prev();
+            },
+            goToNextMonth() {
+                if (this.calendar) this.calendar.next();
+            },
+            goToToday() {
+                if (this.calendar) this.calendar.today();
+            },
+            openCreateModalForToday() {
+                let todayStr = new Date().toISOString().split('T')[0];
+                this.$wire.openAddModal(todayStr);
+            },
+            updateEventDate(event, oldEvent, revertFunc) {
+                let id = event.id;
+                let start = event.startStr;
+                let end = event.endStr;
+                
+                axios.post('{{ route("chronos.update-event") }}', {
+                    id: id,
+                    start: start,
+                    end: end
+                })
+                .then(response => {
+                    if (response.data.success) {
+                        if (typeof window.showToast === 'function') {
+                            window.showToast(response.data.message || 'Date updated successfully!', 'success');
+                        }
+                    } else {
+                        if (typeof window.showToast === 'function') {
+                            window.showToast(response.data.error || 'Failed to update date.', 'danger');
+                        }
+                        revertFunc();
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    let errorMsg = 'Failed to update date.';
+                    if (error.response && error.response.data && error.response.data.error) {
+                        errorMsg = error.response.data.error;
+                    }
+                    if (typeof window.showToast === 'function') {
+                        window.showToast(errorMsg, 'danger');
+                    }
+                    revertFunc();
+                });
+            },
+            showTooltip(info) {
+                const tooltip = document.getElementById('calendar-tooltip');
+                const props = info.event.extendedProps;
+                const type = props.type;
+                
+                document.getElementById('tooltip-title').innerText = info.event.title;
+                
+                if (type === 'invoice') {
+                    document.getElementById('tooltip-badge').innerText = 'Invoice: ' + props.status;
+                    document.getElementById('tooltip-badge').className = `px-2.5 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider ` + 
+                        (props.status === 'paid' ? 'bg-emerald-50 text-emerald-700' : 
+                         (props.status === 'overdue' ? 'bg-rose-50 text-rose-700' : 'bg-amber-50 text-amber-700'));
+                    document.getElementById('tooltip-desc').innerText = 'Invoice: ' + props.invoice_number + ' | Amount: ' + props.total;
+                } else {
+                    document.getElementById('tooltip-badge').innerText = 'Reminder: ' + props.status_type;
+                    document.getElementById('tooltip-badge').className = `px-2.5 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider bg-indigo-50 text-indigo-700`;
+                    document.getElementById('tooltip-desc').innerText = props.description || 'No description provided';
+                }
+                
+                document.getElementById('tooltip-client').innerText = props.client || 'N/A';
+                document.getElementById('tooltip-staff').innerText = props.responsible_staff || 'N/A';
+                
+                let dateStr = info.event.start.toLocaleDateString('{{ app()->getLocale() }}', { day: 'numeric', month: 'short' });
+                if (info.event.end) {
+                    let dispEnd = new Date(info.event.end);
+                    dispEnd.setDate(dispEnd.getDate() - 1);
+                    if (dispEnd > info.event.start) {
+                        dateStr += ' - ' + dispEnd.toLocaleDateString('{{ app()->getLocale() }}', { day: 'numeric', month: 'short' });
+                    }
+                }
+                document.getElementById('tooltip-date').innerText = dateStr;
+                
+                const rect = info.el.getBoundingClientRect();
+                const tooltipWidth = tooltip.offsetWidth || 288;
+                const tooltipHeight = tooltip.offsetHeight || 150;
+                
+                let top = window.scrollY + rect.top - tooltipHeight - 10;
+                let left = window.scrollX + rect.left + (rect.width / 2) - (tooltipWidth / 2);
+                
+                if (top < window.scrollY) {
+                    top = window.scrollY + rect.bottom + 10;
+                }
+                if (left < 10) {
+                    left = 10;
+                } else if (left + tooltipWidth > window.innerWidth - 10) {
+                    left = window.innerWidth - tooltipWidth - 10;
+                }
+                
+                tooltip.style.top = top + 'px';
+                tooltip.style.left = left + 'px';
+                tooltip.classList.remove('hidden');
+            },
+            hideTooltip() {
+                const tooltip = document.getElementById('calendar-tooltip');
+                tooltip.classList.add('hidden');
+            }
+        };
+    }
+</script>
+@endpush

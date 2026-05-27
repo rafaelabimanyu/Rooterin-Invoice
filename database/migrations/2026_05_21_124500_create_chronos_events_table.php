@@ -12,11 +12,12 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->date('event_date');
+            $table->date('start_date');
+            $table->date('end_date')->nullable();
+            $table->string('status_type')->default('internal'); // internal, meeting, draft, overdue
             $table->string('color')->default('indigo'); // indigo, emerald, amber, rose, slate
-            $table->string('category')->default('internal'); // internal, meeting, ai_update
             $table->foreignId('client_id')->nullable()->constrained('clients')->nullOnDelete();
-            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('responsible_staff_id')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
         });
     }

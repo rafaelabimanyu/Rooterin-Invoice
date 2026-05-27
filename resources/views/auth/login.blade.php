@@ -1,5 +1,35 @@
 <x-guest-layout>
-    <div class="min-h-screen grid grid-cols-1 lg:grid-cols-2 overflow-hidden" 
+    <style>
+        .cinematic-ease {
+            transition-timing-function: cubic-bezier(0.85, 0, 0.15, 1);
+        }
+        
+        @keyframes slideUpWord {
+            0% {
+                transform: translateY(100%) scaleY(1.2);
+                filter: blur(10px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0) scaleY(1);
+                filter: blur(0);
+                opacity: 1;
+            }
+        }
+        
+        .animate-slide-up-word-1 {
+            opacity: 0;
+            animation: slideUpWord 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation-delay: 200ms;
+        }
+        
+        .animate-slide-up-word-2 {
+            opacity: 0;
+            animation: slideUpWord 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation-delay: 450ms;
+        }
+    </style>
+    <div class="min-h-screen flex relative overflow-hidden" 
         x-data="{ 
             showPassword: false, 
             helpRequested: {{ session('status') ? 'true' : 'false' }},
@@ -8,6 +38,7 @@
             mouseY: 0,
             titleText: 'AUTHORIZED ACCESS',
             displayText: '',
+            isSplit: false,
             scramble(target) {
                 let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()';
                 let iterations = 0;
@@ -25,10 +56,14 @@
                 this.mouseY = (e.clientY - window.innerHeight / 2) / 25;
             }
         }"
-        x-init="scramble(titleText)"
+        x-init="
+            scramble(titleText);
+            setTimeout(() => { isSplit = true; }, 1400);
+        "
         @mousemove="moveParallax($event)">
         <!-- Left Side: Login Form -->
-        <div class="flex items-center justify-center p-8 md:p-16 bg-white relative z-10 page-fade-in stagger-1">
+        <div class="w-full lg:w-1/2 flex items-center justify-center p-8 md:p-16 bg-white relative z-10 transition-opacity duration-1000 lg:delay-[600ms]"
+             :class="isSplit ? 'opacity-100' : 'opacity-100 lg:opacity-0'">
             <div class="w-full max-w-md space-y-12">
                 <!-- Brand -->
                 <div class="space-y-1">
@@ -123,7 +158,8 @@
         </div>
 
         <!-- Right Side: Branding Command Center -->
-        <div class="hidden lg:flex relative items-center justify-center bg-[#0a0f1d] overflow-hidden">
+        <div class="hidden lg:flex absolute top-0 left-0 h-full bg-[#0a0f1d] z-20 transition-all duration-[1400ms] cinematic-ease overflow-hidden items-center justify-center"
+             :class="isSplit ? 'lg:w-1/2 lg:left-1/2' : 'lg:w-full lg:left-0'">
             <!-- Animated Background -->
             <div class="absolute inset-0 matrix-flow">
                 <div class="parallax-layer absolute top-0 right-0 w-[800px] h-[800px] bg-indigo-600/10 rounded-full blur-[150px] -mr-[400px] -mt-[400px] transform-gpu"
@@ -137,25 +173,40 @@
                     :style="'transform: translate3d(' + mouseX * 0.5 + 'px, ' + mouseY * 0.5 + 'px, 0)'"></div>
             </div>
             
-            <div class="relative z-20 text-center px-24 page-fade-in stagger-2">
-                <div class="w-32 h-32 bg-white/5 border border-white/10 rounded-[40px] flex items-center justify-center mb-16 mx-auto backdrop-blur-2xl shadow-2xl overflow-hidden p-6">
+            <div class="relative z-20 text-center px-24">
+                <!-- Logo with slide-down reveal -->
+                <div class="w-32 h-32 bg-white/5 border border-white/10 rounded-[40px] flex items-center justify-center mb-16 mx-auto backdrop-blur-2xl shadow-2xl overflow-hidden p-6 transition-all duration-[1000ms] delay-[1600ms]"
+                     :class="isSplit ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform -translate-y-4'">
                     <img src="{{ asset('img/logo-rooterin.png') }}" alt="Rooterin Logo" class="w-full h-full object-contain">
                 </div>
                 
                 <div class="space-y-6">
-                    <div class="inline-flex items-center gap-3 px-6 py-2 bg-white/5 border border-white/10 rounded-full text-indigo-300 text-[10px] font-black uppercase tracking-[0.4em] mb-4">
+                    <!-- Badge with fade reveal -->
+                    <div class="inline-flex items-center gap-3 px-6 py-2 bg-white/5 border border-white/10 rounded-full text-indigo-300 text-[10px] font-black uppercase tracking-[0.4em] mb-4 transition-all duration-[1000ms] delay-[1500ms]"
+                         :class="isSplit ? 'opacity-100' : 'opacity-0'">
                         Authorized Nodes Only
                     </div>
-                    <h2 class="text-6xl font-black text-white leading-[0.9] tracking-tighter uppercase">
-                        Master the <br> <span class="text-indigo-500">Finance</span> <br> Matrix.
+                    
+                    <!-- Heading text with 2-line layout and slide-up/fade animation -->
+                    <h2 class="text-5xl xl:text-6xl 2xl:text-7xl font-black text-white leading-[0.9] tracking-tighter uppercase">
+                        <div class="overflow-hidden">
+                            <span class="inline-block animate-slide-up-word-1 whitespace-nowrap">MASTER THE</span>
+                        </div>
+                        <div class="overflow-hidden mt-2">
+                            <span class="inline-block text-indigo-500 animate-slide-up-word-2 whitespace-nowrap">FINANCE MATRIX.</span>
+                        </div>
                     </h2>
-                    <p class="text-slate-400 text-base font-medium leading-relaxed max-w-sm mx-auto mt-8">
+                    
+                    <!-- Description with slide-up reveal -->
+                    <p class="text-slate-400 text-base font-medium leading-relaxed max-w-sm mx-auto mt-8 transition-all duration-[1000ms] delay-[1700ms]"
+                       :class="isSplit ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'">
                         The unified high-fidelity workspace for enterprise billing, job documentation, and performance intelligence.
                     </p>
                 </div>
                 
-                <!-- Security Badges -->
-                <div class="mt-20 flex justify-center items-center gap-10">
+                <!-- Security Badges with slide-up reveal -->
+                <div class="mt-20 flex justify-center items-center gap-10 transition-all duration-[1000ms] delay-[1800ms]"
+                     :class="isSplit ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'">
                     <div class="flex flex-col items-center gap-2">
                         <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_#10b981]"></div>
                         <span class="text-[9px] font-black text-slate-500 uppercase tracking-widest">Auth Active</span>

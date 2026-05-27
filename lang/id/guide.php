@@ -76,7 +76,7 @@ return [
             'navigation' => [
                 'user-management' => [
                     'title' => 'Pengelolaan Akun',
-                    'icon' => 'users-cog',
+                    'icon' => 'user-cog',
                     'color' => 'indigo',
                     'content' => 'Prosedur keamanan untuk menambah Staff, mereset password, dan menonaktifkan akun yang mencurigakan.',
                     'sub_sections' => [

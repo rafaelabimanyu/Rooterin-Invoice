@@ -76,7 +76,7 @@ return [
             'navigation' => [
                 'user-management' => [
                     'title' => 'Account Management',
-                    'icon' => 'users-cog',
+                    'icon' => 'user-cog',
                     'color' => 'indigo',
                     'content' => 'Security procedures for adding Staff, resetting passwords, and deactivating suspicious accounts.',
                     'sub_sections' => [

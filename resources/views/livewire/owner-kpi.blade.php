@@ -1,7 +1,7 @@
 <div>
     @if($minimal)
         <!-- Refreshed Dashboard Metrics Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-12 animate-fade-in-up">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-12 animate-fade-in-up">
             <!-- Card 1: Pendapatan Kotor -->
             <div class="glass-card p-6 group hover:-translate-y-1 hover:shadow-lg hover:border-indigo-500/20 transition-all duration-300 ease-out cursor-pointer relative overflow-hidden border border-slate-200/50"
                  @click="$dispatch('slide-over-loading-start')"
@@ -19,7 +19,7 @@
                     <p class="text-[10px] md:text-[11px] font-black text-slate-500 uppercase tracking-[0.25em] mb-2">
                         {{ __('ui.total_billing') }}
                     </p>
-                    <h3 class="text-2xl md:text-3xl font-black text-slate-900 font-jakarta tracking-tight group-hover:translate-x-1 transition-transform duration-500">
+                    <h3 class="text-xl sm:text-2xl lg:text-lg xl:text-xl 2xl:text-2xl font-black text-slate-900 font-jakarta tracking-tight group-hover:translate-x-1 transition-transform duration-500 truncate">
                         Rp {{ number_format($totalRevenue, 0, ',', '.') }}
                     </h3>
                 </div>
@@ -43,7 +43,7 @@
                     <p class="text-[10px] md:text-[11px] font-black text-slate-500 uppercase tracking-[0.25em] mb-2">
                         {{ __('ui.amount_due') }}
                     </p>
-                    <h3 class="text-2xl md:text-3xl font-black text-slate-900 font-jakarta tracking-tight group-hover:translate-x-1 transition-transform duration-500">
+                    <h3 class="text-xl sm:text-2xl lg:text-lg xl:text-xl 2xl:text-2xl font-black text-slate-900 font-jakarta tracking-tight group-hover:translate-x-1 transition-transform duration-500 truncate">
                         Rp {{ number_format($pendingRevenue, 0, ',', '.') }}
                     </h3>
                 </div>
@@ -67,7 +67,7 @@
                     <p class="text-[10px] md:text-[11px] font-black text-slate-500 uppercase tracking-[0.25em] mb-2">
                         {{ __('ui.clients') }}
                     </p>
-                    <h3 class="text-2xl md:text-3xl font-black text-slate-900 font-jakarta tracking-tight group-hover:translate-x-1 transition-transform duration-500">
+                    <h3 class="text-xl sm:text-2xl lg:text-lg xl:text-xl 2xl:text-2xl font-black text-slate-900 font-jakarta tracking-tight group-hover:translate-x-1 transition-transform duration-500 truncate">
                         {{ $totalClientsCount }}
                     </h3>
                 </div>
@@ -91,7 +91,7 @@
                     <p class="text-[10px] md:text-[11px] font-black text-slate-500 uppercase tracking-[0.25em] mb-2">
                         {{ __('ui.collection_rate') }}
                     </p>
-                    <h3 class="text-2xl md:text-3xl font-black text-slate-900 font-jakarta tracking-tight group-hover:translate-x-1 transition-transform duration-500">
+                    <h3 class="text-xl sm:text-2xl lg:text-lg xl:text-xl 2xl:text-2xl font-black text-slate-900 font-jakarta tracking-tight group-hover:translate-x-1 transition-transform duration-500 truncate">
                         {{ round($collectionRate) }}%
                     </h3>
                     <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden shadow-inner mt-4">
@@ -112,7 +112,7 @@
                         <i data-lucide="trending-up" class="w-6 h-6"></i>
                     </div>
                     <div>
-                        <h1 class="text-3xl font-black text-slate-900 font-jakarta tracking-tight uppercase">{{ app()->getLocale() == 'en' ? 'Executive Intelligence' : 'Kecerdasan Eksekutif' }}</h1>
+                        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 font-jakarta tracking-tight uppercase">{{ app()->getLocale() == 'en' ? 'Executive Intelligence' : 'Kecerdasan Eksekutif' }}</h1>
                         <p class="text-[11px] text-slate-500 font-bold uppercase tracking-[0.1em]">{{ app()->getLocale() == 'en' ? 'Business performance & growth analytics' : 'Analisis kinerja bisnis & pertumbuhan' }}</p>
                     </div>
                 </div>
@@ -131,7 +131,7 @@
         </div>
 
         <!-- KPI Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8 page-fade-in" style="animation-delay: 100ms">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8 page-fade-in" style="animation-delay: 100ms">
             <!-- Monthly Revenue -->
             <div class="glass-card p-6 group hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 relative overflow-hidden border-indigo-500/10 cursor-pointer"
                  @click="$dispatch('slide-over-loading-start')"
@@ -142,7 +142,7 @@
                         <i data-lucide="banknote" class="w-5 h-5"></i>
                     </div>
                 </div>
-                <h3 class="text-2xl font-black text-slate-900 font-jakarta tracking-tight mb-4">Rp {{ number_format($currentMonthRevenue, 0, ',', '.') }}</h3>
+                <h3 class="text-xl sm:text-2xl lg:text-lg xl:text-xl 2xl:text-2xl font-black text-slate-900 font-jakarta tracking-tight mb-4 truncate">Rp {{ number_format($currentMonthRevenue, 0, ',', '.') }}</h3>
                 <div class="pt-4 border-t border-slate-50 flex items-center justify-between">
                     <span class="text-[9px] text-slate-400 font-black uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Growth' : 'Pertumbuhan' }}</span>
                     <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black {{ $revenueChange >= 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600' }}">
@@ -163,7 +163,7 @@
                         <i data-lucide="alert-triangle" class="w-5 h-5"></i>
                     </div>
                 </div>
-                <h3 class="text-2xl font-black text-amber-600 font-jakarta tracking-tight mb-4">Rp {{ number_format($totalUnpaid, 0, ',', '.') }}</h3>
+                <h3 class="text-xl sm:text-2xl lg:text-lg xl:text-xl 2xl:text-2xl font-black text-amber-600 font-jakarta tracking-tight mb-4 truncate">Rp {{ number_format($totalUnpaid, 0, ',', '.') }}</h3>
                 <div class="pt-4 border-t border-slate-50 grid grid-cols-2 gap-4">
                     <div class="flex flex-col">
                         <span class="text-[8px] text-slate-400 font-black uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Floating' : 'Berjalan' }}</span>
@@ -187,7 +187,7 @@
                         <i data-lucide="refresh-cw" class="w-5 h-5"></i>
                     </div>
                 </div>
-                <h3 class="text-2xl font-black text-slate-900 font-jakarta tracking-tight mb-4">{{ number_format($repeatRate, 1) }}%</h3>
+                <h3 class="text-xl sm:text-2xl lg:text-lg xl:text-xl 2xl:text-2xl font-black text-slate-900 font-jakarta tracking-tight mb-4 truncate">{{ number_format($repeatRate, 1) }}%</h3>
                 <div class="space-y-2.5 relative z-10">
                     <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
                         <div class="bg-emerald-500 h-full shadow-[0_0_8px_rgba(16,185,129,0.5)]" style="width: {{ $repeatRate }}%"></div>
@@ -208,7 +208,7 @@
                     </div>
                 </div>
                 @if($topClients->count() > 0)
-                    <h3 class="text-lg font-black text-slate-900 font-jakarta tracking-tight truncate mb-0.5">{{ $topClients[0]->nama_client }}</h3>
+                    <h3 class="text-base sm:text-lg lg:text-sm xl:text-base 2xl:text-lg font-black text-slate-900 font-jakarta tracking-tight truncate mb-0.5">{{ $topClients[0]->nama_client }}</h3>
                     <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider truncate">{{ $topClients[0]->nama_perusahaan }}</p>
                     <div class="mt-6 pt-4 border-t border-slate-50 flex items-center justify-between">
                         <span class="text-[9px] text-slate-400 font-black uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Valuation' : 'Valuasi' }}</span>
@@ -237,7 +237,7 @@
                     </div>
                 </div>
                 <!-- Fixed Height Container with wire:ignore -->
-                <div wire:ignore class="relative h-[300px] w-full">
+                <div wire:ignore class="relative h-[220px] sm:h-[300px] w-full">
                     <div id="revenueChart" class="absolute inset-0"></div>
                 </div>
             </div>
@@ -324,7 +324,7 @@
                         <thead>
                             <tr class="table-header">
                                 <th class="px-8 py-4 text-[10px]">{{ app()->getLocale() == 'en' ? 'Rank & Identity' : 'Peringkat & Identitas' }}</th>
-                                <th class="px-8 py-4 text-[10px]">{{ app()->getLocale() == 'en' ? 'Volume' : 'Volume' }}</th>
+                                <th class="hidden sm:table-cell px-8 py-4 text-[10px]">{{ app()->getLocale() == 'en' ? 'Volume' : 'Volume' }}</th>
                                 <th class="px-8 py-4 text-[10px] text-right">{{ app()->getLocale() == 'en' ? 'Valuation' : 'Valuasi' }}</th>
                             </tr>
                         </thead>
@@ -335,14 +335,14 @@
                                     wire:click="openModal('client', {{ $client->id }})">
                                     <td class="px-8 py-4">
                                         <div class="flex items-center gap-4">
-                                            <span class="w-7 h-7 rounded-lg bg-slate-900 flex items-center justify-center text-[9px] font-black text-white">{{ $index + 1 }}</span>
-                                            <div class="flex flex-col">
-                                                <span class="text-[13px] font-black text-slate-900 tracking-tight group-hover:text-indigo-600 transition-colors">{{ $client->nama_client }}</span>
-                                                <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">{{ $client->nama_perusahaan }}</span>
+                                            <span class="w-7 h-7 rounded-lg bg-slate-900 flex items-center justify-center text-[9px] font-black text-white shrink-0">{{ $index + 1 }}</span>
+                                            <div class="flex flex-col max-w-[140px] sm:max-w-none">
+                                                <span class="text-[13px] font-black text-slate-900 tracking-tight group-hover:text-indigo-600 transition-colors truncate">{{ $client->nama_client }}</span>
+                                                <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest truncate">{{ $client->nama_perusahaan }}</span>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="px-8 py-4">
+                                    <td class="hidden sm:table-cell px-8 py-4">
                                         <div class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 rounded-full text-[10px] font-bold text-slate-600">
                                             <i data-lucide="file-text" class="w-3 h-3"></i>
                                             {{ $client->invoices_count }} Unit
@@ -386,12 +386,12 @@
                                         <span class="text-[8px] font-black text-slate-400 uppercase leading-none group-hover:text-slate-500">{{ $payment->payment_date->format('M') }}</span>
                                         <span class="text-sm font-black text-slate-900 leading-none mt-0.5 group-hover:text-white">{{ $payment->payment_date->format('d') }}</span>
                                     </div>
-                                    <div class="flex flex-col">
-                                        <span class="text-[13px] font-black text-slate-900 tracking-tight group-hover:text-indigo-600 transition-colors">{{ $payment->invoice?->client?->nama_client ?? 'N/A' }}</span>
-                                        <div class="flex items-center gap-1.5 mt-0.5">
-                                            <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">{{ $payment->invoice?->invoice_number ?? 'N/A' }}</span>
-                                            <span class="w-0.5 h-0.5 rounded-full bg-slate-300"></span>
-                                            <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">{{ $payment->payment_method }}</span>
+                                    <div class="flex flex-col max-w-[120px] xs:max-w-[150px] sm:max-w-none">
+                                        <span class="text-[13px] font-black text-slate-900 tracking-tight group-hover:text-indigo-600 transition-colors truncate">{{ $payment->invoice?->client?->nama_client ?? 'N/A' }}</span>
+                                        <div class="flex items-center gap-1.5 mt-0.5 truncate">
+                                            <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest truncate">{{ $payment->invoice?->invoice_number ?? 'N/A' }}</span>
+                                            <span class="w-0.5 h-0.5 rounded-full bg-slate-300 shrink-0"></span>
+                                            <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest truncate">{{ $payment->payment_method }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -518,7 +518,7 @@
                             breakpoint: 480,
                             options: {
                                 chart: {
-                                    height: 300
+                                    height: 220
                                 }
                             }
                         }],

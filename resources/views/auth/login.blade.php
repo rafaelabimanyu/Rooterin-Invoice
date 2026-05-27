@@ -31,14 +31,9 @@
         <div class="flex items-center justify-center p-8 md:p-16 bg-white relative z-10 page-fade-in stagger-1">
             <div class="w-full max-w-md space-y-12">
                 <!-- Brand -->
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center shadow-2xl shadow-slate-900/20 transition-transform hover:scale-110 duration-500 overflow-hidden p-2 shrink-0">
-                        <img src="{{ asset('img/logo-rooterin.png') }}" alt="Rooterin Logo" class="w-full h-full object-contain">
-                    </div>
-                    <div>
-                        <span class="text-2xl font-black tracking-tighter uppercase">Rooterin<span class="text-indigo-600">.</span></span>
-                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">Enterprise Operating System</p>
-                    </div>
+                <div class="space-y-1">
+                    <span class="text-4xl md:text-5xl font-black tracking-tighter uppercase text-slate-900 block leading-none" style="font-family: 'Outfit', sans-serif;">Rooterin<span class="text-indigo-600">.</span></span>
+                    <p class="text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-[0.3em] block mt-1">Enterprise Operating System</p>
                 </div>
 
                 <div class="space-y-3 scale-in stagger-2">
@@ -92,7 +87,7 @@
                             <div class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 transition-colors group-focus-within:text-indigo-600 z-10">
                                 <i data-lucide="lock" class="w-5 h-5"></i>
                             </div>
-                            <input id="password" :type="showPassword ? 'text' : 'password'" name="password" required autocomplete="current-password" class="w-full pl-14 pr-14 py-5 bg-slate-50 border-transparent rounded-[24px] text-sm font-bold outline-none transition-all shadow-inner focus:ring-0" placeholder="••••••••••••">
+                            <input id="password" type="password" :type="showPassword ? 'text' : 'password'" name="password" required autocomplete="current-password" class="w-full pl-14 pr-14 py-5 bg-slate-50 border-transparent rounded-[24px] text-sm font-bold outline-none transition-all shadow-inner focus:ring-0" placeholder="••••••••••••">
                             <button type="button" @click="showPassword = !showPassword" class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-900 transition-colors z-10 p-1">
                                 <svg x-show="!showPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
                                 <svg x-show="showPassword" x-cloak xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-off"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
@@ -109,18 +104,14 @@
                         </label>
 
                         <button type="submit" @click="isLoggingIn = true" class="w-full min-w-[200px] h-[72px] bg-slate-900 text-white rounded-[28px] font-black text-xs shadow-[0_20px_50px_rgba(0,0,0,0.2)] hover:bg-indigo-600 hover:-translate-y-1 transition-all duration-500 uppercase tracking-[0.3em] flex items-center justify-center gap-3 btn-shimmer group relative overflow-hidden">
-                            <template x-if="!isLoggingIn">
-                                <span class="relative z-10 flex items-center gap-3">
-                                    Initialize Node
-                                    <i data-lucide="arrow-right" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
-                                </span>
-                            </template>
-                            <template x-if="isLoggingIn">
-                                <div class="flex items-center gap-3">
-                                    <div class="loading-spinner"></div>
-                                    <span>Processing...</span>
-                                </div>
-                            </template>
+                            <span x-show="!isLoggingIn" class="relative z-10 flex items-center justify-center gap-3">
+                                LOGIN
+                                <i data-lucide="arrow-right" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
+                            </span>
+                            <span x-show="isLoggingIn" x-cloak class="flex items-center justify-center gap-3">
+                                <div class="loading-spinner"></div>
+                                <span>PROCESSING...</span>
+                            </span>
                         </button>
                     </div>
                 </form>

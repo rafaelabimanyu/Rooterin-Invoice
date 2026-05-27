@@ -14,10 +14,12 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @livewireStyles
     </head>
     <body class="font-inter text-slate-900 antialiased">
         <div class="min-h-screen bg-white">
             {{ $slot }}
         </div>
+        @livewireScripts
     </body>
 </html>

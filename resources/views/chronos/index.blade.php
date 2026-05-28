@@ -1,124 +1,14 @@
 <x-app-layout :title="__('Chronos Operational Calendar')">
     <div class="animate-fade-in-up">
-        <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-8 page-fade-in">
-            <div>
-                <h1 class="text-3xl font-black text-slate-900 font-jakarta tracking-tight mb-2 uppercase">
-                    Rooterin Chronos
-                </h1>
-                <p class="text-sm text-slate-500 font-medium tracking-tight">
-                    {{ __('Billing Calendar & Operational Workflows') }}
-                </p>
-            </div>
-            <div class="flex items-center gap-4">
-                <div class="flex flex-wrap items-center gap-4 px-5 py-2.5 bg-white/40 backdrop-blur-lg rounded-2xl border border-white/20 shadow-lg shadow-indigo-500/5 select-none">
-                    <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-indigo-50 border border-indigo-100/60">
-                        <span class="w-2 h-2 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(79,70,229,0.6)]"></span>
-                        <span class="text-[9px] font-black uppercase text-indigo-650 tracking-wider">
-                            {{ __('Internal') }}
-                        </span>
-                    </div>
-                    <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-emerald-50 border border-emerald-100/60">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span>
-                        <span class="text-[9px] font-black uppercase text-emerald-650 tracking-wider">
-                            {{ __('Paid / Meeting') }}
-                        </span>
-                    </div>
-                    <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-amber-50 border border-amber-100/60">
-                        <span class="w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)]"></span>
-                        <span class="text-[9px] font-black uppercase text-amber-650 tracking-wider">
-                            {{ __('Draft / Planning') }}
-                        </span>
-                    </div>
-                    <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-rose-50 border border-rose-100/60">
-                        <span class="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]"></span>
-                        <span class="text-[9px] font-black uppercase text-rose-650 tracking-wider">
-                            {{ __('Overdue') }}
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <div class="grid grid-cols-1 xl:grid-cols-4 gap-6 xl:gap-8 w-full min-w-0">
-            <!-- Left Section (75% Width): Main Calendar -->
+            <!-- Left Section (75% Width): Main Calendar & Filters -->
             <div class="xl:col-span-3 flex flex-col min-w-0 w-full">
                 @livewire('chronos-calendar')
             </div>
 
-            <!-- Right Section (25% Width): Analytics Insights -->
+            <!-- Right Section (25% Width): Analytics Insights & Live Feed -->
             <div class="xl:col-span-1 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1 gap-6 xl:gap-8 min-w-0 w-full">
-                <!-- Metrics Card -->
-                <div class="glass-card p-6 border-slate-100 shadow-2xl shadow-rose-500/5 page-fade-in stagger-2 bg-white/80 backdrop-blur-md rounded-3xl">
-                    <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-md mb-6">
-                        {{ __('Metrics Insights') }}
-                    </h3>
-                    
-                    <div class="space-y-6">
-                        <div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
-                                {{ __('Total Active Arrears') }}
-                            </p>
-                            <h4 class="text-2xl font-black text-rose-500 font-jakarta tracking-tighter">
-                                Rp {{ number_format($activeArrears, 0, ',', '.') }}
-                            </h4>
-                        </div>
-                        
-                        <div class="pt-6 border-t border-slate-50">
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
-                                {{ __('Due This Week') }}
-                            </p>
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-500">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"></path>
-                                    </svg>
-                                </div>
-                                <h4 class="text-2xl font-black text-slate-900 font-jakarta tracking-tighter">
-                                    {{ $dueThisWeek }} <span class="text-sm text-slate-400 font-medium tracking-normal">{{ __('Invoices') }}</span>
-                                </h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Activity Feed Card -->
-                <div class="glass-card p-6 border-slate-100 shadow-2xl shadow-indigo-500/5 page-fade-in stagger-3 bg-white/80 backdrop-blur-md rounded-3xl flex flex-col flex-1">
-                    <div class="flex items-center justify-between mb-8">
-                        <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-md">
-                            {{ __('Live Feed') }}
-                        </h3>
-                        <span class="relative flex h-2 w-2">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                        </span>
-                    </div>
-
-                    <div class="flex-1 relative">
-                        <div class="absolute left-[11px] top-2 bottom-0 w-0.5 bg-slate-100"></div>
-                        <div class="space-y-6">
-                            @forelse($activities as $activity)
-                                <div class="relative pl-8">
-                                    <div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-white border-4 border-indigo-500 flex items-center justify-center z-10"></div>
-                                    <div class="space-y-1">
-                                        <p class="text-[12px] font-bold text-slate-800 leading-snug">{{ $activity->description }}</p>
-                                        <p class="text-[10px] text-slate-400 font-medium">{{ $activity->created_at->diffForHumans() }} - {{ $activity->user->name }}</p>
-                                    </div>
-                                </div>
-                            @empty
-                                <div class="text-center py-8">
-                                    <div class="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center mx-auto mb-4">
-                                        <svg class="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"></path>
-                                        </svg>
-                                    </div>
-                                    <p class="text-[11px] font-bold text-slate-900 uppercase tracking-widest">
-                                        {{ __('No activities yet') }}
-                                    </p>
-                                </div>
-                            @endforelse
-                        </div>
-                    </div>
-                </div>
+                @include('chronos.components.sidebar-metrics')
             </div>
         </div>
 

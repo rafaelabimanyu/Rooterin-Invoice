@@ -73,7 +73,7 @@
                 </button>
                 <button wire:click="$set('status', 'overdue')" type="button" 
                     class="px-3.5 py-2.5 rounded-xl text-xs font-bold border transition-all duration-200 active:scale-95
-                    {{ $status === 'overdue' ? 'bg-rose-50 text-white border-rose-500 shadow-md shadow-rose-500/15' : 'bg-white/70 text-slate-600 border-slate-200/60 hover:bg-slate-50' }}"
+                    {{ $status === 'overdue' ? 'bg-rose-550 text-white border-rose-500 shadow-md shadow-rose-500/15' : 'bg-white/70 text-slate-600 border-slate-200/60 hover:bg-slate-50' }}"
                 >
                     {{ __('Overdue') }}
                 </button>
@@ -214,7 +214,20 @@
     <!-- Modal: Add/Edit Reminder -->
     <template x-teleport="body">
         <div class="fixed inset-0 z-[100] flex items-center justify-center p-4"
-             x-data="{ open: @entangle('showModal') }"
+             x-data="{ 
+                 open: @entangle('showModal'), 
+                 localLoading: false,
+                 init() {
+                     this.$watch('open', value => {
+                         if (value) {
+                             this.localLoading = true;
+                             setTimeout(() => {
+                                 this.localLoading = false;
+                             }, 350);
+                         }
+                     });
+                 }
+             }"
              x-show="open"
              x-cloak
         >
@@ -233,15 +246,26 @@
             <!-- Modal Content Container -->
             <div class="relative bg-white rounded-[32px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.2)] w-full max-w-lg overflow-hidden transform p-8 border border-slate-100 z-10"
                  x-show="open"
-                 x-transition:enter="transition ease-out duration-300"
-                 x-transition:enter-start="opacity-0 translate-y-4 scale-95"
-                 x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-                 x-transition:leave="transition ease-in duration-200"
-                 x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-                 x-transition:leave-end="opacity-0 translate-y-4 scale-95"
+                 x-transition:enter="transition ease-out duration-300 transform"
+                 x-transition:enter-start="opacity-0 scale-95"
+                 x-transition:enter-end="opacity-100 scale-100"
+                 x-transition:leave="transition ease-in duration-200 transform"
+                 x-transition:leave-start="opacity-100 scale-100"
+                 x-transition:leave-end="opacity-0 scale-95"
             >
-                <!-- Premium Loading Micro-Interaction -->
-                <div wire:loading wire:target="openAddModal, openEditModal, saveReminder, deleteReminder" class="absolute inset-0 bg-white/80 backdrop-blur-md z-50 flex flex-col items-center justify-center rounded-[32px] transition-all duration-355">
+                <!-- Premium Loading Micro-Interactions -->
+                <div x-show="localLoading" class="absolute inset-0 bg-white/80 backdrop-blur-md z-50 flex flex-col items-center justify-center rounded-[32px] transition-all duration-350" style="display: none;">
+                    <div class="flex flex-col items-center gap-4">
+                        <div class="relative flex items-center justify-center">
+                            <div class="w-12 h-12 border-4 border-indigo-500/20 rounded-full absolute"></div>
+                            <div class="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                        <p class="text-[10px] font-black text-indigo-650 uppercase tracking-[0.2em] animate-pulse">
+                            {{ __('Processing Event...') }}
+                        </p>
+                    </div>
+                </div>
+                <div wire:loading class="absolute inset-0 bg-white/80 backdrop-blur-md z-50 flex flex-col items-center justify-center rounded-[32px] transition-all duration-350">
                     <div class="flex flex-col items-center gap-4">
                         <div class="relative flex items-center justify-center">
                             <div class="w-12 h-12 border-4 border-indigo-500/20 rounded-full absolute"></div>
@@ -269,14 +293,14 @@
                         <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
                             {{ __('Reminder Title') }}
                         </label>
-                        <input type="text" wire:model="reminderTitle" class="premium-input w-full" placeholder="{{ app()->getLocale() == 'en' ? 'e.g. Work on Feature A & B' : 'misal: Pengerjaan Fitur A & B' }}" required>
+                        <input type="text" wire:model="reminderTitle" class="premium-input w-full" placeholder="{{ __('e.g. Work on Feature A & B') }}" required>
                     </div>
                     
                     <div>
                         <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
                             {{ __('Description') }}
                         </label>
-                        <textarea wire:model="reminderDescription" rows="3" class="premium-input w-full" placeholder="{{ app()->getLocale() == 'en' ? 'Enter reminder details...' : 'Masukkan detail pengingat...' }}"></textarea>
+                        <textarea wire:model="reminderDescription" rows="3" class="premium-input w-full" placeholder="{{ __('Enter reminder details...') }}"></textarea>
                     </div>
                     
                     <div class="grid grid-cols-2 gap-4">
@@ -285,11 +309,11 @@
                                 {{ __('Category') }}
                             </label>
                             <select wire:model="reminderCategory" class="premium-input w-full">
-                                <option value="internal">Internal Dev</option>
-                                <option value="meeting">Meeting</option>
-                                <option value="draft">Draft / Planning</option>
-                                <option value="overdue">Overdue Task</option>
-                                <option value="other">Other</option>
+                                <option value="internal">{{ __('Internal Dev') }}</option>
+                                <option value="meeting">{{ __('Meeting') }}</option>
+                                <option value="draft">{{ __('Draft / Planning') }}</option>
+                                <option value="overdue">{{ __('Overdue Task') }}</option>
+                                <option value="other">{{ __('Other') }}</option>
                             </select>
                         </div>
                         <div>
@@ -297,11 +321,11 @@
                                 {{ __('Color Indicator') }}
                             </label>
                             <select wire:model="reminderColor" class="premium-input w-full">
-                                <option value="indigo">Indigo</option>
-                                <option value="emerald">Emerald</option>
-                                <option value="amber">Amber</option>
-                                <option value="rose">Rose</option>
-                                <option value="slate">Slate</option>
+                                <option value="indigo">{{ __('Indigo') }}</option>
+                                <option value="emerald">{{ __('Emerald') }}</option>
+                                <option value="amber">{{ __('Amber') }}</option>
+                                <option value="rose">{{ __('Rose') }}</option>
+                                <option value="slate">{{ __('Slate') }}</option>
                             </select>
                         </div>
                     </div>
@@ -327,7 +351,7 @@
                                 {{ __('Related Client (Optional)') }}
                             </label>
                             <select wire:model="reminderClientId" class="premium-input w-full">
-                                <option value="">None / General</option>
+                                <option value="">{{ __('None / General') }}</option>
                                 @foreach($clients as $c)
                                     <option value="{{ $c->id }}">{{ $c->nama_client }}</option>
                                 @endforeach
@@ -338,7 +362,7 @@
                                 {{ __('Assignee (Staff)') }}
                             </label>
                             <select wire:model="reminderUserId" class="premium-input w-full">
-                                <option value="">Assign to Me</option>
+                                <option value="">{{ __('Assign to Me') }}</option>
                                 @foreach($staffs as $s)
                                     <option value="{{ $s->id }}">{{ $s->name }}</option>
                                 @endforeach
@@ -420,7 +444,7 @@
                     <div class="p-8">
                         <div class="flex items-center justify-between mb-8">
                             <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-white bg-indigo-655/10 border border-indigo-200/40">
-                                <svg class="w-8 h-8 text-indigo-650" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <svg class="w-8 h-8 text-indigo-655" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"></path>
                                 </svg>
                             </div>
@@ -529,6 +553,26 @@
             }
             .fc-daygrid-day {
                 position: relative;
+            }
+            
+            /* Premium Input Field Styling with rounder shapes & focus rings */
+            .premium-input {
+                background-color: rgba(255, 255, 255, 0.85) !important;
+                border: 1.5px solid #e2e8f0 !important;
+                border-radius: 16px !important;
+                padding: 11px 15px !important;
+                font-size: 13px !important;
+                font-weight: 700 !important;
+                color: #334155 !important;
+                outline: none !important;
+                box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04) !important;
+                transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            }
+            .premium-input:focus {
+                background-color: #ffffff !important;
+                border-color: #4f46e5 !important;
+                box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15), 0 10px 15px -3px rgba(0, 0, 0, 0.05) !important;
+                transform: translateY(-1px);
             }
             
             /* Responsive Grid Heights for Desktop */

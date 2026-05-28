@@ -32,7 +32,7 @@
                  class="absolute left-0 z-55 mt-2 w-full bg-white/95 backdrop-blur-md border border-slate-100 rounded-2xl shadow-xl max-h-60 overflow-y-auto chat-scroll p-1.5"
                  style="display: none;"
             >
-                <button wire:click="$set('clientId', '');" @click="open = false" type="button" class="w-full text-left px-3.5 py-2.5 text-xs font-bold rounded-xl text-slate-650 hover:bg-slate-50 hover:text-indigo-650 transition-colors">
+                <button wire:click="$set('clientId', '');" @click="open = false" type="button" class="w-full text-left px-3.5 py-2.5 text-xs font-bold rounded-xl text-slate-655 hover:bg-slate-50 hover:text-indigo-650 transition-colors">
                     All Clients
                 </button>
                 @foreach($clients as $client)
@@ -145,44 +145,62 @@
     >
         <!-- Calendar Header -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-            <div class="flex items-center gap-4 flex-wrap">
-                <div class="flex items-center gap-2">
-                    <button @click="goToPrevMonth()" class="p-2.5 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-xl transition-all border border-slate-200/60 active:scale-95">
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full">
+                <div class="flex items-center justify-between sm:justify-start gap-3 w-full sm:w-auto">
+                    <button @click="goToPrevMonth()" class="w-12 h-12 shrink-0 flex items-center justify-center bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-2xl transition-all border border-slate-200/60 active:scale-95" title="Previous Month">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"></path>
                         </svg>
                     </button>
-                    <h2 id="calendar-title" class="text-md font-black text-slate-850 font-jakarta uppercase tracking-wider min-w-[180px] text-center select-none">
+                    <h2 id="calendar-title" class="text-xs sm:text-md font-black text-slate-850 font-jakarta uppercase tracking-wider flex-1 sm:flex-none text-center select-none truncate px-2">
                         ...
                     </h2>
-                    <button @click="goToNextMonth()" class="p-2.5 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-xl transition-all border border-slate-200/60 active:scale-95">
+                    <button @click="goToNextMonth()" class="w-12 h-12 shrink-0 flex items-center justify-center bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-2xl transition-all border border-slate-200/60 active:scale-95" title="Next Month">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"></path>
                         </svg>
                     </button>
                 </div>
 
-                <button @click="openCreateModalForToday()" 
-                    class="flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-slate-50 text-slate-700 font-extrabold text-xs border border-slate-200/80 rounded-2xl shadow-sm hover:shadow transition-all duration-200 active:scale-95"
-                >
-                    <svg class="w-4 h-4 text-indigo-650" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path>
-                    </svg>
-                    <span>+ Add Event / Reminder</span>
-                </button>
-            </div>
-            
-            <div class="flex items-center gap-2">
-                <button @click="goToToday()" 
-                    class="px-4 py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-extrabold text-xs rounded-2xl transition-all duration-200 active:scale-95"
-                >
-                    {{ app()->getLocale() == 'en' ? 'Today' : 'Hari Ini' }}
-                </button>
+                <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto sm:ml-auto">
+                    <button @click="goToToday()" 
+                        class="w-full sm:w-auto flex items-center justify-center px-5 py-3 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-extrabold text-xs rounded-2xl transition-all duration-200 active:scale-95"
+                    >
+                        {{ app()->getLocale() == 'en' ? 'Today' : 'Hari Ini' }}
+                    </button>
+                    <button @click="openCreateModalForToday()" 
+                        class="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 bg-white hover:bg-slate-50 text-slate-700 font-extrabold text-xs border border-slate-200/80 rounded-2xl shadow-sm hover:shadow transition-all duration-200 active:scale-95"
+                    >
+                        <svg class="w-4 h-4 text-indigo-650" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path>
+                        </svg>
+                        <span>+ Add Event / Reminder</span>
+                    </button>
+                </div>
             </div>
         </div>
 
-        <!-- FullCalendar Render Target -->
-        <div wire:ignore class="w-full min-w-0" id="fullcalendar-target"></div>
+        <!-- FullCalendar Render Target with Micro Loading Indicator -->
+        <div class="relative w-full min-w-0">
+            <!-- Syncing Micro-Loader overlay -->
+            <div x-show="loading" 
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0"
+                 class="absolute inset-0 bg-white/65 backdrop-blur-[2px] z-20 flex items-center justify-center rounded-3xl transition-all"
+                 style="display: none;"
+            >
+                <div class="flex items-center gap-3 px-5 py-3.5 bg-white shadow-xl rounded-2xl border border-slate-100/80">
+                    <div class="w-5 h-5 border-3 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                    <span class="text-[10px] font-black text-slate-600 uppercase tracking-widest">Syncing Calendar...</span>
+                </div>
+            </div>
+            
+            <div wire:ignore class="w-full min-w-0" id="fullcalendar-target"></div>
+        </div>
     </div>
 
     <!-- Modal: Add/Edit Reminder -->
@@ -470,21 +488,121 @@
             .fc-daygrid-day {
                 position: relative;
             }
+            
+            /* Responsive Grid Heights for Desktop */
+            @media (min-width: 768px) {
+                .fc .fc-daygrid-day-frame {
+                    min-height: 120px !important;
+                }
+            }
+            
+            /* Desktop interactive add button overlay on hover */
             .fc-daygrid-day::after {
                 content: '+';
                 position: absolute;
                 bottom: 8px;
                 right: 8px;
+                width: 24px;
+                height: 24px;
+                line-height: 22px;
+                text-align: center;
+                background-color: #4f46e5;
+                color: white;
+                border-radius: 9999px;
                 font-size: 14px;
-                font-weight: bold;
-                color: #6366f1;
+                font-weight: 800;
                 opacity: 0;
-                transition: opacity 0.2s ease;
+                transform: scale(0.8);
+                transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
                 pointer-events: none;
+                box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
             }
-            .fc-daygrid-day:hover::after {
-                opacity: 0.4;
+            @media (min-width: 768px) {
+                .fc-daygrid-day:hover::after {
+                    opacity: 1;
+                    transform: scale(1);
+                }
             }
+            
+            /* Premium Popover for "+ more" events */
+            .fc-popover {
+                background-color: rgba(255, 255, 255, 0.95) !important;
+                backdrop-filter: blur(10px);
+                border: 1px solid #f1f5f9 !important;
+                border-radius: 24px !important;
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+                overflow: hidden;
+                z-index: 80 !important;
+            }
+            .fc-popover-header {
+                background-color: #f8fafc !important;
+                padding: 10px 14px !important;
+                font-size: 10px !important;
+                font-weight: 800 !important;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                color: #64748b !important;
+                border-bottom: 1px solid #f1f5f9 !important;
+            }
+            .fc-popover-body {
+                padding: 10px !important;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+            }
+            
+            /* Premium FullCalendar List View styling for Mobile */
+            .fc-list {
+                border: none !important;
+                background: transparent !important;
+            }
+            .fc-list-day {
+                background-color: #f8fafc !important;
+            }
+            .fc-list-day-cushion {
+                padding: 12px 16px !important;
+                background-color: #f8fafc !important;
+                font-size: 10px !important;
+                font-weight: 800 !important;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                color: #64748b !important;
+            }
+            .fc-list-event {
+                background-color: white !important;
+                transition: all 0.2s ease;
+                border-bottom: 1px solid #f1f5f9 !important;
+            }
+            .fc-list-event:hover {
+                background-color: #faf5ff !important;
+                transform: translateX(4px);
+            }
+            .fc-list-event td {
+                padding: 12px 16px !important;
+                border: none !important;
+            }
+            .fc-list-event-dot {
+                border-width: 4px !important;
+                width: 8px !important;
+                height: 8px !important;
+                border-radius: 9999px !important;
+            }
+            .fc-list-event-title a {
+                font-size: 12px !important;
+                font-weight: 850 !important;
+                color: #1e293b !important;
+                text-decoration: none !important;
+            }
+            .fc-list-empty {
+                background-color: white !important;
+                padding: 40px 20px !important;
+                text-align: center;
+                font-size: 12px;
+                font-weight: 700;
+                color: #94a3b8;
+                border-radius: 20px;
+            }
+            
             .fc-day-today {
                 background-color: rgba(79, 70, 229, 0.03) !important;
                 border: 2px solid rgba(79, 70, 229, 0.4) !important;
@@ -520,11 +638,22 @@
             function chronosCalendar() {
                 return {
                     calendar: null,
+                    loading: false,
                     init() {
                         // Safe delayed initialization to guarantee target is ready in DOM
                         setTimeout(() => {
                             this.initCalendar();
                         }, 50);
+                        
+                        // Screen resize trigger to switch between DayGrid (Desktop) and List (Mobile) view dynamically
+                        window.addEventListener('resize', () => {
+                            if (!this.calendar) return;
+                            const isMobile = window.innerWidth < 768;
+                            const targetView = isMobile ? 'listMonth' : 'dayGridMonth';
+                            if (this.calendar.view.type !== targetView) {
+                                this.calendar.changeView(targetView);
+                            }
+                        });
                         
                         this.$watch(() => this.$wire.clientId, () => this.refetch());
                         this.$watch(() => this.$wire.status, () => this.refetch());
@@ -540,8 +669,11 @@
                             return;
                         }
                         
+                        const isMobile = window.innerWidth < 768;
+                        const initialView = isMobile ? 'listMonth' : 'dayGridMonth';
+                        
                         this.calendar = new FullCalendar.Calendar(calendarEl, {
-                            initialView: 'dayGridMonth',
+                            initialView: initialView,
                             locale: '{{ app()->getLocale() }}',
                             firstDay: 1,
                             editable: true,
@@ -549,6 +681,7 @@
                             selectable: false,
                             dayMaxEvents: 3,
                             events: (info, successCallback, failureCallback) => {
+                                this.loading = true;
                                 let url = '{{ route("chronos.events") }}';
                                 let params = new URLSearchParams({
                                     start: info.startStr,
@@ -566,6 +699,9 @@
                                             window.showToast('Failed to fetch events', 'danger');
                                         }
                                         failureCallback(error);
+                                    })
+                                    .finally(() => {
+                                        this.loading = false;
                                     });
                             },
                             datesSet: (info) => {

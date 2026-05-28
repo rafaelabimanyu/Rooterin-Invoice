@@ -36,7 +36,7 @@
         </div>
 
         <!-- Right Section (25% Width): Analytics Insights -->
-        <div class="xl:col-span-1 flex flex-col gap-6 xl:gap-8 min-w-0 w-full">
+        <div class="xl:col-span-1 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1 gap-6 xl:gap-8 min-w-0 w-full">
             <!-- Metrics Card -->
             <div class="glass-card p-6 border-slate-100 shadow-2xl shadow-rose-500/5 page-fade-in stagger-2 bg-white/80 backdrop-blur-md rounded-3xl">
                 <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-md mb-6">{{ app()->getLocale() == 'en' ? 'Metrics Insights' : 'Wawasan Metrik' }}</h3>

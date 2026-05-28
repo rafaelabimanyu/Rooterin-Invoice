@@ -217,9 +217,12 @@
              x-data="{ 
                  open: @entangle('showModal'), 
                  localLoading: false,
+                 expanded: false,
+                 touchStart: 0,
                  init() {
                      this.$watch('open', value => {
                          if (value) {
+                             this.expanded = false;
                              this.localLoading = true;
                              setTimeout(() => {
                                  this.localLoading = false;
@@ -243,18 +246,26 @@
                  @click="open = false"
             ></div>
             
-            <!-- Modal Content Container -->
-            <div class="relative bg-white rounded-[32px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.2)] w-full max-w-lg overflow-hidden transform p-8 border border-slate-100 z-10"
+            <!-- Modal Content Container (Mobile: Bottom Sheet | Desktop: Compact Center Modal) -->
+            <div class="fixed md:relative bottom-0 md:bottom-auto left-0 right-0 md:left-auto md:right-auto w-full md:max-w-md bg-white rounded-t-[32px] md:rounded-[32px] rounded-b-none md:rounded-b-[32px] shadow-[0_-10px_30px_rgba(0,0,0,0.08)] md:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.2)] border border-slate-100 md:border-slate-100/80 z-[110] p-6 transform transition-all duration-300 ease-out"
                  x-show="open"
                  x-transition:enter="transition ease-out duration-300 transform"
-                 x-transition:enter-start="opacity-0 scale-95"
-                 x-transition:enter-end="opacity-100 scale-100"
+                 x-transition:enter-start="opacity-0 translate-y-full md:translate-y-0 md:scale-95"
+                 x-transition:enter-end="opacity-100 translate-y-0 md:scale-100"
                  x-transition:leave="transition ease-in duration-200 transform"
-                 x-transition:leave-start="opacity-100 scale-100"
-                 x-transition:leave-end="opacity-0 scale-95"
+                 x-transition:leave-start="opacity-100 translate-y-0 md:scale-100"
+                 x-transition:leave-end="opacity-0 translate-y-full md:translate-y-0 md:scale-95"
+                 :class="expanded ? 'translate-y-0 h-[85vh] overflow-y-auto' : 'translate-y-[calc(100%-82px)] h-[82px] overflow-hidden md:h-auto md:overflow-visible md:translate-y-0'"
+                 @touchstart="touchStart = $event.touches[0].clientY"
+                 @touchend="if (touchStart - $event.changedTouches[0].clientY > 50) expanded = true; if ($event.changedTouches[0].clientY - touchStart > 50) expanded = false;"
             >
+                <!-- Drag Handle Pill (Mobile Only) -->
+                <div class="md:hidden flex justify-center pb-3 cursor-pointer select-none" @click="expanded = !expanded">
+                    <div class="w-12 h-1.5 bg-slate-200 hover:bg-slate-350 rounded-full transition-colors"></div>
+                </div>
+
                 <!-- Premium Loading Micro-Interactions -->
-                <div x-show="localLoading" class="absolute inset-0 bg-white/80 backdrop-blur-md z-50 flex flex-col items-center justify-center rounded-[32px] transition-all duration-350" style="display: none;">
+                <div x-show="localLoading" class="absolute inset-0 bg-white/80 backdrop-blur-md z-50 flex flex-col items-center justify-center rounded-t-[32px] md:rounded-[32px] rounded-b-none md:rounded-b-[32px] transition-all duration-350" style="display: none;">
                     <div class="flex flex-col items-center gap-4">
                         <div class="relative flex items-center justify-center">
                             <div class="w-12 h-12 border-4 border-indigo-500/20 rounded-full absolute"></div>
@@ -265,7 +276,7 @@
                         </p>
                     </div>
                 </div>
-                <div wire:loading class="absolute inset-0 bg-white/80 backdrop-blur-md z-50 flex flex-col items-center justify-center rounded-[32px] transition-all duration-350">
+                <div wire:loading class="absolute inset-0 bg-white/80 backdrop-blur-md z-50 flex flex-col items-center justify-center rounded-t-[32px] md:rounded-[32px] rounded-b-none md:rounded-b-[32px] transition-all duration-350">
                     <div class="flex flex-col items-center gap-4">
                         <div class="relative flex items-center justify-center">
                             <div class="w-12 h-12 border-4 border-indigo-500/20 rounded-full absolute"></div>
@@ -277,11 +288,11 @@
                     </div>
                 </div>
 
-                <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-50">
-                    <h3 class="text-base font-black text-slate-900 font-jakarta uppercase tracking-wider">
+                <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-50 cursor-pointer md:cursor-default select-none" @click="if (window.innerWidth < 768) expanded = !expanded">
+                    <h3 class="text-xs sm:text-base font-black text-slate-900 font-jakarta uppercase tracking-wider">
                         {{ $selectedReminderId ? __('Edit Reminder') : __('Add Reminder') }}
                     </h3>
-                    <button type="button" wire:click="$set('showModal', false)" class="text-slate-400 hover:text-slate-655 transition-colors p-1.5 hover:bg-slate-50 rounded-xl">
+                    <button type="button" wire:click="$set('showModal', false)" @click.stop class="text-slate-400 hover:text-slate-655 transition-colors p-1.5 hover:bg-slate-50 rounded-xl">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>

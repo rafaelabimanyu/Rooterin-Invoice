@@ -247,7 +247,7 @@
             ></div>
             
             <!-- Modal Content Container (Mobile: Bottom Sheet | Desktop: Compact Center Modal) -->
-            <div class="fixed md:relative bottom-0 md:bottom-auto left-0 right-0 md:left-auto md:right-auto w-full md:max-w-md bg-white rounded-t-[32px] md:rounded-[32px] rounded-b-none md:rounded-b-[32px] shadow-[0_-10px_30px_rgba(0,0,0,0.08)] md:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.2)] border border-slate-100 md:border-slate-100/80 z-[110] p-6 transform transition-all duration-300 ease-out"
+            <div class="fixed md:relative bottom-0 md:bottom-auto left-0 right-0 md:left-auto md:right-auto w-full md:max-w-md bg-white rounded-t-3xl md:rounded-[32px] rounded-b-none md:rounded-b-[32px] shadow-2xl md:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.2)] border border-slate-100 md:border-slate-100/80 z-[110] p-6 transform transition-all duration-300 ease-in-out flex flex-col"
                  x-show="open"
                  x-transition:enter="transition ease-out duration-300 transform"
                  x-transition:enter-start="opacity-0 translate-y-full md:translate-y-0 md:scale-95"
@@ -255,7 +255,7 @@
                  x-transition:leave="transition ease-in duration-200 transform"
                  x-transition:leave-start="opacity-100 translate-y-0 md:scale-100"
                  x-transition:leave-end="opacity-0 translate-y-full md:translate-y-0 md:scale-95"
-                 :class="expanded ? 'translate-y-0 h-[85vh] overflow-y-auto' : 'translate-y-[calc(100%-82px)] h-[82px] overflow-hidden md:h-auto md:overflow-visible md:translate-y-0'"
+                 :class="expanded ? 'translate-y-0 h-[88vh]' : 'translate-y-[calc(100%-82px)] h-[82px] overflow-hidden md:h-auto md:overflow-visible md:translate-y-0'"
                  @touchstart="touchStart = $event.touches[0].clientY"
                  @touchend="if (touchStart - $event.changedTouches[0].clientY > 50) expanded = true; if ($event.changedTouches[0].clientY - touchStart > 50) expanded = false;"
             >
@@ -265,7 +265,7 @@
                 </div>
 
                 <!-- Premium Loading Micro-Interactions -->
-                <div x-show="localLoading" class="absolute inset-0 bg-white/80 backdrop-blur-md z-50 flex flex-col items-center justify-center rounded-t-[32px] md:rounded-[32px] rounded-b-none md:rounded-b-[32px] transition-all duration-350" style="display: none;">
+                <div x-show="localLoading" class="absolute inset-0 bg-white/80 backdrop-blur-md z-50 flex flex-col items-center justify-center rounded-t-3xl md:rounded-[32px] rounded-b-none md:rounded-b-[32px] transition-all duration-350" style="display: none;">
                     <div class="flex flex-col items-center gap-4">
                         <div class="relative flex items-center justify-center">
                             <div class="w-12 h-12 border-4 border-indigo-500/20 rounded-full absolute"></div>
@@ -276,7 +276,7 @@
                         </p>
                     </div>
                 </div>
-                <div wire:loading class="absolute inset-0 bg-white/80 backdrop-blur-md z-50 flex flex-col items-center justify-center rounded-t-[32px] md:rounded-[32px] rounded-b-none md:rounded-b-[32px] transition-all duration-350">
+                <div wire:loading class="absolute inset-0 bg-white/80 backdrop-blur-md z-50 flex flex-col items-center justify-center rounded-t-3xl md:rounded-[32px] rounded-b-none md:rounded-b-[32px] transition-all duration-350">
                     <div class="flex flex-col items-center gap-4">
                         <div class="relative flex items-center justify-center">
                             <div class="w-12 h-12 border-4 border-indigo-500/20 rounded-full absolute"></div>
@@ -288,7 +288,7 @@
                     </div>
                 </div>
 
-                <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-50 cursor-pointer md:cursor-default select-none" @click="if (window.innerWidth < 768) expanded = !expanded">
+                <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-50 cursor-pointer md:cursor-default select-none shrink-0" @click="if (window.innerWidth < 768) expanded = !expanded">
                     <h3 class="text-xs sm:text-base font-black text-slate-900 font-jakarta uppercase tracking-wider">
                         {{ $selectedReminderId ? __('Edit Reminder') : __('Add Reminder') }}
                     </h3>
@@ -299,89 +299,93 @@
                     </button>
                 </div>
                 
-                <form wire:submit.prevent="saveReminder" class="space-y-5">
-                    <div>
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
-                            {{ __('Reminder Title') }}
-                        </label>
-                        <input type="text" wire:model="reminderTitle" class="premium-input w-full" placeholder="{{ __('e.g. Work on Feature A & B') }}" required>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
-                            {{ __('Description') }}
-                        </label>
-                        <textarea wire:model="reminderDescription" rows="3" class="premium-input w-full" placeholder="{{ __('Enter reminder details...') }}"></textarea>
-                    </div>
-                    
-                    <div class="grid grid-cols-2 gap-4">
+                <form wire:submit.prevent="saveReminder" class="flex-1 flex flex-col min-h-0 space-y-5">
+                    <!-- Scrollable Input Fields Container -->
+                    <div class="flex-1 overflow-y-auto pb-10 space-y-5 pr-1 md:pr-0 md:pb-0 scrollbar-none">
                         <div>
                             <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
-                                {{ __('Category') }}
+                                {{ __('Reminder Title') }}
                             </label>
-                            <select wire:model="reminderCategory" class="premium-input w-full">
-                                <option value="internal">{{ __('Internal Dev') }}</option>
-                                <option value="meeting">{{ __('Meeting') }}</option>
-                                <option value="draft">{{ __('Draft / Planning') }}</option>
-                                <option value="overdue">{{ __('Overdue Task') }}</option>
-                                <option value="other">{{ __('Other') }}</option>
-                            </select>
+                            <input type="text" wire:model="reminderTitle" class="premium-input w-full" placeholder="{{ __('e.g. Work on Feature A & B') }}" required>
                         </div>
+                        
                         <div>
                             <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
-                                {{ __('Color Indicator') }}
+                                {{ __('Description') }}
                             </label>
-                            <select wire:model="reminderColor" class="premium-input w-full">
-                                <option value="indigo">{{ __('Indigo') }}</option>
-                                <option value="emerald">{{ __('Emerald') }}</option>
-                                <option value="amber">{{ __('Amber') }}</option>
-                                <option value="rose">{{ __('Rose') }}</option>
-                                <option value="slate">{{ __('Slate') }}</option>
-                            </select>
+                            <textarea wire:model="reminderDescription" rows="3" class="premium-input w-full" placeholder="{{ __('Enter reminder details...') }}"></textarea>
                         </div>
-                    </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
+                                    {{ __('Category') }}
+                                </label>
+                                <select wire:model="reminderCategory" class="premium-input w-full">
+                                    <option value="internal">{{ __('Internal Dev') }}</option>
+                                    <option value="meeting">{{ __('Meeting') }}</option>
+                                    <option value="draft">{{ __('Draft / Planning') }}</option>
+                                    <option value="overdue">{{ __('Overdue Task') }}</option>
+                                    <option value="other">{{ __('Other') }}</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
+                                    {{ __('Color Indicator') }}
+                                </label>
+                                <select wire:model="reminderColor" class="premium-input w-full">
+                                    <option value="indigo">{{ __('Indigo') }}</option>
+                                    <option value="emerald">{{ __('Emerald') }}</option>
+                                    <option value="amber">{{ __('Amber') }}</option>
+                                    <option value="rose">{{ __('Rose') }}</option>
+                                    <option value="slate">{{ __('Slate') }}</option>
+                                </select>
+                            </div>
+                        </div>
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
-                                {{ __('Start Date') }}
-                            </label>
-                            <input type="date" wire:model="selectedDate" class="premium-input w-full" required>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
+                                    {{ __('Start Date') }}
+                                </label>
+                                <input type="date" wire:model="selectedDate" class="premium-input w-full" required>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
+                                    {{ __('End Date (Inclusive)') }}
+                                </label>
+                                <input type="date" wire:model="selectedEndDate" class="premium-input w-full">
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
-                                {{ __('End Date (Inclusive)') }}
-                            </label>
-                            <input type="date" wire:model="selectedEndDate" class="premium-input w-full">
-                        </div>
-                    </div>
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
-                                {{ __('Related Client (Optional)') }}
-                            </label>
-                            <select wire:model="reminderClientId" class="premium-input w-full">
-                                <option value="">{{ __('None / General') }}</option>
-                                @foreach($clients as $c)
-                                    <option value="{{ $c->id }}">{{ $c->nama_client }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
-                                {{ __('Assignee (Staff)') }}
-                            </label>
-                            <select wire:model="reminderUserId" class="premium-input w-full">
-                                <option value="">{{ __('Assign to Me') }}</option>
-                                @foreach($staffs as $s)
-                                    <option value="{{ $s->id }}">{{ $s->name }}</option>
-                                @endforeach
-                            </select>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
+                                    {{ __('Related Client (Optional)') }}
+                                </label>
+                                <select wire:model="reminderClientId" class="premium-input w-full">
+                                    <option value="">{{ __('None / General') }}</option>
+                                    @foreach($clients as $c)
+                                        <option value="{{ $c->id }}">{{ $c->nama_client }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
+                                    {{ __('Assignee (Staff)') }}
+                                </label>
+                                <select wire:model="reminderUserId" class="premium-input w-full">
+                                    <option value="">{{ __('Assign to Me') }}</option>
+                                    @foreach($staffs as $s)
+                                        <option value="{{ $s->id }}">{{ $s->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="pt-6 border-t border-slate-50 flex justify-between items-center gap-4">
+                    <!-- Sticky Footer Buttons -->
+                    <div class="pt-4 border-t border-slate-50 flex justify-between items-center gap-4 bg-white shrink-0">
                         @if($selectedReminderId)
                             <button type="button" wire:click="deleteReminder({{ $selectedReminderId }})" class="px-4.5 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-[11px] transition-colors flex items-center gap-1.5 active:scale-95">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">

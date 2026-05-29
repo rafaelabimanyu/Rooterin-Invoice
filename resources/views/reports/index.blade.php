@@ -1,6 +1,6 @@
 <x-app-layout :title="app()->getLocale() == 'en' ? 'Audit Reports & Analytics' : 'Laporan Audit & Analisis'">
-    <div class="page-fade-in py-8 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-6xl mx-auto space-y-10">
+    <div class="page-fade-in py-8 px-6 lg:px-8" x-data="{ tab: new URLSearchParams(window.location.search).get('tab') || 'invoices' }">
+        <div class="max-w-full mx-auto space-y-10">
             <!-- Header Block -->
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
@@ -11,16 +11,17 @@
 
             <!-- Filters -->
             <div class="glass-card p-6">
-                <form action="{{ route('reports.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
-                    <div class="space-y-2">
+                <form action="{{ route('reports.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
+                    <input type="hidden" name="tab" :value="tab">
+                    <div class="space-y-2 md:col-span-3">
                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Start Date' : 'Tanggal Mulai' }}</label>
                         <input type="date" name="start_date" value="{{ $startDate }}" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-indigo-500 focus:bg-white transition-colors font-medium">
                     </div>
-                    <div class="space-y-2">
+                    <div class="space-y-2 md:col-span-3">
                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'End Date' : 'Tanggal Selesai' }}</label>
                         <input type="date" name="end_date" value="{{ $endDate }}" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-indigo-500 focus:bg-white transition-colors font-medium">
                     </div>
-                    <div class="space-y-2">
+                    <div class="space-y-2 md:col-span-3">
                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Client Account' : 'Akun Klien' }}</label>
                         <select name="client_id" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-indigo-500 focus:bg-white transition-colors font-medium">
                             <option value="">{{ app()->getLocale() == 'en' ? 'All Clients' : 'Semua Klien' }}</option>
@@ -29,14 +30,18 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="flex gap-2">
+                    <div class="flex flex-wrap gap-2 md:col-span-3">
                         <button type="submit" class="flex-1 btn-premium py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Apply Filter' : 'Terapkan Filter' }}</button>
-                        <a href="{{ route('reports.index') }}" class="btn-secondary py-2.5 rounded-xl text-xs uppercase tracking-wider flex items-center justify-center">Reset</a>
+                        <button type="submit" formaction="{{ route('reports.export') }}" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white transition-colors duration-300 py-2.5 px-4 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+                            <i data-lucide="file-text" class="w-4 h-4"></i>
+                            <span>{{ app()->getLocale() == 'en' ? 'Export Excel' : 'Ekspor Excel' }}</span>
+                        </button>
+                        <a href="{{ route('reports.index') }}" class="btn-secondary py-2.5 px-3 rounded-xl text-xs uppercase tracking-wider flex items-center justify-center">Reset</a>
                     </div>
                 </form>
             </div>
 
-            <div x-data="{ tab: 'invoices' }">
+            <div>
                 <!-- Tabs -->
                 <div class="flex flex-wrap items-center gap-4 sm:gap-8 border-b border-slate-100 mb-10">
                     <button @click="tab = 'invoices'" :class="tab === 'invoices' ? 'text-indigo-600 border-indigo-600' : 'text-slate-400 border-transparent'" class="pb-4 text-xs font-black border-b-2 transition-all uppercase tracking-widest">

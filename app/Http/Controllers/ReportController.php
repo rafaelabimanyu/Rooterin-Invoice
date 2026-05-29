@@ -8,6 +8,10 @@ use App\Models\Payment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\InvoicesReportExport;
+use App\Exports\ReceiptsReportExport;
+use App\Exports\ClientsReportExport;
 
 class ReportController extends Controller
 {
@@ -197,5 +201,31 @@ class ReportController extends Controller
             'trendMonths', 'trendRevenue', 'trendReceivables',
             'topClientRevenue', 'topClientOutstanding'
         ));
+    }
+
+    public function export(Request $request)
+    {
+        $startDate = $request->get('start_date', Carbon::now()->startOfMonth()->toDateString());
+        $endDate = $request->get('end_date', Carbon::now()->endOfMonth()->toDateString());
+        $clientId = $request->get('client_id');
+        $tab = $request->get('tab', 'invoices');
+
+        switch ($tab) {
+            case 'receipts':
+                $export = new ReceiptsReportExport($startDate, $endDate, $clientId);
+                $filename = "Laporan_Kuitansi_Pembayaran_{$startDate}_to_{$endDate}.xlsx";
+                break;
+            case 'clients':
+                $export = new ClientsReportExport($startDate, $endDate, $clientId);
+                $filename = "Laporan_Analisis_Klien_{$startDate}_to_{$endDate}.xlsx";
+                break;
+            case 'invoices':
+            default:
+                $export = new InvoicesReportExport($startDate, $endDate, $clientId);
+                $filename = "Laporan_Kinerja_Faktur_{$startDate}_to_{$endDate}.xlsx";
+                break;
+        }
+
+        return Excel::download($export, $filename);
     }
 }

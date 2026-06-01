@@ -14,12 +14,12 @@
     <form action="{{ route('receipts.store') }}" method="POST" x-data="receiptForm()">
         @csrf
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
-            <!-- Left Side -->
-            <div class="lg:col-span-8 space-y-8">
-                <div class="glass-card p-10">
-                    <h3 class="text-sm font-bold text-slate-900 uppercase tracking-widest mb-8 pb-4 border-b border-slate-50">1. {{ app()->getLocale() == 'en' ? 'Client & Dates' : 'Klien & Tanggal' }}</h3>
+             <!-- Left Side -->
+            <div class="lg:col-span-8 space-y-4 md:space-y-6">
+                <div class="glass-card p-4 md:p-8">
+                    <h3 class="text-sm font-bold text-slate-900 uppercase tracking-widest mb-6 md:mb-8 pb-4 border-b border-slate-50">1. {{ app()->getLocale() == 'en' ? 'Client & Dates' : 'Klien & Tanggal' }}</h3>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Client Account' : 'Akun Klien' }}</label>
                             <select name="client_id" required class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200/60 rounded-lg text-sm text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500/10 transition-all">
@@ -35,7 +35,7 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mt-4 md:mt-8">
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Receipt Date' : 'Tanggal Kuitansi' }}</label>
                             <input type="date" name="tanggal_receipt" value="{{ date('Y-m-d') }}" required class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200/60 rounded-lg text-sm text-slate-900 outline-none">
@@ -48,32 +48,34 @@
                 </div>
 
                 <div class="glass-card overflow-hidden">
-                    <div class="px-10 py-6 border-b border-slate-50 flex items-center justify-between">
+                    <div class="px-4 md:px-10 py-4 md:py-6 border-b border-slate-50 flex items-center justify-between">
                         <h3 class="text-sm font-bold text-slate-900 uppercase tracking-widest">2. {{ app()->getLocale() == 'en' ? 'Service Items' : 'Item Layanan' }}</h3>
                         <button type="button" @click="addItem" class="text-[12px] font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1.5">
                             <i data-lucide="plus" class="w-4 h-4"></i> {{ app()->getLocale() == 'en' ? 'Append Item' : 'Tambah Item' }}
                         </button>
                     </div>
-                    <div class="p-10 space-y-6">
+                    <div class="p-4 md:p-8 space-y-4 md:space-y-6">
                         <template x-for="(item, index) in items" :key="index">
-                            <div class="relative grid grid-cols-1 md:grid-cols-12 gap-6 pb-6 border-b border-slate-50 last:border-0 last:pb-0">
+                            <div class="relative pb-6 border-b border-slate-50 last:border-0 last:pb-0 space-y-4 md:space-y-0 md:grid md:grid-cols-12 md:gap-6">
                                 <div class="md:col-span-6 space-y-2">
                                     <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Description' : 'Deskripsi' }}</label>
-                                    <input type="text" :name="`items[${index}][deskripsi]`" x-model="item.deskripsi" required class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-900 font-semibold">
+                                    <input type="text" :name="`items[${index}][deskripsi]`" x-model="item.deskripsi" required class="w-full bg-slate-50/50 md:bg-transparent border border-slate-200/50 md:border-none px-3 py-2 md:p-0 rounded-lg md:rounded-none focus:ring-0 text-[13px] text-slate-900 font-semibold">
                                 </div>
-                                <div class="md:col-span-1 space-y-2">
-                                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center block">{{ app()->getLocale() == 'en' ? 'Qty' : 'Jumlah' }}</label>
-                                    <input type="number" step="0.01" :name="`items[${index}][qty]`" x-model="item.qty" @input="calculateTotal()" required class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-900 font-semibold text-center">
+                                <div class="grid grid-cols-3 gap-2 md:col-span-6 md:grid-cols-6 md:gap-6">
+                                    <div class="col-span-1 md:col-span-1 space-y-2">
+                                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center block">{{ app()->getLocale() == 'en' ? 'Qty' : 'Jumlah' }}</label>
+                                        <input type="number" step="0.01" :name="`items[${index}][qty]`" x-model="item.qty" @input="calculateTotal()" required class="w-full bg-slate-50/50 md:bg-transparent border border-slate-200/50 md:border-none px-2 py-2 md:p-0 rounded-lg md:rounded-none focus:ring-0 text-[13px] text-slate-900 font-semibold text-center">
+                                    </div>
+                                    <div class="col-span-1 md:col-span-2 space-y-2 text-right">
+                                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">{{ app()->getLocale() == 'en' ? 'Rate' : 'Harga' }}</label>
+                                        <input type="number" :name="`items[${index}][harga]`" x-model="item.harga" @input="calculateTotal()" required class="w-full bg-slate-50/50 md:bg-transparent border border-slate-200/50 md:border-none px-2 py-2 md:p-0 rounded-lg md:rounded-none focus:ring-0 text-[13px] text-slate-900 font-semibold text-right">
+                                    </div>
+                                    <div class="col-span-1 md:col-span-3 space-y-2 text-right flex flex-col justify-between">
+                                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">{{ app()->getLocale() == 'en' ? 'Total' : 'Total' }}</label>
+                                        <div class="text-[13px] font-black text-slate-900 h-9 md:h-auto flex items-center justify-end" x-text="formatCurrency(item.qty * item.harga)"></div>
+                                    </div>
                                 </div>
-                                <div class="md:col-span-2 space-y-2 text-right">
-                                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">{{ app()->getLocale() == 'en' ? 'Rate' : 'Harga' }}</label>
-                                    <input type="number" :name="`items[${index}][harga]`" x-model="item.harga" @input="calculateTotal()" required class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-900 font-semibold text-right">
-                                </div>
-                                <div class="md:col-span-3 space-y-2 text-right">
-                                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">{{ app()->getLocale() == 'en' ? 'Total' : 'Total' }}</label>
-                                    <div class="text-[13px] font-black text-slate-900" x-text="formatCurrency(item.qty * item.harga)"></div>
-                                </div>
-                                <button type="button" @click="removeItem(index)" x-show="items.length > 1" class="absolute -right-4 top-1/2 -translate-y-1/2 p-1 text-rose-500 hover:bg-rose-50 rounded">
+                                <button type="button" @click="removeItem(index)" x-show="items.length > 1" class="absolute right-2 top-2 md:-right-4 md:top-1/2 md:-translate-y-1/2 p-1 text-rose-500 hover:bg-rose-50 rounded">
                                     <i data-lucide="trash-2" class="w-4 h-4"></i>
                                 </button>
                             </div>
@@ -83,8 +85,8 @@
             </div>
 
             <!-- Right Side (Calculations) -->
-            <div class="lg:col-span-4 space-y-8">
-                <div class="bg-[#1e293b] text-white p-10 rounded-xl shadow-2xl space-y-8 sticky top-24">
+            <div class="lg:col-span-4 space-y-4 md:space-y-6">
+                <div class="bg-[#1e293b] text-white p-4 md:p-8 rounded-xl shadow-2xl space-y-6 md:space-y-8 sticky top-24">
                     <h3 class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">{{ app()->getLocale() == 'en' ? 'Receipt Summary' : 'Ringkasan Kuitansi' }}</h3>
                     
                     <div class="space-y-6">

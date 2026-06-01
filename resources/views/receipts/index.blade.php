@@ -100,34 +100,34 @@
     </div>
 
     <!-- Mobile View -->
-    <div class="md:hidden space-y-4">
+    <div class="md:hidden space-y-3 px-4">
         @forelse($receipts as $receipt)
-            <div class="bg-white border border-slate-100 rounded-[24px] p-6 shadow-sm">
-                <div class="flex justify-between items-start mb-6">
-                    <div>
-                        <h3 class="text-lg font-black text-slate-900 tracking-tight">{{ $receipt->receipt_number }}</h3>
-                        <p class="text-[13px] font-bold text-blue-600 uppercase tracking-tight mt-0.5">{{ $receipt->client->nama_client }}</p>
+            <div 
+                onclick="window.location='{{ route('receipts.show', $receipt) }}'" 
+                class="bg-white border border-slate-200/60 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all active:scale-[0.98] cursor-pointer flex items-center justify-between gap-4"
+            >
+                <div class="flex-1 min-w-0">
+                    <!-- First Row: Receipt Number & Status -->
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-xs font-bold text-slate-500 tracking-tight truncate">{{ $receipt->receipt_number }}</span>
+                        <x-badge :status="$receipt->status" class="scale-75 origin-right shrink-0" />
                     </div>
-                    <x-badge :status="$receipt->status" class="scale-90 origin-right" />
+                    <!-- Second Row: Client Name & Total Amount -->
+                    <div class="flex items-center justify-between">
+                        <span class="text-[13px] font-black text-slate-900 truncate leading-tight">{{ $receipt->client->nama_client }}</span>
+                        <span class="text-[14px] font-black text-indigo-650 tracking-tight shrink-0 pl-2">Rp {{ number_format($receipt->total, 0, ',', '.') }}</span>
+                    </div>
                 </div>
                 
-                <div class="grid grid-cols-2 gap-6 py-4 border-t border-slate-50">
-                    <div>
-                        <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Amount' : 'Jumlah' }}</p>
-                        <p class="text-lg font-black text-slate-900">Rp {{ number_format($receipt->total, 0, ',', '.') }}</p>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Date' : 'Tanggal' }}</p>
-                        <p class="text-[14px] font-bold text-slate-600">{{ $receipt->tanggal_receipt->format('M d, Y') }}</p>
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-between pt-4 border-t border-slate-50">
-                    <p class="text-[12px] text-slate-400 font-medium truncate max-w-[150px]">{{ $receipt->client->nama_perusahaan }}</p>
-                    <div class="flex items-center gap-3">
-                        <a href="{{ route('receipts.show', $receipt) }}" class="text-[12px] font-black text-blue-600 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'View' : 'Lihat' }}</a>
-                        <a href="{{ route('receipts.pdf', $receipt) }}" class="text-[12px] font-black text-indigo-600 uppercase tracking-widest">PDF</a>
-                    </div>
+                <!-- Action: Download PDF -->
+                <div class="shrink-0 flex items-center border-l border-slate-100 pl-3">
+                    <button 
+                        onclick="event.stopPropagation(); window.location='{{ route('receipts.pdf', $receipt) }}'"
+                        class="p-2 bg-slate-50 hover:bg-indigo-50 text-slate-400 hover:text-indigo-600 rounded-xl transition-all active:scale-90"
+                        title="{{ app()->getLocale() == 'en' ? 'Download PDF' : 'Unduh PDF' }}"
+                    >
+                        <i data-lucide="download" class="w-4 h-4"></i>
+                    </button>
                 </div>
             </div>
         @empty

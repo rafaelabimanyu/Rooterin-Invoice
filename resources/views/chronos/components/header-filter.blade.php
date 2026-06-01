@@ -39,7 +39,7 @@
 </div>
 
 <!-- Top Filter Bar -->
-<div class="grid grid-cols-1 md:flex md:flex-wrap md:items-center gap-6 p-6 glass-card border-slate-100 shadow-xl shadow-indigo-500/5 bg-white/70 backdrop-blur-md rounded-3xl select-none relative">
+<div class="grid grid-cols-1 md:flex md:flex-wrap md:items-center gap-6 p-6 glass-card border-slate-100 shadow-xl shadow-indigo-500/5 bg-white/70 backdrop-blur-md rounded-3xl select-none relative z-30">
     
     <!-- Filter Client (Custom Dropdown) -->
     <div class="relative flex-1 min-w-[200px]" x-data="{ open: false }" @click.outside="open = false" :class="{ 'z-30': open, 'z-10': !open }">
@@ -67,7 +67,7 @@
              x-transition:leave="transition ease-in duration-100"
              x-transition:leave-start="opacity-100 scale-100 translate-y-0"
              x-transition:leave-end="opacity-0 scale-95 -translate-y-2"
-             class="absolute left-0 z-[60] mt-2 w-full bg-white/95 backdrop-blur-md border border-slate-100 rounded-2xl shadow-xl max-h-60 overflow-y-auto chat-scroll p-1.5"
+             class="absolute left-0 z-50 mt-2 w-full bg-white/95 backdrop-blur-md border border-slate-100 rounded-2xl shadow-xl max-h-60 overflow-y-auto chat-scroll p-1.5"
              style="display: none;"
         >
             <button wire:click="$set('clientId', '');" @click="open = false" type="button" class="w-full text-left px-3.5 py-2.5 text-xs font-bold rounded-xl text-slate-655 hover:bg-slate-50 hover:text-indigo-650 transition-colors">
@@ -149,7 +149,7 @@
              x-transition:leave="transition ease-in duration-100"
              x-transition:leave-start="opacity-100 scale-100 translate-y-0"
              x-transition:leave-end="opacity-0 scale-95 -translate-y-2"
-             class="absolute left-0 z-[60] mt-2 w-full bg-white/95 backdrop-blur-md border border-slate-100 rounded-2xl shadow-xl max-h-60 overflow-y-auto chat-scroll p-1.5"
+             class="absolute left-0 z-50 mt-2 w-full bg-white/95 backdrop-blur-md border border-slate-100 rounded-2xl shadow-xl max-h-60 overflow-y-auto chat-scroll p-1.5"
              style="display: none;"
         >
             <button wire:click="$set('staffId', '');" @click="open = false" type="button" class="w-full text-left px-3.5 py-2.5 text-xs font-bold rounded-xl text-slate-655 hover:bg-slate-50 hover:text-indigo-650 transition-colors">

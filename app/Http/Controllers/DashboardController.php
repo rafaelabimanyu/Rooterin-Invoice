@@ -49,6 +49,13 @@ class DashboardController extends Controller
         $isStaff = auth()->user()->role === 'staff';
         $securityLogs = collect();
         $cashFlowData = [];
+        $topClients = collect();
+        $invoiceAgeing = [
+            'current' => 0,
+            'overdue_1_30' => 0,
+            'overdue_31_60' => 0,
+            'overdue_60_plus' => 0,
+        ];
 
         $aiInsight = null;
         if (!$isStaff) {
@@ -311,6 +318,44 @@ Berikan 2-3 kalimat berisi insight bisnis taktis dan rekomendasi tindakan prakti
                     'receivables_formatted' => $this->formatChartAmount($item['receivables'], $locale),
                 ];
             }
+
+            // A. TOP CLIENTS BY REVENUE
+            $topClients = Client::whereHas('invoices', function ($query) {
+                    $query->where('status', 'paid');
+                })
+                ->withSum(['invoices' => function ($query) {
+                    $query->where('status', 'paid');
+                }], 'total')
+                ->orderByDesc('invoices_sum_total')
+                ->take(5)
+                ->get();
+
+            // B. INVOICE AGEING SUMMARY
+            $unpaidInvoices = Invoice::whereIn('status', ['sent', 'pending', 'dp', 'overdue'])
+                ->with('payments')
+                ->get();
+
+            $today = Carbon::today();
+            foreach ($unpaidInvoices as $invoice) {
+                $amountDue = $invoice->total - $invoice->payments->sum('amount');
+                if ($amountDue <= 0) {
+                    continue;
+                }
+                
+                $dueDate = Carbon::parse($invoice->due_date);
+                if ($dueDate->greaterThanOrEqualTo($today)) {
+                    $invoiceAgeing['current'] += $amountDue;
+                } else {
+                    $daysOverdue = $today->diffInDays($dueDate);
+                    if ($daysOverdue <= 30) {
+                        $invoiceAgeing['overdue_1_30'] += $amountDue;
+                    } elseif ($daysOverdue <= 60) {
+                        $invoiceAgeing['overdue_31_60'] += $amountDue;
+                    } else {
+                        $invoiceAgeing['overdue_60_plus'] += $amountDue;
+                    }
+                }
+            }
         }
         
         return view('dashboard', compact(
@@ -334,7 +379,9 @@ Berikan 2-3 kalimat berisi insight bisnis taktis dan rekomendasi tindakan prakti
             'activityLogs',
             'securityLogs',
             'cashFlowData',
-            'aiInsight'
+            'aiInsight',
+            'topClients',
+            'invoiceAgeing'
         ));
     }
 

@@ -302,8 +302,131 @@
                             @endforelse
                         </tbody>
                     </table>
-                </div>
             </div>
+
+            @if(!$isStaff)
+                <!-- Top Clients & Invoice Ageing Widgets -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8 page-fade-in stagger-6">
+                    <!-- Top Clients Widget -->
+                    <div class="glass-card p-6 flex flex-col justify-between hover:shadow-lg transition-all duration-300">
+                        <div>
+                            <div class="flex items-center justify-between mb-6">
+                                <div>
+                                    <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-sm">
+                                        {{ app()->getLocale() == 'en' ? 'Top Clients by Revenue' : 'Klien Teratas Berdasarkan Pendapatan' }}
+                                    </h3>
+                                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">
+                                        {{ app()->getLocale() == 'en' ? 'Highest lifetime value clients' : 'Klien dengan kontribusi pendapatan terbesar' }}
+                                    </p>
+                                </div>
+                                <div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+                                    <i data-lucide="award" class="w-4.5 h-4.5"></i>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                @forelse($topClients as $index => $client)
+                                    <div class="flex items-center justify-between p-3.5 bg-slate-50/50 hover:bg-indigo-50/40 rounded-xl border border-slate-100/80 hover:border-indigo-100 transition-all duration-200 group">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-black text-xs group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
+                                                {{ $index + 1 }}
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <span class="text-[13px] font-bold text-slate-800 group-hover:text-indigo-600 transition-colors">{{ $client->nama_client }}</span>
+                                                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{{ $client->nama_perusahaan ?: '-' }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <span class="text-xs font-black text-slate-950 font-jakarta">
+                                                Rp {{ number_format($client->invoices_sum_total ?? 0, 0, ',', '.') }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                @empty
+                                    <div class="text-center py-8 text-slate-400 italic text-xs">
+                                        {{ app()->getLocale() == 'en' ? 'No revenue records found.' : 'Belum ada data pendapatan.' }}
+                                    </div>
+                                @endforelse
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Invoice Ageing Widget -->
+                    <div class="glass-card p-6 flex flex-col justify-between hover:shadow-lg transition-all duration-300">
+                        <div>
+                            <div class="flex items-center justify-between mb-6">
+                                <div>
+                                    <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-sm">
+                                        {{ app()->getLocale() == 'en' ? 'Accounts Receivable Ageing' : 'Umur Piutang (Ageing)' }}
+                                    </h3>
+                                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">
+                                        {{ app()->getLocale() == 'en' ? 'Unpaid invoices breakdown by due date' : 'Rincian piutang berdasarkan keterlambatan jatuh tempo' }}
+                                    </p>
+                                </div>
+                                <div class="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600">
+                                    <i data-lucide="clock" class="w-4.5 h-4.5"></i>
+                                </div>
+                            </div>
+
+                            @php
+                                $totalUnpaid = array_sum($invoiceAgeing);
+                                $maxAgeingVal = max($invoiceAgeing) ?: 1;
+                            @endphp
+
+                            <div class="space-y-4">
+                                <!-- Current -->
+                                <div class="space-y-1.5">
+                                    <div class="flex justify-between text-xs font-bold text-slate-700">
+                                        <span>{{ app()->getLocale() == 'en' ? 'Current (Not Due)' : 'Belum Jatuh Tempo' }}</span>
+                                        <span class="font-black text-slate-900">Rp {{ number_format($invoiceAgeing['current'], 0, ',', '.') }}</span>
+                                    </div>
+                                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                        <div class="bg-indigo-500 h-full rounded-full transition-all duration-500" style="width: {{ ($invoiceAgeing['current'] / $maxAgeingVal) * 100 }}%"></div>
+                                    </div>
+                                </div>
+
+                                <!-- 1-30 Days -->
+                                <div class="space-y-1.5">
+                                    <div class="flex justify-between text-xs font-bold text-slate-700">
+                                        <span>{{ app()->getLocale() == 'en' ? '1 - 30 Days Overdue' : 'Tunggakan 1 - 30 Hari' }}</span>
+                                        <span class="font-black text-amber-600">Rp {{ number_format($invoiceAgeing['overdue_1_30'], 0, ',', '.') }}</span>
+                                    </div>
+                                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                        <div class="bg-amber-500 h-full rounded-full transition-all duration-500" style="width: {{ ($invoiceAgeing['overdue_1_30'] / $maxAgeingVal) * 100 }}%"></div>
+                                    </div>
+                                </div>
+
+                                <!-- 31-60 Days -->
+                                <div class="space-y-1.5">
+                                    <div class="flex justify-between text-xs font-bold text-slate-700">
+                                        <span>{{ app()->getLocale() == 'en' ? '31 - 60 Days Overdue' : 'Tunggakan 31 - 60 Hari' }}</span>
+                                        <span class="font-black text-orange-500">Rp {{ number_format($invoiceAgeing['overdue_31_60'], 0, ',', '.') }}</span>
+                                    </div>
+                                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                        <div class="bg-orange-500 h-full rounded-full transition-all duration-500" style="width: {{ ($invoiceAgeing['overdue_31_60'] / $maxAgeingVal) * 100 }}%"></div>
+                                    </div>
+                                </div>
+
+                                <!-- 60+ Days -->
+                                <div class="space-y-1.5">
+                                    <div class="flex justify-between text-xs font-bold text-slate-700">
+                                        <span>{{ app()->getLocale() == 'en' ? '60+ Days Overdue' : 'Tunggakan 60+ Hari' }}</span>
+                                        <span class="font-black text-rose-600">Rp {{ number_format($invoiceAgeing['overdue_60_plus'], 0, ',', '.') }}</span>
+                                    </div>
+                                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                        <div class="bg-rose-500 h-full rounded-full transition-all duration-500" style="width: {{ ($invoiceAgeing['overdue_60_plus'] / $maxAgeingVal) * 100 }}%"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-5 pt-4 border-t border-slate-50 flex justify-between items-center">
+                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Total Outstanding' : 'Total Piutang Aktif' }}</span>
+                                <span class="text-sm font-black text-indigo-600 font-jakarta">Rp {{ number_format($totalUnpaid, 0, ',', '.') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
 
         <!-- Right Side: Activity Timeline (Staff) or Stats (Admin) -->

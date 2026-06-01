@@ -1,9 +1,12 @@
 @props(['collapsed' => false])
 
 <aside 
+    x-data="{ touchStartX: 0, touchEndX: 0 }"
+    @touchstart="touchStartX = $event.changedTouches[0].screenX"
+    @touchend="touchEndX = $event.changedTouches[0].screenX; if (touchStartX - touchEndX > 50) { mobileOpen = false; }"
     @toggle-sidebar.window="collapsed = !collapsed"
     @toggle-mobile-sidebar.window="mobileOpen = !mobileOpen"
-    class="fixed inset-y-0 left-0 z-[70] flex flex-col bg-white transition-all duration-500 cubic-bezier-spring border-r border-slate-200/50 shadow-2xl"
+    class="fixed inset-y-0 left-0 z-[70] flex flex-col bg-white transition-transform duration-300 ease-in-out lg:transition-all lg:duration-500 lg:cubic-bezier-spring border-r border-slate-200/50 shadow-2xl"
     x-bind:class="{ 
         'w-[72px]': collapsed, 
         'w-72': !collapsed,
@@ -14,15 +17,24 @@
 >
     <!-- Brand Area -->
     <div 
-        class="flex items-center transition-all duration-500 cubic-bezier-spring"
-        x-bind:class="collapsed ? 'justify-center mb-0 px-0 h-20' : 'justify-start mb-6 pl-6 pr-4 py-4 h-24'"
+        class="flex items-center transition-all duration-500 cubic-bezier-spring relative"
+        x-bind:class="collapsed ? 'justify-center mb-0 px-0 h-20' : 'justify-between lg:justify-start mb-6 pl-6 pr-4 py-4 h-24'"
     >
-        <div class="flex items-center w-full cursor-pointer group" x-bind:class="collapsed ? 'justify-center' : 'justify-start'" onclick="window.location='{{ route('dashboard') }}'">
+        <div class="flex items-center cursor-pointer group" x-bind:class="collapsed ? 'justify-center' : 'justify-start'" onclick="window.location='{{ route('dashboard') }}'">
             <!-- Expanded Long Logo -->
             <img src="{{ asset('img/logo-rooterin-long.png') }}" alt="Rooterin Logo" class="h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105" x-show="!collapsed">
             <!-- Collapsed Square Logo -->
             <img src="{{ asset('img/logo-rooterin.png') }}" alt="Rooterin Logo" class="h-8 w-auto object-contain transition-transform duration-300 group-hover:scale-105" x-show="collapsed" x-cloak>
         </div>
+
+        <!-- Mobile Close Button -->
+        <button 
+            @click="mobileOpen = false" 
+            class="lg:hidden flex items-center justify-center w-8 h-8 rounded-full bg-slate-100/60 backdrop-blur-md border border-slate-200/40 text-slate-500 hover:text-slate-900 active:scale-95 hover:rotate-90 transition-all duration-300 shadow-sm shrink-0"
+            aria-label="Close sidebar"
+        >
+            <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
     </div>
 
     <!-- Navigation Area -->

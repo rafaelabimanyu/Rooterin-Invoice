@@ -165,10 +165,36 @@
     </div>
 
     <!-- Modal 1: Manage Staff Permissions (Spatie integration) -->
-    <div x-show="showPermissionsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" x-cloak style="display: none;" wire:key="modal-permissions">
-        <div x-show="showPermissionsModal" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" @click="showPermissionsModal = false"></div>
-        
-        <div x-show="showPermissionsModal" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95" class="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto z-10 p-6">
+    <div x-show="showPermissionsModal" 
+         x-transition:enter="transition ease-out duration-200" 
+         x-transition:enter-start="opacity-0" 
+         x-transition:enter-end="opacity-100" 
+         x-transition:leave="transition ease-in duration-150" 
+         x-transition:leave-start="opacity-100" 
+         x-transition:leave-end="opacity-0" 
+         class="fixed inset-0 z-[100] bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4" 
+         x-cloak 
+         style="display: none;" 
+         wire:key="modal-permissions"
+         @click.self="showPermissionsModal = false"
+    >
+        <div x-show="showPermissionsModal" 
+             x-transition:enter="transition ease-out duration-200" 
+             x-transition:enter-start="opacity-0 scale-95" 
+             x-transition:enter-end="opacity-100 scale-100" 
+             x-transition:leave="transition ease-in duration-150" 
+             x-transition:leave-start="opacity-100 scale-100" 
+             x-transition:leave-end="opacity-0 scale-95" 
+             class="relative bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto flex flex-col z-10 p-6"
+        >
+            <!-- Loading Overlay -->
+            <div wire:loading.delay.flex wire:target="openPermissions, savePermissions" class="absolute inset-0 bg-white/70 backdrop-blur-xs z-50 flex items-center justify-center rounded-2xl">
+                <div class="flex flex-col items-center gap-2">
+                    <div class="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                    <span class="text-xs font-semibold text-slate-500">Sinkronisasi Data...</span>
+                </div>
+            </div>
+
             <!-- Header -->
             <div class="flex items-center justify-between pb-4 border-b border-slate-100">
                 <div class="flex items-center gap-4">
@@ -239,36 +265,40 @@
                     {{ app()->getLocale() == 'en' ? 'Deploy Permissions' : 'Terapkan Hak Akses' }}
                 </button>
             </div>
-
-            <!-- Loading Overlay when opening permissions -->
-            <div wire:loading wire:target="openPermissions" class="absolute inset-0 bg-white/70 flex items-center justify-center z-50">
-                <div class="flex flex-col items-center gap-3">
-                    <svg class="animate-spin w-10 h-10 text-indigo-600" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <span class="text-xs font-black text-slate-500 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Loading Permissions...' : 'Memuat Hak Akses...' }}</span>
-                </div>
-            </div>
-
-            <!-- Saving Overlay -->
-            <div class="absolute inset-0 bg-white/60 backdrop-blur-[1px] flex items-center justify-center z-50" wire:loading wire:target="savePermissions">
-                <div class="flex flex-col items-center gap-3">
-                    <svg class="animate-spin w-10 h-10 text-indigo-600" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <span class="text-xs font-black text-slate-500 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Updating Permissions...' : 'Memperbarui Hak Akses...' }}</span>
-                </div>
-            </div>
         </div>
     </div>
 
     <!-- Modal 2: Suspend/Restore Confirmation Modal -->
-    <div x-show="showSuspendModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" x-cloak style="display: none;" wire:key="modal-suspend">
-        <div x-show="showSuspendModal" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" @click="showSuspendModal = false"></div>
-        
-        <div x-show="showSuspendModal" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95" class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto z-10 p-6">
+    <div x-show="showSuspendModal" 
+         x-transition:enter="transition ease-out duration-200" 
+         x-transition:enter-start="opacity-0" 
+         x-transition:enter-end="opacity-100" 
+         x-transition:leave="transition ease-in duration-150" 
+         x-transition:leave-start="opacity-100" 
+         x-transition:leave-end="opacity-0" 
+         class="fixed inset-0 z-[100] bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4" 
+         x-cloak 
+         style="display: none;" 
+         wire:key="modal-suspend"
+         @click.self="showSuspendModal = false"
+    >
+        <div x-show="showSuspendModal" 
+             x-transition:enter="transition ease-out duration-200" 
+             x-transition:enter-start="opacity-0 scale-95" 
+             x-transition:enter-end="opacity-100 scale-100" 
+             x-transition:leave="transition ease-in duration-150" 
+             x-transition:leave-start="opacity-100 scale-100" 
+             x-transition:leave-end="opacity-0 scale-95" 
+             class="relative bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto flex flex-col z-10 p-6"
+        >
+            <!-- Loading Overlay -->
+            <div wire:loading.delay.flex wire:target="confirmSuspend, toggleSuspend" class="absolute inset-0 bg-white/70 backdrop-blur-xs z-50 flex items-center justify-center rounded-2xl">
+                <div class="flex flex-col items-center gap-2">
+                    <div class="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                    <span class="text-xs font-semibold text-slate-500">Sinkronisasi Data...</span>
+                </div>
+            </div>
+
             <div class="text-center space-y-4">
                 <div class="w-12 h-12 rounded-2xl mx-auto flex items-center justify-center border-2 {{ $userToSuspend?->is_active ? 'bg-rose-50 border-rose-200 text-rose-600' : 'bg-emerald-50 border-emerald-200 text-emerald-600' }}">
                     <i data-lucide="{{ $userToSuspend?->is_active ? 'shield-off' : 'shield' }}" class="w-6 h-6"></i>
@@ -298,36 +328,40 @@
                     {{ $userToSuspend?->is_active ? (app()->getLocale() == 'en' ? 'Suspend Account' : 'Nonaktifkan Akses') : (app()->getLocale() == 'en' ? 'Restore Account' : 'Pulihkan Akses') }}
                 </button>
             </div>
-
-            <!-- Loading Overlay when confirming suspend -->
-            <div wire:loading wire:target="confirmSuspend" class="absolute inset-0 bg-white/70 flex items-center justify-center z-50">
-                <div class="flex flex-col items-center gap-3">
-                    <svg class="animate-spin w-10 h-10 text-rose-600" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <span class="text-xs font-black text-slate-500 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Loading Clearance...' : 'Memuat Status...' }}</span>
-                </div>
-            </div>
-
-            <!-- Processing Overlay -->
-            <div class="absolute inset-0 bg-white/60 backdrop-blur-[1px] flex items-center justify-center z-50" wire:loading wire:target="toggleSuspend">
-                <div class="flex flex-col items-center gap-3">
-                    <svg class="animate-spin w-10 h-10 text-rose-600" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <span class="text-xs font-black text-slate-500 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Synchronizing Clearance...' : 'Menyelaraskan Status...' }}</span>
-                </div>
-            </div>
         </div>
     </div>
 
     <!-- Modal 3: Advanced Profile / Credentials Management Modal -->
-    <div x-show="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" x-cloak style="display: none;" wire:key="modal-edit">
-        <div x-show="showEditModal" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" @click="showEditModal = false"></div>
-        
-        <div x-show="showEditModal" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95" class="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto z-10 p-6">
+    <div x-show="showEditModal" 
+         x-transition:enter="transition ease-out duration-200" 
+         x-transition:enter-start="opacity-0" 
+         x-transition:enter-end="opacity-100" 
+         x-transition:leave="transition ease-in duration-150" 
+         x-transition:leave-start="opacity-100" 
+         x-transition:leave-end="opacity-0" 
+         class="fixed inset-0 z-[100] bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4" 
+         x-cloak 
+         style="display: none;" 
+         wire:key="modal-edit"
+         @click.self="showEditModal = false"
+    >
+        <div x-show="showEditModal" 
+             x-transition:enter="transition ease-out duration-200" 
+             x-transition:enter-start="opacity-0 scale-95" 
+             x-transition:enter-end="opacity-100 scale-100" 
+             x-transition:leave="transition ease-in duration-150" 
+             x-transition:leave-start="opacity-100 scale-100" 
+             x-transition:leave-end="opacity-0 scale-95" 
+             class="relative bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto flex flex-col z-10 p-6"
+        >
+            <!-- Loading Overlay -->
+            <div wire:loading.delay.flex wire:target="openEditModal, saveEdit, generatePassword" class="absolute inset-0 bg-white/70 backdrop-blur-xs z-50 flex items-center justify-center rounded-2xl">
+                <div class="flex flex-col items-center gap-2">
+                    <div class="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                    <span class="text-xs font-semibold text-slate-500">Sinkronisasi Data...</span>
+                </div>
+            </div>
+
             <!-- Header -->
             <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-6">
                 <div class="flex items-center gap-4">
@@ -409,7 +443,7 @@
                                     <i data-lucide="eye-off" class="w-3.5 h-3.5"></i>
                                 @else
                                     <i data-lucide="eye" class="w-3.5 h-3.5"></i>
-                                @endif
+                                  @endif
                             </button>
                         </div>
                         <div class="flex items-center gap-2">
@@ -485,37 +519,8 @@
                                 <span class="text-xs font-black uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Deploy Changes' : 'Terapkan Perubahan' }}</span>
                                 <i data-lucide="send" class="w-4 h-4 ml-1.5"></i>
                             </span>
-                            <span wire:loading wire:target="saveEdit" class="flex items-center gap-1.5">
-                                <svg class="animate-spin w-4 h-4 text-white" fill="none" viewBox="0 0 24 24">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                                {{ app()->getLocale() == 'en' ? 'Saving Changes...' : 'Menyimpan Perubahan...' }}
-                            </span>
                         </button>
                     </div>
-                </div>
-            </div>
-
-            <!-- Loading Overlay when opening profile edit -->
-            <div wire:loading wire:target="openEditModal" class="absolute inset-0 bg-white/70 flex items-center justify-center z-50">
-                <div class="flex flex-col items-center gap-3">
-                    <svg class="animate-spin w-10 h-10 text-indigo-600" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <span class="text-xs font-black text-slate-500 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Loading Operative...' : 'Memuat Data Pelaksana...' }}</span>
-                </div>
-            </div>
-
-            <!-- Saving Profile Overlay -->
-            <div class="absolute inset-0 bg-white/60 backdrop-blur-[1px] flex items-center justify-center z-50" wire:loading wire:target="saveEdit, generatePassword">
-                <div class="flex flex-col items-center gap-3">
-                    <svg class="animate-spin w-10 h-10 text-indigo-600" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <span class="text-xs font-black text-slate-500 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Updating Operative...' : 'Memperbarui Data Pelaksana...' }}</span>
                 </div>
             </div>
         </div>

@@ -16,7 +16,7 @@
         <div class="flex items-center gap-3">
             <!-- Search field -->
             <div class="relative w-64">
-                <input type="text" wire:model.live="search" placeholder="{{ app()->getLocale() == 'en' ? 'Search operative...' : 'Cari pelaksana...' }}" class="w-full pl-10 pr-4 py-2 bg-white rounded-xl border border-slate-200 shadow-sm text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500/10 transition-all">
+                <input type="search" autocomplete="off" wire:model.live="search" placeholder="{{ app()->getLocale() == 'en' ? 'Search operative...' : 'Cari pelaksana...' }}" class="w-full pl-10 pr-4 py-2 bg-white rounded-xl border border-slate-200 shadow-sm text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500/10 transition-all">
                 <div class="absolute left-3 top-2.5 text-slate-400">
                     <i data-lucide="search" class="w-4 h-4"></i>
                 </div>

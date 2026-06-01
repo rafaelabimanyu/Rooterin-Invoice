@@ -81,7 +81,7 @@ class InvoicesReportExport implements FromCollection, WithHeadings, ShouldAutoSi
     public function columnFormats(): array
     {
         return [
-            'F' => '"Rp" #,##0;("Rp" #,##0);"-"',
+            'F' => '_("Rp"* #,##0_);_("Rp"* \(#,##0\);_("Rp"* "-"_);_(@_)',
         ];
     }
 
@@ -89,31 +89,46 @@ class InvoicesReportExport implements FromCollection, WithHeadings, ShouldAutoSi
     {
         $lastRow = $sheet->getHighestRow();
 
+        // Set row heights
+        $sheet->getRowDimension(1)->setRowHeight(28);
+        for ($row = 2; $row <= $lastRow; $row++) {
+            $sheet->getRowDimension($row)->setRowHeight(22);
+        }
+
         // Standard alignments
         $sheet->getStyle('A2:A' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
         $sheet->getStyle('B2:C' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
         $sheet->getStyle('D2:E' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $sheet->getStyle('F2:F' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
         $sheet->getStyle('G2:G' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        
+        // Vertical alignment for clean padding
+        $sheet->getStyle('A2:G' . $lastRow)->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
 
         return [
             1 => [
                 'font' => [
+                    'name' => 'Segoe UI',
                     'bold' => true,
                     'color' => ['rgb' => 'FFFFFF'],
                     'size' => 11,
                 ],
                 'fill' => [
                     'fillType' => Fill::FILL_SOLID,
-                    'startColor' => ['rgb' => '0F172A'], // Navy / Slate-900
+                    'startColor' => ['rgb' => '1E293B'], // Slate Gelap Premium
                 ],
                 'alignment' => [
                     'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    'vertical' => Alignment::VERTICAL_CENTER,
                 ]
             ],
             $lastRow => [
                 'font' => [
                     'bold' => true,
+                ],
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'startColor' => ['rgb' => 'F8FAFC'],
                 ],
                 'borders' => [
                     'top' => [

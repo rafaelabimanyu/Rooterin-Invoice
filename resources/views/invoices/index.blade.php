@@ -21,8 +21,8 @@
 
     @if(auth()->user()->role !== 'staff')
     <!-- Summary Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
-        <div class="card-premium group">
+    <div class="flex overflow-x-auto snap-x gap-3 pb-3 no-scrollbar md:grid md:grid-cols-4 md:gap-8 md:pb-0 mb-12">
+        <div class="card-premium group min-w-[85%] snap-center md:min-w-0">
             <div class="absolute top-0 left-0 w-1.5 h-full bg-indigo-500/80"></div>
             <div class="flex items-center justify-between mb-4">
                 <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Total Issued' : 'Total Diterbitkan' }}</p>
@@ -32,7 +32,7 @@
             <p class="text-[10px] text-slate-400 font-bold mt-2 uppercase tracking-tighter">{{ app()->getLocale() == 'en' ? 'Registered in system' : 'Terdaftar dalam sistem' }}</p>
         </div>
         
-        <div class="card-premium group">
+        <div class="card-premium group min-w-[85%] snap-center md:min-w-0">
             <div class="absolute top-0 left-0 w-1.5 h-full bg-emerald-500/80"></div>
             <div class="flex items-center justify-between mb-4">
                 <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ __('ui.total_collected') }}</p>
@@ -42,7 +42,7 @@
             <p class="text-[10px] text-slate-400 font-bold mt-2 uppercase tracking-tighter">{{ app()->getLocale() == 'en' ? 'Verified transactions' : 'Transaksi terverifikasi' }}</p>
         </div>
 
-        <div class="card-premium group">
+        <div class="card-premium group min-w-[85%] snap-center md:min-w-0">
             <div class="absolute top-0 left-0 w-1.5 h-full bg-amber-500/80"></div>
             <div class="flex items-center justify-between mb-4">
                 <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ __('ui.amount_due') }}</p>
@@ -52,7 +52,7 @@
             <p class="text-[10px] text-slate-400 font-bold mt-2 uppercase tracking-tighter">{{ app()->getLocale() == 'en' ? 'Outstanding receivables' : 'Piutang belum tertagih' }}</p>
         </div>
 
-        <div class="card-premium group">
+        <div class="card-premium group min-w-[85%] snap-center md:min-w-0">
             <div class="absolute top-0 left-0 w-1.5 h-full bg-rose-500/80"></div>
             <div class="flex items-center justify-between mb-4">
                 <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Overdue Count' : 'Jumlah Menunggak' }}</p>
@@ -144,34 +144,21 @@
     </div>
 
     <!-- Mobile List View -->
-    <div class="md:hidden space-y-4">
+    <div class="md:hidden space-y-3 px-4">
         @forelse($invoices as $invoice)
-            <div class="bg-white border border-slate-100 rounded-[24px] p-6 shadow-sm">
-                <div class="flex justify-between items-start mb-6">
-                    <div>
-                        <h3 class="text-lg font-black text-slate-900 tracking-tight">{{ $invoice->invoice_number }}</h3>
-                        <p class="text-[13px] font-bold text-indigo-600 uppercase tracking-tight mt-0.5">{{ $invoice->client->nama_client }}</p>
-                    </div>
-                    <x-badge :status="$invoice->status" class="scale-90 origin-right" />
+            <div 
+                onclick="window.location='{{ route('invoices.show', $invoice) }}'"
+                class="bg-white border border-slate-200/60 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all active:scale-[0.98] cursor-pointer flex flex-col gap-2"
+            >
+                <!-- First Row: Invoice Number & Status -->
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-slate-500 tracking-tight truncate">{{ $invoice->invoice_number }}</span>
+                    <x-badge :status="$invoice->status" class="scale-75 origin-right shrink-0" />
                 </div>
-                
-                <div class="grid grid-cols-2 gap-6 py-4 border-t border-slate-50">
-                    <div>
-                        <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Net Amount' : 'Nominal Bersih' }}</p>
-                        <p class="text-lg font-black text-slate-900">Rp {{ number_format($invoice->total, 0, ',', '.') }}</p>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Due Date' : 'Jatuh Tempo' }}</p>
-                        <p class="text-[14px] font-bold text-slate-600">{{ $invoice->due_date->format('M d, Y') }}</p>
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-between pt-4 border-t border-slate-50">
-                    <p class="text-[12px] text-slate-400 font-medium truncate max-w-[150px]">{{ $invoice->client->nama_perusahaan }}</p>
-                    <div class="flex items-center gap-4">
-                        <a href="{{ route('invoices.show', $invoice) }}" class="text-[12px] font-black text-indigo-600 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'View' : 'Lihat' }}</a>
-                        <a href="{{ route('invoices.edit', $invoice) }}" class="text-[12px] font-black text-amber-600 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Edit' : 'Ubah' }}</a>
-                    </div>
+                <!-- Second Row: Client Name & Nominal -->
+                <div class="flex items-center justify-between">
+                    <span class="text-[13px] font-black text-slate-900 truncate leading-tight">{{ $invoice->client->nama_client }}</span>
+                    <span class="text-[14px] font-bold text-indigo-600 tracking-tight shrink-0">Rp {{ number_format($invoice->total, 0, ',', '.') }}</span>
                 </div>
             </div>
         @empty

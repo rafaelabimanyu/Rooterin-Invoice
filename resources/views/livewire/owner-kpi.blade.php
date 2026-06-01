@@ -131,9 +131,9 @@
         </div>
 
         <!-- KPI Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8 page-fade-in" style="animation-delay: 100ms">
+        <div class="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 no-scrollbar md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-4 lg:gap-6 md:pb-0 md:overflow-x-visible mb-8 page-fade-in" style="animation-delay: 100ms">
             <!-- Monthly Revenue -->
-            <div class="glass-card p-6 group hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 relative overflow-hidden border-indigo-500/10 cursor-pointer"
+            <div class="glass-card p-6 group hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 relative overflow-hidden border-indigo-500/10 cursor-pointer min-w-[85%] snap-center md:min-w-0"
                  @click="$dispatch('slide-over-loading-start')"
                  wire:click="openModal('revenue')">
                 <div class="flex items-center justify-between mb-6">
@@ -154,7 +154,7 @@
             </div>
 
             <!-- Unpaid Amount -->
-            <div class="glass-card p-6 group hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 relative overflow-hidden border-amber-500/10 cursor-pointer"
+            <div class="glass-card p-6 group hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 relative overflow-hidden border-amber-500/10 cursor-pointer min-w-[85%] snap-center md:min-w-0"
                  @click="$dispatch('slide-over-loading-start')"
                  wire:click="openModal('risks')">
                 <div class="flex items-center justify-between mb-6">
@@ -178,7 +178,7 @@
             </div>
 
             <!-- Repeat Customer Rate -->
-            <div class="glass-card p-6 group hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 relative overflow-hidden border-emerald-500/10 cursor-pointer"
+            <div class="glass-card p-6 group hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 relative overflow-hidden border-emerald-500/10 cursor-pointer min-w-[85%] snap-center md:min-w-0"
                  @click="$dispatch('slide-over-loading-start')"
                  wire:click="openModal('loyalty')">
                 <div class="flex items-center justify-between mb-6">
@@ -198,7 +198,7 @@
             </div>
 
             <!-- Top Client -->
-            <div class="glass-card p-6 group hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 relative overflow-hidden border-rose-500/10 cursor-pointer"
+            <div class="glass-card p-6 group hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 relative overflow-hidden border-rose-500/10 cursor-pointer min-w-[85%] snap-center md:min-w-0"
                  @click="$dispatch('slide-over-loading-start')"
                  wire:click="openModal('prime-asset')">
                 <div class="flex items-center justify-between mb-6">
@@ -237,8 +237,8 @@
                     </div>
                 </div>
                 <!-- Fixed Height Container with wire:ignore -->
-                <div wire:ignore class="relative h-[220px] sm:h-[300px] w-full">
-                    <div id="revenueChart" class="absolute inset-0"></div>
+                <div wire:ignore class="relative h-[220px] sm:h-[300px] w-full overflow-x-auto">
+                    <div id="revenueChart" class="absolute inset-0 min-w-[500px] md:min-w-0"></div>
                 </div>
             </div>
 
@@ -325,7 +325,7 @@
                             <tr class="table-header">
                                 <th class="px-8 py-4 text-[10px]">{{ app()->getLocale() == 'en' ? 'Rank & Identity' : 'Peringkat & Identitas' }}</th>
                                 <th class="hidden sm:table-cell px-8 py-4 text-[10px]">{{ app()->getLocale() == 'en' ? 'Volume' : 'Volume' }}</th>
-                                <th class="px-8 py-4 text-[10px] text-right">{{ app()->getLocale() == 'en' ? 'Valuation' : 'Valuasi' }}</th>
+                                <th class="hidden md:table-cell px-8 py-4 text-[10px] text-right">{{ app()->getLocale() == 'en' ? 'Valuation' : 'Valuasi' }}</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-50">
@@ -339,6 +339,9 @@
                                             <div class="flex flex-col max-w-[140px] sm:max-w-none">
                                                 <span class="text-[13px] font-black text-slate-900 tracking-tight group-hover:text-indigo-600 transition-colors truncate">{{ $client->nama_client }}</span>
                                                 <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest truncate">{{ $client->nama_perusahaan }}</span>
+                                                <span class="md:hidden text-[11px] font-bold text-slate-900 tracking-tight mt-1">
+                                                    Rp {{ number_format($client->invoices_sum_total, 0, ',', '.') }}
+                                                </span>
                                             </div>
                                         </div>
                                     </td>
@@ -348,7 +351,7 @@
                                             {{ $client->invoices_count }} Unit
                                         </div>
                                     </td>
-                                    <td class="px-8 py-4 text-right">
+                                    <td class="hidden md:table-cell px-8 py-4 text-right">
                                         <span class="text-[13px] font-black text-slate-900 tracking-tighter">Rp {{ number_format($client->invoices_sum_total, 0, ',', '.') }}</span>
                                     </td>
                                 </tr>

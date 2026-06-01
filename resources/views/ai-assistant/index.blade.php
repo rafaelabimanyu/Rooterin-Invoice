@@ -282,15 +282,8 @@
         <!-- Chat Area (Right Side) -->
         <div class="flex-1 flex flex-col h-full bg-slate-50/20 min-w-0">
             <!-- Chat Window Header -->
-            <div class="px-4 lg:px-8 py-4 lg:py-5 bg-white border-b border-slate-200/80 flex items-center justify-between gap-3 shrink-0 flex-wrap sm:flex-nowrap">
+            <div class="px-4 lg:px-8 py-4 lg:py-5 bg-white border-b border-slate-200/80 flex items-center justify-between gap-3 shrink-0">
                 <div class="flex items-center gap-3 lg:gap-4 min-w-0">
-                    <!-- Drawer Toggle Button (Mobile Only) -->
-                    <button @click="showDrawer = true; $nextTick(() => { if (typeof lucide !== 'undefined') { lucide.createIcons(); } })" 
-                        class="lg:hidden p-2 bg-slate-50 hover:bg-slate-100 text-slate-500 hover:text-slate-700 rounded-xl border border-slate-200/80 transition-all active:scale-95 shrink-0"
-                        title="{{ app()->getLocale() == 'en' ? 'Open History' : 'Buka Riwayat' }}">
-                        <i data-lucide="history" class="w-4.5 h-4.5"></i>
-                    </button>
-                    
                     <div class="w-10 h-10 lg:w-11 lg:h-11 rounded-2xl bg-indigo-600/10 flex items-center justify-center text-indigo-600 border border-indigo-200/40 shadow-sm relative transition-all duration-300 shrink-0"
                         :class="loading ? 'animate-pulse ring-4 ring-indigo-500/25' : ''">
                         <i data-lucide="bot" class="w-5.5 h-5.5 lg:w-6 lg:h-6 text-indigo-600"></i>
@@ -309,6 +302,12 @@
                 </div>
                 
                 <div class="flex items-center gap-2 shrink-0">
+                    <!-- Drawer Toggle Button (Mobile Only) -->
+                    <button @click="showDrawer = true; $nextTick(() => { if (typeof lucide !== 'undefined') { lucide.createIcons(); } })" 
+                        class="lg:hidden p-2 bg-slate-50 hover:bg-slate-100 text-slate-500 hover:text-slate-700 rounded-xl border border-slate-200/80 transition-all active:scale-95 shrink-0"
+                        title="{{ app()->getLocale() == 'en' ? 'Open History' : 'Buka Riwayat' }}">
+                        <i data-lucide="history" class="w-4 h-4 lg:w-4.5 lg:h-4.5"></i>
+                    </button>
                     <a href="{{ route('dashboard') }}" class="p-2 lg:p-2.5 bg-slate-50 hover:bg-slate-100 text-slate-500 hover:text-slate-700 rounded-xl transition-colors border border-slate-200" title="{{ app()->getLocale() == 'en' ? 'Back to Dashboard' : 'Kembali ke Dashboard' }}">
                         <i data-lucide="home" class="w-4 h-4 lg:w-4.5 lg:h-4.5"></i>
                     </a>
@@ -316,17 +315,17 @@
             </div>
 
             <!-- Messages List & Initial Deck -->
-            <div x-ref="chatContainer" class="flex-1 p-4 lg:p-8 overflow-y-auto space-y-4 lg:space-y-6 chat-scroll">
+            <div x-ref="chatContainer" class="flex-1 min-h-[350px] max-h-[60vh] lg:min-h-0 lg:max-h-none p-4 lg:p-8 overflow-y-auto space-y-4 lg:space-y-6 chat-scroll">
                 
                 <!-- Welcome & Suggestions Screen -->
                 <template x-if="messages.length <= 1 && !loading">
-                    <div class="max-w-2xl mx-auto py-4 lg:py-8 space-y-6 lg:space-y-8">
-                        <div class="text-center space-y-2 lg:space-y-3">
+                    <div class="max-w-2xl mx-auto py-4 lg:py-8 space-y-6 lg:space-y-8 h-auto px-2 lg:px-0">
+                        <div class="text-center space-y-2 lg:space-y-3 h-auto py-1">
                             <div class="w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-[1.25rem] lg:rounded-3xl flex items-center justify-center text-white mx-auto shadow-lg shadow-indigo-500/20">
                                 <i data-lucide="sparkles" class="w-6 h-6 lg:w-8 lg:h-8"></i>
                             </div>
                             <h3 class="text-base lg:text-lg font-black text-slate-900 font-jakarta uppercase tracking-tight">{{ app()->getLocale() == 'en' ? 'Welcome to Rooterin AI 2.0' : 'Selamat Datang di Rooterin AI 2.0' }}</h3>
-                            <p class="text-[11px] lg:text-xs text-slate-500 font-medium leading-relaxed max-w-md mx-auto px-4 lg:px-0">
+                            <p class="text-[11px] lg:text-xs text-slate-500 font-medium leading-relaxed max-w-md mx-auto px-4 lg:px-0 h-auto pb-1">
                                 {{ app()->getLocale() == 'en' ? 'Ask questions about cash flow, receivable analysis, client status, or ask the assistant to navigate to a specific page directly.' : 'Ajukan pertanyaan tentang cashflow, analisis penagihan piutang, status klien, atau minta asisten untuk membuka halaman tertentu secara langsung.' }}
                             </p>
                         </div>
@@ -336,10 +335,10 @@
                             <p class="text-[9px] lg:text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-center px-4">{{ app()->getLocale() == 'en' ? 'Recommended Popular Questions' : 'Rekomendasi Pertanyaan Populer' }}</p>
                             
                             <!-- Container: Horizontal Scroll on Mobile, Grid on Desktop -->
-                            <div class="flex lg:grid lg:grid-cols-2 overflow-x-auto lg:overflow-x-visible pb-3 lg:pb-0 gap-3.5 lg:gap-4 snap-x snap-mandatory scroll-smooth chat-scroll px-4 lg:px-0">
+                            <div class="flex overflow-x-auto snap-x snap-mandatory gap-3 pb-2 no-scrollbar lg:grid lg:grid-cols-2 lg:overflow-x-visible lg:gap-4 lg:pb-0 px-4 lg:px-0">
                                 
                                 <button @click="sendSuggestion('{{ app()->getLocale() == 'en' ? 'This month\'s cash flow analysis' : 'Analisis arus kas bulan ini' }}')" 
-                                    class="w-[280px] sm:w-[320px] lg:w-auto shrink-0 lg:shrink snap-start text-left p-4 bg-white hover:bg-indigo-50/30 border border-slate-200 hover:border-indigo-300 rounded-2xl transition-all flex items-center gap-3.5 group shadow-sm hover:shadow active:scale-98">
+                                    class="min-w-[85%] snap-center lg:min-w-0 lg:w-auto shrink-0 lg:shrink text-left p-4 bg-white hover:bg-indigo-50/30 border border-slate-200 hover:border-indigo-300 rounded-2xl transition-all flex items-center gap-3.5 group shadow-sm hover:shadow active:scale-98">
                                     <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-all">
                                         <i data-lucide="trending-up" class="w-4 h-4"></i>
                                     </div>
@@ -350,7 +349,7 @@
                                 </button>
 
                                 <button @click="sendSuggestion('{{ app()->getLocale() == 'en' ? 'Who are the most overdue clients?' : 'Siapa klien yang paling sering menunggak?' }}')" 
-                                    class="w-[280px] sm:w-[320px] lg:w-auto shrink-0 lg:shrink snap-start text-left p-4 bg-white hover:bg-indigo-50/30 border border-slate-200 hover:border-indigo-300 rounded-2xl transition-all flex items-center gap-3.5 group shadow-sm hover:shadow active:scale-98">
+                                    class="min-w-[85%] snap-center lg:min-w-0 lg:w-auto shrink-0 lg:shrink text-left p-4 bg-white hover:bg-indigo-50/30 border border-slate-200 hover:border-indigo-300 rounded-2xl transition-all flex items-center gap-3.5 group shadow-sm hover:shadow active:scale-98">
                                     <div class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-all">
                                         <i data-lucide="users" class="w-4 h-4"></i>
                                     </div>
@@ -361,7 +360,7 @@
                                 </button>
 
                                 <button @click="sendSuggestion('{{ app()->getLocale() == 'en' ? 'Create summary report for owner meeting' : 'Buat laporan ringkas untuk meeting owner' }}')" 
-                                    class="w-[280px] sm:w-[320px] lg:w-auto shrink-0 lg:shrink snap-start text-left p-4 bg-white hover:bg-indigo-50/30 border border-slate-200 hover:border-indigo-300 rounded-2xl transition-all flex items-center gap-3.5 group shadow-sm hover:shadow active:scale-98">
+                                    class="min-w-[85%] snap-center lg:min-w-0 lg:w-auto shrink-0 lg:shrink text-left p-4 bg-white hover:bg-indigo-50/30 border border-slate-200 hover:border-indigo-300 rounded-2xl transition-all flex items-center gap-3.5 group shadow-sm hover:shadow active:scale-98">
                                     <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-all">
                                         <i data-lucide="file-text" class="w-4 h-4"></i>
                                     </div>
@@ -372,7 +371,7 @@
                                 </button>
 
                                 <button @click="sendSuggestion('{{ app()->getLocale() == 'en' ? 'Revenue projection for the next 3 months' : 'Prediksi pendapatan 3 bulan ke depan' }}')" 
-                                    class="w-[280px] sm:w-[320px] lg:w-auto shrink-0 lg:shrink snap-start text-left p-4 bg-white hover:bg-indigo-50/30 border border-slate-200 hover:border-indigo-300 rounded-2xl transition-all flex items-center gap-3.5 group shadow-sm hover:shadow active:scale-98">
+                                    class="min-w-[85%] snap-center lg:min-w-0 lg:w-auto shrink-0 lg:shrink text-left p-4 bg-white hover:bg-indigo-50/30 border border-slate-200 hover:border-indigo-300 rounded-2xl transition-all flex items-center gap-3.5 group shadow-sm hover:shadow active:scale-98">
                                     <div class="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-all">
                                         <i data-lucide="line-chart" class="w-4 h-4"></i>
                                     </div>
@@ -383,7 +382,7 @@
                                 </button>
 
                                 <button @click="sendSuggestion('{{ app()->getLocale() == 'en' ? 'How to improve invoice collectibility?' : 'Bagaimana cara meningkatkan kolektibilitas invoice?' }}')" 
-                                    class="w-[280px] sm:w-[320px] lg:w-auto lg:col-span-2 shrink-0 lg:shrink snap-start text-left p-4 bg-white hover:bg-indigo-50/30 border border-slate-200 hover:border-indigo-300 rounded-2xl transition-all flex items-center gap-3.5 group shadow-sm hover:shadow active:scale-98">
+                                    class="min-w-[85%] snap-center lg:min-w-0 lg:w-auto lg:col-span-2 shrink-0 lg:shrink text-left p-4 bg-white hover:bg-indigo-50/30 border border-slate-200 hover:border-indigo-300 rounded-2xl transition-all flex items-center gap-3.5 group shadow-sm hover:shadow active:scale-98">
                                     <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-all">
                                         <i data-lucide="help-circle" class="w-4 h-4"></i>
                                     </div>

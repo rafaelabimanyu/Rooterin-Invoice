@@ -6,12 +6,15 @@
      x-transition:leave="transition ease-in duration-150" 
      x-transition:leave-start="opacity-100" 
      x-transition:leave-end="opacity-0" 
-     class="fixed inset-0 z-[100] bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4" 
+     class="fixed inset-0 z-[100] flex items-center justify-center p-4" 
      x-cloak 
      style="display: none;" 
      wire:key="modal-suspend"
-     @click.self="showSuspendModal = false"
 >
+    <!-- BACKDROP OVERLAY (Latar Hitam Transparan) -->
+    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" @click="showSuspendModal = false"></div>
+
+    <!-- MAIN MODAL CONTAINER (Wajib Relative & Overflow Hidden) -->
     <div x-show="showSuspendModal" 
          x-transition:enter="transition ease-out duration-200" 
          x-transition:enter-start="opacity-0 scale-95" 
@@ -19,15 +22,18 @@
          x-transition:leave="transition ease-in duration-150" 
          x-transition:leave-start="opacity-100 scale-100" 
          x-transition:leave-end="opacity-0 scale-95" 
-         class="relative bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto flex flex-col z-10 p-6"
+         class="relative bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden z-10"
     >
-        <!-- Loading Overlay -->
-        <div wire:loading wire:target="confirmSuspend, toggleSuspend" class="absolute inset-0 bg-white/80 z-50 flex flex-col items-center justify-center rounded-2xl">
-            <div class="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-            <span class="text-xs font-semibold text-slate-500 mt-2">Sinkronisasi Data...</span>
+        <!-- TOTAL OVERLAY LOADING SCREEN (Mengunci Sempurna di Dalam Box Putih) -->
+        <div wire:loading wire:target="confirmSuspend, toggleSuspend" class="absolute inset-0 bg-white/90 z-50 flex flex-col items-center justify-center">
+            <div class="flex flex-col items-center gap-3">
+                <div class="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                <span class="text-xs font-bold text-slate-600 tracking-wide">Sinkronisasi Data...</span>
+            </div>
         </div>
 
-        <div class="text-center space-y-4">
+        <!-- Body -->
+        <div class="p-6 overflow-y-auto space-y-4 flex-1 text-center bg-white">
             <div class="w-12 h-12 rounded-2xl mx-auto flex items-center justify-center border-2 {{ $userToSuspend?->is_active ? 'bg-rose-50 border-rose-200 text-rose-600' : 'bg-emerald-50 border-emerald-200 text-emerald-600' }}">
                 <i data-lucide="{{ $userToSuspend?->is_active ? 'shield-off' : 'shield' }}" class="w-6 h-6"></i>
             </div>
@@ -50,7 +56,8 @@
             </div>
         </div>
 
-        <div class="mt-6 flex items-center justify-center gap-3">
+        <!-- Footer -->
+        <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-center gap-3">
             <button type="button" @click="showSuspendModal = false" class="flex-1 py-2.5 text-xs font-bold text-slate-500 hover:text-slate-800 bg-white border border-slate-200 rounded-lg transition-all">{{ app()->getLocale() == 'en' ? 'Cancel' : 'Batal' }}</button>
             <button type="button" wire:click="toggleSuspend" class="flex-1 py-2.5 text-xs font-black uppercase tracking-wider text-white rounded-lg shadow-lg transition-all flex items-center justify-center gap-2 {{ $userToSuspend?->is_active ? 'bg-rose-600 hover:bg-rose-500 shadow-rose-600/10' : 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-600/10' }}">
                 {{ $userToSuspend?->is_active ? (app()->getLocale() == 'en' ? 'Suspend Account' : 'Nonaktifkan Akses') : (app()->getLocale() == 'en' ? 'Restore Account' : 'Pulihkan Akses') }}

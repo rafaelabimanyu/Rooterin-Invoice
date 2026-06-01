@@ -6,12 +6,15 @@
      x-transition:leave="transition ease-in duration-150" 
      x-transition:leave-start="opacity-100" 
      x-transition:leave-end="opacity-0" 
-     class="fixed inset-0 z-[100] bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4" 
+     class="fixed inset-0 z-[100] flex items-center justify-center p-4" 
      x-cloak 
      style="display: none;" 
      wire:key="modal-permissions"
-     @click.self="showPermissionsModal = false"
 >
+    <!-- BACKDROP OVERLAY (Latar Hitam Transparan) -->
+    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" @click="showPermissionsModal = false"></div>
+
+    <!-- MAIN MODAL CONTAINER (Wajib Relative & Overflow Hidden) -->
     <div x-show="showPermissionsModal" 
          x-transition:enter="transition ease-out duration-200" 
          x-transition:enter-start="opacity-0 scale-95" 
@@ -19,16 +22,18 @@
          x-transition:leave="transition ease-in duration-150" 
          x-transition:leave-start="opacity-100 scale-100" 
          x-transition:leave-end="opacity-0 scale-95" 
-         class="relative bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto flex flex-col z-10 p-6"
+         class="relative bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden z-10"
     >
-        <!-- Loading Overlay -->
-        <div wire:loading wire:target="openPermissions, savePermissions" class="absolute inset-0 bg-white/80 z-50 flex flex-col items-center justify-center rounded-2xl">
-            <div class="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-            <span class="text-xs font-semibold text-slate-500 mt-2">Sinkronisasi Data...</span>
+        <!-- TOTAL OVERLAY LOADING SCREEN (Mengunci Sempurna di Dalam Box Putih) -->
+        <div wire:loading wire:target="openPermissions, savePermissions" class="absolute inset-0 bg-white/90 z-50 flex flex-col items-center justify-center">
+            <div class="flex flex-col items-center gap-3">
+                <div class="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                <span class="text-xs font-bold text-slate-600 tracking-wide">Sinkronisasi Data...</span>
+            </div>
         </div>
 
         <!-- Header -->
-        <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+        <div class="p-6 border-b border-slate-100 flex items-center justify-between bg-white">
             <div class="flex items-center gap-4">
                 <div class="p-2.5 bg-indigo-600 text-white rounded-xl">
                     <i data-lucide="sliders" class="w-5 h-5"></i>
@@ -46,7 +51,7 @@
         </div>
 
         <!-- Body -->
-        <div class="py-6 space-y-6">
+        <div class="p-6 overflow-y-auto space-y-6 flex-1 bg-white">
             <!-- Access Role Select -->
             <div class="space-y-2">
                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Access Level / Role' : 'Tingkat Akses / Peran' }}</label>
@@ -91,7 +96,7 @@
         </div>
 
         <!-- Footer -->
-        <div class="pt-4 border-t border-slate-100 flex justify-end gap-3">
+        <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-end gap-3">
             <button type="button" @click="showPermissionsModal = false" class="text-xs font-bold text-slate-500 hover:text-slate-800">{{ app()->getLocale() == 'en' ? 'Cancel' : 'Batal' }}</button>
             <button type="button" wire:click="savePermissions" class="btn-premium px-6 py-2.5 rounded-lg text-xs uppercase tracking-wider font-bold">
                 {{ app()->getLocale() == 'en' ? 'Deploy Permissions' : 'Terapkan Hak Akses' }}

@@ -9,7 +9,7 @@
         </div>
     </div>
 
-    <div class="flex-1 space-y-6">
+    <div class="flex-1 space-y-6 max-h-[480px] overflow-y-auto pr-2 scrollbar-thin">
         @forelse($upcomingInvoices as $invoice)
             <div class="group flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-transparent hover:border-indigo-100 hover:bg-white transition-all duration-300 gap-3">
                 <!-- Left Section: Avatar -->

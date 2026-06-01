@@ -302,6 +302,7 @@
                             @endforelse
                         </tbody>
                     </table>
+                </div>
             </div>
 
             @if(!$isStaff)

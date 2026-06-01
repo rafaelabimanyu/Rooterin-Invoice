@@ -2,17 +2,42 @@
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
         <!-- Sidebar Navigation -->
         <div class="lg:col-span-1 space-y-2">
-            <nav class="flex flex-col space-y-1">
-                @php
-                    $localizedTabs = [
-                        'general' => app()->getLocale() == 'en' ? 'Identity' : 'Identitas',
-                        'finance' => app()->getLocale() == 'en' ? 'Finance' : 'Keuangan',
-                        'localization' => app()->getLocale() == 'en' ? 'Regional' : 'Regional',
-                        'notifications' => app()->getLocale() == 'en' ? 'Communications' : 'Komunikasi',
-                        'appearance' => app()->getLocale() == 'en' ? 'Branding' : 'Branding',
-                        'security' => app()->getLocale() == 'en' ? 'Security' : 'Keamanan'
-                    ];
-                @endphp
+            @php
+                $localizedTabs = [
+                    'general' => app()->getLocale() == 'en' ? 'Identity' : 'Identitas',
+                    'finance' => app()->getLocale() == 'en' ? 'Finance' : 'Keuangan',
+                    'localization' => app()->getLocale() == 'en' ? 'Regional' : 'Regional',
+                    'notifications' => app()->getLocale() == 'en' ? 'Communications' : 'Komunikasi',
+                    'appearance' => app()->getLocale() == 'en' ? 'Branding' : 'Branding',
+                    'security' => app()->getLocale() == 'en' ? 'Security' : 'Keamanan'
+                ];
+            @endphp
+
+            <!-- Mobile Horizontal Swipeable Tabs -->
+            <nav class="flex overflow-x-auto snap-x gap-2 pb-3 no-scrollbar md:hidden">
+                @foreach($localizedTabs as $tab => $label)
+                    <button 
+                        wire:click="$set('activeTab', '{{ $tab }}')"
+                        class="flex items-center gap-2 px-4 py-2.5 rounded-full text-[11px] font-black uppercase tracking-widest transition-all duration-300 shrink-0 snap-center
+                        {{ $activeTab === $tab ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/10' : 'bg-slate-100 text-slate-500 hover:bg-slate-200/60' }}"
+                    >
+                        <i data-lucide="{{ 
+                            match($tab) {
+                                'general' => 'building-2',
+                                'finance' => 'wallet',
+                                'localization' => 'globe',
+                                'notifications' => 'mail',
+                                'appearance' => 'palette',
+                                'security' => 'shield-check',
+                            }
+                        }}" class="w-4 h-4"></i>
+                        {{ $label }}
+                    </button>
+                @endforeach
+            </nav>
+
+            <!-- Desktop Vertical Navigation -->
+            <nav class="hidden md:flex md:flex-col space-y-1">
                 @foreach($localizedTabs as $tab => $label)
                     <button 
                         wire:click="$set('activeTab', '{{ $tab }}')"
@@ -34,7 +59,8 @@
                 @endforeach
             </nav>
 
-            <div class="mt-8 glass-card p-6 bg-slate-900 text-white overflow-hidden relative">
+            <!-- Desktop Telemetry Box -->
+            <div class="hidden md:block mt-8 glass-card p-6 bg-slate-900 text-white overflow-hidden relative">
                 <div class="absolute -right-10 -top-10 w-32 h-32 bg-indigo-500/10 blur-3xl rounded-full"></div>
                 <h3 class="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-4 relative z-10">{{ app()->getLocale() == 'en' ? 'Telemetry' : 'Telemetri' }}</h3>
                 <div class="space-y-4 relative z-10">
@@ -55,7 +81,7 @@
 
         <!-- Main Content Area -->
         <div class="lg:col-span-3 space-y-8">
-            <div class="glass-card p-10 min-h-[600px]">
+            <div class="glass-card p-4 md:p-8 min-h-[600px]">
                 <!-- General Tab -->
                 @if($activeTab === 'general')
                 <div x-data x-init="lucide.createIcons()" x-transition:enter="fade-in">
@@ -313,6 +339,25 @@
                     </div>
                 </div>
                 @endif
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Telemetry Box -->
+    <div class="md:hidden mt-8 glass-card p-6 bg-slate-900 text-white overflow-hidden relative">
+        <div class="absolute -right-10 -top-10 w-32 h-32 bg-indigo-500/10 blur-3xl rounded-full"></div>
+        <h3 class="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-4 relative z-10">{{ app()->getLocale() == 'en' ? 'Telemetry' : 'Telemetri' }}</h3>
+        <div class="space-y-4 relative z-10">
+            <div>
+                <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Last Backup' : 'Pencadangan Terakhir' }}</p>
+                <p class="text-[13px] font-bold text-indigo-400">{{ $lastBackup }}</p>
+            </div>
+            <div>
+                <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Server Health' : 'Kesehatan Server' }}</p>
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="text-[13px] font-bold text-emerald-400">{{ $serverStatus }}</span>
+                </div>
             </div>
         </div>
     </div>

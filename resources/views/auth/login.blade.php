@@ -84,7 +84,7 @@
              x-transition:leave="transition-all duration-700 ease-in-out transform"
              x-transition:leave-start="translate-y-0"
              x-transition:leave-end="-translate-y-full"
-             class="md:hidden fixed inset-0 z-50 bg-[#0b0f19] flex flex-col justify-between items-center py-16 px-6 text-center overflow-hidden">
+             class="md:hidden fixed inset-0 z-50 bg-gradient-to-br from-[#111827] via-[#0b0f19] to-[#1e1b4b] flex flex-col justify-between items-center py-16 px-6 text-center overflow-hidden">
             
             <!-- Top Branding -->
             <div class="flex flex-col items-center space-y-4 animate-fade-in" style="animation-delay: 200ms;">
@@ -108,13 +108,21 @@
             </div>
 
             <!-- Bottom Indicators -->
-            <div class="space-y-6 w-full animate-fade-in" style="animation-delay: 600ms;">
-                <div class="flex justify-center items-center gap-3">
-                    <div class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></div>
-                    <div class="w-2 h-2 rounded-full bg-indigo-500 shadow-[0_0_8px_#6366f1]"></div>
-                    <div class="w-2 h-2 rounded-full bg-slate-700"></div>
+            <div class="w-full animate-fade-in" style="animation-delay: 600ms;">
+                <div class="flex justify-center items-center gap-6 mt-6">
+                    <div class="flex flex-col items-center gap-1.5">
+                        <div class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></div>
+                        <span class="text-[9px] font-bold tracking-widest text-slate-500 uppercase">Auth Active</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-1.5">
+                        <div class="w-2 h-2 rounded-full bg-indigo-500 shadow-[0_0_8px_#6366f1]"></div>
+                        <span class="text-[9px] font-bold tracking-widest text-slate-500 uppercase">Ledger Sync</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-1.5">
+                        <div class="w-2 h-2 rounded-full bg-slate-600"></div>
+                        <span class="text-[9px] font-bold tracking-widest text-slate-500 uppercase">Vault Encrypt</span>
+                    </div>
                 </div>
-                <p class="text-[9px] text-slate-500 font-black uppercase tracking-[0.4em]">SECURE ACCESS POINT</p>
             </div>
         </div>
 

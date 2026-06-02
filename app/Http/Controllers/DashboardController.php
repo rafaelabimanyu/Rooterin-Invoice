@@ -57,82 +57,7 @@ class DashboardController extends Controller
             'overdue_60_plus' => 0,
         ];
 
-        $aiInsight = null;
-        if (!$isStaff) {
-            $locale = app()->getLocale();
-            if (request()->has('refresh_ai')) {
-                \Illuminate\Support\Facades\Cache::forget('ai_financial_insights_' . $locale);
-            }
-
-            $aiInsight = \Illuminate\Support\Facades\Cache::remember('ai_financial_insights_' . $locale, 3600, function() use ($monthlyRevenue, $overdueRevenue, $trendText, $locale) {
-                if ($locale === 'en') {
-                    $prompt = "You are a professional business financial consultant. Analyze the following financial summary smartly and tactfully:
-- Total Invoices Paid This Month: Rp " . number_format($monthlyRevenue, 0, ',', '.') . "
-- Total Overdue Invoices: Rp " . number_format($overdueRevenue, 0, ',', '.') . "
-- Sales/Invoice Trend for the Last 3 Months: {$trendText}
-
-Strictly match the user's current application language interface. If the active language is 'en', you MUST construct your entire analysis, greetings, and responses in Professional English. If the active language is 'id', you MUST respond in Professional Indonesian. Never mix the languages.
-Provide 2-3 sentences containing tactical business insights and practical action recommendations to help the business owner maintain smooth cash flow. Do not use any markdown formatting (like bold/italic or lists), return only plain text paragraph.";
-                } else {
-                    $prompt = "Kamu adalah konsultan keuangan bisnis terpercaya. Analisis data ringkasan keuangan berikut secara cerdas dan taktis:
-- Total Invoice Lunas Bulan Ini: Rp " . number_format($monthlyRevenue, 0, ',', '.') . "
-- Total Tagihan Menunggak (Overdue): Rp " . number_format($overdueRevenue, 0, ',', '.') . "
-- Tren Penjualan/Invoice 3 Bulan Terakhir: {$trendText}
-
-Strictly match the user's current application language interface. If the active language is 'en', you MUST construct your entire analysis, greetings, and responses in Professional English. If the active language is 'id', you MUST respond in Professional Indonesian. Never mix the languages.
-Berikan 2-3 kalimat berisi insight bisnis taktis dan rekomendasi tindakan praktis dalam Bahasa Indonesia yang profesional untuk membantu pemilik bisnis menjaga kelancaran cash flow (arus kas). Jangan gunakan format markdown (seperti tebal/miring atau list), kembalikan langsung paragraf teks bersih.";
-                }
-
-                try {
-                    $apiKey = env('GEMINI_API_KEY') ?: config('gemini.api_key');
-                    if (empty($apiKey)) {
-                        throw new \Exception("GEMINI_API_KEY tidak dikonfigurasi");
-                    }
-                    
-                    $response = \Illuminate\Support\Facades\Http::withHeaders([
-                        'Content-Type' => 'application/json',
-                    ])->post('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' . $apiKey, [
-                        'contents' => [
-                            [
-                                'parts' => [
-                                    ['text' => $prompt]
-                                ]
-                            ]
-                        ]
-                    ]);
-
-                    if (!$response->successful()) {
-                        throw new \Exception("HTTP Error: Status " . $response->status());
-                    }
-
-                    $resData = $response->json();
-                    $reply = $resData['candidates'][0]['content']['parts'][0]['text'] ?? null;
-                    
-                    if (empty($reply)) {
-                        throw new \Exception("Response format invalid");
-                    }
-
-                    return trim($reply);
-                } catch (\Throwable $e) {
-                    \Illuminate\Support\Facades\Log::error("DashboardController Gemini Error: " . $e->getMessage(), ['exception' => $e]);
-                    $errMsg = " (Advisory Fallback)";
-                    $overdueFormatted = "Rp " . number_format($overdueRevenue, 0, ',', '.');
-                    if ($locale === 'en') {
-                        if ($overdueRevenue > 0) {
-                            return "Your total active arrears are currently at {$overdueFormatted}. We recommend prioritizing collection efforts on major corporate and government entities (e.g., Dinas Kesehatan or Yayasan Pendidikan) using AI Billing Copywriter to stabilize operational cash flow." . $errMsg;
-                        } else {
-                            return "Your financial performance this month is stable with a 100% invoice collection rate. Continue to monitor incoming billings closely to sustain this cash flow efficiency." . $errMsg;
-                        }
-                    } else {
-                        if ($overdueRevenue > 0) {
-                            return "Total tagihan menunggak (piutang aktif) saat ini mencapai {$overdueFormatted}. Direkomendasikan untuk memprioritaskan penagihan aktif pada klien besar seperti Dinas Kesehatan Kota atau Yayasan Pendidikan dengan mengirimkan email pengingat menggunakan AI Billing Copywriter agar arus kas tetap stabil." . $errMsg;
-                        } else {
-                            return "Performa keuangan Anda bulan ini sangat sehat dengan tingkat kolektibilitas piutang 100%. Tetap pantau penagihan baru secara berkala untuk menjaga efisiensi arus kas operasional." . $errMsg;
-                        }
-                    }
-                }
-            });
-        }
+        // AI Insight was refactored into a lazy-loaded Livewire component
         
         if ($isStaff) {
             $todayInvoicesCount = Invoice::where('created_by', auth()->id())
@@ -277,7 +202,7 @@ Berikan 2-3 kalimat berisi insight bisnis taktis dan rekomendasi tindakan prakti
                     ->whereYear('payment_date', $monthDate->year)
                     ->sum('amount');
                     
-                $receivables = (float) Invoice::whereMonth('tanggal_invoice', $monthDate->month)
+                $receivables = (float) Invoice::with('payments')->whereMonth('tanggal_invoice', $monthDate->month)
                     ->whereYear('tanggal_invoice', $monthDate->year)
                     ->where('status', '!=', 'paid')
                     ->get()
@@ -379,7 +304,6 @@ Berikan 2-3 kalimat berisi insight bisnis taktis dan rekomendasi tindakan prakti
             'activityLogs',
             'securityLogs',
             'cashFlowData',
-            'aiInsight',
             'topClients',
             'invoiceAgeing'
         ));

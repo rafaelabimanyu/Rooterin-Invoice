@@ -16,7 +16,7 @@
     </div>
 
     @if(!$isStaff)
-        @include('dashboard.partials.financial-advisory')
+        <livewire:dashboard.financial-advisory lazy />
 
         @include('dashboard.partials.metric-cards')
     @else

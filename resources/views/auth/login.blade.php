@@ -28,6 +28,22 @@
             animation: slideUpWord 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             animation-delay: 450ms;
         }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            opacity: 0;
+            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
     </style>
     <div class="min-h-screen flex relative overflow-hidden" 
         x-data="{ 
@@ -61,6 +77,47 @@
             setTimeout(() => { isSplit = true; }, 1400);
         "
         @mousemove="moveParallax($event)">
+        <!-- Mobile Splash Transition Overlay -->
+        <div x-data="{ showSplash: true }"
+             x-init="setTimeout(() => showSplash = false, 2000)"
+             x-show="showSplash"
+             x-transition:leave="transition-all duration-700 ease-in-out transform"
+             x-transition:leave-start="translate-y-0"
+             x-transition:leave-end="-translate-y-full"
+             class="md:hidden fixed inset-0 z-50 bg-[#0b0f19] flex flex-col justify-between items-center py-16 px-6 text-center overflow-hidden">
+            
+            <!-- Top Branding -->
+            <div class="flex flex-col items-center space-y-4 animate-fade-in" style="animation-delay: 200ms;">
+                <div class="w-20 h-20 bg-white/5 border border-white/10 rounded-[24px] flex items-center justify-center backdrop-blur-2xl shadow-2xl overflow-hidden p-4">
+                    <img src="{{ asset('img/logo-rooterin.png') }}" alt="Rooterin Logo" class="w-full h-full object-contain">
+                </div>
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-white/5 border border-white/10 rounded-full text-indigo-300 text-[8px] font-black uppercase tracking-[0.3em]">
+                    Authorized Nodes Only
+                </div>
+            </div>
+
+            <!-- Middle Message -->
+            <div class="space-y-4 my-auto animate-fade-in" style="animation-delay: 400ms;">
+                <h2 class="text-3xl font-black text-white leading-tight tracking-tighter uppercase">
+                    MASTER THE <br>
+                    <span class="text-indigo-500">FINANCE MATRIX.</span>
+                </h2>
+                <p class="text-slate-400 text-xs font-medium leading-relaxed max-w-xs mx-auto">
+                    The unified high-fidelity workspace for enterprise billing, job documentation, and performance intelligence.
+                </p>
+            </div>
+
+            <!-- Bottom Indicators -->
+            <div class="space-y-6 w-full animate-fade-in" style="animation-delay: 600ms;">
+                <div class="flex justify-center items-center gap-3">
+                    <div class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></div>
+                    <div class="w-2 h-2 rounded-full bg-indigo-500 shadow-[0_0_8px_#6366f1]"></div>
+                    <div class="w-2 h-2 rounded-full bg-slate-700"></div>
+                </div>
+                <p class="text-[9px] text-slate-500 font-black uppercase tracking-[0.4em]">SECURE ACCESS POINT</p>
+            </div>
+        </div>
+
         <!-- Left Side: Login Form -->
         <div class="w-full lg:w-1/2 flex items-center justify-center p-8 md:p-16 bg-white relative z-10 transition-opacity duration-1000 lg:delay-[600ms]"
              :class="isSplit ? 'opacity-100' : 'opacity-100 lg:opacity-0'">

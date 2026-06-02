@@ -13,6 +13,9 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+        <!-- Lucide Icons -->
+        <script src="https://unpkg.com/lucide@latest"></script>
+
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
         @stack('styles')
@@ -238,9 +241,15 @@
         </div>
 
         <script>
-            lucide.createIcons();
+            document.addEventListener("DOMContentLoaded", function() {
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+            });
             window.addEventListener('alpine:initialized', () => {
-                lucide.createIcons();
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
             });
         </script>
         @livewireScripts
@@ -286,7 +295,9 @@
                 `;
 
                 document.body.appendChild(toast);
-                lucide.createIcons();
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
 
                 // Animate In
                 setTimeout(() => {

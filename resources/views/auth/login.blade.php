@@ -170,7 +170,7 @@
                             <div class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 transition-colors group-focus-within:text-indigo-600 z-10">
                                 <i data-lucide="mail" class="w-5 h-5"></i>
                             </div>
-                            <input id="email" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" class="w-full pl-14 pr-5 py-5 bg-slate-50 border-transparent rounded-[24px] text-sm font-bold outline-none transition-all shadow-inner focus:ring-0" placeholder="name@enterprise.com">
+                            <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username" class="w-full pl-14 pr-5 py-5 bg-slate-50 border-transparent rounded-[24px] text-sm font-bold outline-none transition-all shadow-inner focus:ring-0" placeholder="name@enterprise.com">
                         </div>
                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>

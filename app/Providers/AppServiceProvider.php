@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,5 +25,9 @@ class AppServiceProvider extends ServiceProvider
             \Illuminate\Auth\Events\Failed::class,
             \App\Listeners\LogFailedLogin::class
         );
+
+        Gate::define('viewPulse', function (User $user) {
+            return $user->hasFullAccess();
+        });
     }
 }

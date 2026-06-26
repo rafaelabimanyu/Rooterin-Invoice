@@ -26,23 +26,26 @@ class UserManagementController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'nama_lengkap' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|in:owner,admin,staff',
+            'peran_akses' => 'required|in:owner,admin,staff',
         ]);
 
         $user = User::create([
-            'name' => $request->name,
+            'name' => $request->nama_lengkap,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role,
+            'role' => $request->peran_akses,
+            'is_active' => true,
             'last_password_change_at' => now(),
         ]);
 
+        $user->assignRole($request->peran_akses);
+
         ActivityLog::log('created_user', "Registered new team member: {$user->name} ({$user->role})", $user);
 
-        return redirect()->route('users.index')->with('success', 'User created successfully.');
+        return redirect()->route('users.index')->with('success', 'Anggota tim baru berhasil didaftarkan ke dalam sistem.');
     }
 
     public function edit(User $user)

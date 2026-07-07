@@ -51,6 +51,8 @@ return [
     'nonaktif' => 'Nonaktif',
     'approved' => 'Disetujui',
     'rejected' => 'Ditolak',
+    'cancelled' => 'Dibatalkan',
+    'invoiced' => 'Sudah Di-invoice',
     'efficiency' => 'Efisiensi',
     
     // Spesifik Modul

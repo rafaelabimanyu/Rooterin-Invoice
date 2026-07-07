@@ -51,6 +51,8 @@ return [
     'nonaktif' => 'Inactive',
     'approved' => 'Approved',
     'rejected' => 'Rejected',
+    'cancelled' => 'Cancelled',
+    'invoiced' => 'Invoiced',
     'efficiency' => 'Efficiency',
     
     // Module Specifics

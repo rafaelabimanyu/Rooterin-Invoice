@@ -21,10 +21,18 @@
         x-bind:class="collapsed ? 'justify-center mb-0 px-0 h-20' : 'justify-between lg:justify-start mb-6 pl-6 pr-4 py-4 h-24'"
     >
         <div class="flex items-center cursor-pointer group" x-bind:class="collapsed ? 'justify-center' : 'justify-start'" onclick="window.location='{{ route('dashboard') }}'">
-            <!-- Expanded Long Logo -->
-            <img src="{{ asset('img/logo-rooterin-long.png') }}" alt="Rooterin Logo" class="h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105" x-show="!collapsed">
-            <!-- Collapsed Square Logo -->
-            <img src="{{ asset('img/logo-rooterin.png') }}" alt="Rooterin Logo" class="h-8 w-auto object-contain transition-transform duration-300 group-hover:scale-105" x-show="collapsed" x-cloak>
+            <!-- Expanded Brand: Logo + Typography -->
+            <div class="flex items-center" x-show="!collapsed">
+                <img src="{{ asset('img/logo-jnj.png') }}" alt="J&J GROUP Logo" class="h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
+                <div class="flex flex-col ml-3 select-none">
+                    <span class="text-[16px] font-black tracking-wider text-slate-900 font-jakarta leading-none">J&J GROUP</span>
+                    <span class="text-[8px] font-black text-gold-650 tracking-[0.25em] leading-none uppercase mt-1.5">Enterprise System</span>
+                </div>
+            </div>
+            <!-- Collapsed Brand: Logo Only -->
+            <div class="flex items-center justify-center" x-show="collapsed" x-cloak>
+                <img src="{{ asset('img/logo-jnj.png') }}" alt="J&J GROUP Logo" class="h-9 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
+            </div>
         </div>
 
         <!-- Mobile Close Button -->

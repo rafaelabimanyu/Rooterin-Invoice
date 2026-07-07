@@ -3,15 +3,15 @@
         <!-- Refreshed Dashboard Metrics Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-12 animate-fade-in-up">
             <!-- Card 1: Pendapatan Kotor -->
-            <div class="glass-card p-6 group hover:-translate-y-1 hover:shadow-lg hover:border-indigo-500/20 transition-all duration-300 ease-out cursor-pointer relative overflow-hidden border border-slate-200/50"
+            <div class="glass-card p-6 group hover:-translate-y-1 hover:shadow-lg hover:border-gold-500/20 transition-all duration-300 ease-out cursor-pointer relative overflow-hidden border border-gold-200/50"
                  @click="$dispatch('slide-over-loading-start')"
                  wire:click="openModal('total-revenue')">
-                <div class="absolute -right-10 -top-10 w-32 h-32 bg-indigo-500/5 blur-3xl group-hover:bg-indigo-500/15 transition-colors duration-500 rounded-full"></div>
+                <div class="absolute -right-10 -top-10 w-32 h-32 bg-gold-500/5 blur-3xl group-hover:bg-gold-500/15 transition-colors duration-500 rounded-full"></div>
                 <div class="flex items-center justify-between mb-6 relative z-10">
-                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500/10 to-indigo-500/5 text-indigo-600 flex items-center justify-center border border-indigo-500/10 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold-500/10 to-gold-500/5 text-gold-600 flex items-center justify-center border border-gold-500/10 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
                         <i data-lucide="bar-chart-3" class="w-7 h-7"></i>
                     </div>
-                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-indigo-50 text-indigo-600 shadow-sm">
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-gold-50 text-gold-600 shadow-sm">
                         {{ app()->getLocale() == 'en' ? 'Lifetime' : 'Selamanya' }}
                     </span>
                 </div>
@@ -27,15 +27,15 @@
             </div>
 
             <!-- Card 2: Invois Tertunggak -->
-            <div class="glass-card p-6 group hover:-translate-y-1 hover:shadow-lg hover:border-amber-500/20 transition-all duration-300 ease-out cursor-pointer relative overflow-hidden border border-slate-200/50"
+            <div class="glass-card p-6 group hover:-translate-y-1 hover:shadow-lg hover:border-gold-500/20 transition-all duration-300 ease-out cursor-pointer relative overflow-hidden border border-gold-200/50"
                  @click="$dispatch('slide-over-loading-start')"
                  wire:click="openModal('risks')">
-                <div class="absolute -right-10 -top-10 w-32 h-32 bg-amber-500/5 blur-3xl group-hover:bg-amber-500/15 transition-colors duration-500 rounded-full"></div>
+                <div class="absolute -right-10 -top-10 w-32 h-32 bg-gold-500/5 blur-3xl group-hover:bg-gold-500/15 transition-colors duration-500 rounded-full"></div>
                 <div class="flex items-center justify-between mb-6 relative z-10">
-                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500/10 to-amber-500/5 text-amber-600 flex items-center justify-center border border-amber-500/10 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold-500/10 to-gold-500/5 text-gold-600 flex items-center justify-center border border-gold-500/10 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
                         <i data-lucide="clock" class="w-7 h-7"></i>
                     </div>
-                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-amber-50 text-amber-600 shadow-sm">
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-gold-50 text-gold-600 shadow-sm">
                         {{ app()->getLocale() == 'en' ? 'Receivable' : 'Piutang' }}
                     </span>
                 </div>
@@ -51,15 +51,15 @@
             </div>
 
             <!-- Card 3: Klien -->
-            <div class="glass-card p-6 group hover:-translate-y-1 hover:shadow-lg hover:border-emerald-500/20 transition-all duration-300 ease-out cursor-pointer relative overflow-hidden border border-slate-200/50"
+            <div class="glass-card p-6 group hover:-translate-y-1 hover:shadow-lg hover:border-gold-500/20 transition-all duration-300 ease-out cursor-pointer relative overflow-hidden border border-gold-200/50"
                  @click="$dispatch('slide-over-loading-start')"
                  wire:click="openModal('loyalty')">
-                <div class="absolute -right-10 -top-10 w-32 h-32 bg-emerald-500/5 blur-3xl group-hover:bg-emerald-500/15 transition-colors duration-500 rounded-full"></div>
+                <div class="absolute -right-10 -top-10 w-32 h-32 bg-gold-500/5 blur-3xl group-hover:bg-gold-500/15 transition-colors duration-500 rounded-full"></div>
                 <div class="flex items-center justify-between mb-6 relative z-10">
-                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 text-emerald-600 flex items-center justify-center border border-emerald-500/10 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold-500/10 to-gold-500/5 text-gold-600 flex items-center justify-center border border-gold-500/10 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
                         <i data-lucide="users" class="w-7 h-7"></i>
                     </div>
-                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-600 shadow-sm">
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-gold-50 text-gold-600 shadow-sm">
                         {{ app()->getLocale() == 'en' ? 'Active' : 'Aktif' }}
                     </span>
                 </div>
@@ -75,15 +75,15 @@
             </div>
 
             <!-- Card 4: Rasio Pengumpulan -->
-            <div class="glass-card p-6 group hover:-translate-y-1 hover:shadow-lg hover:border-indigo-500/20 transition-all duration-300 ease-out cursor-pointer relative overflow-hidden border border-slate-200/50"
+            <div class="glass-card p-6 group hover:-translate-y-1 hover:shadow-lg hover:border-gold-500/20 transition-all duration-300 ease-out cursor-pointer relative overflow-hidden border border-gold-200/50"
                  @click="$dispatch('slide-over-loading-start')"
                  wire:click="openModal('collection-rate')">
-                <div class="absolute -right-10 -top-10 w-32 h-32 bg-indigo-500/5 blur-3xl group-hover:bg-indigo-500/15 transition-colors duration-500 rounded-full"></div>
+                <div class="absolute -right-10 -top-10 w-32 h-32 bg-gold-500/5 blur-3xl group-hover:bg-gold-500/15 transition-colors duration-500 rounded-full"></div>
                 <div class="flex items-center justify-between mb-6 relative z-10">
-                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500/10 to-indigo-500/5 text-indigo-600 flex items-center justify-center border border-indigo-500/10 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold-500/10 to-gold-500/5 text-gold-600 flex items-center justify-center border border-gold-500/10 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
                         <i data-lucide="check-circle-2" class="w-7 h-7"></i>
                     </div>
-                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-indigo-50 text-indigo-600 shadow-sm">
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-gold-50 text-gold-600 shadow-sm">
                         {{ __('ui.efficiency') }}
                     </span>
                 </div>
@@ -138,7 +138,7 @@
                  wire:click="openModal('revenue')">
                 <div class="flex items-center justify-between mb-6">
                     <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Revenue (MTD)' : 'Pendapatan (Bulan Berjalan)' }}</p>
-                    <div class="p-2.5 bg-indigo-50 rounded-xl text-indigo-600 group-hover:rotate-12 transition-transform duration-500">
+                    <div class="p-2.5 bg-gold-50 rounded-xl text-gold-600 group-hover:rotate-12 transition-transform duration-500">
                         <i data-lucide="banknote" class="w-5 h-5"></i>
                     </div>
                 </div>
@@ -159,7 +159,7 @@
                  wire:click="openModal('risks')">
                 <div class="flex items-center justify-between mb-6">
                     <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Capital at Risk' : 'Modal dalam Risiko' }}</p>
-                    <div class="p-2.5 bg-amber-50 rounded-xl text-amber-600 group-hover:rotate-12 transition-transform duration-500">
+                    <div class="p-2.5 bg-gold-50 rounded-xl text-gold-600 group-hover:rotate-12 transition-transform duration-500">
                         <i data-lucide="alert-triangle" class="w-5 h-5"></i>
                     </div>
                 </div>
@@ -183,7 +183,7 @@
                  wire:click="openModal('loyalty')">
                 <div class="flex items-center justify-between mb-6">
                     <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Loyalty Pulse' : 'Indeks Loyalitas' }}</p>
-                    <div class="p-2.5 bg-emerald-50 rounded-xl text-emerald-600 group-hover:rotate-12 transition-transform duration-500">
+                    <div class="p-2.5 bg-gold-50 rounded-xl text-gold-600 group-hover:rotate-12 transition-transform duration-500">
                         <i data-lucide="refresh-cw" class="w-5 h-5"></i>
                     </div>
                 </div>
@@ -203,7 +203,7 @@
                  wire:click="openModal('prime-asset')">
                 <div class="flex items-center justify-between mb-6">
                     <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Prime Asset' : 'Aset Utama' }}</p>
-                    <div class="p-2.5 bg-rose-50 rounded-xl text-rose-600 group-hover:rotate-12 transition-transform duration-500">
+                    <div class="p-2.5 bg-gold-50 rounded-xl text-gold-600 group-hover:rotate-12 transition-transform duration-500">
                         <i data-lucide="crown" class="w-5 h-5"></i>
                     </div>
                 </div>
@@ -253,7 +253,7 @@
                          @click="$dispatch('slide-over-loading-start')"
                          wire:click="openModal('new-issuance')">
                         <div class="flex items-center gap-4">
-                            <div class="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 group-hover/item:bg-blue-600 group-hover/item:text-white transition-all duration-300">
+                            <div class="w-11 h-11 rounded-xl bg-gold-50 flex items-center justify-center text-gold-600 group-hover/item:bg-gold-600 group-hover/item:text-white transition-all duration-300">
                                 <i data-lucide="file-plus" class="w-5 h-5"></i>
                             </div>
                             <div>
@@ -268,7 +268,7 @@
                          @click="$dispatch('slide-over-loading-start')"
                          wire:click="openModal('settled-assets')">
                         <div class="flex items-center gap-4">
-                            <div class="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 group-hover/item:bg-emerald-600 group-hover/item:text-white transition-all duration-300">
+                            <div class="w-11 h-11 rounded-xl bg-gold-50 flex items-center justify-center text-gold-600 group-hover/item:bg-gold-600 group-hover/item:text-white transition-all duration-300">
                                 <i data-lucide="check-circle" class="w-5 h-5"></i>
                             </div>
                             <div>
@@ -283,7 +283,7 @@
                          @click="$dispatch('slide-over-loading-start')"
                          wire:click="openModal('stagnant-flow')">
                         <div class="flex items-center gap-4">
-                            <div class="w-11 h-11 rounded-xl bg-rose-50 flex items-center justify-center text-rose-600 group-hover/item:bg-rose-600 group-hover/item:text-white transition-all duration-300">
+                            <div class="w-11 h-11 rounded-xl bg-gold-50 flex items-center justify-center text-gold-600 group-hover/item:bg-gold-600 group-hover/item:text-white transition-all duration-300">
                                 <i data-lucide="clock-alert" class="w-5 h-5"></i>
                             </div>
                             <div>

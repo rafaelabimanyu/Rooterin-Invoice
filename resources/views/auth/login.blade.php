@@ -89,7 +89,7 @@
             <!-- Top Branding -->
             <div class="flex flex-col items-center space-y-4 animate-fade-in" style="animation-delay: 200ms;">
                 <div class="w-20 h-20 bg-white/5 border border-white/10 rounded-[24px] flex items-center justify-center backdrop-blur-2xl shadow-2xl overflow-hidden p-4">
-                    <img src="{{ asset('img/logo-rooterin.png') }}" alt="Rooterin Logo" class="w-full h-full object-contain">
+                    <img src="{{ asset('img/logo-jnj.png') }}" alt="J&J GROUP Logo" class="w-full h-full object-contain">
                 </div>
                 <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-white/5 border border-white/10 rounded-full text-indigo-300 text-[8px] font-black uppercase tracking-[0.3em]">
                     Authorized Nodes Only
@@ -132,7 +132,7 @@
             <div class="w-full max-w-md space-y-12">
                 <!-- Brand -->
                 <div class="space-y-1">
-                    <span class="text-4xl md:text-5xl font-black tracking-tighter uppercase text-slate-900 block leading-none" style="font-family: 'Outfit', sans-serif;">Rooterin<span class="text-indigo-600">.</span></span>
+                    <span class="text-4xl md:text-5xl font-black tracking-tighter uppercase text-slate-900 block leading-none" style="font-family: 'Outfit', sans-serif;">J&J GROUP<span class="text-gold-500">.</span></span>
                     <p class="text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-[0.3em] block mt-1">Enterprise Operating System</p>
                 </div>
 
@@ -167,7 +167,7 @@
                     <div class="space-y-3 scale-in stagger-3">
                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Operative Identity (Email)</label>
                         <div class="relative group input-focus-effect neon-border-pulse rounded-[24px]">
-                            <div class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 transition-colors group-focus-within:text-indigo-600 z-10">
+                            <div class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 transition-colors group-focus-within:text-gold-600 z-10">
                                 <i data-lucide="mail" class="w-5 h-5"></i>
                             </div>
                             <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username" class="w-full pl-14 pr-5 py-5 bg-slate-50 border-transparent rounded-[24px] text-sm font-bold outline-none transition-all shadow-inner focus:ring-0" placeholder="name@enterprise.com">
@@ -179,12 +179,12 @@
                     <div class="space-y-3 scale-in stagger-4">
                         <div class="flex items-center justify-between">
                             <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Security Token (Password)</label>
-                            <a href="{{ route('password.request') }}" class="text-[10px] font-black text-indigo-600 hover:text-indigo-800 uppercase tracking-widest transition-colors">
+                            <a href="{{ route('password.request') }}" class="text-[10px] font-black text-gold-600 hover:text-gold-800 uppercase tracking-widest transition-colors">
                                 Identity Issues?
                             </a>
                         </div>
                         <div class="relative group input-focus-effect neon-border-pulse rounded-[24px]">
-                            <div class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 transition-colors group-focus-within:text-indigo-600 z-10">
+                            <div class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 transition-colors group-focus-within:text-gold-600 z-10">
                                 <i data-lucide="lock" class="w-5 h-5"></i>
                             </div>
                             <input id="password" type="password" :type="showPassword ? 'text' : 'password'" name="password" required autocomplete="current-password" class="w-full pl-14 pr-14 py-5 bg-slate-50 border-transparent rounded-[24px] text-sm font-bold outline-none transition-all shadow-inner focus:ring-0" placeholder="••••••••••••">
@@ -199,11 +199,11 @@
                     <!-- Remember Me & Submit -->
                     <div class="flex flex-col gap-8">
                         <label for="remember_me" class="inline-flex items-center group cursor-pointer">
-                            <input id="remember_me" type="checkbox" class="w-5 h-5 rounded-lg border-slate-200 text-indigo-600 shadow-sm focus:ring-indigo-500 transition-all" name="remember">
+                            <input id="remember_me" type="checkbox" class="w-5 h-5 rounded-lg border-slate-200 text-gold-600 shadow-sm focus:ring-gold-500 transition-all" name="remember">
                             <span class="ms-3 text-[11px] font-black text-slate-500 uppercase tracking-[0.2em] group-hover:text-slate-900 transition-colors">Persistent Access</span>
                         </label>
 
-                        <button type="submit" @click="isLoggingIn = true" class="w-full min-w-[200px] h-[72px] bg-slate-900 text-white rounded-[28px] font-black text-xs shadow-[0_20px_50px_rgba(0,0,0,0.2)] hover:bg-indigo-600 hover:-translate-y-1 transition-all duration-500 uppercase tracking-[0.3em] flex items-center justify-center gap-3 btn-shimmer group relative overflow-hidden">
+                        <button type="submit" @click="isLoggingIn = true" class="w-full min-w-[200px] h-[72px] bg-slate-900 text-white rounded-[28px] font-black text-xs shadow-[0_20px_50px_rgba(0,0,0,0.2)] hover:bg-gold-600 hover:-translate-y-1 transition-all duration-500 uppercase tracking-[0.3em] flex items-center justify-center gap-3 btn-shimmer group relative overflow-hidden">
                             <span x-show="!isLoggingIn" class="relative z-10 flex items-center justify-center gap-3">
                                 LOGIN
                                 <i data-lucide="arrow-right" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
@@ -227,9 +227,9 @@
              :class="isSplit ? 'lg:w-1/2 lg:left-1/2' : 'lg:w-full lg:left-0'">
             <!-- Animated Background -->
             <div class="absolute inset-0 matrix-flow">
-                <div class="parallax-layer absolute top-0 right-0 w-[800px] h-[800px] bg-indigo-600/10 rounded-full blur-[150px] -mr-[400px] -mt-[400px] transform-gpu"
+                <div class="parallax-layer absolute top-0 right-0 w-[800px] h-[800px] bg-gold-600/10 rounded-full blur-[150px] -mr-[400px] -mt-[400px] transform-gpu"
                     :style="'transform: translate3d(' + mouseX * 1.5 + 'px, ' + mouseY * 1.5 + 'px, 0)'"></div>
-                <div class="parallax-layer absolute bottom-0 left-0 w-[800px] h-[800px] bg-purple-600/10 rounded-full blur-[150px] -ml-[400px] -mb-[400px] transform-gpu"
+                <div class="parallax-layer absolute bottom-0 left-0 w-[800px] h-[800px] bg-gold-500/10 rounded-full blur-[150px] -ml-[400px] -mb-[400px] transform-gpu"
                     :style="'transform: translate3d(' + mouseX * -1.5 + 'px, ' + mouseY * -1.5 + 'px, 0)'"></div>
                 
                 <!-- Grid Pattern -->
@@ -242,12 +242,12 @@
                 <!-- Logo with slide-down reveal -->
                 <div class="w-32 h-32 bg-white/5 border border-white/10 rounded-[40px] flex items-center justify-center mb-16 mx-auto backdrop-blur-2xl shadow-2xl overflow-hidden p-6 transition-all duration-[1000ms] delay-[1600ms]"
                      :class="isSplit ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform -translate-y-4'">
-                    <img src="{{ asset('img/logo-rooterin.png') }}" alt="Rooterin Logo" class="w-full h-full object-contain">
+                    <img src="{{ asset('img/logo-jnj.png') }}" alt="J&J GROUP Logo" class="w-full h-full object-contain">
                 </div>
                 
                 <div class="space-y-6">
                     <!-- Badge with fade reveal -->
-                    <div class="inline-flex items-center gap-3 px-6 py-2 bg-white/5 border border-white/10 rounded-full text-indigo-300 text-[10px] font-black uppercase tracking-[0.4em] mb-4 transition-all duration-[1000ms] delay-[1500ms]"
+                    <div class="inline-flex items-center gap-3 px-6 py-2 bg-white/5 border border-white/10 rounded-full text-gold-300 text-[10px] font-black uppercase tracking-[0.4em] mb-4 transition-all duration-[1000ms] delay-[1500ms]"
                          :class="isSplit ? 'opacity-100' : 'opacity-0'">
                         Authorized Nodes Only
                     </div>
@@ -258,7 +258,7 @@
                             <span class="inline-block animate-slide-up-word-1 whitespace-nowrap">MASTER THE</span>
                         </div>
                         <div class="overflow-hidden mt-2">
-                            <span class="inline-block text-indigo-500 animate-slide-up-word-2 whitespace-nowrap">FINANCE MATRIX.</span>
+                            <span class="inline-block text-gold-500 animate-slide-up-word-2 whitespace-nowrap">FINANCE MATRIX.</span>
                         </div>
                     </h2>
                     
@@ -277,7 +277,7 @@
                         <span class="text-[9px] font-black text-slate-500 uppercase tracking-widest">Auth Active</span>
                     </div>
                     <div class="flex flex-col items-center gap-2">
-                        <div class="w-1.5 h-1.5 rounded-full bg-indigo-500"></div>
+                        <div class="w-1.5 h-1.5 rounded-full bg-gold-500"></div>
                         <span class="text-[9px] font-black text-slate-500 uppercase tracking-widest">Ledger Sync</span>
                     </div>
                     <div class="flex flex-col items-center gap-2">

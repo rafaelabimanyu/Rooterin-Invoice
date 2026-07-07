@@ -102,21 +102,21 @@
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
             <tr>
                 <td style="width: 60%; vertical-align: top;">
-                    @if(file_exists(public_path('img/logo-rooterin.png')))
-                        <img src="{{ public_path('img/logo-rooterin.png') }}" style="height: 75px; margin-bottom: 12px;">
+                    @if(file_exists(public_path('img/logo-jnj.png')))
+                        <img src="{{ public_path('img/logo-jnj.png') }}" style="height: 75px; margin-bottom: 12px;">
                     @else
-                        <div style="font-size: 28px; font-weight: 900; color: #0f172a; margin-bottom: 12px;">Rooterin<span style="color: #4f46e5;">.</span></div>
+                        <div style="font-size: 28px; font-weight: 900; color: #0f172a; margin-bottom: 12px;">J&J GROUP<span style="color: #c89d3c;">.</span></div>
                     @endif
-                    <div style="font-size: 12pt; font-weight: 900; color: #0f172a; text-transform: uppercase; margin: 0; line-height: 1.2;">Rooterin Technical Services</div>
-                    <div style="font-size: 8.5pt; color: #4f46e5; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 3px; margin-bottom: 8px;">{{ app()->getLocale() == 'en' ? 'High-Precision Operational Solutions' : 'Solusi Operasional Presisi Tinggi' }}</div>
+                    <div style="font-size: 12pt; font-weight: 900; color: #0f172a; text-transform: uppercase; margin: 0; line-height: 1.2;">J&J GROUP Technical Services</div>
+                    <div style="font-size: 8.5pt; color: #c89d3c; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 3px; margin-bottom: 8px;">{{ app()->getLocale() == 'en' ? 'High-Precision Operational Solutions' : 'Solusi Operasional Presisi Tinggi' }}</div>
                     <div style="font-size: 9.5pt; color: #475569; line-height: 1.5;">
                         Gedung Artha Graha, Lt. 18, Kav. 52-53, Jakarta Selatan<br>
-                        T: +62 21 555 1234 &bull; E: billing@rooterin.com &bull; W: www.rooterin.com
+                        T: +62 21 555 1234 &bull; E: billing@jnjgroup.com &bull; W: www.jnjgroup.com
                     </div>
                 </td>
                 <td style="width: 40%; vertical-align: top; text-align: right; padding-top: 10px;">
                     <div style="font-size: 24pt; font-weight: 900; color: #0f172a; text-transform: uppercase; margin-bottom: 2px; letter-spacing: -1px;">{{ __('invoice.title') }}</div>
-                    <div style="font-size: 13pt; font-weight: 700; color: #4f46e5; margin-bottom: 15px;">#{{ $invoice->invoice_number }}</div>
+                    <div style="font-size: 13pt; font-weight: 700; color: #c89d3c; margin-bottom: 15px;">#{{ $invoice->invoice_number }}</div>
                     <div style="font-size: 9.5pt; color: #64748b; line-height: 1.4;">
                         {{ __('invoice.date') }}: <b style="color: #0f172a;">{{ $invoice->tanggal_invoice->format('d M Y') }}</b><br>
                         {{ __('invoice.due_date') }}: <b style="color: #0f172a;">{{ $invoice->due_date->format('d M Y') }}</b>
@@ -187,7 +187,7 @@
                     <div class="bank-box">
                         <span class="bank-title">{{ __('invoice.bank_account') }}</span>
                         <div class="bank-details">
-                            {!! nl2br(e($invoice->bank_account_info ?: "Bank Central Asia (BCA)\nAccount: 7712 888 123\nName: Rooterin Technical Services")) !!}
+                            {!! nl2br(e($invoice->bank_account_info ?: "Bank Central Asia (BCA)\nAccount: 7712 888 123\nName: J&J GROUP Technical Services")) !!}
                         </div>
                     </div>
                 </td>
@@ -227,7 +227,7 @@
 
         <!-- Footer -->
         <div class="footer">
-            Rooterin Enterprise Billing &bull; tech-ops@rooterin.com &bull; +62 21 555 1234<br>
+            J&J GROUP Enterprise Billing &bull; tech-ops@jnjgroup.com &bull; +62 21 555 1234<br>
             {{ app()->getLocale() == 'en' ? 'This is an electronically generated document. No signature required.' : 'Dokumen ini dibuat secara elektronik. Tidak memerlukan tanda tangan.' }}
         </div>
     </div>
@@ -240,16 +240,16 @@
             <table style="width: 100%; border-collapse: collapse; margin-top: 20px; margin-bottom: 25px;">
                 <tr>
                     <td style="width: 60%; vertical-align: top;">
-                        @if(file_exists(public_path('img/logo-rooterin.png')))
-                            <img src="{{ public_path('img/logo-rooterin.png') }}" style="height: 75px; margin-bottom: 12px;">
+                        @if(file_exists(public_path('img/logo-jnj.png')))
+                            <img src="{{ public_path('img/logo-jnj.png') }}" style="height: 75px; margin-bottom: 12px;">
                         @else
-                            <div style="font-size: 28px; font-weight: 900; color: #0f172a; margin-bottom: 12px;">Rooterin<span style="color: #4f46e5;">.</span></div>
+                            <div style="font-size: 28px; font-weight: 900; color: #0f172a; margin-bottom: 12px;">J&J GROUP<span style="color: #c89d3c;">.</span></div>
                         @endif
-                        <div style="font-size: 12pt; font-weight: 900; color: #0f172a; text-transform: uppercase; margin: 0; line-height: 1.2;">Rooterin Technical Services</div>
+                        <div style="font-size: 12pt; font-weight: 900; color: #0f172a; text-transform: uppercase; margin: 0; line-height: 1.2;">J&J GROUP Technical Services</div>
                     </td>
                     <td style="width: 40%; vertical-align: top; text-align: right; padding-top: 10px;">
                         <div style="font-size: 20pt; font-weight: 900; color: #0f172a; text-transform: uppercase; margin-bottom: 2px;">{{ __('invoice.documentation') }}</div>
-                        <div style="font-size: 12pt; font-weight: 700; color: #4f46e5;">#{{ $invoice->invoice_number }}</div>
+                        <div style="font-size: 12pt; font-weight: 700; color: #c89d3c;">#{{ $invoice->invoice_number }}</div>
                     </td>
                 </tr>
             </table>
@@ -281,8 +281,8 @@
                 <span class="section-label" style="margin-bottom: 8px; display: block;">{{ app()->getLocale() == 'en' ? 'TECHNICAL OPERATIONS STATEMENT' : 'PERNYATAAN OPERASIONAL TEKNIS' }}</span>
                 <p style="font-size: 9pt; color: #64748b; line-height: 1.6; margin: 0;">
                     {{ app()->getLocale() == 'en' 
-                        ? 'Note: The above documentation was captured directly on-site by authorized Rooterin technicians using high-precision equipment to verify task completion and compliance with strict quality standards.' 
-                        : 'Catatan: Dokumentasi di atas diambil langsung di lokasi kerja oleh teknisi resmi Rooterin menggunakan peralatan presisi tinggi untuk memverifikasi penyelesaian pekerjaan sesuai standar kualitas yang ketat.' }}
+                        ? 'Note: The above documentation was captured directly on-site by authorized J&J GROUP technicians using high-precision equipment to verify task completion and compliance with strict quality standards.' 
+                        : 'Catatan: Dokumentasi di atas diambil langsung di lokasi kerja oleh teknisi resmi J&J GROUP menggunakan peralatan presisi tinggi untuk memverifikasi penyelesaian pekerjaan sesuai standar kualitas yang ketat.' }}
                 </p>
             </div>
 

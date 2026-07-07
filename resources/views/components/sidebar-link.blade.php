@@ -4,19 +4,19 @@
     href="{{ $href }}" 
     wire:navigate.hover
     {{ $attributes->merge(['class' => 'group flex items-center rounded-xl transition-all duration-300 relative ' . 
-        ($active ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/10' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900') .
+        ($active ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/10 border-l-4 border-gold-500' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900 border-l-4 border-transparent') .
         ($collapsed ? ' justify-center h-11 w-11 mx-auto' : ' gap-3 px-4 py-2.5')]) }}
 >
     <!-- Indicator Dot (only for active) -->
     @if($active)
         <span 
-            class="absolute bg-indigo-500 rounded-r-full shadow-[0_0_8px_rgba(79,70,229,0.8)] transition-all duration-300"
+            class="absolute bg-gold-500 rounded-r-full shadow-[0_0_8px_rgba(200,157,60,0.8)] transition-all duration-300"
             :class="collapsed ? 'left-[-12px] w-1 h-6' : 'left-0 w-1 h-4'"
         ></span>
     @endif
 
     <div class="shrink-0 transition-transform duration-300 group-hover:scale-110 flex items-center justify-center">
-        <i data-lucide="{{ $icon }}" class="w-[18px] h-[18px] {{ $active ? 'text-white' : 'text-slate-400 group-hover:text-indigo-500 transition-colors' }}"></i>
+        <i data-lucide="{{ $icon }}" class="w-[18px] h-[18px] {{ $active ? 'text-gold-500 font-bold' : 'text-slate-400 group-hover:text-gold-500 transition-colors' }}"></i>
     </div>
     
     <span 

@@ -2,7 +2,7 @@
 
 @php
     $gradients = [
-        'indigo' => 'from-indigo-500/10 to-indigo-500/5 text-indigo-600 border-indigo-500/10 shadow-indigo-500/5',
+        'indigo' => 'from-gold-500/10 to-gold-500/5 text-gold-600 border-gold-500/10 shadow-gold-500/5',
         'amber' => 'from-amber-500/10 to-amber-500/5 text-amber-600 border-amber-500/10 shadow-amber-500/5',
         'emerald' => 'from-emerald-500/10 to-emerald-500/5 text-emerald-600 border-emerald-500/10 shadow-emerald-500/5',
         'rose' => 'from-rose-500/10 to-rose-500/5 text-rose-600 border-rose-500/10 shadow-rose-500/5',
@@ -11,7 +11,7 @@
 @endphp
 
 <div 
-    class="glass-card p-6 md:p-7 group md:hover:-translate-y-3 md:hover:shadow-[0_20px_50px_rgba(79,70,229,0.15)] md:hover:border-indigo-500/30 active:scale-95 transition-all duration-500 relative overflow-hidden cursor-pointer"
+    class="glass-card p-6 md:p-7 group md:hover:-translate-y-3 md:hover:shadow-[0_20px_50px_rgba(200,157,60,0.15),0_0_8px_rgba(200,157,60,0.3)] md:hover:border-gold-500/30 active:scale-95 transition-all duration-500 relative overflow-hidden cursor-pointer"
     x-data="{ 
         displayValue: '0', 
         targetValue: '{{ preg_replace('/[^0-9.]/', '', $value) }}',
@@ -36,7 +36,7 @@
     @click="$dispatch('open-slide-over', { title: '{{ $title }}', content: `{{ $detail }}` })"
 >
     <!-- Subtle Background Glow -->
-    <div class="absolute -right-10 -top-10 w-32 h-32 bg-indigo-500/5 blur-3xl group-hover:bg-indigo-500/15 transition-colors duration-500 rounded-full"></div>
+    <div class="absolute -right-10 -top-10 w-32 h-32 bg-gold-500/5 blur-3xl group-hover:bg-gold-500/15 transition-colors duration-500 rounded-full"></div>
 
     <div class="flex items-center justify-between mb-6 relative z-10">
         <div class="w-14 h-14 rounded-2xl bg-gradient-to-br {{ $grad }} flex items-center justify-center border shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">

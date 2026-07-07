@@ -36,12 +36,12 @@
         .logo-box { float: left; width: 60%; }
         .logo-img { height: 60px; margin-bottom: 15px; }
         .company-name { font-size: 16px; font-weight: 900; color: #0f172a; text-transform: uppercase; margin: 0; }
-        .company-tagline { font-size: 9px; color: #4f46e5; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
+        .company-tagline { font-size: 9px; color: #c89d3c; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
         .company-contact { font-size: 9px; color: #64748b; line-height: 1.4; }
         
         .doc-info { float: right; width: 35%; text-align: right; margin-top: 10px; }
         .doc-type { font-size: 28px; font-weight: 900; color: #0f172a; text-transform: uppercase; margin-bottom: 5px; letter-spacing: -1px; }
-        .doc-id { font-size: 14px; font-weight: 700; color: #4f46e5; margin-bottom: 15px; }
+        .doc-id { font-size: 14px; font-weight: 700; color: #c89d3c; margin-bottom: 15px; }
         .doc-meta { font-size: 10px; color: #64748b; }
         .doc-meta b { color: #0f172a; }
 
@@ -110,7 +110,7 @@
         <div class="header clearfix">
             <div class="logo-box">
                 @php
-                    $logoPath = public_path('img/logo-rooterin.png');
+                    $logoPath = public_path('img/logo-jnj.png');
                     $logoData = "";
                     if (file_exists($logoPath)) {
                         $logoData = base64_encode(file_get_contents($logoPath));
@@ -119,13 +119,13 @@
                 @if($logoData)
                     <img src="data:image/png;base64,{{ $logoData }}" class="logo-img">
                 @else
-                    <div style="font-size: 24px; font-weight: 900; color: #0f172a; margin-bottom: 15px;">Rooterin<span style="color: #4f46e5;">.</span></div>
+                    <div style="font-size: 24px; font-weight: 900; color: #0f172a; margin-bottom: 15px;">J&J GROUP<span style="color: #c89d3c;">.</span></div>
                 @endif
-                <div class="company-name">Rooterin Technical Services</div>
+                <div class="company-name">J&J GROUP Technical Services</div>
                 <div class="company-tagline">High-Precision Operational Solutions</div>
                 <div class="company-contact">
                     Gedung Artha Graha, Lt. 18, Kav. 52-53, Jakarta Selatan<br>
-                    T: +62 21 555 1234 | E: billing@rooterin.com | W: www.rooterin.com
+                    T: +62 21 555 1234 | E: billing@jnjgroup.com | W: www.jnjgroup.com
                 </div>
             </div>
             <div class="doc-info">
@@ -216,7 +216,7 @@
 
         <!-- Footer -->
         <div class="footer">
-            Rooterin Enterprise Billing &bull; tech-ops@rooterin.com &bull; +62 21 555 1234<br>
+            J&J GROUP Enterprise Billing &bull; tech-ops@jnjgroup.com &bull; +62 21 555 1234<br>
             {{ app()->getLocale() == 'en' ? 'This document is a formal quotation receipt. Subject to terms and conditions.' : 'Dokumen ini adalah kuitansi penawaran resmi. Tunduk pada syarat dan ketentuan.' }}
         </div>
     </div>

@@ -5,8 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Rooterin') }}</title>
-        <link rel="icon" type="image/png" href="{{ asset('img/logo-rooterin.png') }}">
+        <title>{{ config('app.name', 'J&J GROUP') }}</title>
+        <link rel="icon" type="image/png" href="{{ asset('img/logo-jnj.png') }}">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

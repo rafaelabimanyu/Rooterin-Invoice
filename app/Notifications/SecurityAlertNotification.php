@@ -29,7 +29,7 @@ class SecurityAlertNotification extends Notification
     {
         return (new MailMessage)
                     ->error()
-                    ->subject("[Rooterin Security] {$this->title}")
+                    ->subject("[J&J GROUP Security] {$this->title}")
                     ->line($this->message)
                     ->action('Security Dashboard', url('/security-center'))
                     ->line('If this was not you, please audit your system nodes immediately.');

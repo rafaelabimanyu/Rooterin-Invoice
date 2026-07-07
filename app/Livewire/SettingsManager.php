@@ -32,7 +32,7 @@ class SettingsManager extends Component
             'language' => 'id',
             'smtp_host' => 'smtp.mailtrap.io',
             'email_template_header' => 'Dear Valued Client,',
-            'email_template_footer' => 'Best regards, Rooterin Team',
+            'email_template_footer' => 'Best regards, J&J GROUP Team',
             'primary_color' => '#6366f1',
         ];
 

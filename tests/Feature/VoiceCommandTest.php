@@ -23,7 +23,7 @@ class VoiceCommandTest extends TestCase
         $user = User::factory()->create(['role' => 'owner']);
 
         $response = $this->actingAs($user)->postJson(route('ai-assistant.voice-command'), [
-            'command' => 'Rooterin, Buka halaman kalender sekarang'
+            'command' => 'J&J GROUP, Buka halaman kalender sekarang'
         ]);
 
         $response->assertStatus(200)
@@ -48,7 +48,7 @@ class VoiceCommandTest extends TestCase
         ]);
 
         $invoice = Invoice::create([
-            'invoice_number' => 'ROOT-INV-9999',
+            'invoice_number' => 'JNJ-INV-9999',
             'client_id' => $client->id,
             'tanggal_invoice' => now(),
             'due_date' => now()->addDays(7),
@@ -59,7 +59,7 @@ class VoiceCommandTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)->postJson(route('ai-assistant.voice-command'), [
-            'command' => 'Rooterin, tolong carikan invoice terbesar yang belum dibayar bulan ini'
+            'command' => 'J&J GROUP, tolong carikan invoice terbesar yang belum dibayar bulan ini'
         ]);
 
         $response->assertStatus(200)
@@ -87,7 +87,7 @@ class VoiceCommandTest extends TestCase
         ]);
 
         Invoice::create([
-            'invoice_number' => 'ROOT-INV-1111',
+            'invoice_number' => 'JNJ-INV-1111',
             'client_id' => $client->id,
             'tanggal_invoice' => now(),
             'due_date' => now()->addDays(7),

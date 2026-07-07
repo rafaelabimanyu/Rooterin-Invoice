@@ -70,12 +70,17 @@ class Invoice extends Model
     }
 
     /**
-     * Generate unique invoice number (ROOT-INV-0001, etc.)
+     * Generate unique invoice number (JNJ-INV-0001, etc.)
      */
     public static function generateNumber(): string
     {
         $lastInvoice = self::withTrashed()->orderBy('id', 'desc')->first();
-        $number = $lastInvoice ? ((int) substr($lastInvoice->invoice_number, 9)) + 1 : 1;
-        return 'ROOT-INV-' . str_pad($number, 4, '0', STR_PAD_LEFT);
+        if ($lastInvoice) {
+            preg_match('/(\d+)$/', $lastInvoice->invoice_number, $matches);
+            $number = isset($matches[1]) ? ((int) $matches[1]) + 1 : 1;
+        } else {
+            $number = 1;
+        }
+        return 'JNJ-INV-' . str_pad($number, 4, '0', STR_PAD_LEFT);
     }
 }

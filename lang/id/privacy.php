@@ -4,7 +4,7 @@ return [
     'title' => 'Kebijakan Privasi',
     'last_updated' => 'Terakhir Diperbarui: Mei 2026',
     'subtitle' => 'Infrastruktur Sistem Operasional & Intelijen',
-    'intro' => 'Kebijakan Privasi ini menjelaskan bagaimana Rooterin System Operational mengumpulkan, menggunakan, dan mengungkapkan informasi pribadi Anda ketika Anda menggunakan Infrastruktur Penagihan Perusahaan kami.',
+    'intro' => 'Kebijakan Privasi ini menjelaskan bagaimana J&J GROUP System Operational mengumpulkan, menggunakan, dan mengungkapkan informasi pribadi Anda ketika Anda menggunakan Infrastruktur Penagihan Perusahaan kami.',
     'sections' => [
         'data_collection_title' => '1. Pengumpulan Data',
         'data_collection_desc' => 'Kami mengumpulkan informasi yang diperlukan untuk menyediakan layanan penagihan profesional, termasuk identitas pengguna, kredensial bisnis, dan log transaksi.',

@@ -30,8 +30,8 @@ class DashboardChatbot extends Component
             [
                 'sender' => 'ai',
                 'text' => $locale === 'en'
-                    ? "Hello! I am Rooterin's Virtual Assistant. Is there anything I can help you with regarding billing, clients, or financial summary today?"
-                    : "Halo! Saya Asisten Virtual Rooterin. Ada yang bisa saya bantu terkait tagihan, klien, atau ringkasan keuangan hari ini?",
+                    ? "Hello! I am J&J GROUP's Virtual Assistant. Is there anything I can help you with regarding billing, clients, or financial summary today?"
+                    : "Halo! Saya Asisten Virtual J&J GROUP. Ada yang bisa saya bantu terkait tagihan, klien, atau ringkasan keuangan hari ini?",
                 'navigateUrl' => null,
                 'navigateLabel' => null
             ]
@@ -87,10 +87,10 @@ class DashboardChatbot extends Component
         if ($locale === 'en') {
             $overdueText = count($overdueList) > 0 ? implode("\n", $overdueList) : "No overdue invoices.";
 
-            $context = "You are a Senior Financial Consultant & Business Analyst professional specialized for the Rooterin-Invoice system. Your responses must be crystal clear, based on real data from the system, offer tactical solutions, and use professional business English. Avoid boring, templated answers.
+            $context = "You are a Senior Financial Consultant & Business Analyst professional specialized for the J&J GROUP Invoice system. Your responses must be crystal clear, based on real data from the system, offer tactical solutions, and use professional business English. Avoid boring, templated answers.
 Always provide relevant and strategic extra insights (for example, after explaining the overdue total, suggest tactical actions to accelerate payment collection or manage cash flow).
 
-Anda dibekali informasi mengenai struktur halaman sistem Rooterin-Invoice untuk role Admin dan Owner. Berikut adalah daftar halaman yang tersedia di sidebar menu:
+Anda dibekali informasi mengenai struktur halaman sistem J&J GROUP Invoice untuk role Admin dan Owner. Berikut adalah daftar halaman yang tersedia di sidebar menu:
 - Dashboard (Command Center utama)
 - AI Assistant (Halaman khusus chat ini)
 - Clients (Manajemen data klien)
@@ -102,7 +102,7 @@ Anda dibekali informasi mengenai struktur halaman sistem Rooterin-Invoice untuk 
 - Team Management (Pengaturan hak akses tim)
 - Settings (Pengaturan sistem)
 - Security Center (Pusat keamanan enkripsi)
-- Rooterin Guide (Panduan SOP sistem)
+- J&J GROUP Guide (Panduan SOP sistem)
 
 Jika pengguna bertanya tentang jumlah halaman, fitur menu, atau navigasi, gunakan data di atas untuk menjawab secara cerdas, jelas, bervariasi, dan profesional. Jangan pernah mengulang teks template ringkasan data bisnis jika pertanyaan pengguna tidak relevan dengan jumlah tagihan.
 
@@ -135,10 +135,10 @@ Strictly match the user's current application language interface. Since the acti
         } else {
             $overdueText = count($overdueList) > 0 ? implode("\n", $overdueList) : "Tidak ada invoice menunggak.";
 
-            $context = "Anda adalah Senior Financial Consultant & Business Analyst profesional khusus untuk sistem Rooterin-Invoice. Jawaban Anda harus sangat jelas, berbasis data riil dari sistem, memberikan solusi taktis, dan menggunakan bahasa Indonesia yang sangat profesional. Jangan memberikan jawaban template yang membosankan.
+            $context = "Anda adalah Senior Financial Consultant & Business Analyst profesional khusus untuk sistem J&J GROUP Invoice. Jawaban Anda harus sangat jelas, berbasis data riil dari sistem, memberikan solusi taktis, dan menggunakan bahasa Indonesia yang sangat profesional. Jangan memberikan jawaban template yang membosankan.
 Pastikan Anda selalu memberikan insight tambahan yang relevan dan strategis (misalnya, setelah menjawab tentang total tunggakan, berikan saran tindakan apa yang harus diambil secara taktis untuk mempercepat pembayaran atau mengelola arus kas).
 
-Anda dibekali informasi mengenai struktur halaman sistem Rooterin-Invoice untuk role Admin dan Owner. Berikut adalah daftar halaman yang tersedia di sidebar menu:
+Anda dibekali informasi mengenai struktur halaman sistem J&J GROUP Invoice untuk role Admin dan Owner. Berikut adalah daftar halaman yang tersedia di sidebar menu:
 - Dashboard (Command Center utama)
 - AI Assistant (Halaman khusus chat ini)
 - Clients (Manajemen data klien)
@@ -150,7 +150,7 @@ Anda dibekali informasi mengenai struktur halaman sistem Rooterin-Invoice untuk 
 - Team Management (Pengaturan hak akses tim)
 - Settings (Pengaturan sistem)
 - Security Center (Pusat keamanan enkripsi)
-- Rooterin Guide (Panduan SOP sistem)
+- J&J GROUP Guide (Panduan SOP sistem)
 
 Jika pengguna bertanya tentang jumlah halaman, fitur menu, atau navigasi, gunakan data di atas untuk menjawab secara cerdas, jelas, bervariasi, dan profesional. Jangan pernah mengulang teks template ringkasan data bisnis jika pertanyaan pengguna tidak relevan dengan jumlah tagihan.
 
@@ -234,7 +234,7 @@ Strictly match the user's current application language interface. Since the acti
 
             if (str_contains($userMsgLower, 'halaman') || str_contains($userMsgLower, 'menu') || str_contains($userMsgLower, 'navigasi') || str_contains($userMsgLower, 'fitur') || str_contains($userMsgLower, 'role') || str_contains($userMsgLower, 'page')) {
                 if ($locale === 'en') {
-                    $reply = "The Rooterin-Invoice system provides 12 main pages/menu sections for the Admin and Owner roles:\n" .
+                    $reply = "The J&J GROUP Invoice system provides 12 main pages/menu sections for the Admin and Owner roles:\n" .
                              "1. **Dashboard** (Main Command Center)\n" .
                              "2. **AI Assistant** (This dedicated chat assistant)\n" .
                              "3. **Clients** (Client data management)\n" .
@@ -246,10 +246,10 @@ Strictly match the user's current application language interface. Since the acti
                              "9. **Team Management** (Team access control configuration)\n" .
                              "10. **Settings** (System settings)\n" .
                              "11. **Security Center** (Encryption security hub)\n" .
-                             "12. **Rooterin Guide** (System SOP guide)\n\n" .
+                             "12. **J&J GROUP Guide** (System SOP guide)\n\n" .
                              "You can navigate to any of these features via the sidebar panel.";
                 } else {
-                    $reply = "Sistem Rooterin-Invoice menyediakan 12 halaman/menu utama untuk role Admin dan Owner:\n" .
+                    $reply = "Sistem J&J GROUP Invoice menyediakan 12 halaman/menu utama untuk role Admin dan Owner:\n" .
                              "1. **Dashboard** (Command Center utama)\n" .
                              "2. **AI Assistant** (Halaman khusus chat ini)\n" .
                              "3. **Clients** (Manajemen data klien)\n" .
@@ -261,7 +261,7 @@ Strictly match the user's current application language interface. Since the acti
                              "9. **Team Management** (Pengaturan hak akses tim)\n" .
                              "10. **Settings** (Pengaturan sistem)\n" .
                              "11. **Security Center** (Pusat keamanan enkripsi)\n" .
-                             "12. **Rooterin Guide** (Panduan SOP sistem)\n\n" .
+                             "12. **J&J GROUP Guide** (Panduan SOP sistem)\n\n" .
                              "Anda dapat mengakses seluruh fitur ini langsung melalui menu navigasi di sidebar kiri.";
                 }
             } elseif (str_contains($userMsgLower, 'klien') || str_contains($userMsgLower, 'client')) {

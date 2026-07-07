@@ -4,8 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Rooterin Invoice — Next-Gen Enterprise Operations</title>
-    <link rel="icon" type="image/png" href="{{ asset('img/logo-rooterin.png') }}">
+    <title>J&J GROUP — Next-Gen Enterprise Operations</title>
+    <link rel="icon" type="image/png" href="{{ asset('img/logo-jnj.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -15,7 +15,7 @@
         :root {
             --enterprise-navy: #0a0f1d;
             --titanium-white: #f8fafc;
-            --electric-blue: #3b82f6;
+            --electric-blue: #c89d3c;
         }
 
         html { scroll-behavior: smooth; }
@@ -141,9 +141,9 @@
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-2xl bg-white flex items-center justify-center text-slate-900 shadow-xl transition-transform hover:rotate-12 duration-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap fill-current text-blue-600"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap fill-current text-gold-600"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                 </div>
-                <span class="text-xl md:text-2xl font-black font-outfit uppercase text-white tracking-tighter">Rooterin <span class="text-blue-500">Invoice</span></span>
+                <span class="text-xl md:text-2xl font-black font-outfit uppercase text-white tracking-tighter">J&J <span class="text-gold-500">GROUP</span></span>
             </div>
             
             <div class="hidden md:flex items-center gap-10">
@@ -178,7 +178,7 @@
                 <a href="{{ route('login') }}" class="px-10 py-5 bg-white text-slate-900 rounded-3xl font-black shadow-2xl uppercase tracking-widest text-sm">Portal Login</a>
             </div>
             
-            <div class="absolute bottom-12 text-[10px] text-slate-500 font-black uppercase tracking-[0.4em]">rooterin.com</div>
+            <div class="absolute bottom-12 text-[10px] text-slate-500 font-black uppercase tracking-[0.4em]">jnjgroup.com</div>
         </div>
     </nav>
 
@@ -196,7 +196,7 @@
                 Next-Gen <br> <span class="gradient-text">Operations.</span>
             </h1>
             <p id="hero-subtext" class="text-base md:text-xl text-slate-400 max-w-3xl mx-auto mb-16 font-medium leading-relaxed tracking-tight initial-hidden fade-up">
-                The definitive operating system for high-stakes billing, autonomous tracking, and enterprise-grade financial intelligence at <span class="text-white font-bold">rooterin.com</span>.
+                The definitive operating system for high-stakes billing, autonomous tracking, and enterprise-grade financial intelligence at <span class="text-white font-bold">jnjgroup.com</span>.
             </p>
             <div id="hero-buttons" class="flex flex-col md:flex-row items-center justify-center gap-6 initial-hidden fade-up">
                 <a href="{{ route('login') }}" class="w-full md:w-auto px-16 py-7 bg-white text-slate-900 rounded-[40px] font-black shadow-[0_20px_50px_rgba(255,255,255,0.1)] hover:-translate-y-2 transition-all duration-500 uppercase tracking-widest text-[13px]">Initialize Portal</a>
@@ -214,7 +214,7 @@
             <div class="max-w-7xl mx-auto">
                 <div class="text-center mb-24 reveal-section">
                     <h2 class="section-title text-4xl md:text-7xl font-black mb-6 uppercase tracking-tighter font-outfit text-white">Core Systems</h2>
-                    <p class="text-slate-500 font-bold uppercase tracking-[0.4em] text-[12px]">Infrastructure by rooterin.com</p>
+                    <p class="text-slate-500 font-bold uppercase tracking-[0.4em] text-[12px]">Infrastructure by jnjgroup.com</p>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16 px-2 md:px-0">
                     <div class="stagger-card p-10 md:p-12 group">
@@ -318,7 +318,7 @@
             <div class="max-w-7xl mx-auto">
                 <div class="text-center mb-24 reveal-section">
                     <h2 class="section-title text-4xl md:text-7xl font-black mb-6 uppercase tracking-tighter font-outfit text-white">AI Solutions</h2>
-                    <p class="text-[10px] md:text-[11px] font-black uppercase tracking-[0.4em] text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400">Rooterin AI 2.0 Engine</p>
+                    <p class="text-[10px] md:text-[11px] font-black uppercase tracking-[0.4em] text-transparent bg-clip-text bg-gradient-to-r from-gold-400 via-amber-400 to-yellow-400">J&J GROUP AI 2.0 Engine</p>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12 px-2 md:px-0">
                     <div class="stagger-card glass-card p-12 rounded-[48px] relative overflow-hidden group hover:border-indigo-500/30">
@@ -357,9 +357,9 @@
         <div class="max-w-7xl mx-auto px-6 relative z-10">
             <div class="flex items-center justify-center gap-3 mb-10 reveal-section">
                 <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-slate-900 shadow-xl">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap fill-current text-blue-600"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap fill-current text-gold-600"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                 </div>
-                <span class="text-3xl font-black font-outfit uppercase text-white tracking-tighter">rooterin<span class="text-blue-500">.com</span></span>
+                <span class="text-3xl font-black font-outfit uppercase text-white tracking-tighter">jnjgroup<span class="text-gold-500">.com</span></span>
             </div>
             <div class="flex flex-wrap items-center justify-center gap-6 md:gap-12 mb-12 reveal-section">
                 <a href="#core" class="text-[11px] font-black text-slate-500 hover:text-white uppercase tracking-widest transition-colors">Core Systems</a>
@@ -367,7 +367,7 @@
                 <a href="#solutions" class="text-[11px] font-black text-slate-500 hover:text-white uppercase tracking-widest transition-colors">Solutions</a>
                 <a href="#ai-solutions" class="text-[11px] font-black text-slate-500 hover:text-white uppercase tracking-widest transition-colors">AI Solutions</a>
             </div>
-            <p class="text-[11px] text-slate-600 uppercase tracking-[0.5em] font-black reveal-section">© 2026 rooterin.com Enterprise Operating System. All Nodes Operational.</p>
+            <p class="text-[11px] text-slate-600 uppercase tracking-[0.5em] font-black reveal-section">© 2026 jnjgroup.com Enterprise Operating System. All Nodes Operational.</p>
         </div>
     </footer>
 

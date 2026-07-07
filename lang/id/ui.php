@@ -10,7 +10,7 @@ return [
     'reports' => 'Laporan',
     'settings' => 'Pengaturan',
     'users' => 'Manajemen Tim',
-    'guide' => 'Panduan Rooterin',
+    'guide' => 'Panduan J&J GROUP',
     'system_live' => 'Sistem Operasional',
     'mode' => 'Mode',
     'privacy' => 'Pusat Privasi',

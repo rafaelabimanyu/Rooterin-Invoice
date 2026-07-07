@@ -83,7 +83,7 @@
 
                     <!-- Footer Navigation -->
                     <div class="pt-10 lg:pt-16 mt-10 lg:mt-16 border-t border-slate-100 flex justify-between items-center text-xs lg:text-sm font-semibold text-slate-500">
-                        <p>&copy; {{ date('Y') }} Rooterin Enterprise</p>
+                        <p>&copy; {{ date('Y') }} J&J GROUP Enterprise</p>
                         <a href="#top" class="hover:text-indigo-600 transition-colors flex items-center font-jakarta">
                             {{ app()->getLocale() == 'en' ? 'Back to top' : 'Kembali ke atas' }} <i data-lucide="arrow-up" class="w-4 h-4 ml-2"></i>
                         </a>

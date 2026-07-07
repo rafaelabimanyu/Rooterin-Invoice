@@ -36,7 +36,7 @@
                             <div class="px-6 py-3 bg-indigo-500 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-lg shadow-indigo-500/20">
                                 Contact Admin
                             </div>
-                            <p class="text-indigo-400 text-sm font-black tracking-widest uppercase">admin@rooterin.com</p>
+                            <p class="text-indigo-400 text-sm font-black tracking-widest uppercase">admin@jnjgroup.com</p>
                             <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1">+62 8xx-xxxx-xxxx (WhatsApp)</p>
                         </div>
                     </div>

@@ -44,13 +44,13 @@
             <div class="flex flex-col md:flex-row justify-between items-start gap-10 md:gap-12">
                 <div class="w-full md:w-auto space-y-6 md:space-y-8 text-left">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-[#0f172a] flex items-center justify-center text-white font-bold">R</div>
-                        <span class="text-xl font-black text-slate-900 tracking-tighter uppercase">Rooterin<span class="text-indigo-500">.</span></span>
+                        <div class="w-10 h-10 rounded-lg bg-[#0f172a] flex items-center justify-center text-white font-bold">J</div>
+                        <span class="text-xl font-black text-slate-900 tracking-tighter uppercase">J&J GROUP<span class="text-gold-500">.</span></span>
                     </div>
                     <div class="space-y-1 text-sm text-slate-500">
-                        <p class="font-bold text-slate-900">Rooterin Technical Services</p>
+                        <p class="font-bold text-slate-900">J&J GROUP Technical Services</p>
                         <p>Jakarta, Indonesia</p>
-                        <p class="pt-2 font-medium">billing@rooterin.com</p>
+                        <p class="pt-2 font-medium">billing@jnjgroup.com</p>
                     </div>
                 </div>
                 

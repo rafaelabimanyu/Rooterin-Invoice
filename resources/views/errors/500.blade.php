@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>500 — Server Error</title>
-    <link rel="icon" type="image/png" href="{{ asset('img/logo-rooterin.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('img/logo-jnj.png') }}">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;900&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css'])
 </head>

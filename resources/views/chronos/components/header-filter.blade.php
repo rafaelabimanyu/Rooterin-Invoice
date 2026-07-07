@@ -2,7 +2,7 @@
 <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-8 page-fade-in">
     <div>
         <h1 class="text-3xl font-black text-slate-900 font-jakarta tracking-tight mb-2 uppercase">
-            Rooterin Chronos
+            J&J GROUP Chronos
         </h1>
         <p class="text-sm text-slate-500 font-medium tracking-tight">
             {{ __('Billing Calendar & Operational Workflows') }}

@@ -10,7 +10,7 @@ return [
     'reports' => 'Reports',
     'settings' => 'Settings',
     'users' => 'Team Management',
-    'guide' => 'Rooterin Guide',
+    'guide' => 'J&J GROUP Guide',
     'system_live' => 'System Operational',
     'mode' => 'Mode',
     'privacy' => 'Privacy Center',

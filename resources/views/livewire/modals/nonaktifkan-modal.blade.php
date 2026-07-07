@@ -46,7 +46,7 @@
                     @if($userToSuspend?->is_active)
                         {{ app()->getLocale() == 'en' ? 'Are you sure you want to suspend security clearance for ' : 'Apakah Anda yakin ingin menonaktifkan izin masuk untuk ' }}
                         <strong>{{ $userToSuspend?->name }}</strong>?
-                        {{ app()->getLocale() == 'en' ? 'They will be locked out of the Rooterin system immediately.' : 'Staf ini akan langsung terblokir dan tidak dapat login ke sistem Rooterin.' }}
+                        {{ app()->getLocale() == 'en' ? 'They will be locked out of the J&J GROUP system immediately.' : 'Staf ini akan langsung terblokir dan tidak dapat login ke sistem J&J GROUP.' }}
                     @else
                         {{ app()->getLocale() == 'en' ? 'Are you sure you want to restore access clearance for ' : 'Apakah Anda yakin ingin memulihkan kembali izin masuk untuk ' }}
                         <strong>{{ $userToSuspend?->name }}</strong>?

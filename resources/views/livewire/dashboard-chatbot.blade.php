@@ -56,7 +56,7 @@
         x-transition:leave-start="opacity-100 scale-100"
         x-transition:leave-end="opacity-0 scale-95"
         @click="open = !open; if(open) { $nextTick(() => { const container = $refs.chatContainer; if(container) container.scrollTop = container.scrollHeight; }) }" 
-        class="chatbot-trigger-btn fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[45] w-14 h-14 bg-gradient-to-tr from-indigo-600 via-indigo-700 to-violet-800 text-white rounded-full items-center justify-center border-2 border-white shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 group focus:outline-none"
+        class="chatbot-trigger-btn fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[45] w-14 h-14 bg-gradient-to-tr from-gold-600 via-gold-700 to-gold-800 text-white rounded-full items-center justify-center border-2 border-white shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 group focus:outline-none"
         :class="open ? 'hidden sm:flex' : 'flex'"
     >
         <span class="relative flex items-center justify-center">
@@ -84,10 +84,10 @@
         <div class="px-6 py-5 bg-slate-50 text-slate-800 flex items-center justify-between border-b border-slate-200 shrink-0">
             <div class="flex items-center gap-3">
                 <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center text-slate-800 shadow-sm border border-slate-200 overflow-hidden p-1 shrink-0">
-                    <img src="{{ asset('img/logo-rooterin.png') }}" alt="Rooterin Logo" class="w-full h-full object-contain">
+                    <img src="{{ asset('img/logo-jnj.png') }}" alt="J&J GROUP Logo" class="w-full h-full object-contain">
                 </div>
                 <div>
-                    <h4 class="text-xs md:text-sm font-black font-jakarta leading-none uppercase tracking-wide text-slate-800">Rooterin AI Assistant</h4>
+                    <h4 class="text-xs md:text-sm font-black font-jakarta leading-none uppercase tracking-wide text-slate-800">J&J GROUP AI Assistant</h4>
                     <div class="flex items-center gap-1.5 mt-2">
                         <span class="relative flex h-2 w-2">
                             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -140,7 +140,7 @@
                     <!-- AI Avatar -->
                     @if($msg['sender'] === 'ai')
                         <div class="w-7 h-7 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0 shadow-sm mt-0.5 overflow-hidden p-0.5">
-                            <img src="{{ asset('img/logo-rooterin.png') }}" alt="Rooterin Logo" class="w-full h-full object-contain">
+                            <img src="{{ asset('img/logo-jnj.png') }}" alt="J&J GROUP Logo" class="w-full h-full object-contain">
                         </div>
                     @endif
 
@@ -180,7 +180,7 @@
             <!-- Loading indicator for Livewire -->
             <div wire:loading wire:target="sendMessage" class="flex items-start gap-2.5">
                 <div class="w-7 h-7 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0 shadow-sm mt-0.5 animate-pulse overflow-hidden p-0.5">
-                    <img src="{{ asset('img/logo-rooterin.png') }}" alt="Rooterin Logo" class="w-full h-full object-contain">
+                    <img src="{{ asset('img/logo-jnj.png') }}" alt="J&J GROUP Logo" class="w-full h-full object-contain">
                 </div>
                 <div class="bg-white text-slate-400 rounded-2xl rounded-tl-none px-4 py-3 border border-slate-200 shadow-sm flex items-center gap-1.5">
                     <span class="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></span>

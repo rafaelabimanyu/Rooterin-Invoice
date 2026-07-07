@@ -20,7 +20,7 @@ return [
                     'title' => 'Getting Started',
                     'icon' => 'zap',
                     'color' => 'indigo',
-                    'content' => 'Rooterin-Invoice is designed to simplify your daily workflow. Make sure you always enter data carefully and follow the established procedures.',
+                    'content' => 'J&J GROUP Invoice is designed to simplify your daily workflow. Make sure you always enter data carefully and follow the established procedures.',
                     'pro_tip' => 'Use the "Inline Client Creation" feature when creating Invoices for a faster billing process!',
                     'sub_sections' => []
                 ],
@@ -175,7 +175,7 @@ return [
                     'sub_sections' => [
                         'license-management' => [
                             'title' => 'License Management',
-                            'content' => 'Status of your Rooterin Enterprise license and server active period renewal.'
+                            'content' => 'Status of your J&J GROUP Enterprise license and server active period renewal.'
                         ]
                     ]
                 ]

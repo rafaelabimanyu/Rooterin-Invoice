@@ -44,7 +44,7 @@ class AiInvoiceController extends Controller
         }
 
         if ($locale === 'en') {
-            $prompt = "You are a professional AI Copywriter for the Rooterin-Invoice application.
+            $prompt = "You are a professional AI Copywriter for the J&J GROUP Invoice application.
 Your task is to generate an invoice payment reminder email draft.
 
 Invoice Information:
@@ -67,7 +67,7 @@ The output format must be pure JSON with the following structure:
 
 IMPORTANT: Do not include markdown code blocks like ```json or any other wrappers. Return pure JSON string so it can be directly parsed. If you cannot do this, return the JSON string without formatting.";
         } else {
-            $prompt = "Kamu adalah sistem AI Copywriter profesional untuk aplikasi Rooterin-Invoice.
+            $prompt = "Kamu adalah sistem AI Copywriter profesional untuk aplikasi J&J GROUP Invoice.
 Tugas kamu adalah membuat draf email penagihan pembayaran invoice dalam Bahasa Indonesia.
 
 Informasi Invoice:
@@ -136,14 +136,14 @@ PENTING: Jangan sertakan blok kode markdown seperti ```json atau pembungkus teks
                 if ($locale === 'en') {
                     $emailData = [
                         'subject' => "Payment Reminder: Invoice #{$invoiceNumber}",
-                        'body' => "Dear {$clientName},\n\nHope this email finds you well.\n\nWe would like to remind you regarding the payment for Invoice #{$invoiceNumber} amounting to {$totalAmount} which is due on {$dueDate}.\n\nPlease arrange for the payment at your earliest convenience. Thank you for your cooperation.\n\nBest regards,\nRooterin Technical Services",
+                        'body' => "Dear {$clientName},\n\nHope this email finds you well.\n\nWe would like to remind you regarding the payment for Invoice #{$invoiceNumber} amounting to {$totalAmount} which is due on {$dueDate}.\n\nPlease arrange for the payment at your earliest convenience. Thank you for your cooperation.\n\nBest regards,\nJ&J GROUP Technical Services",
                         'is_fallback' => true,
                         'raw_response' => $responseText
                     ];
                 } else {
                     $emailData = [
                         'subject' => "Pengingat Pembayaran Tagihan: Invoice #{$invoiceNumber}",
-                        'body' => "Halo {$clientName},\n\nSemoga Anda dalam keadaan baik.\n\nKami ingin mengingatkan mengenai pembayaran Invoice #{$invoiceNumber} sebesar {$totalAmount} yang jatuh tempo pada {$dueDate}.\n\nMohon lakukan pembayaran sesuai instruksi. Terima kasih atas kerja sama Anda.\n\nSalam hangat,\nRooterin Technical Services",
+                        'body' => "Halo {$clientName},\n\nSemoga Anda dalam keadaan baik.\n\nKami ingin mengingatkan mengenai pembayaran Invoice #{$invoiceNumber} sebesar {$totalAmount} yang jatuh tempo pada {$dueDate}.\n\nMohon lakukan pembayaran sesuai instruksi. Terima kasih atas kerja sama Anda.\n\nSalam hangat,\nJ&J GROUP Technical Services",
                         'is_fallback' => true,
                         'raw_response' => $responseText
                     ];
@@ -168,7 +168,7 @@ PENTING: Jangan sertakan blok kode markdown seperti ```json atau pembungkus teks
                     $subjectFallback = "Billing Notice: Invoice #{$invoiceNumber}";
                 }
 
-                $bodyFallback = "Dear {$clientName},\n\nHope this email finds you well.\n\nThis is a payment reminder for Invoice #{$invoiceNumber} amounting to {$totalAmount} which is due on {$dueDate}.\n\nPlease settle the payment according to the instructions on your invoice document.\n\nIf you have already made the payment, please disregard this email.\n\nThank you for your cooperation.\n\nBest regards,\nRooterin Technical Services";
+                $bodyFallback = "Dear {$clientName},\n\nHope this email finds you well.\n\nThis is a payment reminder for Invoice #{$invoiceNumber} amounting to {$totalAmount} which is due on {$dueDate}.\n\nPlease settle the payment according to the instructions on your invoice document.\n\nIf you have already made the payment, please disregard this email.\n\nThank you for your cooperation.\n\nBest regards,\nJ&J GROUP Technical Services";
             } else {
                 $subjectFallback = "Pengingat Pembayaran Tagihan: Invoice #{$invoiceNumber}";
                 if ($tone === 'urgent') {
@@ -177,7 +177,7 @@ PENTING: Jangan sertakan blok kode markdown seperti ```json atau pembungkus teks
                     $subjectFallback = "Pemberitahuan Penagihan: Invoice #{$invoiceNumber}";
                 }
 
-                $bodyFallback = "Halo {$clientName},\n\nSemoga Anda dalam keadaan baik.\n\nKami mengirimkan email ini sebagai draf pengingat pembayaran untuk Invoice #{$invoiceNumber} sebesar {$totalAmount} yang jatuh tempo pada {$dueDate}.\n\nHarap segera menyelesaikan pembayaran sesuai dengan instruksi yang tertera pada dokumen invoice Anda.\n\nJika Anda sudah melakukan pembayaran, mohon abaikan pesan ini.\n\nTerima kasih atas kerja samanya.\n\nSalam hangat,\nRooterin Technical Services";
+                $bodyFallback = "Halo {$clientName},\n\nSemoga Anda dalam keadaan baik.\n\nKami mengirimkan email ini sebagai draf pengingat pembayaran untuk Invoice #{$invoiceNumber} sebesar {$totalAmount} yang jatuh tempo pada {$dueDate}.\n\nHarap segera menyelesaikan pembayaran sesuai dengan instruksi yang tertera pada dokumen invoice Anda.\n\nJika Anda sudah melakukan pembayaran, mohon abaikan pesan ini.\n\nTerima kasih atas kerja samanya.\n\nSalam hangat,\nJ&J GROUP Technical Services";
             }
 
             return response()->json([

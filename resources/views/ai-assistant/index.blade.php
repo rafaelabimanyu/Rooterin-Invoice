@@ -1,4 +1,4 @@
-<x-app-layout title="Rooterin AI Assistant">
+<x-app-layout title="J&J GROUP AI Assistant">
     <div class="animate-fade-in-up">
         <!-- Add marked.js for markdown parsing -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -74,7 +74,7 @@
                         <div class="p-5 border-b border-slate-100 flex items-center justify-between shrink-0">
                             <div>
                                 <h3 class="text-xs font-black text-slate-800 uppercase tracking-wider font-jakarta">{{ app()->getLocale() == 'en' ? 'Chat History' : 'Riwayat Obrolan' }}</h3>
-                                <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Rooterin AI 2.0</p>
+                                <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">J&J GROUP AI 2.0</p>
                             </div>
                             <div class="flex items-center gap-1.5">
                                 <button @click="newChat(); showDrawer = false" 
@@ -179,7 +179,7 @@
                 <div class="p-6 border-b border-slate-100 flex items-center justify-between shrink-0">
                     <div>
                         <h3 class="text-sm font-black text-slate-800 uppercase tracking-wider font-jakarta">{{ app()->getLocale() == 'en' ? 'Chat History' : 'Riwayat Obrolan' }}</h3>
-                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Rooterin AI 2.0</p>
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">J&J GROUP AI 2.0</p>
                     </div>
                     <button @click="newChat()" 
                         class="p-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-xl transition-all active:scale-95 group" 
@@ -290,7 +290,7 @@
                     </div>
                     
                     <div class="min-w-0">
-                        <h4 class="text-xs lg:text-sm font-black text-slate-900 font-jakarta uppercase tracking-wide truncate leading-tight">Rooterin Financial Advisor</h4>
+                        <h4 class="text-xs lg:text-sm font-black text-slate-900 font-jakarta uppercase tracking-wide truncate leading-tight">J&J GROUP Financial Advisor</h4>
                         <div class="flex items-center gap-1.5 mt-0.5">
                             <span class="relative flex h-1.5 w-1.5 lg:h-2 lg:w-2 shrink-0">
                                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -324,7 +324,7 @@
                             <div class="w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-[1.25rem] lg:rounded-3xl flex items-center justify-center text-white mx-auto shadow-lg shadow-indigo-500/20">
                                 <i data-lucide="sparkles" class="w-6 h-6 lg:w-8 lg:h-8"></i>
                             </div>
-                            <h3 class="text-base lg:text-lg font-black text-slate-900 font-jakarta uppercase tracking-tight">{{ app()->getLocale() == 'en' ? 'Welcome to Rooterin AI 2.0' : 'Selamat Datang di Rooterin AI 2.0' }}</h3>
+                            <h3 class="text-base lg:text-lg font-black text-slate-900 font-jakarta uppercase tracking-tight">{{ app()->getLocale() == 'en' ? 'Welcome to J&J GROUP AI 2.0' : 'Selamat Datang di J&J GROUP AI 2.0' }}</h3>
                             <p class="text-[11px] lg:text-xs text-slate-500 font-medium leading-relaxed max-w-md mx-auto px-4 lg:px-0 h-auto pb-1">
                                 {{ app()->getLocale() == 'en' ? 'Ask questions about cash flow, receivable analysis, client status, or ask the assistant to navigate to a specific page directly.' : 'Ajukan pertanyaan tentang cashflow, analisis penagihan piutang, status klien, atau minta asisten untuk membuka halaman tertentu secara langsung.' }}
                             </p>

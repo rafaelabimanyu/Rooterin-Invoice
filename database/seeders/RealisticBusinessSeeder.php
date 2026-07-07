@@ -24,8 +24,8 @@ class RealisticBusinessSeeder extends Seeder
         // 1. Users & Team Management
         $usersData = [
             [
-                'name' => 'Rooterin Owner',
-                'email' => 'owner@rooterin.com',
+                'name' => 'J&J GROUP Owner',
+                'email' => 'owner@jnjgroup.com',
                 'password' => Hash::make('password'),
                 'role' => User::ROLE_OWNER,
                 'is_active' => 1,
@@ -33,7 +33,7 @@ class RealisticBusinessSeeder extends Seeder
             ],
             [
                 'name' => 'System Admin',
-                'email' => 'admin@rooterin.com',
+                'email' => 'admin@jnjgroup.com',
                 'password' => Hash::make('password'),
                 'role' => User::ROLE_ADMIN,
                 'is_active' => 1,
@@ -41,7 +41,7 @@ class RealisticBusinessSeeder extends Seeder
             ],
             [
                 'name' => 'Staff Member 1',
-                'email' => 'staff1@rooterin.com',
+                'email' => 'staff1@jnjgroup.com',
                 'password' => Hash::make('password'),
                 'role' => User::ROLE_STAFF,
                 'is_active' => 1,
@@ -49,7 +49,7 @@ class RealisticBusinessSeeder extends Seeder
             ],
             [
                 'name' => 'Staff Member 2',
-                'email' => 'staff2@rooterin.com',
+                'email' => 'staff2@jnjgroup.com',
                 'password' => Hash::make('password'),
                 'role' => User::ROLE_STAFF,
                 'is_active' => 1,
@@ -57,7 +57,7 @@ class RealisticBusinessSeeder extends Seeder
             ],
             [
                 'name' => 'Staff Member 3',
-                'email' => 'staff3@rooterin.com',
+                'email' => 'staff3@jnjgroup.com',
                 'password' => Hash::make('password'),
                 'role' => User::ROLE_STAFF,
                 'is_active' => 1,
@@ -65,7 +65,7 @@ class RealisticBusinessSeeder extends Seeder
             ],
             [
                 'name' => 'Roni Wijaya',
-                'email' => 'roni@rooterin.com',
+                'email' => 'roni@jnjgroup.com',
                 'password' => Hash::make('password'),
                 'role' => User::ROLE_STAFF,
                 'is_active' => 1,
@@ -73,7 +73,7 @@ class RealisticBusinessSeeder extends Seeder
             ],
             [
                 'name' => 'Sarah Siregar',
-                'email' => 'sarah@rooterin.com',
+                'email' => 'sarah@jnjgroup.com',
                 'password' => Hash::make('password'),
                 'role' => User::ROLE_STAFF,
                 'is_active' => 1,
@@ -81,7 +81,7 @@ class RealisticBusinessSeeder extends Seeder
             ],
             [
                 'name' => 'Muhammad Fikri',
-                'email' => 'fikri@rooterin.com',
+                'email' => 'fikri@jnjgroup.com',
                 'password' => Hash::make('password'),
                 'role' => User::ROLE_STAFF,
                 'is_active' => 1,
@@ -89,7 +89,7 @@ class RealisticBusinessSeeder extends Seeder
             ],
             [
                 'name' => 'Clarissa Utama',
-                'email' => 'clarissa@rooterin.com',
+                'email' => 'clarissa@jnjgroup.com',
                 'password' => Hash::make('password'),
                 'role' => User::ROLE_ADMIN,
                 'is_active' => 1,
@@ -324,7 +324,7 @@ class RealisticBusinessSeeder extends Seeder
             }
 
             $invoice = Invoice::create([
-                'invoice_number' => "ROOT-INV-" . str_pad($i, 5, '0', STR_PAD_LEFT),
+                'invoice_number' => "JNJ-INV-" . str_pad($i, 5, '0', STR_PAD_LEFT),
                 'client_id' => $client->id,
                 'tanggal_invoice' => $date,
                 'due_date' => $dueDate,
@@ -333,8 +333,8 @@ class RealisticBusinessSeeder extends Seeder
                 'tax_percent' => $taxPercent,
                 'discount_percent' => $discountPercent,
                 'total' => $total,
-                'notes_internal' => 'Generated automatically by Rooterin Master Seeder.',
-                'terms_condition' => 'Metode Pembayaran Transfer Bank: BCA 800-1234-567 a/n PT Rooterin Solusi Digital.',
+                'notes_internal' => 'Generated automatically by J&J GROUP Master Seeder.',
+                'terms_condition' => 'Metode Pembayaran Transfer Bank: BCA 800-1234-567 a/n PT J&J Group Indonesia.',
                 'created_by' => $allUsers->random()->id,
             ]);
 
@@ -363,7 +363,7 @@ class RealisticBusinessSeeder extends Seeder
 
                 // Generate corresponding Receipt (Kwitansi)
                 $receipt = Receipt::create([
-                    'receipt_number' => "ROOT-KWT-" . str_pad($i, 5, '0', STR_PAD_LEFT),
+                    'receipt_number' => "JNJ-KWT-" . str_pad($i, 5, '0', STR_PAD_LEFT),
                     'client_id' => $client->id,
                     'tanggal_receipt' => $date->copy()->addDays($faker->numberBetween(1, 5)),
                     'expiry_date' => $dueDate,
@@ -409,7 +409,7 @@ class RealisticBusinessSeeder extends Seeder
             $number = 30 + $i;
 
             $receipt = Receipt::create([
-                'receipt_number' => "ROOT-KWT-" . str_pad($number, 5, '0', STR_PAD_LEFT),
+                'receipt_number' => "JNJ-KWT-" . str_pad($number, 5, '0', STR_PAD_LEFT),
                 'client_id' => $client->id,
                 'tanggal_receipt' => Carbon::now()->subDays($faker->numberBetween(1, 45)),
                 'expiry_date' => Carbon::now()->addDays(30),
@@ -438,10 +438,10 @@ class RealisticBusinessSeeder extends Seeder
             ],
             [
                 'msg' => 'Buatkan draft email pengingat pembayaran untuk klien Siti Aminah',
-                'res' => "Berikut draft email yang bisa Anda kirim:\n\nSubjek: Pengingat Pembayaran Invoice #ROOT-INV-00012\n\nHalo Ibu Siti,\nKami ingin mengingatkan bahwa tagihan untuk layanan katering Resto Selera Nusantara sebesar Rp 8.400.000 telah melewati batas waktu pembayaran. Silakan lakukan pembayaran ke rekening BCA PT Rooterin Solusi Digital. Terima kasih.",
+                'res' => "Berikut draft email yang bisa Anda kirim:\n\nSubjek: Pengingat Pembayaran Invoice #JNJ-INV-00012\n\nHalo Ibu Siti,\nKami ingin mengingatkan bahwa tagihan untuk layanan katering Resto Selera Nusantara sebesar Rp 8.400.000 telah melewati batas waktu pembayaran. Silakan lakukan pembayaran ke rekening BCA PT J&J Group Indonesia. Terima kasih.",
             ],
             [
-                'msg' => 'Bagaimana performa arus kas Rooterin bulan ini?',
+                'msg' => 'Bagaimana performa arus kas J&J GROUP bulan ini?',
                 'res' => 'Arus kas bulan ini sangat sehat dengan Collection Rate mencapai 84%. Penerimaan tunai utama berasal dari pelunasan invoice PT Solusi Digital Nusantara.',
             ],
             [
@@ -477,10 +477,10 @@ class RealisticBusinessSeeder extends Seeder
         // 7. Activity & Security Logs (to populate dashboards)
         $actions = [
             'login' => 'Telah masuk ke dalam aplikasi.',
-            'create_invoice' => 'Membuat invoice baru dengan nomor ROOT-INV-',
-            'update_invoice' => 'Memperbarui status invoice ROOT-INV-',
+            'create_invoice' => 'Membuat invoice baru dengan nomor JNJ-INV-',
+            'update_invoice' => 'Memperbarui status invoice JNJ-INV-',
             'create_client' => 'Mendaftarkan klien baru ',
-            'create_receipt' => 'Menerbitkan kwitansi baru ROOT-KWT-',
+            'create_receipt' => 'Menerbitkan kwitansi baru JNJ-KWT-',
         ];
 
         for ($k = 1; $k <= 40; $k++) {

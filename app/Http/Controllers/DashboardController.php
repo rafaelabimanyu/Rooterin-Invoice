@@ -154,15 +154,15 @@ class DashboardController extends Controller
                     
                     if ($log->action === 'create_invoice' || $log->action === 'created_invoice') {
                         $action = 'invoice_created';
-                        preg_match('/ROOT-INV-\d+/i', $log->description, $matches);
-                        $invNum = $matches[0] ?? 'ROOT-INV-XXXX';
+                        preg_match('/(JNJ|ROOT)-INV-\d+/i', $log->description, $matches);
+                        $invNum = $matches[0] ?? 'JNJ-INV-XXXX';
                         
                         $details_key = 'created_invoice';
                         $details_params = ['inv' => $invNum];
                     } elseif ($log->action === 'update_invoice' || $log->action === 'updated_invoice') {
                         $action = 'invoice_updated';
-                        preg_match('/ROOT-INV-\d+/i', $log->description, $matches);
-                        $invNum = $matches[0] ?? 'ROOT-INV-XXXX';
+                        preg_match('/(JNJ|ROOT)-INV-\d+/i', $log->description, $matches);
+                        $invNum = $matches[0] ?? 'JNJ-INV-XXXX';
                         
                         $clientName = 'Klien';
                         if ($log->model_type === 'App\Models\Invoice') {

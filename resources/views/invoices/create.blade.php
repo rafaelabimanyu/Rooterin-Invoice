@@ -182,7 +182,7 @@
                                 <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ app()->getLocale() == 'en' ? 'Bank Account Details (Displayed on PDF)' : 'Rincian Rekening Bank (Ditampilkan pada PDF)' }}</label>
                                 <textarea name="bank_account_info" rows="3" placeholder="Bank BCA Account No: 123456..." class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-700">Bank Central Asia (BCA)
 Acc No: 123-456-7890
-Name: Rooterin Technical Services</textarea>
+Name: J&J GROUP Technical Services</textarea>
                             </div>
                         </div>
 

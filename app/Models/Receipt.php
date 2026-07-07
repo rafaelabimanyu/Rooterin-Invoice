@@ -50,7 +50,12 @@ class Receipt extends Model
     public static function generateNumber(): string
     {
         $lastReceipt = self::withTrashed()->orderBy('id', 'desc')->first();
-        $number = $lastReceipt ? ((int) substr($lastReceipt->receipt_number, 9)) + 1 : 1;
-        return 'ROOT-KWT-' . str_pad($number, 4, '0', STR_PAD_LEFT);
+        if ($lastReceipt) {
+            preg_match('/(\d+)$/', $lastReceipt->receipt_number, $matches);
+            $number = isset($matches[1]) ? ((int) $matches[1]) + 1 : 1;
+        } else {
+            $number = 1;
+        }
+        return 'JNJ-KWT-' . str_pad($number, 4, '0', STR_PAD_LEFT);
     }
 }

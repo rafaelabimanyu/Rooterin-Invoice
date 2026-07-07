@@ -20,7 +20,7 @@ return [
                     'title' => 'Memulai',
                     'icon' => 'zap',
                     'color' => 'indigo',
-                    'content' => 'Rooterin-Invoice dirancang untuk mempermudah alur kerja harian Anda. Pastikan Anda selalu memasukkan data dengan teliti dan mengikuti prosedur yang telah ditetapkan.',
+                    'content' => 'J&J GROUP Invoice dirancang untuk mempermudah alur kerja harian Anda. Pastikan Anda selalu memasukkan data dengan teliti dan mengikuti prosedur yang telah ditetapkan.',
                     'pro_tip' => 'Gunakan fitur "Inline Client Creation" saat membuat Invoice agar proses penagihan lebih cepat!',
                     'sub_sections' => []
                 ],
@@ -175,7 +175,7 @@ return [
                     'sub_sections' => [
                         'license-management' => [
                             'title' => 'Pengelolaan Lisensi',
-                            'content' => 'Status lisensi Rooterin Enterprise Anda dan pembaruan masa aktif server.'
+                            'content' => 'Status lisensi J&J GROUP Enterprise Anda dan pembaruan masa aktif server.'
                         ]
                     ]
                 ]

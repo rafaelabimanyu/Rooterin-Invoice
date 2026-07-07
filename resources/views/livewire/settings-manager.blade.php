@@ -112,6 +112,22 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-3">
+                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Contact Phone' : 'Nomor Telepon Kontak' }}</label>
+                                <div class="relative">
+                                    <i data-lucide="phone" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                                    <input type="text" wire:model.live="settings.company_phone" class="w-full pl-12 pr-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-bold text-slate-900 text-sm">
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Company Website' : 'Website Perusahaan' }}</label>
+                                <div class="relative">
+                                    <i data-lucide="globe" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                                    <input type="text" wire:model.live="settings.company_website" class="w-full pl-12 pr-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-bold text-slate-900 text-sm">
+                                </div>
+                            </div>
+                        </div>
                         <div class="space-y-3">
                             <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Headquarters Address' : 'Alamat Kantor Pusat' }}</label>
                             <textarea wire:model.live="settings.company_address" rows="4" class="w-full px-6 py-5 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-bold text-slate-900 text-sm"></textarea>

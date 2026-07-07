@@ -34,6 +34,11 @@ class SettingsManager extends Component
             'email_template_header' => 'Dear Valued Client,',
             'email_template_footer' => 'Best regards, J&J GROUP Team',
             'primary_color' => '#6366f1',
+            'company_name' => 'J&J GROUP Technical Services',
+            'company_email' => 'Jayarooter@gmail.com / Jawarooter@gmail.com',
+            'company_address' => 'Jl. Dewa RT.002/002 No.70, Ciracas, Jakarta Timur',
+            'company_phone' => '0812-400-0749 / 0812-8330-0900',
+            'company_website' => 'Jayarooter.com / Jawarooter.com',
         ];
 
         foreach ($defaults as $key => $value) {

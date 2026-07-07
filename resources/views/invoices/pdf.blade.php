@@ -107,11 +107,11 @@
                     @else
                         <div style="font-size: 28px; font-weight: 900; color: #0f172a; margin-bottom: 12px;">J&J GROUP<span style="color: #c89d3c;">.</span></div>
                     @endif
-                    <div style="font-size: 12pt; font-weight: 900; color: #0f172a; text-transform: uppercase; margin: 0; line-height: 1.2;">J&J GROUP Technical Services</div>
+                    <div style="font-size: 12pt; font-weight: 900; color: #0f172a; text-transform: uppercase; margin: 0; line-height: 1.2;">{{ \App\Models\Setting::get('company_name', 'J&J GROUP Technical Services') }}</div>
                     <div style="font-size: 8.5pt; color: #c89d3c; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 3px; margin-bottom: 8px;">{{ app()->getLocale() == 'en' ? 'High-Precision Operational Solutions' : 'Solusi Operasional Presisi Tinggi' }}</div>
                     <div style="font-size: 9.5pt; color: #475569; line-height: 1.5;">
-                        Gedung Artha Graha, Lt. 18, Kav. 52-53, Jakarta Selatan<br>
-                        T: +62 21 555 1234 &bull; E: billing@jnjgroup.com &bull; W: www.jnjgroup.com
+                        {{ \App\Models\Setting::get('company_address', 'Jl. Dewa RT.002/002 No.70, Ciracas, Jakarta Timur') }}<br>
+                        T: {{ \App\Models\Setting::get('company_phone', '0812-400-0749 / 0812-8330-0900') }} &bull; E: {{ \App\Models\Setting::get('company_email', 'Jayarooter@gmail.com / Jawarooter@gmail.com') }} &bull; W: {{ \App\Models\Setting::get('company_website', 'Jayarooter.com / Jawarooter.com') }}
                     </div>
                 </td>
                 <td style="width: 40%; vertical-align: top; text-align: right; padding-top: 10px;">
@@ -227,7 +227,7 @@
 
         <!-- Footer -->
         <div class="footer">
-            J&J GROUP Enterprise Billing &bull; tech-ops@jnjgroup.com &bull; +62 21 555 1234<br>
+            {{ \App\Models\Setting::get('company_name', 'J&J GROUP') }} &bull; E: {{ explode(' / ', \App\Models\Setting::get('company_email', 'Jayarooter@gmail.com'))[0] }} &bull; T: {{ explode(' / ', \App\Models\Setting::get('company_phone', '0812-400-0749'))[0] }}<br>
             {{ app()->getLocale() == 'en' ? 'This is an electronically generated document. No signature required.' : 'Dokumen ini dibuat secara elektronik. Tidak memerlukan tanda tangan.' }}
         </div>
     </div>

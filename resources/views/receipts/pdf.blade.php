@@ -121,11 +121,11 @@
                 @else
                     <div style="font-size: 24px; font-weight: 900; color: #0f172a; margin-bottom: 15px;">J&J GROUP<span style="color: #c89d3c;">.</span></div>
                 @endif
-                <div class="company-name">J&J GROUP Technical Services</div>
+                <div class="company-name">{{ \App\Models\Setting::get('company_name', 'J&J GROUP Technical Services') }}</div>
                 <div class="company-tagline">High-Precision Operational Solutions</div>
                 <div class="company-contact">
-                    Gedung Artha Graha, Lt. 18, Kav. 52-53, Jakarta Selatan<br>
-                    T: +62 21 555 1234 | E: billing@jnjgroup.com | W: www.jnjgroup.com
+                    {{ \App\Models\Setting::get('company_address', 'Jl. Dewa RT.002/002 No.70, Ciracas, Jakarta Timur') }}<br>
+                    T: {{ \App\Models\Setting::get('company_phone', '0812-400-0749 / 0812-8330-0900') }} | E: {{ \App\Models\Setting::get('company_email', 'Jayarooter@gmail.com / Jawarooter@gmail.com') }} | W: {{ \App\Models\Setting::get('company_website', 'Jayarooter.com / Jawarooter.com') }}
                 </div>
             </div>
             <div class="doc-info">
@@ -216,7 +216,7 @@
 
         <!-- Footer -->
         <div class="footer">
-            J&J GROUP Enterprise Billing &bull; tech-ops@jnjgroup.com &bull; +62 21 555 1234<br>
+            {{ \App\Models\Setting::get('company_name', 'J&J GROUP') }} &bull; E: {{ explode(' / ', \App\Models\Setting::get('company_email', 'Jayarooter@gmail.com'))[0] }} &bull; T: {{ explode(' / ', \App\Models\Setting::get('company_phone', '0812-400-0749'))[0] }}<br>
             {{ app()->getLocale() == 'en' ? 'This document is a formal quotation receipt. Subject to terms and conditions.' : 'Dokumen ini adalah kuitansi penawaran resmi. Tunduk pada syarat dan ketentuan.' }}
         </div>
     </div>

@@ -42,7 +42,7 @@
                                 <h3 class="text-lg font-black text-slate-900 uppercase tracking-tight">{{ __('help.cards.tech_support_title') }}</h3>
                                 <p class="text-xs md:text-sm text-slate-500 leading-relaxed font-semibold">{{ __('help.cards.tech_support_desc') }}</p>
                             </div>
-                            <a href="mailto:support@jnjgroup.com" class="inline-flex items-center gap-2 text-xs font-black text-emerald-600 uppercase tracking-widest hover:text-emerald-800 transition-colors mt-6">
+                            <a href="mailto:{{ explode(' / ', \App\Models\Setting::get('company_email', 'Jayarooter@gmail.com'))[0] }}" class="inline-flex items-center gap-2 text-xs font-black text-emerald-600 uppercase tracking-widest hover:text-emerald-800 transition-colors mt-6">
                                 {{ __('help.cards.tech_support_action') }} &rarr;
                             </a>
                         </div>

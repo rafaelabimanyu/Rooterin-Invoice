@@ -167,7 +167,7 @@ The data architecture is designed for high relational integrity:
 ---
 
 **Rooterin Enterprise Billing System**
-*   **Support**: [rooterinofficial@gmail.com](mailto:rooterinofficial@gmail.com)
+*   **Support**: [Jayarooter@gmail.com](mailto:Jayarooter@gmail.com)
 *   **Project Lead**: Rafael Abimanyu / Antigravity AI
 *   **GitHub**: [rafaelabimanyu/Rooterin-Invoice](https://github.com/rafaelabimanyu/Rooterin-Invoice)
 

@@ -276,7 +276,12 @@ class InvoiceController extends Controller
             \Illuminate\Support\Facades\App::setLocale($locale);
         }
 
-        $invoice->load(['client', 'items', 'receipt', 'attachments']);
+        \Illuminate\Support\Facades\Log::info("DEBUG INVOICE PDF: Invoice ID={$invoice->id}, Number={$invoice->invoice_number}");
+        \Illuminate\Support\Facades\Log::info("DEBUG INVOICE PDF: Total attachments in DB: " . $invoice->attachments()->count());
+
+        $invoice->load(['client', 'items', 'receipt']);
+        $attachments = $invoice->attachments()->take(4)->get();
+        $invoice->setRelation('attachments', $attachments);
 
         // Convert attachments to Base64
         foreach ($invoice->attachments as $attachment) {
@@ -294,6 +299,11 @@ class InvoiceController extends Controller
             }
         }
 
+        \Illuminate\Support\Facades\Log::info("DEBUG INVOICE PDF: Loaded attachments count: " . $attachments->count());
+        foreach ($attachments as $index => $att) {
+            \Illuminate\Support\Facades\Log::info("DEBUG INVOICE PDF: Attachment #{$index} ID={$att->id}, path={$att->file_path}, base64 length=" . ($att->base64_data ? strlen($att->base64_data) : 'NULL'));
+        }
+
         // Convert logo to Base64
         $logoPath = public_path('img/logo-jnj.png');
         $logoBase64 = null;
@@ -308,7 +318,7 @@ class InvoiceController extends Controller
             $ttdBase64 = 'data:image/png;base64,' . base64_encode(file_get_contents($ttdPath));
         }
 
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('invoices.pdf', compact('invoice', 'logoBase64', 'ttdBase64'))
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('invoices.pdf', compact('invoice', 'attachments', 'logoBase64', 'ttdBase64'))
             ->setPaper('a4')
             ->setOption([
                 'isRemoteEnabled' => true, 

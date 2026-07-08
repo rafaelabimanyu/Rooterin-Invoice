@@ -6,7 +6,7 @@
     <title>{{ __('invoice.title') }} #{{ $invoice->invoice_number }}</title>
     <style>
         @page { 
-            margin-top: 60px; 
+            margin-top: 50px; 
             margin-bottom: 50px; 
             margin-left: 50px; 
             margin-right: 50px; 
@@ -40,8 +40,15 @@
             text-transform: uppercase;
             letter-spacing: 20px;
         }
+        
+        .container-page2 {
+            padding: 0;
+            position: relative;
+            box-sizing: border-box;
+            min-height: 800px;
+        }
 
-        .divider { border-top: 2px solid #f1f5f9; margin: 25px 0; clear: both; }
+        .divider { border-top: 2px solid #f1f5f9; margin: 20px 0; clear: both; }
 
         /* Addressing */
         .addressing { margin-bottom: 30px; }
@@ -106,6 +113,7 @@
             color: #94a3b8;
             border-top: 1px solid #f1f5f9;
             padding-top: 15px;
+            font-weight: bold;
         }
 
         .clearfix::after { content: ""; clear: both; display: table; }
@@ -114,6 +122,7 @@
     </style>
 </head>
 <body>
+    <!-- Halaman Pertama: Detail Invoice & Transaksi -->
     <div class="container">
         <!-- Watermark -->
         <div class="watermark">{{ $invoice->status === 'paid' ? __('invoice.paid') : __('invoice.unpaid') }}</div>
@@ -123,65 +132,30 @@
             <tr>
                 <td style="width: 65%; vertical-align: top;">
                     <div style="font-size: 14pt; font-weight: 900; color: #0f172a; text-transform: uppercase; margin: 0; line-height: 1.2;">J&J GROUP PLUMBING SERVICES</div>
-                    <div style="font-size: 8.5pt; color: #c89d3c; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px;">SOLUSI PINTAR, SALURAN LANCAR, TANPA BONGKAR*</div>
+                    <div style="font-size: 8.5pt; color: #c89d3c; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; margin-bottom: 8px;">SOLUSI PINTAR, SALURAN LANCAR, TANPA BONGKAR*</div>
+                    <div style="font-size: 9pt; color: #475569; line-height: 1.5;">
+                        <span style="display: block; margin-bottom: 3px; font-weight: bold; color: #0f172a;">{{ \App\Models\Setting::get('company_address', 'Jl. Dewa RT.002/002 No.70, Ciracas, Jakarta Timur') }}</span>
+                        @php
+                            $phonesStr = \App\Models\Setting::get('company_phone', '0812-40000-759 / 0812-40000-749 / 0812-83-300-900');
+                            $phones = array_map('trim', explode('/', $phonesStr));
+                        @endphp
+                        Kontak: 
+                        @foreach($phones as $phone)
+                            <strong style="color: #0f172a;">{{ $phone }}</strong>@if(!$loop->last) / @endif
+                        @endforeach
+                        <br>
+                        Email: {{ strtolower(\App\Models\Setting::get('company_email', 'jayarooter@gmail.com / jawarooter@gmail.com')) }} | 
+                        Website: {{ strtolower(\App\Models\Setting::get('company_website', 'jayarooter.com / jawarooter.com')) }}
+                    </div>
                 </td>
                 <td style="width: 35%; vertical-align: top; text-align: right;">
                     @if(isset($logoBase64) && $logoBase64)
-                        <img src="{{ $logoBase64 }}" style="height: 60px;">
+                        <img src="{{ $logoBase64 }}" style="height: 60px; margin-bottom: 8px;">
                     @else
-                        <div style="font-size: 20px; font-weight: 900; color: #0f172a;">J&J GROUP<span style="color: #c89d3c;">.</span></div>
+                        <div style="font-size: 20px; font-weight: 900; color: #0f172a; margin-bottom: 8px;">J&J GROUP<span style="color: #c89d3c;">.</span></div>
                     @endif
-                </td>
-            </tr>
-        </table>
-
-        <!-- Two-column info table: Address/Contacts & Invoice Details -->
-        <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
-            <tr>
-                <td style="width: 60%; vertical-align: top;">
-                    <div style="font-size: 9.5pt; color: #475569; line-height: 1.6;">
-                        <span style="color: #0f172a; font-weight: bold; display: block; margin-bottom: 6px;">{{ \App\Models\Setting::get('company_address', 'Jl. Dewa RT.002/002 No.70, Ciracas, Jakarta Timur') }}</span>
-                        <div style="margin-top: 5px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="10" height="10" style="display: inline-block; vertical-align: middle; margin-right: 6px;" fill="none" stroke="#c89d3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                            @php
-                                $phonesStr = \App\Models\Setting::get('company_phone', '0812-40000-759 / 0812-40000-749 / 0812-83-300-900');
-                                $phones = array_map('trim', explode('/', $phonesStr));
-                                $primary = '0812-40000-759';
-                                $reordered = [];
-                                if (in_array($primary, $phones)) {
-                                    $reordered[] = $primary;
-                                    foreach ($phones as $phone) {
-                                        if ($phone !== $primary) {
-                                            $reordered[] = $phone;
-                                        }
-                                    }
-                                } else {
-                                    $reordered = $phones;
-                                }
-                            @endphp
-                            <span style="vertical-align: middle;">
-                                @foreach($reordered as $index => $phone)
-                                    <strong style="color: #0f172a;">{{ $phone }}</strong>@if(!$loop->last) / @endif
-                                @endforeach
-                            </span>
-                        </div>
-                        <div style="margin-top: 4px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="10" height="10" style="display: inline-block; vertical-align: middle; margin-right: 6px;" fill="none" stroke="#c89d3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                            <span style="vertical-align: middle;">{{ strtolower(\App\Models\Setting::get('company_email', 'jayarooter@gmail.com / jawarooter@gmail.com')) }}</span>
-                        </div>
-                        <div style="margin-top: 4px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="10" height="10" style="display: inline-block; vertical-align: middle; margin-right: 6px;" fill="none" stroke="#c89d3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-                            <span style="vertical-align: middle;">{{ strtolower(\App\Models\Setting::get('company_website', 'jayarooter.com / jawarooter.com')) }}</span>
-                        </div>
-                    </div>
-                </td>
-                <td style="width: 40%; vertical-align: top; text-align: right; padding-top: 5px;">
-                    <div style="font-size: 24pt; font-weight: 900; color: #0f172a; text-transform: uppercase; margin-bottom: 2px; letter-spacing: -1px;">{{ __('invoice.title') }}</div>
-                    <div style="font-size: 13pt; font-weight: 700; color: #c89d3c; margin-bottom: 15px;">#{{ $invoice->invoice_number }}</div>
-                    <div style="font-size: 9.5pt; color: #64748b; line-height: 1.4;">
-                        {{ __('invoice.date') }}: <b style="color: #0f172a;">{{ $invoice->tanggal_invoice ? $invoice->tanggal_invoice->format('d M Y') : '-' }}</b><br>
-                        {{ __('invoice.due_date') }}: <b style="color: #0f172a;">{{ $invoice->due_date ? $invoice->due_date->format('d M Y') : '-' }}</b>
-                    </div>
+                    <div style="font-size: 24pt; font-weight: 900; color: #0f172a; text-transform: uppercase; margin-bottom: 2px; letter-spacing: -1px; line-height: 1.1;">{{ __('invoice.title') }}</div>
+                    <div style="font-size: 13pt; font-weight: 700; color: #c89d3c;">#{{ $invoice->invoice_number }}</div>
                 </td>
             </tr>
         </table>
@@ -204,12 +178,16 @@
             </div>
             <div class="status-box">
                 <span class="section-label">{{ __('invoice.payment_status') }}</span>
-                <div class="badge {{ $invoice->status === 'paid' ? 'badge-paid' : 'badge-unpaid' }}">
+                <div class="badge {{ $invoice->status === 'paid' ? 'badge-paid' : 'badge-unpaid' }}" style="margin-bottom: 12px;">
                     {{ $invoice->status === 'paid' ? __('invoice.paid') : __('invoice.unpaid') }}
                 </div>
+                <div style="font-size: 9pt; color: #475569; line-height: 1.4;">
+                    {{ __('invoice.date') }}: <b style="color: #0f172a;">{{ $invoice->tanggal_invoice ? $invoice->tanggal_invoice->format('d M Y') : '-' }}</b><br>
+                    {{ __('invoice.due_date') }}: <b style="color: #0f172a;">{{ $invoice->due_date ? $invoice->due_date->format('d M Y') : '-' }}</b>
+                </div>
                 @if($invoice->warranty)
-                <div style="margin-top: 20px;">
-                    <span class="section-label" style="margin-bottom: 5px;">{{ __('invoice.warranty') }}</span>
+                <div style="margin-top: 12px;">
+                    <span class="section-label" style="margin-bottom: 4px; display: block;">{{ __('invoice.warranty') }}</span>
                     <div style="font-size: 10pt; font-weight: 700; color: #0f172a;">{{ $invoice->warranty }}</div>
                 </div>
                 @endif
@@ -220,10 +198,10 @@
         <table class="items-table">
             <thead>
                 <tr>
-                    <th width="50%">{{ __('invoice.description') }}</th>
-                    <th width="10%" class="text-center">{{ __('invoice.quantity') }}</th>
-                    <th width="20%" class="text-right">{{ __('invoice.price') }}</th>
-                    <th width="20%" class="text-right">{{ __('invoice.total') }}</th>
+                    <th width="50%">DESKRIPSI</th>
+                    <th width="10%" class="text-center">QTY</th>
+                    <th width="20%" class="text-right">HARGA</th>
+                    <th width="20%" class="text-right">TOTAL</th>
                 </tr>
             </thead>
             <tbody>
@@ -240,13 +218,6 @@
                 @endforeach
             </tbody>
         </table>
-        @if($invoice->notes)
-        <div style="margin-top: 25px; clear: both; page-break-inside: avoid;">
-            <span class="section-label">{{ __('invoice.notes') }}</span>
-            <div style="font-size: 9pt; color: #64748b; line-height: 1.5;">{{ $invoice->notes }}</div>
-        </div>
-        @endif
-    </div>
 
         <!-- Bottom Layout Table: Bank Account Info (Left) & Financial Summary + Standalone Signature (Right) -->
         <div class="bottom-section" style="page-break-inside: avoid;">
@@ -267,29 +238,35 @@
                         <!-- Ringkasan Keuangan -->
                         <table style="width: 100%; border-collapse: collapse;">
                             <tr>
-                                <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 600; font-size: 10pt;">{{ __('invoice.subtotal') }}</td>
-                                <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 700; color: #0f172a; font-size: 10pt;">Rp {{ number_format($invoice->subtotal, 0, ',', '.') }}</td>
+                                <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 600; font-size: 10pt;">SUBTOTAL</td>
+                                <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 700; color: #0f172a; font-size: 10pt;">Rp {{ number_format($invoice->subtotal, 0, ',', '.') }}</td>
                             </tr>
-                            @if($invoice->tax_percent > 0)
+                            @if($invoice->discount > 0)
                             <tr>
-                                <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 600; font-size: 10pt;">{{ __('invoice.tax') }} ({{ $invoice->tax_percent }}%)</td>
-                                <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 700; color: #0f172a; font-size: 10pt;">+ Rp {{ number_format($invoice->subtotal * ($invoice->tax_percent/100), 0, ',', '.') }}</td>
-                            </tr>
-                            @endif
-                            @if($invoice->discount_percent > 0)
-                            <tr>
-                                <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 600; font-size: 10pt;">{{ __('invoice.discount') }} ({{ $invoice->discount_percent }}%)</td>
-                                <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 700; color: #0f172a; font-size: 10pt;">- Rp {{ number_format($invoice->subtotal * ($invoice->discount_percent/100), 0, ',', '.') }}</td>
+                                <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 600; font-size: 10pt;">Discount</td>
+                                <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 700; color: #ef4444; font-size: 10pt;">- Rp {{ number_format($invoice->discount, 0, ',', '.') }}</td>
                             </tr>
                             @endif
+                            @if($invoice->ppn > 0)
                             <tr>
-                                <td style="padding: 15px; background: #0f172a; border-top-left-radius: 12px; border-bottom-left-radius: 12px; color: rgba(255,255,255,0.8); font-size: 10.5pt; font-weight: 900; text-transform: uppercase;">{{ __('invoice.grand_total') }}</td>
+                                <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 600; font-size: 10pt;">PPN</td>
+                                <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 700; color: #0f172a; font-size: 10pt;">+ Rp {{ number_format($invoice->ppn, 0, ',', '.') }}</td>
+                            </tr>
+                            @endif
+                            @if($invoice->pph > 0)
+                            <tr>
+                                <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 600; font-size: 10pt;">PPh</td>
+                                <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 700; color: #ef4444; font-size: 10pt;">- Rp {{ number_format($invoice->pph, 0, ',', '.') }}</td>
+                            </tr>
+                            @endif
+                            <tr>
+                                <td style="padding: 15px; background: #0f172a; border-top-left-radius: 12px; border-bottom-left-radius: 12px; color: rgba(255,255,255,0.8); font-size: 10.5pt; font-weight: 900; text-transform: uppercase;">TOTAL</td>
                                 <td style="padding: 15px; background: #0f172a; border-top-right-radius: 12px; border-bottom-right-radius: 12px; text-align: right; color: #ffffff; font-size: 15pt; font-weight: 900; white-space: nowrap;">Rp {{ number_format($invoice->total, 0, ',', '.') }}</td>
                             </tr>
                         </table>
 
                         <!-- Tanda Tangan (di bawah ringkasan keuangan, margin-top cukup, dipusatkan) -->
-                        <div style="margin-top: 35px; text-align: center;">
+                        <div style="margin-top: 30px; text-align: center;">
                             @if(isset($ttdBase64) && $ttdBase64)
                                 <img src="{{ $ttdBase64 }}" style="width: 180px; display: inline-block;">
                             @else
@@ -301,67 +278,147 @@
             </table>
         </div>
 
-    <!-- Footer -->
-    <div class="footer">
-        J&J GROUP PLUMBING SERVICES &bull; E: {{ explode(' / ', \App\Models\Setting::get('company_email', 'Jayarooter@gmail.com'))[0] }} &bull; T: {{ \App\Models\Setting::get('company_phone', '0812-40000-759 / 0812-40000-749 / 0812-83-300-900') }}
+        <!-- Footer Halaman 1 -->
+        <div class="footer">
+            J&J GROUP PLUMBING SERVICE | SOLUSI PINTAR, SALURAN LANCAR, TANPA BONGKAR!
+        </div>
     </div>
 
-    <!-- Documentation Page -->
-    @if($invoice->attachments && $invoice->attachments->count() > 0)
+    <!-- Halaman Kedua: Dokumentasi & Catatan -->
     <div style="page-break-before: always;">
-        <div class="container">
-            <!-- Documentation Header - Styled matching Lembar 1 -->
-            <table style="width: 100%; border-collapse: collapse; margin-top: 20px; margin-bottom: 25px;">
+        <div class="container-page2">
+            <!-- Header Halaman 2 -->
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
                 <tr>
-                    <td style="width: 60%; vertical-align: top;">
-                        @if(isset($logoBase64) && $logoBase64)
-                            <img src="{{ $logoBase64 }}" style="height: 75px; margin-bottom: 12px;">
-                        @else
-                            <div style="font-size: 28px; font-weight: 900; color: #0f172a; margin-bottom: 12px;">J&J GROUP<span style="color: #c89d3c;">.</span></div>
-                        @endif
-                        <div style="font-size: 12pt; font-weight: 900; color: #0f172a; text-transform: uppercase; margin: 0; line-height: 1.2;">J&J GROUP PLUMBING SERVICES</div>
+                    <td style="width: 65%; vertical-align: top;">
+                        <div style="font-size: 14pt; font-weight: 900; color: #0f172a; text-transform: uppercase; margin: 0; line-height: 1.2;">J&J GROUP PLUMBING SERVICES</div>
+                        <div style="font-size: 8.5pt; color: #c89d3c; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; margin-bottom: 8px;">SOLUSI PINTAR, SALURAN LANCAR, TANPA BONGKAR*</div>
+                        <div style="font-size: 8.5pt; color: #475569; line-height: 1.5;">
+                            {{ \App\Models\Setting::get('company_address', 'Jl. Dewa RT.002/002 No.70, Ciracas, Jakarta Timur') }}
+                        </div>
                     </td>
-                    <td style="width: 40%; vertical-align: top; text-align: right; padding-top: 10px;">
-                        <div style="font-size: 20pt; font-weight: 900; color: #0f172a; text-transform: uppercase; margin-bottom: 2px;">{{ __('invoice.documentation') }}</div>
-                        <div style="font-size: 12pt; font-weight: 700; color: #c89d3c;">#{{ $invoice->invoice_number }}</div>
+                    <td style="width: 35%; vertical-align: top; text-align: right;">
+                        @if(isset($logoBase64) && $logoBase64)
+                            <img src="{{ $logoBase64 }}" style="height: 45px; margin-bottom: 5px;">
+                        @endif
+                        <div style="font-size: 13pt; font-weight: 900; color: #0f172a; text-transform: uppercase; line-height: 1.1;">DOKUMENTASI</div>
+                        <div style="font-size: 10pt; font-weight: 700; color: #c89d3c;">#{{ $invoice->invoice_number }}</div>
                     </td>
                 </tr>
             </table>
+
+            <div class="divider" style="margin: 10px 0;"></div>
+
+            <!-- Dokumentasi Pekerjaan Section -->
+            <span class="section-label" style="font-size: 10pt; color: #0f172a; border-bottom: 2px solid #c89d3c; padding-bottom: 2px; margin-bottom: 10px;">DOKUMENTASI PEKERJAAN</span>
             
-            <div class="divider"></div>
-            
-            <div class="clearfix">
-                @foreach($invoice->attachments as $attachment)
-                <div style="float: left; width: 48%; margin-right: 4%; margin-bottom: 30px; @if($loop->iteration % 2 == 0) margin-right: 0; @endif">
-                    @if($attachment->base64_data)
-                        <img src="{{ $attachment->base64_data }}" style="width: 100%; border-radius: 12px; border: 1px solid #f1f5f9;">
-                    @else
-                        <div style="width: 100%; height: 150px; background: #f1f5f9; border-radius: 12px; text-align: center; line-height: 150px; color: #94a3b8; font-size: 10px;">
-                            {{ app()->getLocale() == 'en' ? 'Image Missing' : 'Gambar Tidak Ditemukan' }}
-                        </div>
-                    @endif
-                    @if($attachment->caption)
-                    <div style="font-size: 9.5pt; color: #64748b; margin-top: 10px; font-weight: 700; text-align: center;">{{ $attachment->caption }}</div>
-                    @endif
-                </div>
-                @endforeach
+            <div style="font-size: 9pt; color: #64748b; margin-bottom: 8px; font-weight: bold;">
+                Total foto terdeteksi: {{ count($attachments) }}
             </div>
             
-            <!-- Technical notes section to balance page footer -->
-            <div style="margin-top: 40px; border-top: 1px solid #e2e8f0; padding-top: 20px; clear: both;">
-                <span class="section-label" style="margin-bottom: 8px; display: block;">{{ app()->getLocale() == 'en' ? 'TECHNICAL OPERATIONS STATEMENT' : 'PERNYATAAN OPERASIONAL TEKNIS' }}</span>
-                <p style="font-size: 9pt; color: #64748b; line-height: 1.6; margin: 0;">
-                    {{ app()->getLocale() == 'en' 
-                        ? 'Note: The above documentation was captured directly on-site by authorized J&J GROUP technicians using high-precision equipment to verify task completion and compliance with strict quality standards.' 
-                        : 'Catatan: Dokumentasi di atas diambil langsung di lokasi kerja oleh teknisi resmi J&J GROUP menggunakan peralatan presisi tinggi untuk memverifikasi penyelesaian pekerjaan sesuai standar kualitas yang ketat.' }}
-                </p>
+            @if(count($attachments) > 0)
+                @php
+                    $count = count($attachments);
+                @endphp
+                
+                @if($count === 1)
+                    <!-- Single Image Layout -->
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
+                        <tr>
+                            <td style="width: 100%; padding: 4px; vertical-align: top;">
+                                <div style="width: 100%; height: 160px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0; text-align: center; line-height: 160px; overflow: hidden;">
+                                    @if($attachments[0]->base64_data)
+                                        <img src="{{ $attachments[0]->base64_data }}" style="max-width: 100%; max-height: 100%; vertical-align: middle; display: inline-block;">
+                                    @else
+                                        <div style="color: #94a3b8; font-size: 9pt;">{{ app()->getLocale() == 'en' ? 'Image Missing' : 'Gambar Tidak Ditemukan' }}</div>
+                                    @endif
+                                </div>
+                                @if($attachments[0]->caption)
+                                    <div style="font-size: 8pt; color: #475569; margin-top: 4px; font-weight: 600; text-align: center; line-height: 1.2;">{{ $attachments[0]->caption }}</div>
+                                @endif
+                            </td>
+                        </tr>
+                    </table>
+                @elseif($count === 2)
+                    <!-- Two Image Layout -->
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
+                        <tr>
+                            @foreach($attachments as $attachment)
+                                <td style="width: 50%; padding: 4px; vertical-align: top;">
+                                    <div style="width: 100%; height: 130px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0; text-align: center; line-height: 130px; overflow: hidden;">
+                                        @if($attachment->base64_data)
+                                            <img src="{{ $attachment->base64_data }}" style="max-width: 100%; max-height: 100%; vertical-align: middle; display: inline-block;">
+                                        @else
+                                            <div style="color: #94a3b8; font-size: 9pt;">{{ app()->getLocale() == 'en' ? 'Image Missing' : 'Gambar Tidak Ditemukan' }}</div>
+                                        @endif
+                                    </div>
+                                    @if($attachment->caption)
+                                        <div style="font-size: 8pt; color: #475569; margin-top: 4px; font-weight: 600; text-align: center; line-height: 1.2;">{{ $attachment->caption }}</div>
+                                    @endif
+                                </td>
+                            @endforeach
+                        </tr>
+                    </table>
+                @else
+                    <!-- Grid 2x2 Layout (for 3 or 4 images) -->
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
+                        @foreach($attachments->chunk(2) as $row)
+                            <tr>
+                                @foreach($row as $attachment)
+                                    <td style="width: 50%; padding: 4px; vertical-align: top;">
+                                        <div style="width: 100%; height: 100px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0; text-align: center; line-height: 100px; overflow: hidden;">
+                                            @if($attachment->base64_data)
+                                                <img src="{{ $attachment->base64_data }}" style="max-width: 100%; max-height: 100%; vertical-align: middle; display: inline-block;">
+                                            @else
+                                                <div style="color: #94a3b8; font-size: 9pt;">{{ app()->getLocale() == 'en' ? 'Image Missing' : 'Gambar Tidak Ditemukan' }}</div>
+                                            @endif
+                                        </div>
+                                        @if($attachment->caption)
+                                            <div style="font-size: 7.5pt; color: #475569; margin-top: 3px; font-weight: 600; text-align: center; line-height: 1.2;">{{ $attachment->caption }}</div>
+                                        @endif
+                                    </td>
+                                @endforeach
+                                @if($row->count() < 2)
+                                    <td style="width: 50%; padding: 4px;"></td>
+                                @endif
+                            </tr>
+                        @endforeach
+                    </table>
+                @endif
+            @else
+                <div style="padding: 20px; background: #f8fafc; border-radius: 8px; border: 1px dashed #cbd5e1; text-align: center; color: #94a3b8; font-size: 9pt; margin-bottom: 15px;">
+                    {{ app()->getLocale() == 'en' ? 'No work documentation photos uploaded' : 'Tidak ada foto dokumentasi pekerjaan yang diunggah' }}
+                </div>
+            @endif
+
+            <!-- Penyebab Section -->
+            @if($invoice->cause_of_problem)
+                <div style="margin-bottom: 15px;">
+                    <span class="section-label" style="font-size: 10pt; color: #0f172a; border-bottom: 2px solid #c89d3c; padding-bottom: 2px; margin-bottom: 6px;">PENYEBAB</span>
+                    <div style="font-size: 9pt; color: #334155; line-height: 1.4; background: #f8fafc; padding: 10px 15px; border-radius: 6px; border-left: 3px solid #c89d3c;">
+                        {{ $invoice->cause_of_problem }}
+                    </div>
+                </div>
+            @endif
+
+            <!-- Catatan Section -->
+            <div style="margin-bottom: 20px;">
+                <span class="section-label" style="font-size: 10pt; color: #0f172a; border-bottom: 2px solid #c89d3c; padding-bottom: 2px; margin-bottom: 6px;">CATATAN</span>
+                <div style="font-size: 9pt; color: #475569; line-height: 1.5; background: #f8fafc; padding: 10px 15px; border-radius: 6px; font-style: italic; border-left: 3px solid #0f172a;">
+                    Pekerjaan ini telah diverifikasi langsung di lokasi oleh teknisi kami menggunakan peralatan presisi tinggi, sesuai dengan standar kualitas J&J GROUP.
+                </div>
+                @if($invoice->notes)
+                <div style="font-size: 8.5pt; color: #64748b; line-height: 1.4; padding-left: 10px; margin-top: 8px;">
+                    <strong>Catatan Tambahan:</strong> {{ $invoice->notes }}
+                </div>
+                @endif
             </div>
 
+            <!-- Footer Halaman 2 -->
             <div class="footer">
-                Reference Document #{{ $invoice->invoice_number }} &bull; Page 2 (Attachments)
+                J&J GROUP PLUMBING SERVICE | SOLUSI PINTAR, SALURAN LANCAR, TANPA BONGKAR!
             </div>
         </div>
     </div>
-    @endif
 </body>
 </html>

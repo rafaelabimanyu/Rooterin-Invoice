@@ -90,7 +90,41 @@ class ReceiptController extends Controller
             \Illuminate\Support\Facades\App::setLocale($locale);
         }
 
+        \Illuminate\Support\Facades\Log::info("DEBUG RECEIPT PDF: Receipt ID={$receipt->id}, Number={$receipt->receipt_number}");
+        if ($receipt->invoice) {
+            \Illuminate\Support\Facades\Log::info("DEBUG RECEIPT PDF: Total invoice attachments in DB: " . $receipt->invoice->attachments()->count());
+        }
+
         $receipt->load(['invoice.client', 'invoice.items']);
+        if ($receipt->invoice) {
+            $attachments = $receipt->invoice->attachments()->take(4)->get();
+            $receipt->invoice->setRelation('attachments', $attachments);
+        } else {
+            $attachments = collect();
+        }
+
+        // Convert attachments to Base64
+        if ($receipt->invoice && $receipt->invoice->attachments) {
+            foreach ($receipt->invoice->attachments as $attachment) {
+                $path = storage_path('app/public/' . $attachment->file_path);
+                if (file_exists($path)) {
+                    try {
+                        $mime = mime_content_type($path) ?: 'image/jpeg';
+                        $data = file_get_contents($path);
+                        $attachment->base64_data = 'data:' . $mime . ';base64,' . base64_encode($data);
+                    } catch (\Exception $e) {
+                        $attachment->base64_data = null;
+                    }
+                } else {
+                    $attachment->base64_data = null;
+                }
+            }
+        }
+
+        \Illuminate\Support\Facades\Log::info("DEBUG RECEIPT PDF: Loaded attachments count: " . $attachments->count());
+        foreach ($attachments as $index => $att) {
+            \Illuminate\Support\Facades\Log::info("DEBUG RECEIPT PDF: Attachment #{$index} ID={$att->id}, path={$att->file_path}, base64 length=" . ($att->base64_data ? strlen($att->base64_data) : 'NULL'));
+        }
 
         // Convert logo to Base64
         $logoPath = public_path('img/logo-jnj.png');
@@ -106,7 +140,7 @@ class ReceiptController extends Controller
             $ttdBase64 = 'data:image/png;base64,' . base64_encode(file_get_contents($ttdPath));
         }
 
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('receipts.pdf', compact('receipt', 'logoBase64', 'ttdBase64'));
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('receipts.pdf', compact('receipt', 'attachments', 'logoBase64', 'ttdBase64'));
         return $pdf->download("Receipt-{$receipt->receipt_number}.pdf");
     }
 

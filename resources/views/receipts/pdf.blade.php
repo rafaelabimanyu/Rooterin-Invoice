@@ -6,7 +6,7 @@
     <title>{{ app()->getLocale() == 'en' ? 'Receipt' : 'Kuitansi' }} #{{ $receipt->receipt_number }}</title>
     <style>
         @page { 
-            margin-top: 60px; 
+            margin-top: 50px; 
             margin-bottom: 50px; 
             margin-left: 50px; 
             margin-right: 50px; 
@@ -16,7 +16,7 @@
             color: #1e293b; 
             margin: 0; 
             padding: 0; 
-            font-size: 11px; 
+            font-size: 10pt; 
             line-height: 1.6; 
             background: #fff;
         }
@@ -24,7 +24,7 @@
             padding: 0; 
             padding-bottom: 350px; 
             position: relative; 
-            box-sizing: border-box; 
+            box-sizing: border-box;
         }
         
         /* Watermark */
@@ -40,31 +40,29 @@
             text-transform: uppercase;
             letter-spacing: 20px;
         }
-
-        /* Letterhead */
-        .header { margin-bottom: 40px; }
-        .logo-box { float: left; width: 60%; }
-        .logo-img { height: 60px; margin-bottom: 15px; }
-        .company-name { font-size: 16px; font-weight: 900; color: #0f172a; text-transform: uppercase; margin: 0; }
-        .company-tagline { font-size: 9px; color: #c89d3c; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
-        .company-contact { font-size: 9px; color: #64748b; line-height: 1.4; }
         
-        .doc-info { float: right; width: 35%; text-align: right; margin-top: 10px; }
-        .doc-type { font-size: 28px; font-weight: 900; color: #0f172a; text-transform: uppercase; margin-bottom: 5px; letter-spacing: -1px; }
-        .doc-id { font-size: 14px; font-weight: 700; color: #c89d3c; margin-bottom: 15px; }
-        .doc-meta { font-size: 10px; color: #64748b; }
-        .doc-meta b { color: #0f172a; }
+        .container-page2 {
+            padding: 0;
+            position: relative;
+            box-sizing: border-box;
+            min-height: 800px;
+        }
 
-        .divider { border-top: 2px solid #f1f5f9; margin: 30px 0; clear: both; }
+        .divider { border-top: 2px solid #f1f5f9; margin: 20px 0; clear: both; }
 
         /* Addressing */
-        .addressing { margin-bottom: 40px; }
-        .bill-to { float: left; width: 45%; }
-        .section-label { font-size: 9px; font-weight: 900; color: #94a3b8; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; display: block; }
+        .addressing { margin-bottom: 30px; }
+        .bill-to { float: left; width: 50%; }
+        .status-box { float: right; width: 45%; text-align: right; }
+        .section-label { font-size: 8.5pt; font-weight: 900; color: #94a3b8; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; display: block; }
         
         .client-card { background: #f8fafc; padding: 20px; border-radius: 15px; border: 1px solid #f1f5f9; }
-        .client-name { font-size: 14px; font-weight: 900; color: #0f172a; margin-bottom: 5px; }
-        .client-details { font-size: 10px; color: #64748b; line-height: 1.5; }
+        .client-name { font-size: 11pt; font-weight: 900; color: #0f172a; margin-bottom: 5px; }
+        .client-details { font-size: 9pt; color: #64748b; line-height: 1.5; }
+
+        .badge { display: inline-block; padding: 8px 20px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; font-size: 9pt; border-radius: 50px; }
+        .badge-paid { background: #ecfdf5; color: #059669; border: 1px solid #d1fae5; }
+        .badge-unpaid { background: #fef2f2; color: #e11d48; border: 1px solid #fee2e2; }
 
         /* Items Table */
         .items-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
@@ -73,7 +71,7 @@
             color: #fff; 
             text-align: left; 
             padding: 15px; 
-            font-size: 9px; 
+            font-size: 8.5pt; 
             font-weight: 900; 
             text-transform: uppercase; 
             letter-spacing: 1px;
@@ -86,13 +84,14 @@
         }
         .items-table tr:nth-child(even) { background: #fcfdfe; }
         
-        .item-desc-primary { font-weight: 700; color: #0f172a; font-size: 11px; }
-        .item-desc-secondary { font-size: 9px; color: #94a3b8; margin-top: 2px; }
+        .item-desc-primary { font-weight: 700; color: #0f172a; font-size: 10pt; }
+        .item-desc-secondary { font-size: 8.5pt; color: #94a3b8; margin-top: 2px; }
         
         /* Financials Box Styling */
         .bank-box { background: #f8fafc; padding: 20px; border-radius: 15px; border: 1px solid #e2e8f0; }
         .bank-title { font-size: 9pt; font-weight: 900; color: #0f172a; text-transform: uppercase; margin-bottom: 12px; display: block; }
         .bank-details { font-size: 9pt; color: #64748b; line-height: 1.6; }
+        .bank-details b { color: #0f172a; }
 
         thead { display: table-header-group; }
         tr { page-break-inside: avoid; }
@@ -110,10 +109,11 @@
             left: 0; 
             right: 0; 
             text-align: center; 
-            font-size: 8px;
+            font-size: 8pt;
             color: #94a3b8;
             border-top: 1px solid #f1f5f9;
             padding-top: 15px;
+            font-weight: bold;
         }
 
         .clearfix::after { content: ""; clear: both; display: table; }
@@ -122,6 +122,7 @@
     </style>
 </head>
 <body>
+    <!-- Halaman Pertama: Detail Kuitansi & Transaksi -->
     <div class="container">
         <!-- Watermark -->
         <div class="watermark">{{ app()->getLocale() == 'en' ? 'RECEIPT' : 'KUITANSI' }}</div>
@@ -131,65 +132,30 @@
             <tr>
                 <td style="width: 65%; vertical-align: top;">
                     <div style="font-size: 14pt; font-weight: 900; color: #0f172a; text-transform: uppercase; margin: 0; line-height: 1.2;">J&J GROUP PLUMBING SERVICES</div>
-                    <div style="font-size: 8.5pt; color: #c89d3c; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px;">SOLUSI PINTAR, SALURAN LANCAR, TANPA BONGKAR*</div>
+                    <div style="font-size: 8.5pt; color: #c89d3c; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; margin-bottom: 8px;">SOLUSI PINTAR, SALURAN LANCAR, TANPA BONGKAR*</div>
+                    <div style="font-size: 9pt; color: #475569; line-height: 1.5;">
+                        <span style="display: block; margin-bottom: 3px; font-weight: bold; color: #0f172a;">{{ \App\Models\Setting::get('company_address', 'Jl. Dewa RT.002/002 No.70, Ciracas, Jakarta Timur') }}</span>
+                        @php
+                            $phonesStr = \App\Models\Setting::get('company_phone', '0812-40000-759 / 0812-40000-749 / 0812-83-300-900');
+                            $phones = array_map('trim', explode('/', $phonesStr));
+                        @endphp
+                        Kontak: 
+                        @foreach($phones as $phone)
+                            <strong style="color: #0f172a;">{{ $phone }}</strong>@if(!$loop->last) / @endif
+                        @endforeach
+                        <br>
+                        Email: {{ strtolower(\App\Models\Setting::get('company_email', 'jayarooter@gmail.com / jawarooter@gmail.com')) }} | 
+                        Website: {{ strtolower(\App\Models\Setting::get('company_website', 'jayarooter.com / jawarooter.com')) }}
+                    </div>
                 </td>
                 <td style="width: 35%; vertical-align: top; text-align: right;">
                     @if(isset($logoBase64) && $logoBase64)
-                        <img src="{{ $logoBase64 }}" style="height: 60px;">
+                        <img src="{{ $logoBase64 }}" style="height: 60px; margin-bottom: 8px;">
                     @else
-                        <div style="font-size: 20px; font-weight: 900; color: #0f172a;">J&J GROUP<span style="color: #c89d3c;">.</span></div>
+                        <div style="font-size: 20px; font-weight: 900; color: #0f172a; margin-bottom: 8px;">J&J GROUP<span style="color: #c89d3c;">.</span></div>
                     @endif
-                </td>
-            </tr>
-        </table>
-
-        <!-- Two-column info table: Address/Contacts & Receipt Details -->
-        <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
-            <tr>
-                <td style="width: 60%; vertical-align: top;">
-                    <div style="font-size: 9.5pt; color: #475569; line-height: 1.6;">
-                        <span style="color: #0f172a; font-weight: bold; display: block; margin-bottom: 6px;">{{ \App\Models\Setting::get('company_address', 'Jl. Dewa RT.002/002 No.70, Ciracas, Jakarta Timur') }}</span>
-                        <div style="margin-top: 5px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="10" height="10" style="display: inline-block; vertical-align: middle; margin-right: 6px;" fill="none" stroke="#c89d3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                            @php
-                                $phonesStr = \App\Models\Setting::get('company_phone', '0812-40000-759 / 0812-40000-749 / 0812-83-300-900');
-                                $phones = array_map('trim', explode('/', $phonesStr));
-                                $primary = '0812-40000-759';
-                                $reordered = [];
-                                if (in_array($primary, $phones)) {
-                                    $reordered[] = $primary;
-                                    foreach ($phones as $phone) {
-                                        if ($phone !== $primary) {
-                                            $reordered[] = $phone;
-                                        }
-                                    }
-                                } else {
-                                    $reordered = $phones;
-                                }
-                            @endphp
-                            <span style="vertical-align: middle;">
-                                @foreach($reordered as $index => $phone)
-                                    <strong style="color: #0f172a;">{{ $phone }}</strong>@if(!$loop->last) / @endif
-                                @endforeach
-                            </span>
-                        </div>
-                        <div style="margin-top: 4px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="10" height="10" style="display: inline-block; vertical-align: middle; margin-right: 6px;" fill="none" stroke="#c89d3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                            <span style="vertical-align: middle;">{{ strtolower(\App\Models\Setting::get('company_email', 'jayarooter@gmail.com / jawarooter@gmail.com')) }}</span>
-                        </div>
-                        <div style="margin-top: 4px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="10" height="10" style="display: inline-block; vertical-align: middle; margin-right: 6px;" fill="none" stroke="#c89d3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-                            <span style="vertical-align: middle;">{{ strtolower(\App\Models\Setting::get('company_website', 'jayarooter.com / jawarooter.com')) }}</span>
-                        </div>
-                    </div>
-                </td>
-                <td style="width: 40%; vertical-align: top; text-align: right; padding-top: 5px;">
-                    <div style="font-size: 24pt; font-weight: 900; color: #0f172a; text-transform: uppercase; margin-bottom: 2px; letter-spacing: -1px;">{{ app()->getLocale() == 'en' ? 'Receipt' : 'Kuitansi' }}</div>
-                    <div style="font-size: 13pt; font-weight: 700; color: #c89d3c; margin-bottom: 15px;">#{{ $receipt->receipt_number }}</div>
-                    <div style="font-size: 9.5pt; color: #64748b; line-height: 1.4;">
-                        {{ app()->getLocale() == 'en' ? 'Receipt Date' : 'Tanggal Kuitansi' }}: <b style="color: #0f172a;">{{ $receipt->tanggal_receipt->format('d M Y') }}</b><br>
-                        {{ app()->getLocale() == 'en' ? 'Expiry Date' : 'Tanggal Kedaluwarsa' }}: <b style="color: #0f172a;">{{ $receipt->expiry_date->format('d M Y') }}</b>
-                    </div>
+                    <div style="font-size: 24pt; font-weight: 900; color: #0f172a; text-transform: uppercase; margin-bottom: 2px; letter-spacing: -1px; line-height: 1.1;">{{ app()->getLocale() == 'en' ? 'Receipt' : 'Kuitansi' }}</div>
+                    <div style="font-size: 13pt; font-weight: 700; color: #c89d3c;">#{{ $receipt->receipt_number }}</div>
                 </td>
             </tr>
         </table>
@@ -201,14 +167,30 @@
             <div class="bill-to">
                 <span class="section-label">{{ app()->getLocale() == 'en' ? 'CLIENT' : 'KLIEN' }}</span>
                 <div class="client-card">
-                    <div class="client-name">{{ $receipt->client->nama_client }}</div>
+                    <div class="client-name">{{ optional($receipt->client)->nama_client ?? 'Klien Tidak Ditemukan' }}</div>
                     <div class="client-details">
-                        <b>{{ $receipt->client->nama_perusahaan }}</b><br>
-                        {{ $receipt->client->alamat }}<br>
-                        {{ $receipt->client->kota }}, {{ $receipt->client->provinsi }}<br>
-                        {{ app()->getLocale() == 'en' ? 'Contact' : 'Kontak' }}: {{ $receipt->client->no_hp }}
+                        <b>{{ optional($receipt->client)->nama_perusahaan ?? '-' }}</b><br>
+                        {{ optional($receipt->client)->alamat ?? '-' }}<br>
+                        {{ optional($receipt->client)->kota ?? '-' }}, {{ optional($receipt->client)->provinsi ?? '-' }}<br>
+                        {{ app()->getLocale() == 'en' ? 'Contact' : 'Kontak' }}: {{ optional($receipt->client)->no_hp ?? '-' }}
                     </div>
                 </div>
+            </div>
+            <div class="status-box">
+                <span class="section-label">{{ app()->getLocale() == 'en' ? 'RECEIPT STATUS' : 'STATUS KUITANSI' }}</span>
+                <div class="badge badge-paid" style="margin-bottom: 12px;">
+                    {{ app()->getLocale() == 'en' ? 'Paid' : 'Lunas' }}
+                </div>
+                <div style="font-size: 9pt; color: #475569; line-height: 1.4;">
+                    {{ app()->getLocale() == 'en' ? 'Receipt Date' : 'Tanggal Kuitansi' }}: <b style="color: #0f172a;">{{ $receipt->tanggal_receipt ? $receipt->tanggal_receipt->format('d M Y') : '-' }}</b><br>
+                    {{ app()->getLocale() == 'en' ? 'Expiry Date' : 'Tanggal Kedaluwarsa' }}: <b style="color: #0f172a;">{{ $receipt->expiry_date ? $receipt->expiry_date->format('d M Y') : '-' }}</b>
+                </div>
+                @if($receipt->invoice && $receipt->invoice->warranty)
+                <div style="margin-top: 12px;">
+                    <span class="section-label" style="margin-bottom: 4px; display: block;">{{ app()->getLocale() == 'en' ? 'Warranty Period' : 'Masa Garansi' }}</span>
+                    <div style="font-size: 10pt; font-weight: 700; color: #0f172a;">{{ $receipt->invoice->warranty }}</div>
+                </div>
+                @endif
             </div>
         </div>
 
@@ -216,10 +198,10 @@
         <table class="items-table">
             <thead>
                 <tr>
-                    <th width="50%">{{ app()->getLocale() == 'en' ? 'Description' : 'Deskripsi' }}</th>
-                    <th width="10%" class="text-center">{{ app()->getLocale() == 'en' ? 'Qty' : 'Jumlah' }}</th>
-                    <th width="20%" class="text-right">{{ app()->getLocale() == 'en' ? 'Rate' : 'Harga' }}</th>
-                    <th width="20%" class="text-right">{{ app()->getLocale() == 'en' ? 'Total' : 'Total' }}</th>
+                    <th width="50%">DESKRIPSI</th>
+                    <th width="10%" class="text-center">QTY</th>
+                    <th width="20%" class="text-right">HARGA</th>
+                    <th width="20%" class="text-right">TOTAL</th>
                 </tr>
             </thead>
             <tbody>
@@ -236,13 +218,6 @@
                 @endforeach
             </tbody>
         </table>
-        @if($receipt->notes)
-        <div style="margin-top: 25px; clear: both; page-break-inside: avoid;">
-            <span class="section-label">{{ app()->getLocale() == 'en' ? 'Notes' : 'Catatan' }}</span>
-            <div style="font-size: 9pt; color: #64748b; line-height: 1.5;">{{ $receipt->notes }}</div>
-        </div>
-        @endif
-    </div>
 
         <!-- Bottom Layout Table: Bank Account Info (Left) & Financial Summary + Standalone Signature (Right) -->
         <div class="bottom-section" style="page-break-inside: avoid;">
@@ -251,7 +226,7 @@
                     <!-- Kolom Kiri (50%): Informasi Rekening Bank -->
                     <td style="width: 50%; vertical-align: top; padding-right: 25px;">
                         <div class="bank-box" style="margin: 0;">
-                             <span class="bank-title">{{ app()->getLocale() == 'en' ? 'Bank Account' : 'Rekening Bank' }}</span>
+                            <span class="bank-title">{{ app()->getLocale() == 'en' ? 'Bank Account' : 'Rekening Bank' }}</span>
                             <div class="bank-details" style="font-size: 9.5pt; line-height: 1.6; color: #475569;">
                                 {!! nl2br(e(\App\Models\Setting::get('bank_account_info') ?: "Bank: Bank Central Asia (BCA)\nAcc No: 6281873404\nName: Wibowo Pratikno")) !!}
                             </div>
@@ -263,29 +238,35 @@
                         <!-- Ringkasan Keuangan -->
                         <table style="width: 100%; border-collapse: collapse;">
                             <tr>
-                                <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 600; font-size: 10pt;">Subtotal</td>
-                                <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 700; color: #0f172a; font-size: 10pt;">Rp {{ number_format($receipt->subtotal, 0, ',', '.') }}</td>
+                                <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 600; font-size: 10pt;">SUBTOTAL</td>
+                                <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 700; color: #0f172a; font-size: 10pt;">Rp {{ number_format($receipt->invoice ? $receipt->invoice->subtotal : $receipt->subtotal, 0, ',', '.') }}</td>
                             </tr>
-                            @if($receipt->tax_percent > 0)
+                            @if($receipt->invoice && $receipt->invoice->discount > 0)
                             <tr>
-                                <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 600; font-size: 10pt;">{{ app()->getLocale() == 'en' ? 'Tax' : 'Pajak' }} ({{ $receipt->tax_percent }}%)</td>
-                                <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 700; color: #0f172a; font-size: 10pt;">+ Rp {{ number_format($receipt->subtotal * ($receipt->tax_percent/100), 0, ',', '.') }}</td>
-                            </tr>
-                            @endif
-                            @if($receipt->discount_percent > 0)
-                            <tr>
-                                <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 600; font-size: 10pt;">{{ app()->getLocale() == 'en' ? 'Discount' : 'Diskon' }} ({{ $receipt->discount_percent }}%)</td>
-                                <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 700; color: #0f172a; font-size: 10pt;">- Rp {{ number_format($receipt->subtotal * ($receipt->discount_percent/100), 0, ',', '.') }}</td>
+                                <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 600; font-size: 10pt;">Discount</td>
+                                <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 700; color: #ef4444; font-size: 10pt;">- Rp {{ number_format($receipt->invoice->discount, 0, ',', '.') }}</td>
                             </tr>
                             @endif
+                            @if($receipt->invoice && $receipt->invoice->ppn > 0)
                             <tr>
-                                <td style="padding: 15px; background: #0f172a; border-top-left-radius: 12px; border-bottom-left-radius: 12px; color: rgba(255,255,255,0.8); font-size: 10.5pt; font-weight: 900; text-transform: uppercase;">{{ app()->getLocale() == 'en' ? 'Total Amount' : 'Jumlah Total' }}</td>
+                                <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 600; font-size: 10pt;">PPN</td>
+                                <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 700; color: #0f172a; font-size: 10pt;">+ Rp {{ number_format($receipt->invoice->ppn, 0, ',', '.') }}</td>
+                            </tr>
+                            @endif
+                            @if($receipt->invoice && $receipt->invoice->pph > 0)
+                            <tr>
+                                <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 600; font-size: 10pt;">PPh</td>
+                                <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 700; color: #ef4444; font-size: 10pt;">- Rp {{ number_format($receipt->invoice->pph, 0, ',', '.') }}</td>
+                            </tr>
+                            @endif
+                            <tr>
+                                <td style="padding: 15px; background: #0f172a; border-top-left-radius: 12px; border-bottom-left-radius: 12px; color: rgba(255,255,255,0.8); font-size: 10.5pt; font-weight: 900; text-transform: uppercase;">TOTAL</td>
                                 <td style="padding: 15px; background: #0f172a; border-top-right-radius: 12px; border-bottom-right-radius: 12px; text-align: right; color: #ffffff; font-size: 15pt; font-weight: 900; white-space: nowrap;">Rp {{ number_format($receipt->total, 0, ',', '.') }}</td>
                             </tr>
                         </table>
 
                         <!-- Tanda Tangan (di bawah ringkasan keuangan, margin-top cukup, dipusatkan) -->
-                        <div style="margin-top: 35px; text-align: center;">
+                        <div style="margin-top: 30px; text-align: center;">
                             @if(isset($ttdBase64) && $ttdBase64)
                                 <img src="{{ $ttdBase64 }}" style="width: 180px; display: inline-block;">
                             @else
@@ -297,9 +278,147 @@
             </table>
         </div>
 
-    <!-- Footer -->
-    <div class="footer">
-        J&J GROUP PLUMBING SERVICES &bull; E: {{ explode(' / ', \App\Models\Setting::get('company_email', 'Jayarooter@gmail.com'))[0] }} &bull; T: {{ \App\Models\Setting::get('company_phone', '0812-40000-759 / 0812-40000-749 / 0812-83-300-900') }}
+        <!-- Footer Halaman 1 -->
+        <div class="footer">
+            J&J GROUP PLUMBING SERVICE | SOLUSI PINTAR, SALURAN LANCAR, TANPA BONGKAR!
+        </div>
+    </div>
+
+    <!-- Halaman Kedua: Dokumentasi & Catatan -->
+    <div style="page-break-before: always;">
+        <div class="container-page2">
+            <!-- Header Halaman 2 -->
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
+                <tr>
+                    <td style="width: 65%; vertical-align: top;">
+                        <div style="font-size: 14pt; font-weight: 900; color: #0f172a; text-transform: uppercase; margin: 0; line-height: 1.2;">J&J GROUP PLUMBING SERVICES</div>
+                        <div style="font-size: 8.5pt; color: #c89d3c; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; margin-bottom: 8px;">SOLUSI PINTAR, SALURAN LANCAR, TANPA BONGKAR*</div>
+                        <div style="font-size: 8.5pt; color: #475569; line-height: 1.5;">
+                            {{ \App\Models\Setting::get('company_address', 'Jl. Dewa RT.002/002 No.70, Ciracas, Jakarta Timur') }}
+                        </div>
+                    </td>
+                    <td style="width: 35%; vertical-align: top; text-align: right;">
+                        @if(isset($logoBase64) && $logoBase64)
+                            <img src="{{ $logoBase64 }}" style="height: 45px; margin-bottom: 5px;">
+                        @endif
+                        <div style="font-size: 13pt; font-weight: 900; color: #0f172a; text-transform: uppercase; line-height: 1.1;">DOKUMENTASI</div>
+                        <div style="font-size: 10pt; font-weight: 700; color: #c89d3c;">#{{ $receipt->receipt_number }}</div>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="divider" style="margin: 10px 0;"></div>
+
+            <!-- Dokumentasi Pekerjaan Section -->
+            <span class="section-label" style="font-size: 10pt; color: #0f172a; border-bottom: 2px solid #c89d3c; padding-bottom: 2px; margin-bottom: 10px;">DOKUMENTASI PEKERJAAN</span>
+            
+            <div style="font-size: 9pt; color: #64748b; margin-bottom: 8px; font-weight: bold;">
+                Total foto terdeteksi: {{ count($attachments) }}
+            </div>
+            
+            @if(count($attachments) > 0)
+                @php
+                    $count = count($attachments);
+                @endphp
+                
+                @if($count === 1)
+                    <!-- Single Image Layout -->
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
+                        <tr>
+                            <td style="width: 100%; padding: 4px; vertical-align: top;">
+                                <div style="width: 100%; height: 160px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0; text-align: center; line-height: 160px; overflow: hidden;">
+                                    @if($attachments[0]->base64_data)
+                                        <img src="{{ $attachments[0]->base64_data }}" style="max-width: 100%; max-height: 100%; vertical-align: middle; display: inline-block;">
+                                    @else
+                                        <div style="color: #94a3b8; font-size: 9pt;">{{ app()->getLocale() == 'en' ? 'Image Missing' : 'Gambar Tidak Ditemukan' }}</div>
+                                    @endif
+                                </div>
+                                @if($attachments[0]->caption)
+                                    <div style="font-size: 8pt; color: #475569; margin-top: 4px; font-weight: 600; text-align: center; line-height: 1.2;">{{ $attachments[0]->caption }}</div>
+                                @endif
+                            </td>
+                        </tr>
+                    </table>
+                @elseif($count === 2)
+                    <!-- Two Image Layout -->
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
+                        <tr>
+                            @foreach($attachments as $attachment)
+                                <td style="width: 50%; padding: 4px; vertical-align: top;">
+                                    <div style="width: 100%; height: 130px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0; text-align: center; line-height: 130px; overflow: hidden;">
+                                        @if($attachment->base64_data)
+                                            <img src="{{ $attachment->base64_data }}" style="max-width: 100%; max-height: 100%; vertical-align: middle; display: inline-block;">
+                                        @else
+                                            <div style="color: #94a3b8; font-size: 9pt;">{{ app()->getLocale() == 'en' ? 'Image Missing' : 'Gambar Tidak Ditemukan' }}</div>
+                                        @endif
+                                    </div>
+                                    @if($attachment->caption)
+                                        <div style="font-size: 8pt; color: #475569; margin-top: 4px; font-weight: 600; text-align: center; line-height: 1.2;">{{ $attachment->caption }}</div>
+                                    @endif
+                                </td>
+                            @endforeach
+                        </tr>
+                    </table>
+                @else
+                    <!-- Grid 2x2 Layout (for 3 or 4 images) -->
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
+                        @foreach($attachments->chunk(2) as $row)
+                            <tr>
+                                @foreach($row as $attachment)
+                                    <td style="width: 50%; padding: 4px; vertical-align: top;">
+                                        <div style="width: 100%; height: 100px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0; text-align: center; line-height: 100px; overflow: hidden;">
+                                            @if($attachment->base64_data)
+                                                <img src="{{ $attachment->base64_data }}" style="max-width: 100%; max-height: 100%; vertical-align: middle; display: inline-block;">
+                                            @else
+                                                <div style="color: #94a3b8; font-size: 9pt;">{{ app()->getLocale() == 'en' ? 'Image Missing' : 'Gambar Tidak Ditemukan' }}</div>
+                                            @endif
+                                        </div>
+                                        @if($attachment->caption)
+                                            <div style="font-size: 7.5pt; color: #475569; margin-top: 3px; font-weight: 600; text-align: center; line-height: 1.2;">{{ $attachment->caption }}</div>
+                                        @endif
+                                    </td>
+                                @endforeach
+                                @if($row->count() < 2)
+                                    <td style="width: 50%; padding: 4px;"></td>
+                                @endif
+                            </tr>
+                        @endforeach
+                    </table>
+                @endif
+            @else
+                <div style="padding: 20px; background: #f8fafc; border-radius: 8px; border: 1px dashed #cbd5e1; text-align: center; color: #94a3b8; font-size: 9pt; margin-bottom: 15px;">
+                    {{ app()->getLocale() == 'en' ? 'No work documentation photos uploaded' : 'Tidak ada foto dokumentasi pekerjaan yang diunggah' }}
+                </div>
+            @endif
+
+            <!-- Penyebab Section -->
+            @if($receipt->invoice && $receipt->invoice->cause_of_problem)
+                <div style="margin-bottom: 15px;">
+                    <span class="section-label" style="font-size: 10pt; color: #0f172a; border-bottom: 2px solid #c89d3c; padding-bottom: 2px; margin-bottom: 6px;">PENYEBAB</span>
+                    <div style="font-size: 9pt; color: #334155; line-height: 1.4; background: #f8fafc; padding: 10px 15px; border-radius: 6px; border-left: 3px solid #c89d3c;">
+                        {{ $receipt->invoice->cause_of_problem }}
+                    </div>
+                </div>
+            @endif
+
+            <!-- Catatan Section -->
+            <div style="margin-bottom: 20px;">
+                <span class="section-label" style="font-size: 10pt; color: #0f172a; border-bottom: 2px solid #c89d3c; padding-bottom: 2px; margin-bottom: 6px;">CATATAN</span>
+                <div style="font-size: 9pt; color: #475569; line-height: 1.5; background: #f8fafc; padding: 10px 15px; border-radius: 6px; font-style: italic; border-left: 3px solid #0f172a;">
+                    Pekerjaan ini telah diverifikasi langsung di lokasi oleh teknisi kami menggunakan peralatan presisi tinggi, sesuai dengan standar kualitas J&J GROUP.
+                </div>
+                @if($receipt->notes)
+                <div style="font-size: 8.5pt; color: #64748b; line-height: 1.4; padding-left: 10px; margin-top: 8px;">
+                    <strong>Catatan Tambahan:</strong> {{ $receipt->notes }}
+                </div>
+                @endif
+            </div>
+
+            <!-- Footer Halaman 2 -->
+            <div class="footer">
+                J&J GROUP PLUMBING SERVICE | SOLUSI PINTAR, SALURAN LANCAR, TANPA BONGKAR!
+            </div>
+        </div>
     </div>
 </body>
 </html>

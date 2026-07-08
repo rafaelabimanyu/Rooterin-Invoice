@@ -6,27 +6,32 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
-        Schema::create('invoices', function (Blueprint $blueprint) {
-            $blueprint->id();
-            $blueprint->string('invoice_number')->unique();
-            $blueprint->foreignId('client_id')->constrained()->onDelete('cascade');
-            $blueprint->date('tanggal_invoice');
-            $blueprint->date('due_date');
-            $blueprint->enum('status', ['draft', 'sent', 'pending', 'dp', 'paid', 'overdue', 'cancelled'])->default('draft');
-            $blueprint->decimal('subtotal', 15, 2)->default(0);
-            $blueprint->decimal('tax_percent', 5, 2)->default(0);
-            $blueprint->decimal('discount_percent', 5, 2)->default(0);
-            $blueprint->decimal('total', 15, 2)->default(0);
-            $blueprint->text('notes_internal')->nullable();
-            $blueprint->text('terms_condition')->nullable();
-            $blueprint->foreignId('created_by')->constrained('users');
-            $blueprint->timestamps();
-            $blueprint->softDeletes();
+        Schema::create('invoices', function (Blueprint $table) {
+            $table->id();
+            $table->string('invoice_number')->unique();
+            $table->foreignId('business_unit_id')->constrained('business_units')->onDelete('restrict');
+            $table->foreignId('client_id')->constrained('clients')->onDelete('restrict');
+            $table->decimal('subtotal', 15, 2);
+            $table->decimal('discount', 15, 2)->default(0);
+            $table->decimal('ppn', 15, 2)->default(0);
+            $table->decimal('pph', 15, 2)->default(0);
+            $table->decimal('total', 15, 2);
+            $table->string('status')->default('draft')->index();
+            $table->date('due_date')->nullable()->index();
+            $table->text('cause_of_problem')->nullable();
+            $table->text('notes')->nullable();
+            $table->timestamps();
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::dropIfExists('invoices');

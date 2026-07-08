@@ -105,9 +105,9 @@ class RealisticBusinessSeeder extends Seeder
 
         // 2. Business Units Setup
         $businessUnitsData = [
-            ['name' => 'Jaya-Website', 'slug' => 'jaya-website'],
-            ['name' => 'Jaya-Sosmed', 'slug' => 'jaya-sosmed'],
-            ['name' => 'Jaya-Operational', 'slug' => 'jaya-operational'],
+            ['name' => 'Jaya-Website', 'slug' => 'jaya-website', 'description' => 'Layanan Pembuatan & Optimasi Website Jaya', 'is_active' => true],
+            ['name' => 'Jaya-Sosmed', 'slug' => 'jaya-sosmed', 'description' => 'Layanan Pemasaran Sosial Media & Konten Jaya', 'is_active' => true],
+            ['name' => 'Jaya-Operational', 'slug' => 'jaya-operational', 'description' => 'Layanan Operasional Lapangan & Teknis Jaya', 'is_active' => true],
         ];
         foreach ($businessUnitsData as $bu) {
             \App\Models\BusinessUnit::create($bu);

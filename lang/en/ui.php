@@ -10,6 +10,7 @@ return [
     'reports' => 'Reports',
     'settings' => 'Settings',
     'users' => 'Team Management',
+    'business_units' => 'Business Units',
     'guide' => 'J&J GROUP Guide',
     'system_live' => 'System Operational',
     'mode' => 'Mode',
@@ -21,6 +22,20 @@ return [
     'control' => 'Control',
     'owner_kpi' => 'Owner KPI',
     'security_center' => 'Security Center',
+    
+    // Business Unit Specifics
+    'business_units_management' => 'Business Unit Management',
+    'business_units_desc' => 'Manage company departments, units, and billing divisions.',
+    'add_business_unit' => 'Add Business Unit',
+    'edit_business_unit' => 'Edit Business Unit',
+    'business_unit_info' => 'Business Unit Details',
+    'business_unit_name' => 'Unit Name',
+    'business_unit_desc' => 'Description',
+    'invoice_count' => 'Linked Invoices',
+    'active_status' => 'Active Status',
+    'search_business_units' => 'Search business units...',
+    'no_business_units_title' => 'No business units detected',
+    'no_business_units_desc' => 'Add your first business unit to categorize transactions.',
     
     // Actions & General
     'actions' => 'Actions',

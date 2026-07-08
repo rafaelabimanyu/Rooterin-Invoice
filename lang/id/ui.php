@@ -10,6 +10,7 @@ return [
     'reports' => 'Laporan',
     'settings' => 'Pengaturan',
     'users' => 'Manajemen Tim',
+    'business_units' => 'Unit Bisnis',
     'guide' => 'Panduan J&J GROUP',
     'system_live' => 'Sistem Operasional',
     'mode' => 'Mode',
@@ -21,6 +22,20 @@ return [
     'control' => 'Kontrol',
     'owner_kpi' => 'KPI Pemilik',
     'security_center' => 'Pusat Keamanan',
+    
+    // Business Unit Specifics
+    'business_units_management' => 'Manajemen Unit Bisnis',
+    'business_units_desc' => 'Kelola departemen perusahaan, unit operasional, dan divisi penagihan.',
+    'add_business_unit' => 'Tambah Unit Bisnis',
+    'edit_business_unit' => 'Ubah Unit Bisnis',
+    'business_unit_info' => 'Detail Unit Bisnis',
+    'business_unit_name' => 'Nama Unit',
+    'business_unit_desc' => 'Deskripsi',
+    'invoice_count' => 'Invoice Terkait',
+    'active_status' => 'Status Aktif',
+    'search_business_units' => 'Cari unit bisnis...',
+    'no_business_units_title' => 'Tidak ada unit bisnis terdeteksi',
+    'no_business_units_desc' => 'Mulai dengan menambahkan unit bisnis pertama Anda untuk mengelompokkan transaksi.',
     
     // Aksi & Umum
     'actions' => 'Aksi',

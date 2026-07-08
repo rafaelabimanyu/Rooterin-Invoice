@@ -87,6 +87,7 @@
             <nav class="space-y-1">
                 @if(Auth::user()->role !== 'staff')
                     <x-sidebar-link href="{{ route('users.index') }}" :active="request()->routeIs('users.*')" icon="shield-check" :label="__('ui.users')" :collapsed="$collapsed" />
+                    <x-sidebar-link href="{{ route('business-units.index') }}" :active="request()->routeIs('business-units.*')" icon="layers" :label="__('ui.business_units')" :collapsed="$collapsed" />
                     <x-sidebar-link href="{{ route('settings.index') }}" :active="request()->routeIs('settings.*')" icon="sliders" :label="__('ui.settings')" :collapsed="$collapsed" />
                     <x-sidebar-link href="{{ route('security.center') }}" :active="request()->routeIs('security.*')" icon="fingerprint" :label="__('ui.security_center')" :collapsed="$collapsed" />
                     <x-sidebar-link href="{{ route('guide.index') }}" :active="request()->routeIs('guide.index')" icon="book-open" :label="__('ui.guide')" :collapsed="$collapsed" />

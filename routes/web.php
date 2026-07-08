@@ -7,6 +7,7 @@ use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserManagementController;
+use App\Http\Controllers\BusinessUnitController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ChronosController;
@@ -86,6 +87,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(['role:owner,admin'])->group(function () {
         // User Management
         Route::resource('users', UserManagementController::class);
+
+        // Business Units Management
+        Route::resource('business-units', BusinessUnitController::class);
 
         // Settings
         Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');

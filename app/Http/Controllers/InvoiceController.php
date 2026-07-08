@@ -58,7 +58,7 @@ class InvoiceController extends Controller
     {
         $invoice_number = $this->invoiceService->generateInvoiceNumber();
         $clients = Client::where('status', 'aktif')->orderBy('nama_client')->get();
-        $businessUnits = BusinessUnit::orderBy('name')->get();
+        $businessUnits = BusinessUnit::where('is_active', true)->orderBy('name')->get();
         return view('invoices.create', compact('invoice_number', 'clients', 'businessUnits'));
     }
 
@@ -155,7 +155,10 @@ class InvoiceController extends Controller
 
         $invoice->load('items');
         $clients = Client::where('status', 'aktif')->orderBy('nama_client')->get();
-        $businessUnits = BusinessUnit::orderBy('name')->get();
+        $businessUnits = BusinessUnit::where('is_active', true)
+            ->orWhere('id', $invoice->business_unit_id)
+            ->orderBy('name')
+            ->get();
         return view('invoices.edit', compact('invoice', 'clients', 'businessUnits'));
     }
 

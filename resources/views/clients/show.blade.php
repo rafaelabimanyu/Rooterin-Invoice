@@ -2,7 +2,7 @@
     <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
             <div class="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">
-                <a href="{{ route('clients.index') }}" class="hover:text-indigo-600 transition-colors">{{ app()->getLocale() == 'en' ? 'Client Management' : 'Manajemen Klien' }}</a>
+                <a href="{{ route('clients.index') }}" class="hover:text-gold-600 transition-colors">{{ app()->getLocale() == 'en' ? 'Client Management' : 'Manajemen Klien' }}</a>
                 <i data-lucide="chevron-right" class="w-3 h-3"></i>
                 <span class="text-slate-900">{{ $client->kode_client }}</span>
             </div>

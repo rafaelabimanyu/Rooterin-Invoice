@@ -27,7 +27,7 @@
         <!-- TOTAL OVERLAY LOADING SCREEN (Mengunci Sempurna di Dalam Box Putih) -->
         <div wire:loading wire:target="openPermissions, savePermissions" class="absolute inset-0 bg-white/90 z-50 flex flex-col items-center justify-center">
             <div class="flex flex-col items-center gap-3">
-                <div class="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                <div class="w-10 h-10 border-4 border-gold-500 border-t-transparent rounded-full animate-spin"></div>
                 <span class="text-xs font-bold text-slate-600 tracking-wide">Sinkronisasi Data...</span>
             </div>
         </div>
@@ -35,7 +35,7 @@
         <!-- Header -->
         <div class="p-6 border-b border-slate-100 flex items-center justify-between bg-white">
             <div class="flex items-center gap-4">
-                <div class="p-2.5 bg-indigo-600 text-white rounded-xl">
+                <div class="p-2.5 bg-gold-500 text-slate-950 rounded-xl">
                     <i data-lucide="sliders" class="w-5 h-5"></i>
                 </div>
                 <div>
@@ -55,7 +55,7 @@
             <!-- Access Role Select -->
             <div class="space-y-2">
                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Access Level / Role' : 'Tingkat Akses / Peran' }}</label>
-                <select wire:model="selectedUserRole" class="w-full px-4 py-3 bg-slate-50 border-transparent rounded-xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 uppercase text-xs tracking-widest">
+                <select wire:model="selectedUserRole" class="w-full px-4 py-3 bg-slate-50 border-transparent rounded-xl focus:bg-white focus:ring-4 focus:ring-gold-500/10 focus:border-gold-500 transition-all font-bold text-slate-900 uppercase text-xs tracking-widest">
                     <option value="owner">Owner</option>
                     <option value="admin">Admin</option>
                     <option value="staff">Staff</option>
@@ -68,7 +68,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     @foreach($allPermissions as $perm)
                         <label class="flex items-start gap-3 p-3 bg-slate-50 hover:bg-slate-100 border border-slate-200/60 rounded-xl cursor-pointer transition-all">
-                            <input type="checkbox" wire:model="selectedUserPermissions.{{ $perm }}" class="mt-1 text-indigo-600 focus:ring-indigo-500 rounded border-slate-300">
+                            <input type="checkbox" wire:model="selectedUserPermissions.{{ $perm }}" class="mt-1 text-gold-600 focus:ring-gold-500 rounded border-slate-300">
                             <div class="flex flex-col">
                                 <span class="text-xs font-black text-slate-900 font-mono">{{ $perm }}</span>
                                 <span class="text-[10px] text-slate-400 mt-0.5 leading-relaxed">

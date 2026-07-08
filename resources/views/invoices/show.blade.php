@@ -3,7 +3,7 @@
     <div class="mb-8 md:mb-12 flex flex-col lg:flex-row lg:items-end justify-between gap-6 px-4 md:px-0">
         <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2 text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 overflow-hidden">
-                <a href="{{ route('invoices.index') }}" class="hover:text-indigo-600 transition-colors shrink-0">{{ app()->getLocale() == 'en' ? 'Invoices' : 'Invoice' }}</a>
+                <a href="{{ route('invoices.index') }}" class="hover:text-gold-600 transition-colors shrink-0">{{ app()->getLocale() == 'en' ? 'Invoices' : 'Invoice' }}</a>
                 <i data-lucide="chevron-right" class="w-3 h-3 shrink-0"></i>
                 <span class="text-slate-900 truncate">{{ $invoice->invoice_number }}</span>
             </div>
@@ -23,11 +23,11 @@
                 <i data-lucide="download" class="w-4 h-4 text-[#D4AF37]"></i>
                 <span class="whitespace-nowrap">Download PDF</span>
             </button>
-            <button @click="$dispatch('open-modal', 'ai-copywriter'); setTimeout(() => typeof lucide !== 'undefined' && lucide.createIcons(), 50)" class="w-full sm:w-auto px-6 py-3 bg-white border border-slate-200 text-slate-700 hover:text-indigo-600 rounded-xl text-sm font-bold transition-all shadow-sm flex items-center justify-center gap-2 active:scale-95">
-                <i data-lucide="sparkles" class="w-4 h-4 text-indigo-500"></i>
+            <button @click="$dispatch('open-modal', 'ai-copywriter'); setTimeout(() => typeof lucide !== 'undefined' && lucide.createIcons(), 50)" class="w-full sm:w-auto px-6 py-3 bg-white border border-slate-200 text-slate-700 hover:text-gold-600 rounded-xl text-sm font-bold transition-all shadow-sm flex items-center justify-center gap-2 active:scale-95">
+                <i data-lucide="sparkles" class="w-4 h-4 text-gold-500"></i>
                 <span class="whitespace-nowrap">AI Copywriter</span>
             </button>
-            <button class="w-full sm:w-auto px-6 py-3 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2 active:scale-95">
+            <button class="w-full sm:w-auto px-6 py-3 bg-gold-500 text-slate-950 rounded-xl text-sm font-black hover:bg-gold-600 transition-all shadow-lg shadow-gold-500/20 flex items-center justify-center gap-2 active:scale-95">
                 <i data-lucide="send" class="w-4 h-4"></i>
                 <span class="whitespace-nowrap">{{ __('ui.send_invoice') ?? 'Send Invoice' }}</span>
             </button>
@@ -37,7 +37,7 @@
     <!-- Main Invoice Card -->
     <div class="bg-white rounded-[24px] md:rounded-[32px] border border-slate-200/60 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] overflow-hidden max-w-5xl mx-auto mb-20 relative w-full">
         <!-- Decorative Elements (Hidden on small mobile) -->
-        <div class="hidden sm:block absolute top-0 right-0 w-64 h-64 bg-indigo-50/30 rounded-full blur-3xl -mr-32 -mt-32"></div>
+        <div class="hidden sm:block absolute top-0 right-0 w-64 h-64 bg-gold-50/30 rounded-full blur-3xl -mr-32 -mt-32"></div>
         <div class="hidden sm:block absolute bottom-0 left-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl -ml-32 -mb-32"></div>
         
         <!-- Professional Invoice Header -->
@@ -103,7 +103,7 @@
                 <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">{{ app()->getLocale() == 'en' ? 'Customer Account' : 'Akun Pelanggan' }}</p>
                 <div class="space-y-2">
                     <p class="text-base md:text-lg font-black text-slate-900">{{ $invoice->client->nama_client }}</p>
-                    <p class="text-xs md:text-sm font-bold text-indigo-600">{{ $invoice->client->nama_perusahaan }}</p>
+                    <p class="text-xs md:text-sm font-bold text-gold-600">{{ $invoice->client->nama_perusahaan }}</p>
                     <p class="text-xs md:text-sm text-slate-500 leading-relaxed max-w-xs">
                         {{ $invoice->client->alamat }}<br>
                         {{ $invoice->client->kota }}, {{ $invoice->client->provinsi }}
@@ -217,15 +217,15 @@
                     </div>
                     
                     @if($invoice->status === 'dp')
-                    <div class="flex justify-between items-center p-4 bg-indigo-50 rounded-xl border border-indigo-100">
-                        <span class="text-[11px] text-indigo-600 font-bold uppercase tracking-tight">{{ app()->getLocale() == 'en' ? 'Remaining' : 'Sisa Tagihan' }}</span>
-                        <span class="text-sm font-black text-indigo-700">Rp {{ number_format($invoice->amount_due, 0, ',', '.') }}</span>
+                    <div class="flex justify-between items-center p-4 bg-gold-50 rounded-xl border border-gold-100">
+                        <span class="text-[11px] text-gold-600 font-bold uppercase tracking-tight">{{ app()->getLocale() == 'en' ? 'Remaining' : 'Sisa Tagihan' }}</span>
+                        <span class="text-sm font-black text-gold-700">Rp {{ number_format($invoice->amount_due, 0, ',', '.') }}</span>
                     </div>
                     @endif
 
                     <div class="pt-6 border-t border-slate-200 flex justify-between items-center">
                         <span class="text-xs md:text-sm font-black text-slate-900 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Total Due' : 'Total Tagihan' }}</span>
-                        <span class="text-xl md:text-3xl font-black text-indigo-600 font-outfit">Rp {{ number_format($invoice->total, 0, ',', '.') }}</span>
+                        <span class="text-xl md:text-3xl font-black text-gold-600 font-outfit">Rp {{ number_format($invoice->total, 0, ',', '.') }}</span>
                     </div>
                     
                     @if($invoice->status !== 'paid')
@@ -264,18 +264,18 @@
                 
                 <div class="space-y-2">
                     <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Amount Received (IDR)' : 'Jumlah Diterima (IDR)' }}</label>
-                    <input type="number" name="amount" value="{{ $invoice->amount_due }}" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-lg font-black text-indigo-600 outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all">
+                    <input type="number" name="amount" value="{{ $invoice->amount_due }}" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-lg font-black text-gold-600 outline-none focus:ring-2 focus:ring-gold-500/20 transition-all">
                     <p class="text-[10px] text-slate-400 font-medium italic">{{ app()->getLocale() == 'en' ? 'Remaining balance' : 'Sisa saldo' }}: Rp {{ number_format($invoice->amount_due, 0, ',', '.') }}</p>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div class="space-y-2">
                         <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Payment Date' : 'Tanggal Pembayaran' }}</label>
-                        <input type="date" name="payment_date" value="{{ date('Y-m-d') }}" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all">
+                        <input type="date" name="payment_date" value="{{ date('Y-m-d') }}" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 outline-none focus:ring-2 focus:ring-gold-500/20 transition-all">
                     </div>
                     <div class="space-y-2">
                         <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Method' : 'Metode' }}</label>
-                        <select name="payment_method" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all">
+                        <select name="payment_method" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 outline-none focus:ring-2 focus:ring-gold-500/20 transition-all">
                             <option value="Transfer Bank">{{ app()->getLocale() == 'en' ? 'Bank Transfer' : 'Transfer Bank' }}</option>
                             <option value="Cash">Cash</option>
                             <option value="Credit Card">{{ app()->getLocale() == 'en' ? 'Credit Card' : 'Kartu Kredit' }}</option>
@@ -286,12 +286,12 @@
 
                 <div class="space-y-2">
                     <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Reference / Transaction ID' : 'Referensi / ID Transaksi' }}</label>
-                    <input type="text" name="reference_number" placeholder="e.g. TRX-123456" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all">
+                    <input type="text" name="reference_number" placeholder="e.g. TRX-123456" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 outline-none focus:ring-2 focus:ring-gold-500/20 transition-all">
                 </div>
 
                 <div class="pt-6 flex flex-col-reverse sm:flex-row items-center justify-end gap-3">
                     <button type="button" @click="$dispatch('close-modal', 'record-payment')" class="w-full sm:w-auto px-5 py-2.5 text-sm font-bold text-slate-500 hover:text-slate-800">{{ app()->getLocale() == 'en' ? 'Cancel' : 'Batal' }}</button>
-                    <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-indigo-600 text-white rounded-lg text-sm font-bold shadow-lg shadow-indigo-600/20 active:scale-95">{{ app()->getLocale() == 'en' ? 'Save Payment' : 'Simpan Pembayaran' }}</button>
+                    <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-gold-500 text-slate-950 rounded-lg text-sm font-black shadow-lg shadow-gold-500/20 active:scale-95">{{ app()->getLocale() == 'en' ? 'Save Payment' : 'Simpan Pembayaran' }}</button>
                 </div>
             </form>
         </div>
@@ -347,7 +347,7 @@
             }
         }">
             <div class="flex items-center gap-3 mb-2">
-                <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+                <div class="w-10 h-10 rounded-xl bg-gold-50 flex items-center justify-center text-gold-600">
                     <i data-lucide="sparkles" class="w-5 h-5"></i>
                 </div>
                 <div>
@@ -366,14 +366,14 @@
             <div class="mt-6 space-y-4">
                 <div class="space-y-2">
                     <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Select Email Tone' : 'Pilih Nada Email (Tone)' }}</label>
-                    <select x-model="tone" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all">
+                    <select x-model="tone" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 outline-none focus:ring-2 focus:ring-gold-500/20 transition-all">
                         <option value="sopan">{{ app()->getLocale() == 'en' ? 'Polite & Professional (Friendly Reminder)' : 'Sopan & Profesional (Friendly Reminder)' }}</option>
                         <option value="tegas">{{ app()->getLocale() == 'en' ? 'Firm & Formal (Immediate Payment)' : 'Tegas & Formal (Pembayaran Segera)' }}</option>
                         <option value="urgent">{{ app()->getLocale() == 'en' ? 'Urgent (Past Due)' : 'Mendesak / Urgent (Batas Waktu Lewat)' }}</option>
                     </select>
                 </div>
 
-                <button @click="generateDraft()" :disabled="loading" class="w-full py-3 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 transition-all shadow-md shadow-indigo-600/10 flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50">
+                <button @click="generateDraft()" :disabled="loading" class="w-full py-3 bg-gold-500 text-slate-950 rounded-xl text-sm font-black hover:bg-gold-600 transition-all shadow-md shadow-gold-500/10 flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50">
                     <span x-show="!loading" class="flex items-center gap-2">
                         <i data-lucide="zap" class="w-4 h-4"></i> {{ app()->getLocale() == 'en' ? 'Generate AI Draft' : 'Hasilkan Draf AI' }}
                     </span>
@@ -404,21 +404,21 @@
                 <div class="space-y-2">
                     <div class="flex justify-between items-center">
                         <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Email Subject' : 'Subjek Email' }}</label>
-                        <button @click="copyToClipboard(subject)" class="text-xs text-indigo-600 hover:text-indigo-800 font-semibold flex items-center gap-1">
-                            <i data-lucide="copy" class="w-3 h-3"></i> {{ app()->getLocale() == 'en' ? 'Copy' : 'Salin' }}
+                        <button @click="copyToClipboard(subject)" class="text-xs text-gold-600 hover:text-gold-800 font-semibold flex items-center gap-1">
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i> {{ app()->getLocale() == 'en' ? 'Copy' : 'Salin' }}
                         </button>
                     </div>
-                    <input type="text" x-model="subject" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all">
+                    <input type="text" x-model="subject" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold text-slate-900 outline-none focus:ring-2 focus:ring-gold-500/20 transition-all">
                 </div>
 
                 <div class="space-y-2">
                     <div class="flex justify-between items-center">
                         <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Email Body' : 'Isi Email (Body)' }}</label>
-                        <button @click="copyToClipboard(body)" class="text-xs text-indigo-600 hover:text-indigo-800 font-semibold flex items-center gap-1">
-                            <i data-lucide="copy" class="w-3 h-3"></i> {{ app()->getLocale() == 'en' ? 'Copy' : 'Salin' }}
+                        <button @click="copyToClipboard(body)" class="text-xs text-gold-600 hover:text-gold-800 font-semibold flex items-center gap-1">
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i> {{ app()->getLocale() == 'en' ? 'Copy' : 'Salin' }}
                         </button>
                     </div>
-                    <textarea x-model="body" rows="8" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all leading-relaxed"></textarea>
+                    <textarea x-model="body" rows="8" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 outline-none focus:ring-2 focus:ring-gold-500/20 transition-all leading-relaxed"></textarea>
                 </div>
 
                 <div class="pt-4 flex justify-between items-center border-t border-slate-100">

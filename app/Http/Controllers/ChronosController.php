@@ -136,7 +136,7 @@ class ChronosController extends Controller
 
         // Map reminders
         foreach ($reminders as $reminder) {
-            $color = '#4f46e5'; // Indigo
+            $color = '#D4AF37'; // Gold
             if ($reminder->status_type === 'meeting') $color = '#10b981';
             elseif ($reminder->status_type === 'draft') $color = '#f59e0b';
             elseif ($reminder->status_type === 'overdue') $color = '#f43f5e';
@@ -145,7 +145,7 @@ class ChronosController extends Controller
             elseif ($reminder->color === 'amber') $color = '#f59e0b';
             elseif ($reminder->color === 'rose') $color = '#f43f5e';
             elseif ($reminder->color === 'slate') $color = '#94a3b8';
-            elseif ($reminder->color === 'indigo') $color = '#4f46e5';
+            elseif ($reminder->color === 'indigo' || $reminder->color === 'gold') $color = '#D4AF37';
 
             $events[] = [
                 'id' => 'reminder_' . $reminder->id,

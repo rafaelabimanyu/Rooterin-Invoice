@@ -27,7 +27,7 @@
         <!-- TOTAL OVERLAY LOADING SCREEN (Mengunci Sempurna di Dalam Box Putih) -->
         <div wire:loading wire:target="confirmSuspend, toggleSuspend" class="absolute inset-0 bg-white/90 z-50 flex flex-col items-center justify-center">
             <div class="flex flex-col items-center gap-3">
-                <div class="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                <div class="w-10 h-10 border-4 border-gold-500 border-t-transparent rounded-full animate-spin"></div>
                 <span class="text-xs font-bold text-slate-600 tracking-wide">Sinkronisasi Data...</span>
             </div>
         </div>

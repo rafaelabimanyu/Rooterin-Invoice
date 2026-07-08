@@ -2,12 +2,12 @@
 
 @php
     $gradients = [
-        'indigo' => 'from-gold-500/10 to-gold-500/5 text-gold-600 border-gold-500/10 shadow-gold-500/5',
+        'gold' => 'from-gold-500/10 to-gold-500/5 text-gold-600 border-gold-500/10 shadow-gold-500/5',
         'amber' => 'from-amber-500/10 to-amber-500/5 text-amber-600 border-amber-500/10 shadow-amber-500/5',
         'emerald' => 'from-emerald-500/10 to-emerald-500/5 text-emerald-600 border-emerald-500/10 shadow-emerald-500/5',
         'rose' => 'from-rose-500/10 to-rose-500/5 text-rose-600 border-rose-500/10 shadow-rose-500/5',
     ];
-    $grad = $gradients[$color] ?? $gradients['indigo'];
+    $grad = $gradients[$color] ?? $gradients['gold'];
 @endphp
 
 <div 

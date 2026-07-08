@@ -27,7 +27,7 @@
         <!-- TOTAL OVERLAY LOADING SCREEN (Mengunci Sempurna di Dalam Box Putih) -->
         <div wire:loading wire:target="openEditModal, saveEdit, generatePassword, deleteUser" class="absolute inset-0 bg-white/90 z-50 flex flex-col items-center justify-center">
             <div class="flex flex-col items-center gap-3">
-                <div class="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                <div class="w-10 h-10 border-4 border-gold-500 border-t-transparent rounded-full animate-spin"></div>
                 <span class="text-xs font-bold text-slate-600 tracking-wide">Sinkronisasi Data...</span>
             </div>
         </div>
@@ -69,18 +69,18 @@
                     <div class="space-y-4">
                         <div class="space-y-1">
                             <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Full Identity' : 'Identitas Lengkap' }}</label>
-                            <input type="text" wire:model="editingName" class="w-full px-4 py-2.5 bg-slate-50 border-transparent rounded-xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 text-xs">
+                            <input type="text" wire:model="editingName" class="w-full px-4 py-2.5 bg-slate-50 border-transparent rounded-xl focus:bg-white focus:ring-4 focus:ring-gold-500/10 focus:border-gold-500 transition-all font-bold text-slate-900 text-xs">
                         </div>
 
                         <div class="space-y-1">
                             <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Email Address' : 'Alamat Email' }}</label>
-                            <input type="email" wire:model="editingEmail" class="w-full px-4 py-2.5 bg-slate-50 border-transparent rounded-xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 text-xs">
+                            <input type="email" wire:model="editingEmail" class="w-full px-4 py-2.5 bg-slate-50 border-transparent rounded-xl focus:bg-white focus:ring-4 focus:ring-gold-500/10 focus:border-gold-500 transition-all font-bold text-slate-900 text-xs">
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
                             <div class="space-y-1">
                                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Access Level' : 'Tingkat Akses' }}</label>
-                                <select wire:model="editingRole" class="w-full px-4 py-2.5 bg-slate-50 border-transparent rounded-xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-900 uppercase text-xs tracking-widest">
+                                <select wire:model="editingRole" class="w-full px-4 py-2.5 bg-slate-50 border-transparent rounded-xl focus:bg-white focus:ring-4 focus:ring-gold-500/10 focus:border-gold-500 transition-all font-bold text-slate-900 uppercase text-xs tracking-widest">
                                     <option value="owner">Owner</option>
                                     <option value="admin">Admin</option>
                                     <option value="staff">Staff</option>
@@ -91,7 +91,7 @@
                                 <div class="flex items-center h-full">
                                     <label class="relative inline-flex items-center cursor-pointer">
                                         <input type="checkbox" wire:model="editingIsActive" class="sr-only peer">
-                                        <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                                        <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-gold-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gold-500"></div>
                                         <span class="ms-2 text-[10px] font-black text-slate-500 uppercase tracking-widest">
                                             {{ $editingIsActive ? (app()->getLocale() == 'en' ? 'Active' : 'Aktif') : (app()->getLocale() == 'en' ? 'Suspended' : 'Ditangguhkan') }}
                                         </span>
@@ -105,11 +105,11 @@
                     <div class="p-6 bg-slate-900 rounded-2xl text-white space-y-4 relative overflow-hidden">
                         <div class="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full -mr-12 -mt-12 blur-xl"></div>
                         <div>
-                            <h4 class="text-xs font-black uppercase tracking-[0.2em] text-indigo-400 mb-0.5">{{ app()->getLocale() == 'en' ? 'Overrule Password' : 'Ganti Kata Sandi' }}</h4>
+                            <h4 class="text-xs font-black uppercase tracking-[0.2em] text-gold-400 mb-0.5">{{ app()->getLocale() == 'en' ? 'Overrule Password' : 'Ganti Kata Sandi' }}</h4>
                             <p class="text-[10px] text-slate-400 font-medium">{{ app()->getLocale() == 'en' ? "Reset this operative's credentials manually." : 'Reset kredensial pelaksana ini secara manual.' }}</p>
                         </div>
                         <div class="relative">
-                            <input :type="$wire.showPassword ? 'text' : 'password'" wire:model="editingPassword" class="w-full bg-white/5 border-white/10 rounded-xl py-2 px-4 text-xs font-mono tracking-wider focus:border-indigo-500 focus:ring-0 transition-all text-white" placeholder="{{ app()->getLocale() == 'en' ? 'Enter new password...' : 'Masukkan kata sandi baru...' }}">
+                            <input :type="$wire.showPassword ? 'text' : 'password'" wire:model="editingPassword" class="w-full bg-white/5 border-white/10 rounded-xl py-2 px-4 text-xs font-mono tracking-wider focus:border-gold-500 focus:ring-0 transition-all text-white" placeholder="{{ app()->getLocale() == 'en' ? 'Enter new password...' : 'Masukkan kata sandi baru...' }}">
                             <button type="button" wire:click="$toggle('showPassword')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white">
                                 @if($showPassword)
                                     <i data-lucide="eye-off" class="w-3.5 h-3.5"></i>
@@ -119,12 +119,12 @@
                             </button>
                         </div>
                         <div class="flex items-center gap-2">
-                            <button type="button" wire:click="generatePassword()" class="flex-1 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 rounded-lg text-[9px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-1.5 text-white">
+                            <button type="button" wire:click="generatePassword()" class="flex-1 px-3 py-1.5 bg-gold-600 hover:bg-gold-500 rounded-lg text-[9px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-1.5 text-white">
                                 <i data-lucide="sparkles" class="w-3 h-3"></i>
                                 {{ app()->getLocale() == 'en' ? 'Generate' : 'Buat' }}
                             </button>
                             @if($editingPassword)
-                                <button type="button" @click="navigator.clipboard.writeText($wire.editingPassword); $wire.copyPassword()" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-[9px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-1.5 text-indigo-300">
+                                <button type="button" @click="navigator.clipboard.writeText($wire.editingPassword); $wire.copyPassword()" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-[9px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-1.5 text-gold-300">
                                     <i data-lucide="{{ $copied ? 'check' : 'copy' }}" class="w-3 h-3 {{ $copied ? 'text-emerald-400' : '' }}"></i>
                                     <span>{{ $copied ? (app()->getLocale() == 'en' ? 'Copied' : 'Disalin') : (app()->getLocale() == 'en' ? 'Copy' : 'Salin') }}</span>
                                 </button>
@@ -169,7 +169,7 @@
                         <div class="overflow-y-auto max-h-[400px] pr-2 space-y-4 custom-scrollbar">
                             @forelse($selectedUserLogs as $log)
                                 <div class="flex gap-3 relative">
-                                    <div class="shrink-0 w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center relative z-10">
+                                    <div class="shrink-0 w-7 h-7 rounded-full bg-gold-50 text-gold-600 flex items-center justify-center relative z-10">
                                         <i data-lucide="zap" class="w-3.5 h-3.5"></i>
                                     </div>
                                     <div class="flex-1 pt-0.5">

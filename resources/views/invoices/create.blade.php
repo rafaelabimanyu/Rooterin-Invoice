@@ -2,7 +2,7 @@
     <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
             <div class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
-                <a href="{{ route('invoices.index') }}" class="hover:text-indigo-600 transition-colors">{{ app()->getLocale() == 'en' ? 'Invoices' : 'Invoice' }}</a>
+                <a href="{{ route('invoices.index') }}" class="hover:text-gold-600 transition-colors">{{ app()->getLocale() == 'en' ? 'Invoices' : 'Invoice' }}</a>
                 <i data-lucide="chevron-right" class="w-3 h-3"></i>
                 <span class="text-slate-900">{{ __('Create Invoice') }}</span>
             </div>
@@ -36,7 +36,7 @@
                 <div class="bg-white p-10 rounded-xl border border-slate-200 shadow-sm">
                     <div class="flex items-center justify-between mb-8 pb-4 border-b border-slate-50">
                         <h3 class="text-sm font-bold text-slate-900 uppercase tracking-widest">1. {{ __('Client & Dates') }}</h3>
-                        <button type="button" @click="$dispatch('open-modal', 'quick-client')" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1.5">
+                        <button type="button" @click="$dispatch('open-modal', 'quick-client')" class="text-[11px] font-bold text-gold-600 hover:text-gold-700 flex items-center gap-1.5">
                             <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> {{ __('Add New Client') }}
                         </button>
                     </div>
@@ -44,7 +44,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ __('Client Account') }}</label>
-                            <select name="client_id" id="client_select" required class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200/60 rounded-lg text-sm text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500/10 transition-all">
+                            <select name="client_id" id="client_select" required class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200/60 rounded-lg text-sm text-slate-900 outline-none focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 transition-all">
                                 <option value="">{{ __('Choose a client...') }}</option>
                                 @foreach($clients as $client)
                                     <option value="{{ $client->id }}">{{ $client->nama_client }} ({{ $client->nama_perusahaan }})</option>
@@ -60,11 +60,11 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ __('Issuance Date') }}</label>
-                            <input type="date" name="tanggal_invoice" value="{{ date('Y-m-d') }}" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none text-sm text-slate-900 transition-all">
+                            <input type="date" name="tanggal_invoice" value="{{ date('Y-m-d') }}" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none text-sm text-slate-900 transition-all">
                         </div>
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ __('Due Date') }}</label>
-                            <input type="date" name="due_date" value="{{ date('Y-m-d', strtotime('+7 days')) }}" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none text-sm text-slate-900 transition-all">
+                            <input type="date" name="due_date" value="{{ date('Y-m-d', strtotime('+7 days')) }}" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none text-sm text-slate-900 transition-all">
                         </div>
                     </div>
                 </div>
@@ -73,7 +73,7 @@
                 <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
                     <div class="px-10 py-6 border-b border-slate-100 flex items-center justify-between">
                         <h3 class="text-sm font-bold text-slate-900 uppercase tracking-widest">2. {{ __('Billing Items') }}</h3>
-                        <button type="button" @click="addItem" class="text-[12px] font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1.5 transition-colors">
+                        <button type="button" @click="addItem" class="text-[12px] font-bold text-gold-600 hover:text-gold-700 flex items-center gap-1.5 transition-colors">
                             <i data-lucide="plus" class="w-4 h-4"></i>
                             {{ __('Append Line Item') }}
                         </button>
@@ -114,7 +114,7 @@
                             <div class="grid grid-cols-2 gap-4">
                                 <div class="space-y-2">
                                     <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Tax (%)' : 'Pajak (%)' }}</label>
-                                    <input type="number" x-model="tax_percent" @input="calculateTotal()" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold text-indigo-600 outline-none focus:ring-2 focus:ring-indigo-500/10">
+                                    <input type="number" x-model="tax_percent" @input="calculateTotal()" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold text-gold-600 outline-none focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500">
                                 </div>
                                 <div class="space-y-2">
                                     <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Discount (%)' : 'Diskon (%)' }}</label>
@@ -134,7 +134,7 @@
                         class="w-full px-8 py-5 flex items-center justify-between bg-slate-50/50 hover:bg-slate-50 transition-colors border-b border-slate-100"
                     >
                         <span class="text-sm font-bold text-slate-900 uppercase tracking-widest flex items-center gap-2">
-                            <i data-lucide="folder-plus" class="w-4 h-4 text-indigo-500"></i>
+                            <i data-lucide="folder-plus" class="w-4 h-4 text-gold-500"></i>
                             {{ app()->getLocale() == 'en' ? 'Additional Info & Documents' : 'Informasi Tambahan & Dokumen' }}
                         </span>
                         <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform duration-300" :class="isOpen ? 'rotate-180' : ''"></i>
@@ -145,14 +145,14 @@
                         <!-- Documentation Section -->
                         <div class="space-y-4">
                             <h4 class="text-xs font-bold text-slate-900 uppercase tracking-widest flex items-center gap-2">
-                                <i data-lucide="image" class="w-4 h-4 text-indigo-500"></i>
+                                <i data-lucide="image" class="w-4 h-4 text-gold-500"></i>
                                 {{ __('Job Documentation') }}
                             </h4>
                             <p class="text-xs text-slate-500">{{ __('Upload work evidence or job site documentation. Support multiple files.') }}</p>
-                            <div class="relative group cursor-pointer border-2 border-dashed border-slate-200 rounded-xl p-8 hover:border-indigo-500 transition-all flex flex-col items-center justify-center bg-slate-50/50">
+                            <div class="relative group cursor-pointer border-2 border-dashed border-slate-200 rounded-xl p-8 hover:border-gold-500 transition-all flex flex-col items-center justify-center bg-slate-50/50">
                                 <input type="file" name="attachments[]" multiple @change="handleFiles" class="absolute inset-0 opacity-0 cursor-pointer">
-                                <i data-lucide="upload-cloud" class="w-8 h-8 text-slate-400 group-hover:text-indigo-500 mb-2"></i>
-                                <p class="text-[11px] font-bold text-slate-400 group-hover:text-indigo-500 uppercase tracking-widest">{{ __('Select Images') }}</p>
+                                <i data-lucide="upload-cloud" class="w-8 h-8 text-slate-400 group-hover:text-gold-500 mb-2"></i>
+                                <p class="text-[11px] font-bold text-slate-400 group-hover:text-gold-500 uppercase tracking-widest">{{ __('Select Images') }}</p>
                             </div>
 
                             <!-- Image Preview Grid -->
@@ -192,9 +192,9 @@
                                     <div class="pt-1">
                                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Contact Numbers</p>
                                         <div class="flex flex-col gap-1 mt-1 font-semibold">
-                                            <span class="text-indigo-600 flex items-center gap-1.5">
-                                                <span class="w-1.5 h-1.5 rounded-full bg-indigo-600 animate-pulse"></span>
-                                                0812-40000-759 <span class="text-[9px] bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded uppercase font-bold tracking-wider">Primary</span>
+                                            <span class="text-gold-600 flex items-center gap-1.5">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-gold-600 animate-pulse"></span>
+                                                0812-40000-759 <span class="text-[9px] bg-gold-50 text-gold-700 px-1.5 py-0.5 rounded uppercase font-bold tracking-wider">Primary</span>
                                             </span>
                                             <span class="text-slate-700 pl-3">0812-40000-749</span>
                                             <span class="text-slate-700 pl-3">0812-83-300-900</span>
@@ -208,8 +208,8 @@
                         <div class="bg-slate-50/50 p-6 rounded-xl border border-slate-200/50 space-y-2">
                             <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ __('Warranty Period') }}</label>
                             <div class="flex items-center gap-3">
-                                <input type="number" name="warranty_value" placeholder="e.g. 1, 3, 6..." min="1" class="w-32 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 font-semibold focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none">
-                                <select name="warranty_unit" class="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 font-semibold focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none">
+                                <input type="number" name="warranty_value" placeholder="e.g. 1, 3, 6..." min="1" class="w-32 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 font-semibold focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none">
+                                <select name="warranty_unit" class="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 font-semibold focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none">
                                     <option value="Hari">{{ app()->getLocale() == 'en' ? 'Days' : 'Hari' }}</option>
                                     <option value="Bulan" selected>{{ app()->getLocale() == 'en' ? 'Months' : 'Bulan' }}</option>
                                     <option value="Tahun">{{ app()->getLocale() == 'en' ? 'Years' : 'Tahun' }}</option>
@@ -236,7 +236,7 @@
                             
                             <div class="flex justify-between items-center gap-4">
                                 <span class="text-slate-400 text-sm font-medium">{{ __('Tax Rate (%)') }}</span>
-                                <input type="number" x-model="tax_percent" @input="calculateTotal()" class="w-20 bg-slate-800 border-none rounded text-right text-sm font-bold text-indigo-400 p-1 focus:ring-1 focus:ring-indigo-500">
+                                <input type="number" x-model="tax_percent" @input="calculateTotal()" class="w-20 bg-slate-800 border-none rounded text-right text-sm font-bold text-gold-400 p-1 focus:ring-1 focus:ring-gold-500">
                             </div>
 
                             <div class="flex justify-between items-center gap-4">
@@ -250,9 +250,9 @@
                     <div class="flex items-center justify-between w-full md:block md:pt-6 md:border-t md:border-slate-700 md:space-y-6">
                         <div>
                             <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none md:text-[10px] md:mb-2">{{ app()->getLocale() == 'en' ? 'Grand Total Due' : 'Total Tagihan' }}</p>
-                            <h4 class="text-lg font-black text-indigo-400 font-outfit mt-1 md:text-4xl md:text-white" x-text="formatCurrency(total)"></h4>
+                            <h4 class="text-lg font-black text-gold-400 font-outfit mt-1 md:text-4xl md:text-white" x-text="formatCurrency(total)"></h4>
                         </div>
-                        <button type="submit" class="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-[12px] uppercase tracking-widest flex items-center gap-2 active:scale-95 transition-all md:w-full md:py-4 md:rounded-lg md:text-[13px] md:justify-center md:shadow-lg md:shadow-indigo-600/20">
+                        <button type="submit" class="px-5 py-3 bg-gold-500 hover:bg-gold-600 text-slate-950 rounded-xl font-black text-[12px] uppercase tracking-widest flex items-center gap-2 active:scale-95 transition-all md:w-full md:py-4 md:rounded-lg md:text-[13px] md:justify-center md:shadow-lg md:shadow-gold-500/20">
                             <i data-lucide="check-circle" class="w-4 h-4"></i>
                             {{ __('Confirm & Issue') }}
                         </button>
@@ -307,7 +307,7 @@
 
                 <div class="pt-6 flex items-center justify-end gap-3">
                     <button type="button" @click="$dispatch('close-modal', 'quick-client')" class="px-5 py-2.5 text-sm font-bold text-slate-500">{{ app()->getLocale() == 'en' ? 'Cancel' : 'Batal' }}</button>
-                    <button type="submit" :disabled="loading" class="px-8 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-bold shadow-lg shadow-indigo-600/20 disabled:opacity-50">
+                    <button type="submit" :disabled="loading" class="px-8 py-2.5 bg-gold-500 text-slate-950 rounded-lg text-sm font-black shadow-lg shadow-gold-500/20 hover:bg-gold-600 disabled:opacity-50">
                         <span x-show="!loading">{{ app()->getLocale() == 'en' ? 'Register & Select' : 'Daftar & Pilih' }}</span>
                         <span x-show="loading">{{ app()->getLocale() == 'en' ? 'Processing...' : 'Memproses...' }}</span>
                     </button>

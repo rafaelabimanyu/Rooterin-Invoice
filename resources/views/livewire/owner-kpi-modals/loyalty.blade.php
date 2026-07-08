@@ -32,7 +32,7 @@
                         <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">{{ $c->nama_perusahaan }}</span>
                     </div>
                     <div class="text-right">
-                        <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded text-[9px] font-black uppercase tracking-wider">
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-gold-50 text-gold-600 rounded text-[9px] font-black uppercase tracking-wider">
                             <i data-lucide="file-text" class="w-3 h-3"></i>
                             {{ $c->invoices_count }} {{ app()->getLocale() == 'en' ? 'Invoices' : 'Faktur' }}
                         </span>

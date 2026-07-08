@@ -31,7 +31,7 @@ class ChronosCalendar extends Component
     public $reminderTitle;
     public $reminderDescription;
     public $reminderCategory = 'internal';
-    public $reminderColor = 'indigo';
+    public $reminderColor = 'gold';
     public $reminderClientId;
     public $reminderUserId;
 
@@ -99,7 +99,7 @@ class ChronosCalendar extends Component
             'reminderTitle' => 'required|string|max:255',
             'reminderDescription' => 'nullable|string',
             'reminderCategory' => 'required|string|in:internal,meeting,draft,overdue,ai_update,other',
-            'reminderColor' => 'required|string|in:indigo,emerald,amber,rose,slate',
+            'reminderColor' => 'required|string|in:gold,indigo,emerald,amber,rose,slate',
             'selectedDate' => 'required|date',
             'selectedEndDate' => 'nullable|date|after_or_equal:selectedDate',
         ]);
@@ -157,7 +157,7 @@ class ChronosCalendar extends Component
         $this->reminderTitle = '';
         $this->reminderDescription = '';
         $this->reminderCategory = 'internal';
-        $this->reminderColor = 'indigo';
+        $this->reminderColor = 'gold';
         $this->reminderClientId = null;
         $this->reminderUserId = null;
         $this->selectedDate = null;

@@ -1,5 +1,5 @@
 <!-- Main Calendar Card -->
-<div class="glass-card p-6 md:p-8 shadow-2xl shadow-indigo-500/10 border-slate-100 bg-white/80 backdrop-blur-md rounded-3xl flex flex-col w-full min-w-0"
+<div class="glass-card p-6 md:p-8 shadow-2xl shadow-gold-500/10 border-slate-100 bg-white/80 backdrop-blur-md rounded-3xl flex flex-col w-full min-w-0"
      x-data="chronosCalendar()"
      @reminder-saved.window="refetch()"
      @refresh-calendar.window="refetch()"
@@ -25,14 +25,14 @@
 
             <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto sm:ml-auto">
                 <button @click="goToToday()" 
-                    class="w-full sm:w-auto flex items-center justify-center px-5 py-3 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-extrabold text-xs rounded-2xl transition-all duration-200 active:scale-95"
+                    class="w-full sm:w-auto flex items-center justify-center px-5 py-3 bg-gold-50 hover:bg-gold-100 text-gold-700 font-extrabold text-xs rounded-2xl transition-all duration-200 active:scale-95"
                 >
                     {{ __('Today') }}
                 </button>
                 <button @click="openCreateModalForToday()" 
                     class="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 bg-white hover:bg-slate-50 text-slate-700 font-extrabold text-xs border border-slate-200/80 rounded-2xl shadow-sm hover:shadow transition-all duration-200 active:scale-95"
                 >
-                    <svg class="w-4 h-4 text-indigo-650" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 text-gold-650" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path>
                     </svg>
                     <span>{{ __('+ Add Event / Reminder') }}</span>
@@ -55,7 +55,7 @@
              style="display: none;"
         >
             <div class="flex items-center gap-3 px-5 py-3.5 bg-white shadow-xl rounded-2xl border border-slate-100/80">
-                <div class="w-5 h-5 border-3 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                <div class="w-5 h-5 border-3 border-gold-500 border-t-transparent rounded-full animate-spin"></div>
                 <span class="text-[10px] font-black text-slate-600 uppercase tracking-widest">
                     {{ __('Syncing Calendar...') }}
                 </span>
@@ -124,8 +124,8 @@
         }
         .premium-input:focus {
             background-color: #ffffff !important;
-            border-color: #4f46e5 !important;
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15), 0 10px 15px -3px rgba(0, 0, 0, 0.05) !important;
+            border-color: #D4AF37 !important;
+            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.15), 0 10px 15px -3px rgba(0, 0, 0, 0.05) !important;
             transform: translateY(-1px);
         }
         
@@ -146,16 +146,16 @@
             height: 24px;
             line-height: 22px;
             text-align: center;
-            background-color: #4f46e5;
-            color: white;
+            background-color: #D4AF37;
+            color: #0b0f19;
             border-radius: 9999px;
             font-size: 14px;
-            font-weight: 800;
+            font-weight: 900;
             opacity: 0;
             transform: scale(0.8);
             transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
             pointer-events: none;
-            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+            box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3);
         }
         @media (min-width: 768px) {
             .fc-daygrid-day:hover::after {
@@ -214,7 +214,7 @@
             border-bottom: 1px solid #f1f5f9 !important;
         }
         .fc-list-event:hover {
-            background-color: #faf5ff !important;
+            background-color: #fdfbf7 !important;
             transform: translateX(4px);
         }
         .fc-list-event td {
@@ -244,15 +244,15 @@
         }
         
         .fc-day-today {
-            background-color: rgba(79, 70, 229, 0.03) !important;
-            border: 2px solid rgba(79, 70, 229, 0.4) !important;
-            box-shadow: inset 0 0 12px rgba(79, 70, 229, 0.03), 4px 4px 20px rgba(79, 70, 229, 0.06) !important;
+            background-color: rgba(212, 175, 55, 0.03) !important;
+            border: 2px solid rgba(212, 175, 55, 0.4) !important;
+            box-shadow: inset 0 0 12px rgba(212, 175, 55, 0.03), 4px 4px 20px rgba(212, 175, 55, 0.06) !important;
             position: relative;
         }
         .fc-day-today .fc-daygrid-day-number {
-            color: #4f46e5 !important;
-            background-color: #f5f3ff;
-            border: 1px solid #ddd6fe;
+            color: #c5a059 !important;
+            background-color: #fdfbf7;
+            border: 1px solid #f5e6c4;
         }
         .fc-event {
             background: transparent !important;
@@ -396,8 +396,8 @@
                                 }
                             } else {
                                 if (status === 'internal') {
-                                    colorClass = 'bg-indigo-50 text-indigo-700 border-indigo-100/80';
-                                    bulletColor = 'bg-indigo-500';
+                                    colorClass = 'bg-gold-50 text-gold-700 border-gold-100/80';
+                                    bulletColor = 'bg-gold-500';
                                 } else if (status === 'meeting') {
                                     colorClass = 'bg-emerald-50 text-emerald-700 border-emerald-100/80';
                                     bulletColor = 'bg-emerald-500';
@@ -498,7 +498,7 @@
                     } else {
                         if (badgeEl) {
                             badgeEl.innerText = 'Reminder: ' + props.status_type;
-                            badgeEl.className = `px-2.5 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider bg-indigo-50 text-indigo-700 border border-indigo-100/30`;
+                            badgeEl.className = `px-2.5 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider bg-gold-50 text-gold-700 border border-gold-100/30`;
                         }
                         if (descEl) descEl.innerText = props.description || 'No description provided';
                     }

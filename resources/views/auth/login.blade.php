@@ -84,14 +84,14 @@
              x-transition:leave="transition-all duration-700 ease-in-out transform"
              x-transition:leave-start="translate-y-0"
              x-transition:leave-end="-translate-y-full"
-             class="md:hidden fixed inset-0 z-50 bg-gradient-to-br from-[#111827] via-[#0b0f19] to-[#1e1b4b] flex flex-col justify-between items-center py-16 px-6 text-center overflow-hidden">
+             class="md:hidden fixed inset-0 z-50 bg-gradient-to-br from-[#111827] via-[#0b0f19] to-[#0F2A44] flex flex-col justify-between items-center py-16 px-6 text-center overflow-hidden">
             
             <!-- Top Branding -->
             <div class="flex flex-col items-center space-y-4 animate-fade-in" style="animation-delay: 200ms;">
                 <div class="w-20 h-20 bg-white/5 border border-white/10 rounded-[24px] flex items-center justify-center backdrop-blur-2xl shadow-2xl overflow-hidden p-4">
                     <img src="{{ asset('img/logo-jnj.png') }}" alt="J&J GROUP Logo" class="w-full h-full object-contain">
                 </div>
-                <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-white/5 border border-white/10 rounded-full text-indigo-300 text-[8px] font-black uppercase tracking-[0.3em]">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-white/5 border border-white/10 rounded-full text-gold-300 text-[8px] font-black uppercase tracking-[0.3em]">
                     Authorized Nodes Only
                 </div>
             </div>
@@ -100,7 +100,7 @@
             <div class="space-y-4 my-auto animate-fade-in" style="animation-delay: 400ms;">
                 <h2 class="text-3xl font-black text-white leading-tight tracking-tighter uppercase">
                     MASTER THE <br>
-                    <span class="text-indigo-500">FINANCE MATRIX.</span>
+                    <span class="text-gold-500">FINANCE MATRIX.</span>
                 </h2>
                 <p class="text-slate-400 text-xs font-medium leading-relaxed max-w-xs mx-auto">
                     The unified high-fidelity workspace for enterprise billing, job documentation, and performance intelligence.
@@ -115,7 +115,7 @@
                         <span class="text-[9px] font-bold tracking-widest text-slate-500 uppercase">Auth Active</span>
                     </div>
                     <div class="flex flex-col items-center gap-1.5">
-                        <div class="w-2 h-2 rounded-full bg-indigo-500 shadow-[0_0_8px_#6366f1]"></div>
+                        <div class="w-2 h-2 rounded-full bg-gold-500 shadow-[0_0_8px_#D4AF37]"></div>
                         <span class="text-[9px] font-bold tracking-widest text-slate-500 uppercase">Ledger Sync</span>
                     </div>
                     <div class="flex flex-col items-center gap-1.5">

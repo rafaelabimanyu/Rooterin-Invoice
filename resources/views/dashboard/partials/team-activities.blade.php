@@ -9,7 +9,7 @@
                 {{ __('dashboard.team_log_subtitle') }}
             </p>
         </div>
-        <div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+        <div class="w-8 h-8 rounded-lg bg-gold-50 flex items-center justify-center text-gold-600">
             <i data-lucide="shield-check" class="w-4.5 h-4.5"></i>
         </div>
     </div>
@@ -22,7 +22,7 @@
                     <!-- Circle Timeline Bullet -->
                     <div class="absolute -left-[31px] top-1.5 w-2 h-2 rounded-full border-2 border-white
                         @if($log['type'] == 'success') bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]
-                        @elseif($log['type'] == 'info') bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.6)]
+                        @elseif($log['type'] == 'info') bg-gold-500 shadow-[0_0_8px_rgba(212,175,55,0.6)]
                         @else bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]
                         @endif
                     "></div>
@@ -32,7 +32,7 @@
                         <div class="flex items-center gap-1.5">
                             <span class="text-[10px] font-black uppercase tracking-wider
                                 @if($log['type'] == 'success') text-emerald-600
-                                @elseif($log['type'] == 'info') text-blue-600
+                                @elseif($log['type'] == 'info') text-gold-600
                                 @else text-rose-600
                                 @endif
                             ">

@@ -5,7 +5,7 @@
             <div class="flex items-center justify-between mb-10">
                 <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg">{{ app()->getLocale() == 'en' ? 'Activity Feed' : 'Aliran Aktivitas' }}</h3>
                 <span
-                    class="px-3 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-black rounded-full uppercase tracking-widest">Live</span>
+                    class="px-3 py-1 bg-gold-50 text-gold-600 text-[10px] font-black rounded-full uppercase tracking-widest">Live</span>
             </div>
 
             <div class="flex-1 space-y-8 relative">
@@ -15,7 +15,7 @@
                 @forelse($activityLogs as $log)
                     <div class="relative pl-10">
                         <div
-                            class="absolute left-0 top-1 w-6 h-6 rounded-full bg-white border-4 border-indigo-500 flex items-center justify-center z-10">
+                            class="absolute left-0 top-1 w-6 h-6 rounded-full bg-white border-4 border-gold-500 flex items-center justify-center z-10">
                         </div>
                         <div class="space-y-1">
                             <p class="text-[13px] font-bold text-slate-800 leading-snug">{{ $log->description }}</p>

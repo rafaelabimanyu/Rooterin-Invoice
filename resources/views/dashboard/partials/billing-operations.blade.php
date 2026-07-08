@@ -43,7 +43,7 @@
                         <td class="px-10 py-6">
                             <div class="flex flex-col">
                                 <span
-                                    class="text-[14px] font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">{{ $invoice->client->nama_client }}</span>
+                                    class="text-[14px] font-bold text-slate-900 group-hover:text-gold-600 transition-colors">{{ $invoice->client->nama_client }}</span>
                                 <span
                                     class="text-[11px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">{{ $invoice->client->nama_perusahaan }}</span>
                             </div>
@@ -64,8 +64,8 @@
                                     class="w-32 h-32 bg-slate-50 rounded-full flex items-center justify-center mb-8 relative">
                                     <i data-lucide="rocket" class="w-16 h-16 text-slate-200 animate-pulse"></i>
                                     <div
-                                        class="absolute top-0 right-0 w-8 h-8 bg-indigo-50 rounded-full flex items-center justify-center animate-bounce">
-                                        <i data-lucide="sparkles" class="w-4 h-4 text-indigo-400"></i>
+                                        class="absolute top-0 right-0 w-8 h-8 bg-gold-50 rounded-full flex items-center justify-center animate-bounce">
+                                        <i data-lucide="sparkles" class="w-4 h-4 text-gold-500"></i>
                                     </div>
                                 </div>
                                 <h4

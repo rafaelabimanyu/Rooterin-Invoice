@@ -8,12 +8,12 @@
             >
                 <div class="flex items-center justify-between w-full">
                     <div class="flex items-center gap-3 min-w-0">
-                        <i data-lucide="{{ $guideData['header']['icon'] ?? 'book-open' }}" class="w-5 h-5 text-indigo-600 shrink-0"></i>
+                        <i data-lucide="{{ $guideData['header']['icon'] ?? 'book-open' }}" class="w-5 h-5 text-gold-600 shrink-0"></i>
                         <span class="font-bold text-slate-900 text-sm tracking-wide truncate">
                             {{ is_array(__($activeSectionData['title'])) ? $activeSectionData['title'] : __($activeSectionData['title']) }}
                         </span>
                     </div>
-                    <button @click="dropdownOpen = !dropdownOpen" class="p-2 -mr-2 text-slate-500 hover:text-indigo-600 transition-all rounded-xl hover:bg-slate-50 flex items-center gap-1.5 border border-slate-100/80 bg-slate-50/50">
+                    <button @click="dropdownOpen = !dropdownOpen" class="p-2 -mr-2 text-slate-500 hover:text-gold-600 transition-all rounded-xl hover:bg-slate-50 flex items-center gap-1.5 border border-slate-100/80 bg-slate-50/50">
                         <span class="text-xs font-bold">{{ app()->getLocale() == 'en' ? 'Topics' : 'Topik' }}</span>
                         <i data-lucide="chevron-down" class="w-4 h-4 transition-transform duration-200" :class="dropdownOpen ? 'rotate-180' : ''"></i>
                     </button>
@@ -33,7 +33,7 @@
                 >
                     @foreach($guideData['navigation'] as $key => $nav)
                         <a href="{{ route('guide.index', $key) }}"
-                            class="flex items-center px-3 py-2 text-xs font-bold rounded-xl transition-all {{ $activeSectionKey === $key ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/10' : 'text-slate-750 hover:bg-slate-50' }}"
+                            class="flex items-center px-3 py-2 text-xs font-black rounded-xl transition-all {{ $activeSectionKey === $key ? 'bg-gold-500 text-slate-950 shadow-md shadow-gold-500/10' : 'text-slate-750 hover:bg-slate-50' }}"
                         >
                             <i data-lucide="{{ $nav['icon'] ?? 'file-text' }}" class="w-3.5 h-3.5 mr-2"></i>
                             {{ is_array(__($nav['title'])) ? $nav['title'] : __($nav['title']) }}
@@ -42,7 +42,7 @@
                         @if(isset($nav['sub_sections']) && count($nav['sub_sections']) > 0 && $activeSectionKey === $key)
                             <div class="ml-5 pl-3 border-l border-slate-200 space-y-1 py-1">
                                 @foreach($nav['sub_sections'] as $subKey => $subSec)
-                                    <a href="#{{ $subKey }}" @click="dropdownOpen = false" class="block px-3 py-1.5 text-[11px] font-semibold text-slate-500 hover:text-indigo-600">
+                                    <a href="#{{ $subKey }}" @click="dropdownOpen = false" class="block px-3 py-1.5 text-[11px] font-semibold text-slate-500 hover:text-gold-600">
                                         • {{ __($subSec['title']) }}
                                     </a>
                                 @endforeach
@@ -65,7 +65,7 @@
                     
                     <!-- Header -->
                     <div class="space-y-4 mb-8 lg:mb-12">
-                        <div class="inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 rounded-full text-indigo-600 text-[10px] font-black uppercase tracking-widest border border-indigo-100 shadow-sm">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 bg-gold-50 rounded-full text-gold-600 text-[10px] font-black uppercase tracking-widest border border-gold-100 shadow-sm">
                             <i data-lucide="{{ $guideData['header']['icon'] ?? 'book-open' }}" class="w-3 h-3 hidden sm:block"></i> 
                             {{ strtoupper($role) }} {{ app()->getLocale() == 'en' ? 'KNOWLEDGE BASE' : 'PANGKALAN PENGETAHUAN' }}
                         </div>
@@ -84,7 +84,7 @@
                     <!-- Footer Navigation -->
                     <div class="pt-10 lg:pt-16 mt-10 lg:mt-16 border-t border-slate-100 flex justify-between items-center text-xs lg:text-sm font-semibold text-slate-500">
                         <p>&copy; {{ date('Y') }} J&J GROUP Enterprise</p>
-                        <a href="#top" class="hover:text-indigo-600 transition-colors flex items-center font-jakarta">
+                        <a href="#top" class="hover:text-gold-600 transition-colors flex items-center font-jakarta">
                             {{ app()->getLocale() == 'en' ? 'Back to top' : 'Kembali ke atas' }} <i data-lucide="arrow-up" class="w-4 h-4 ml-2"></i>
                         </a>
                     </div>

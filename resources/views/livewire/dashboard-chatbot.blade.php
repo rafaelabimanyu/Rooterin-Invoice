@@ -1,18 +1,18 @@
 <style>
     /* Pulse effect for the floating chatbot trigger button */
     .chatbot-trigger-btn {
-        box-shadow: 0 8px 32px rgba(99, 102, 241, 0.4);
+        box-shadow: 0 8px 32px rgba(212, 175, 55, 0.4);
         animation: chatbot-pulse 3.5s infinite;
     }
     @keyframes chatbot-pulse {
         0% {
-            box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.65);
+            box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.65);
         }
         75% {
-            box-shadow: 0 0 0 15px rgba(99, 102, 241, 0);
+            box-shadow: 0 0 0 15px rgba(212, 175, 55, 0);
         }
         100% {
-            box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+            box-shadow: 0 0 0 0 rgba(212, 175, 55, 0);
         }
     }
     
@@ -147,7 +147,7 @@
                     <div class="flex flex-col {{ $msg['sender'] === 'user' ? 'items-end' : 'items-start' }} max-w-[85%] w-fit">
                         <!-- Message Bubble -->
                         <div 
-                            class="px-4 py-3 rounded-2xl text-xs leading-relaxed {{ $msg['sender'] === 'user' ? 'bg-gradient-to-tr from-indigo-600 to-indigo-500 text-white rounded-tr-none shadow-md shadow-indigo-600/10 font-medium' : 'bg-white text-slate-800 border border-slate-200 rounded-tl-none shadow-sm font-medium' }}"
+                            class="px-4 py-3 rounded-2xl text-xs leading-relaxed {{ $msg['sender'] === 'user' ? 'bg-gold-500 text-slate-950 rounded-tr-none shadow-md shadow-gold-500/20 font-bold' : 'bg-white text-slate-800 border border-slate-200 rounded-tl-none shadow-sm font-medium' }}"
                         >
                             <div class="chatbot-content-html">
                                 {!! $msg['text'] !!}
@@ -159,7 +159,7 @@
                             <div class="mt-2 pl-1">
                                 <a 
                                     href="{{ $msg['navigateUrl'] }}" 
-                                    class="inline-flex items-center gap-1.5 px-3 py-2 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200/80 text-indigo-700 rounded-xl text-[10px] font-black transition-all shadow-sm hover:-translate-y-0.5 active:scale-95"
+                                    class="inline-flex items-center gap-1.5 px-3 py-2 bg-gold-50 hover:bg-gold-100 border border-gold-200/80 text-gold-700 rounded-xl text-[10px] font-black transition-all shadow-sm hover:-translate-y-0.5 active:scale-95"
                                 >
                                     <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
                                     <span>{{ $msg['navigateLabel'] }}</span>
@@ -170,7 +170,7 @@
 
                     <!-- User Avatar -->
                     @if($msg['sender'] === 'user')
-                        <div class="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white shrink-0 shadow-sm mt-0.5 border border-indigo-500/20">
+                        <div class="w-7 h-7 rounded-lg bg-gold-500 flex items-center justify-center text-slate-950 shrink-0 shadow-sm mt-0.5 border border-gold-500/20">
                             <span class="text-[10px] font-black uppercase">{{ substr(auth()->user()->name, 0, 1) }}</span>
                         </div>
                     @endif
@@ -183,9 +183,9 @@
                     <img src="{{ asset('img/logo-jnj.png') }}" alt="J&J GROUP Logo" class="w-full h-full object-contain">
                 </div>
                 <div class="bg-white text-slate-400 rounded-2xl rounded-tl-none px-4 py-3 border border-slate-200 shadow-sm flex items-center gap-1.5">
-                    <span class="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></span>
+                    <span class="w-1.5 h-1.5 bg-gold-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></span>
                     <span class="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
-                    <span class="w-1.5 h-1.5 bg-indigo-600 rounded-full animate-bounce" style="animation-delay: 0.3s"></span>
+                    <span class="w-1.5 h-1.5 bg-gold-600 rounded-full animate-bounce" style="animation-delay: 0.3s"></span>
                 </div>
             </div>
         </div>
@@ -212,18 +212,18 @@
             @submit="handleSubmit()"
         >
             <div class="relative flex-grow flex items-center">
-                <input 
+                 <input 
                     wire:model="input" 
                     type="text" 
                     placeholder="{{ app()->getLocale() == 'en' ? 'Ask about unpaid invoices or client list...' : 'Tanyakan invoice belum dibayar atau data klien...' }}" 
-                    class="w-full pl-5 pr-12 py-3 bg-slate-50 border border-slate-200 rounded-full text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/80 focus:bg-white transition-all font-medium" 
+                    class="w-full pl-5 pr-12 py-3 bg-slate-50 border border-slate-200 rounded-full text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-gold-500/40 focus:border-gold-500/80 focus:bg-white transition-all font-medium" 
                     wire:loading.attr="disabled"
                     wire:target="sendMessage"
                     required
                 >
                 <button 
                     type="submit" 
-                    class="absolute right-1.5 w-9 h-9 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full flex items-center justify-center transition-all active:scale-95 disabled:opacity-50 shadow-md shadow-indigo-600/15 focus:outline-none"
+                    class="absolute right-1.5 w-9 h-9 bg-gold-500 hover:bg-gold-600 text-slate-950 font-bold rounded-full flex items-center justify-center transition-all active:scale-95 disabled:opacity-50 shadow-md shadow-gold-500/15 focus:outline-none"
                     wire:loading.attr="disabled"
                     wire:target="sendMessage"
                 >

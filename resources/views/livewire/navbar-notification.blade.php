@@ -117,7 +117,7 @@
                 <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-0.5">{{ $unreadCount }} Unread transmissions</p>
             </div>
             @if($unreadCount > 0)
-                <button wire:click="markAllAsRead" class="text-[10px] font-black text-indigo-600 uppercase tracking-widest hover:text-indigo-700 transition-colors">
+                <button wire:click="markAllAsRead" class="text-[10px] font-black text-gold-600 uppercase tracking-widest hover:text-gold-700 transition-colors">
                     Mark all read
                 </button>
             @endif
@@ -140,9 +140,9 @@
                         'finance' => 'bg-emerald-50 text-emerald-600',
                         'security' => 'bg-amber-50 text-amber-600',
                         'critical', 'overdue' => 'bg-rose-50 text-rose-600',
-                        'reminder' => 'bg-indigo-50 text-indigo-600',
+                        'reminder' => 'bg-gold-50 text-gold-600',
                         'due_today' => 'bg-amber-50 text-amber-600',
-                        default => 'bg-blue-50 text-blue-600'
+                        default => 'bg-gold-50 text-gold-600'
                     };
                 @endphp
                 <div 
@@ -150,7 +150,7 @@
                     @click="$wire.markAsRead('{{ $notification->id }}')"
                 >
                     @if(!$notification->read_at)
-                        <div class="absolute left-3 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-indigo-500 rounded-full shadow-[0_0_8px_rgba(79,70,229,0.5)]"></div>
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-gold-500 rounded-full shadow-[0_0_8px_rgba(212,175,55,0.5)]"></div>
                     @endif
 
                     <div class="flex gap-4">
@@ -185,7 +185,7 @@
                 <div class="py-16 md:py-20 px-10 text-center flex flex-col items-center justify-center">
                     <div class="w-20 h-20 bg-slate-50 rounded-[32px] shadow-inner flex items-center justify-center mx-auto mb-5 text-slate-300 relative">
                         <i data-lucide="bell-off" class="w-10 h-10 relative z-10"></i>
-                        <div class="absolute inset-0 bg-indigo-500/5 rounded-[32px] blur-md"></div>
+                        <div class="absolute inset-0 bg-gold-500/5 rounded-[32px] blur-md"></div>
                     </div>
                     <h4 class="text-[13px] md:text-sm font-black text-slate-900 uppercase tracking-tight">All Caught Up!</h4>
                     <p class="text-[10px] md:text-[11px] text-slate-400 font-bold uppercase tracking-widest mt-2 leading-relaxed max-w-[200px] mx-auto">No pending transmissions detected.</p>

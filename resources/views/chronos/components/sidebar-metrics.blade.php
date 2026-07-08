@@ -33,7 +33,7 @@
 </div>
 
 <!-- Activity Feed Card -->
-<div class="glass-card p-6 border-slate-100 shadow-2xl shadow-indigo-500/5 page-fade-in stagger-3 bg-white/80 backdrop-blur-md rounded-3xl flex flex-col flex-1">
+<div class="glass-card p-6 border-slate-100 shadow-2xl shadow-gold-500/5 page-fade-in stagger-3 bg-white/80 backdrop-blur-md rounded-3xl flex flex-col flex-1">
     <div class="flex items-center justify-between mb-8">
         <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-md">
             {{ __('Live Feed') }}
@@ -49,7 +49,7 @@
         <div class="space-y-6">
             @forelse($activities as $activity)
                 <div class="relative pl-8">
-                    <div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-white border-4 border-indigo-500 flex items-center justify-center z-10"></div>
+                    <div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-white border-4 border-gold-500 flex items-center justify-center z-10"></div>
                     <div class="space-y-1">
                         <p class="text-[12px] font-bold text-slate-800 leading-snug">{{ $activity->description }}</p>
                         <p class="text-[10px] text-slate-400 font-medium">{{ $activity->created_at->diffForHumans() }} - {{ $activity->user->name }}</p>

@@ -16,7 +16,7 @@
         <h4 class="text-xs font-black text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Invoices Summary' : 'Ringkasan Invoice' }}</h4>
         
         <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden shadow-inner">
-            <div class="bg-indigo-600 h-full progress-bar-fill shadow-[0_0_12px_rgba(79,70,229,0.5)]" style="width: {{ $collectionRate }}%"></div>
+            <div class="bg-gold-500 h-full progress-bar-fill shadow-[0_0_12px_rgba(212,175,55,0.5)]" style="width: {{ $collectionRate }}%"></div>
         </div>
 
         <div class="grid grid-cols-2 gap-4 pt-2">

@@ -16,12 +16,12 @@
 >
     <div class="flex items-center gap-4">
         <!-- Sidebar Toggle (Desktop) -->
-        <button @click="$dispatch('toggle-sidebar')" class="hidden lg:flex items-center justify-center w-10 h-10 rounded-xl bg-slate-100 text-slate-600 hover:text-indigo-600 transition-colors">
+        <button @click="$dispatch('toggle-sidebar')" class="hidden lg:flex items-center justify-center w-10 h-10 rounded-xl bg-slate-100 text-slate-600 hover:text-gold-600 transition-colors">
             <i data-lucide="menu" class="w-5 h-5"></i>
         </button>
         
         <!-- Sidebar Toggle (Mobile) -->
-        <button @click="$dispatch('toggle-mobile-sidebar')" class="lg:hidden flex items-center justify-center w-10 h-10 rounded-xl bg-slate-100 text-slate-600 hover:text-indigo-600 transition-colors">
+        <button @click="$dispatch('toggle-mobile-sidebar')" class="lg:hidden flex items-center justify-center w-10 h-10 rounded-xl bg-slate-100 text-slate-600 hover:text-gold-600 transition-colors">
             <i data-lucide="menu" class="w-5 h-5"></i>
         </button>
 
@@ -46,7 +46,7 @@
                 document.documentElement.classList.toggle('dark', val);
             })"
             @click="darkMode = !darkMode"
-            class="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-100 text-slate-600 hover:text-indigo-600 transition-colors"
+            class="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-100 text-slate-600 hover:text-gold-600 transition-colors"
         >
             <template x-if="!darkMode">
                 <i data-lucide="moon" class="w-5 h-5"></i>
@@ -75,8 +75,8 @@
                     <p class="text-sm font-bold text-slate-900 truncate">{{ Auth::user()->name }}</p>
                 </div>
                 
-                <a href="{{ route('profile.edit') }}" wire:navigate.hover class="flex items-center gap-3 px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors group">
-                    <i data-lucide="user" class="w-4 h-4 text-slate-400 group-hover:text-indigo-500"></i>
+                <a href="{{ route('profile.edit') }}" wire:navigate.hover class="flex items-center gap-3 px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-gold-50 hover:text-gold-600 transition-colors group">
+                    <i data-lucide="user" class="w-4 h-4 text-slate-400 group-hover:text-gold-500"></i>
                     Profile
                 </a>
                 

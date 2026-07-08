@@ -36,10 +36,10 @@
                         <img src="{{ $user->profile_photo_url }}" class="w-20 h-20 rounded-2xl object-cover border-2 border-slate-100 shadow-sm">
                     </template>
                     <template x-if="photoPreview">
-                        <img :src="photoPreview" class="w-20 h-20 rounded-2xl object-cover border-2 border-indigo-500 shadow-md">
+                        <img :src="photoPreview" class="w-20 h-20 rounded-2xl object-cover border-2 border-gold-500 shadow-md">
                     </template>
                     <label for="profile_photo" class="absolute -bottom-2 -right-2 p-2 bg-white rounded-xl shadow-lg border border-slate-100 cursor-pointer hover:bg-slate-50 transition-colors">
-                        <i data-lucide="camera" class="w-4 h-4 text-indigo-600"></i>
+                        <i data-lucide="camera" class="w-4 h-4 text-gold-600"></i>
                         <input type="file" id="profile_photo" name="profile_photo" class="hidden" @change="updatePreview">
                     </label>
                 </div>
@@ -54,14 +54,14 @@
             <!-- Name -->
             <div class="space-y-2">
                 <x-input-label for="name" value="{{ app()->getLocale() == 'en' ? 'Full Name' : 'Nama Lengkap' }}" class="text-[11px] font-black text-slate-400 uppercase tracking-widest" />
-                <x-text-input id="name" name="name" type="text" class="w-full bg-slate-50/50 border-slate-200 focus:border-indigo-500 focus:ring-indigo-500 rounded-xl py-3" :value="old('name', $user->name)" required autofocus autocomplete="name" />
+                <x-text-input id="name" name="name" type="text" class="w-full bg-slate-50/50 border-slate-200 focus:border-gold-500 focus:ring-gold-500 rounded-xl py-3" :value="old('name', $user->name)" required autofocus autocomplete="name" />
                 <x-input-error class="mt-2" :messages="$errors->get('name')" />
             </div>
 
             <!-- Email -->
             <div class="space-y-2">
                 <x-input-label for="email" value="{{ app()->getLocale() == 'en' ? 'Email Address' : 'Alamat Email' }}" class="text-[11px] font-black text-slate-400 uppercase tracking-widest" />
-                <x-text-input id="email" name="email" type="email" class="w-full bg-slate-50/50 border-slate-200 focus:border-indigo-500 focus:ring-indigo-500 rounded-xl py-3" :value="old('email', $user->email)" required autocomplete="username" />
+                <x-text-input id="email" name="email" type="email" class="w-full bg-slate-50/50 border-slate-200 focus:border-gold-500 focus:ring-gold-500 rounded-xl py-3" :value="old('email', $user->email)" required autocomplete="username" />
                 <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
                 @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
@@ -69,7 +69,7 @@
                         <p class="text-sm mt-2 text-gray-800">
                             {{ app()->getLocale() == 'en' ? 'Your email address is unverified.' : 'Alamat email Anda belum diverifikasi.' }}
 
-                            <button form="send-verification" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <button form="send-verification" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gold-500">
                                 {{ app()->getLocale() == 'en' ? 'Click here to re-send the verification email.' : 'Klik di sini untuk mengirim ulang email verifikasi.' }}
                             </button>
                         </p>
@@ -86,7 +86,7 @@
             <!-- System Locale -->
             <div class="space-y-2">
                 <x-input-label for="locale" value="{{ app()->getLocale() == 'en' ? 'System Localization' : 'Lokalisasi Sistem' }}" class="text-[11px] font-black text-slate-400 uppercase tracking-widest" />
-                <select id="locale" name="locale" class="w-full bg-slate-50/50 border-slate-200 focus:border-indigo-500 focus:ring-indigo-500 rounded-xl py-3 text-sm font-bold text-slate-700">
+                <select id="locale" name="locale" class="w-full bg-slate-50/50 border-slate-200 focus:border-gold-500 focus:ring-gold-500 rounded-xl py-3 text-sm font-bold text-slate-700">
                     <option value="en" {{ old('locale', $user->locale) === 'en' ? 'selected' : '' }}>English (US)</option>
                     <option value="id" {{ old('locale', $user->locale) === 'id' ? 'selected' : '' }}>Bahasa Indonesia (ID)</option>
                 </select>

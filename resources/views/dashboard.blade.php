@@ -36,7 +36,7 @@
 
             <!-- Hero Section -->
             <div
-                class="glass-card p-8 md:p-12 bg-gradient-to-br from-indigo-900 via-indigo-800 to-slate-900 text-white relative overflow-hidden mb-10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)]">
+                class="glass-card p-8 md:p-12 bg-gradient-to-br from-[#0F2A44] via-[#0B1E33] to-[#05111E] text-white relative overflow-hidden mb-10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)]">
                 <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-10">
                     <div class="flex-1 space-y-6">
                         <div
@@ -46,17 +46,17 @@
                                     class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                                 <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                             </span>
-                            <p class="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-100" x-text="greeting">
+                            <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gold-100" x-text="greeting">
                             </p>
                         </div>
 
                         <h2 class="text-3xl md:text-5xl font-black font-jakarta tracking-tight leading-tight">
-                            {{ app()->getLocale() == 'en' ? 'Keep up the great work,' : 'Terus tingkatkan kinerja luar biasa Anda,' }}<br><span class="text-indigo-300">{{ auth()->user()->name }}</span>
+                            {{ app()->getLocale() == 'en' ? 'Keep up the great work,' : 'Terus tingkatkan kinerja luar biasa Anda,' }}<br><span class="text-gold-300">{{ auth()->user()->name }}</span>
                         </h2>
 
-                        <div class="flex items-center gap-4 py-4 border-l-2 border-indigo-500/30 pl-6">
-                            <i data-lucide="quote" class="w-8 h-8 text-indigo-400/50 -mt-4"></i>
-                            <p class="text-sm md:text-lg italic text-indigo-100/80 font-medium max-w-xl">
+                        <div class="flex items-center gap-4 py-4 border-l-2 border-gold-500/30 pl-6">
+                            <i data-lucide="quote" class="w-8 h-8 text-gold-400/50 -mt-4"></i>
+                            <p class="text-sm md:text-lg italic text-gold-100/80 font-medium max-w-xl">
                                 "{{ $randomQuote }}"
                             </p>
                         </div>
@@ -64,14 +64,14 @@
                         <!-- Quick Actions -->
                         <div class="flex flex-wrap gap-4 pt-4">
                             <a href="{{ route('clients.create') }}"
-                                class="group flex items-center gap-3 px-5 py-3 bg-white text-indigo-900 rounded-xl font-bold text-xs hover:bg-indigo-50 transition-all shadow-xl hover:-translate-y-1">
-                                <div class="p-1.5 bg-indigo-100 rounded-lg group-hover:scale-110 transition-transform">
-                                    <i data-lucide="user-plus" class="w-4 h-4 text-indigo-600"></i>
+                                class="group flex items-center gap-3 px-5 py-3 bg-white text-slate-950 rounded-xl font-bold text-xs hover:bg-gold-50 transition-all shadow-xl hover:-translate-y-1">
+                                <div class="p-1.5 bg-gold-100 rounded-lg group-hover:scale-110 transition-transform">
+                                    <i data-lucide="user-plus" class="w-4 h-4 text-gold-600"></i>
                                 </div>
                                 {{ app()->getLocale() == 'en' ? 'New Client' : 'Klien Baru' }}
                             </a>
                             <a href="{{ route('invoices.create') }}"
-                                class="group flex items-center gap-3 px-5 py-3 bg-indigo-600/50 backdrop-blur-md border border-white/20 text-white rounded-xl font-bold text-xs hover:bg-white/20 transition-all shadow-xl hover:-translate-y-1">
+                                class="group flex items-center gap-3 px-5 py-3 bg-gold-500/50 backdrop-blur-md border border-white/20 text-white rounded-xl font-bold text-xs hover:bg-white/20 transition-all shadow-xl hover:-translate-y-1">
                                 <div class="p-1.5 bg-white/20 rounded-lg group-hover:scale-110 transition-transform">
                                     <i data-lucide="file-edit" class="w-4 h-4"></i>
                                 </div>
@@ -91,10 +91,10 @@
                         <!-- Digital Clock -->
                         <div
                             class="p-6 bg-white/5 backdrop-blur-xl rounded-[32px] border border-white/10 text-right min-w-[200px]">
-                            <p class="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-300/60 mb-2">{{ app()->getLocale() == 'en' ? 'System Time' : 'Waktu Sistem' }}
+                            <p class="text-[10px] font-black uppercase tracking-[0.3em] text-gold-300/60 mb-2">{{ app()->getLocale() == 'en' ? 'System Time' : 'Waktu Sistem' }}
                             </p>
                             <p class="text-4xl md:text-5xl font-black font-mono tracking-tighter" x-text="time"></p>
-                            <p class="text-[11px] font-bold text-indigo-200 mt-2">{{ date('l, F d, Y') }}</p>
+                            <p class="text-[11px] font-bold text-gold-200 mt-2">{{ date('l, F d, Y') }}</p>
                         </div>
 
                         <!-- Daily Goal Progress -->
@@ -105,7 +105,7 @@
                                     <circle cx="32" cy="32" r="28" stroke="currentColor" stroke-width="6" fill="transparent"
                                         class="text-white/10" />
                                     <circle cx="32" cy="32" r="28" stroke="currentColor" stroke-width="6" fill="transparent"
-                                        class="text-indigo-400" stroke-dasharray="175.9"
+                                        class="text-gold-400" stroke-dasharray="175.9"
                                         stroke-dashoffset="{{ 175.9 - (175.9 * $goalProgress / 100) }}"
                                         stroke-linecap="round" />
                                 </svg>
@@ -114,7 +114,7 @@
                                 </div>
                             </div>
                             <div>
-                                <p class="text-[10px] font-black uppercase tracking-widest text-indigo-300/60 mb-1">{{ app()->getLocale() == 'en' ? 'Daily Target' : 'Target Harian' }}</p>
+                                <p class="text-[10px] font-black uppercase tracking-widest text-gold-300/60 mb-1">{{ app()->getLocale() == 'en' ? 'Daily Target' : 'Target Harian' }}</p>
                                 <p class="text-sm font-black">{{ $todayInvoicesCount }} / {{ $dailyGoal }} {{ app()->getLocale() == 'en' ? 'Invoices' : 'Invoice' }}</p>
                             </div>
                         </div>
@@ -123,9 +123,9 @@
 
                 <!-- Animated Background Particles (Simplified SVG) -->
                 <div class="absolute inset-0 pointer-events-none opacity-20">
-                    <div class="absolute top-10 left-10 w-64 h-64 bg-indigo-500 rounded-full blur-[100px] animate-pulse">
+                    <div class="absolute top-10 left-10 w-64 h-64 bg-gold-500 rounded-full blur-[100px] animate-pulse">
                     </div>
-                    <div class="absolute bottom-10 right-10 w-96 h-96 bg-blue-500 rounded-full blur-[120px] animate-pulse"
+                    <div class="absolute bottom-10 right-10 w-96 h-96 bg-gold-600 rounded-full blur-[120px] animate-pulse"
                         style="animation-delay: 2s;"></div>
                 </div>
             </div>
@@ -194,16 +194,16 @@
                     <div class="glass-card p-6 flex flex-col justify-between hover:shadow-lg transition-all duration-300">
                         <!-- Tab Header Toggle -->
                         <div class="flex border-b border-slate-100 pb-4 mb-6">
-                            <button 
+                             <button 
                                 @click="activeTab = 'topClients'"
-                                :class="activeTab === 'topClients' ? 'text-indigo-600 border-indigo-600 font-black' : 'text-slate-400 border-transparent hover:text-slate-600 font-bold'"
+                                :class="activeTab === 'topClients' ? 'text-gold-600 border-gold-600 font-black' : 'text-slate-400 border-transparent hover:text-slate-600 font-bold'"
                                 class="flex-1 pb-3 text-xs uppercase tracking-wider text-center border-b-2 transition-all focus:outline-none"
                             >
                                 {{ app()->getLocale() == 'en' ? 'Top Clients' : 'Klien Teratas' }}
                             </button>
                             <button 
                                 @click="activeTab = 'ageing'"
-                                :class="activeTab === 'ageing' ? 'text-indigo-600 border-indigo-600 font-black' : 'text-slate-400 border-transparent hover:text-slate-600 font-bold'"
+                                :class="activeTab === 'ageing' ? 'text-gold-600 border-gold-600 font-black' : 'text-slate-400 border-transparent hover:text-slate-600 font-bold'"
                                 class="flex-1 pb-3 text-xs uppercase tracking-wider text-center border-b-2 transition-all focus:outline-none"
                             >
                                 {{ app()->getLocale() == 'en' ? 'AR Ageing' : 'Umur Piutang' }}

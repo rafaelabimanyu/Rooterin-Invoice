@@ -95,7 +95,7 @@
                         {{ round($collectionRate) }}%
                     </h3>
                     <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden shadow-inner mt-4">
-                        <div class="bg-indigo-600 h-full progress-bar-fill shadow-[0_0_12px_rgba(79,70,229,0.5)]"
+                        <div class="bg-gold-500 h-full progress-bar-fill shadow-[0_0_12px_rgba(212,175,55,0.5)]"
                             style="width: {{ $collectionRate }}%">
                         </div>
                     </div>
@@ -133,7 +133,7 @@
         <!-- KPI Grid -->
         <div class="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 no-scrollbar md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-4 lg:gap-6 md:pb-0 md:overflow-x-visible mb-8 page-fade-in" style="animation-delay: 100ms">
             <!-- Monthly Revenue -->
-            <div class="glass-card p-6 group hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 relative overflow-hidden border-indigo-500/10 cursor-pointer min-w-[85%] snap-center md:min-w-0"
+            <div class="glass-card p-6 group hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 relative overflow-hidden border-gold-500/10 cursor-pointer min-w-[85%] snap-center md:min-w-0"
                  @click="$dispatch('slide-over-loading-start')"
                  wire:click="openModal('revenue')">
                 <div class="flex items-center justify-between mb-6">
@@ -230,8 +230,8 @@
                         <p class="text-[10px] text-slate-400 font-bold uppercase tracking-[0.15em] mt-1">{{ app()->getLocale() == 'en' ? '6-Month historical analysis' : 'Analisis riwayat 6 bulan' }}</p>
                     </div>
                     <div class="hidden sm:flex items-center gap-3">
-                        <div class="flex items-center gap-2 px-3 py-1 bg-indigo-50 rounded-full text-[9px] font-black text-indigo-600 uppercase tracking-widest">
-                            <span class="w-1.5 h-1.5 rounded-full bg-indigo-600"></span>
+                        <div class="flex items-center gap-2 px-3 py-1 bg-gold-50 rounded-full text-[9px] font-black text-gold-600 uppercase tracking-widest">
+                            <span class="w-1.5 h-1.5 rounded-full bg-gold-600"></span>
                             {{ app()->getLocale() == 'en' ? 'Gross Intake' : 'Pemasukan Kotor' }}
                         </div>
                     </div>
@@ -297,10 +297,10 @@
                     <div class="pt-6 border-t border-slate-100">
                         <div class="flex items-center justify-between text-[10px] font-black uppercase tracking-widest mb-2">
                             <span class="text-slate-500">{{ app()->getLocale() == 'en' ? 'Collection Velocity' : 'Kecepatan Pengumpulan' }}</span>
-                            <span class="text-indigo-600">{{ $monthlyPerformance['created'] > 0 ? round(($monthlyPerformance['paid'] / $monthlyPerformance['created']) * 100) : 0 }}%</span>
+                            <span class="text-gold-600">{{ $monthlyPerformance['created'] > 0 ? round(($monthlyPerformance['paid'] / $monthlyPerformance['created']) * 100) : 0 }}%</span>
                         </div>
                         <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
-                            <div class="bg-indigo-600 h-full" style="width: {{ $monthlyPerformance['created'] > 0 ? ($monthlyPerformance['paid'] / $monthlyPerformance['created']) * 100 : 0 }}%"></div>
+                            <div class="bg-gold-500 h-full" style="width: {{ $monthlyPerformance['created'] > 0 ? ($monthlyPerformance['paid'] / $monthlyPerformance['created']) * 100 : 0 }}%"></div>
                         </div>
                     </div>
                 </div>
@@ -337,7 +337,7 @@
                                         <div class="flex items-center gap-4">
                                             <span class="w-7 h-7 rounded-lg bg-slate-900 flex items-center justify-center text-[9px] font-black text-white shrink-0">{{ $index + 1 }}</span>
                                             <div class="flex flex-col max-w-[140px] sm:max-w-none">
-                                                <span class="text-[13px] font-black text-slate-900 tracking-tight group-hover:text-indigo-600 transition-colors truncate">{{ $client->nama_client }}</span>
+                                                <span class="text-[13px] font-black text-slate-900 tracking-tight group-hover:text-gold-600 transition-colors truncate">{{ $client->nama_client }}</span>
                                                 <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest truncate">{{ $client->nama_perusahaan }}</span>
                                                 <span class="md:hidden text-[11px] font-bold text-slate-900 tracking-tight mt-1">
                                                     Rp {{ number_format($client->invoices_sum_total, 0, ',', '.') }}
@@ -390,7 +390,7 @@
                                         <span class="text-sm font-black text-slate-900 leading-none mt-0.5 group-hover:text-white">{{ $payment->payment_date->format('d') }}</span>
                                     </div>
                                     <div class="flex flex-col max-w-[120px] xs:max-w-[150px] sm:max-w-none">
-                                        <span class="text-[13px] font-black text-slate-900 tracking-tight group-hover:text-indigo-600 transition-colors truncate">{{ $payment->invoice?->client?->nama_client ?? 'N/A' }}</span>
+                                        <span class="text-[13px] font-black text-slate-900 tracking-tight group-hover:text-gold-600 transition-colors truncate">{{ $payment->invoice?->client?->nama_client ?? 'N/A' }}</span>
                                         <div class="flex items-center gap-1.5 mt-0.5 truncate">
                                             <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest truncate">{{ $payment->invoice?->invoice_number ?? 'N/A' }}</span>
                                             <span class="w-0.5 h-0.5 rounded-full bg-slate-300 shrink-0"></span>
@@ -460,7 +460,7 @@
                             zoom: { enabled: false },
                             fontFamily: 'Plus Jakarta Sans, sans-serif'
                         },
-                        colors: ['#6366f1'],
+                        colors: ['#D4AF37'],
                         fill: {
                             type: 'gradient',
                             gradient: {

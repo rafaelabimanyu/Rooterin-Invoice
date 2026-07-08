@@ -6,7 +6,7 @@
             <div class="flex items-center gap-2 text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-3">
                 <span>Enterprise</span>
                 <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
-                <span class="text-indigo-600 truncate">{{ app()->getLocale() == 'en' ? 'Billing Ledger' : 'Buku Besar Penagihan' }}</span>
+                <span class="text-gold-600 truncate">{{ app()->getLocale() == 'en' ? 'Billing Ledger' : 'Buku Besar Penagihan' }}</span>
             </div>
             <h1 class="text-5xl font-extrabold text-slate-900 tracking-tight mb-2 font-outfit">{{ __('ui.invoices') }}</h1>
             <p class="text-[15px] text-slate-400 font-medium">{{ app()->getLocale() == 'en' ? 'Manage all issued corporate invoices and statuses.' : 'Kelola semua invoice perusahaan yang diterbitkan beserta statusnya.' }}</p>
@@ -23,10 +23,10 @@
     <!-- Summary Cards -->
     <div class="flex overflow-x-auto snap-x gap-3 pb-3 no-scrollbar md:grid md:grid-cols-4 md:gap-8 md:pb-0 mb-12">
         <div class="card-premium group min-w-[85%] snap-center md:min-w-0">
-            <div class="absolute top-0 left-0 w-1.5 h-full bg-indigo-500/80"></div>
+            <div class="absolute top-0 left-0 w-1.5 h-full bg-gold-500/80"></div>
             <div class="flex items-center justify-between mb-4">
                 <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Total Issued' : 'Total Diterbitkan' }}</p>
-                <i data-lucide="file-text" class="w-4 h-4 text-slate-300 group-hover:text-indigo-500 transition-colors"></i>
+                <i data-lucide="file-text" class="w-4 h-4 text-slate-300 group-hover:text-gold-500 transition-colors"></i>
             </div>
             <h3 class="text-3xl font-bold text-slate-900 font-outfit">{{ $invoices->total() }}</h3>
             <p class="text-[10px] text-slate-400 font-bold mt-2 uppercase tracking-tighter">{{ app()->getLocale() == 'en' ? 'Registered in system' : 'Terdaftar dalam sistem' }}</p>
@@ -80,7 +80,7 @@
             <div class="row-floating grid grid-cols-12 gap-8 items-center px-10 py-6 group">
                 <!-- INVOICE NUMBER -->
                 <div class="col-span-2">
-                    <a href="{{ route('invoices.show', $invoice) }}" class="text-[14px] font-bold text-slate-900 hover:text-indigo-600 transition-colors tracking-tight">
+                    <a href="{{ route('invoices.show', $invoice) }}" class="text-[14px] font-bold text-slate-900 hover:text-gold-600 transition-colors tracking-tight">
                         {{ $invoice->invoice_number }}
                     </a>
                 </div>
@@ -121,7 +121,7 @@
                 <!-- ACTIONS -->
                 <div class="col-span-2">
                     <div class="flex items-center justify-end gap-4 opacity-40 group-hover:opacity-100 transition-all duration-300">
-                        <a href="{{ route('invoices.show', $invoice) }}" class="p-1 text-slate-400 hover:text-indigo-600 transition-colors" title="{{ __('ui.view') }}">
+                        <a href="{{ route('invoices.show', $invoice) }}" class="p-1 text-slate-400 hover:text-gold-600 transition-colors" title="{{ __('ui.view') }}">
                             <i data-lucide="eye" class="w-4.5 h-4.5"></i>
                         </a>
                         <a href="{{ route('invoices.edit', $invoice) }}" class="p-1 text-slate-400 hover:text-amber-600 transition-colors" title="{{ __('ui.edit') }}">
@@ -158,7 +158,7 @@
                 <!-- Second Row: Client Name & Nominal -->
                 <div class="flex items-center justify-between">
                     <span class="text-[13px] font-black text-slate-900 truncate leading-tight">{{ $invoice->client->nama_client }}</span>
-                    <span class="text-[14px] font-bold text-indigo-600 tracking-tight shrink-0">Rp {{ number_format($invoice->total, 0, ',', '.') }}</span>
+                    <span class="text-[14px] font-bold text-gold-600 tracking-tight shrink-0">Rp {{ number_format($invoice->total, 0, ',', '.') }}</span>
                 </div>
             </div>
         @empty

@@ -9,10 +9,10 @@
         </p>
     </div>
     <div class="flex items-center gap-4">
-        <div class="flex flex-wrap items-center gap-4 px-5 py-2.5 bg-white/40 backdrop-blur-lg rounded-2xl border border-white/20 shadow-lg shadow-indigo-500/5 select-none">
-            <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-indigo-50 border border-indigo-100/60">
-                <span class="w-2 h-2 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(79,70,229,0.6)]"></span>
-                <span class="text-[9px] font-black uppercase text-indigo-650 tracking-wider">
+        <div class="flex flex-wrap items-center gap-4 px-5 py-2.5 bg-white/40 backdrop-blur-lg rounded-2xl border border-white/20 shadow-lg shadow-gold-500/5 select-none">
+            <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-gold-50 border border-gold-100/60">
+                <span class="w-2 h-2 rounded-full bg-gold-500 shadow-[0_0_8px_rgba(200,157,60,0.6)]"></span>
+                <span class="text-[9px] font-black uppercase text-gold-600 tracking-wider">
                     {{ __('Internal') }}
                 </span>
             </div>
@@ -39,7 +39,7 @@
 </div>
 
 <!-- Top Filter Bar -->
-<div class="grid grid-cols-1 md:flex md:flex-wrap md:items-center gap-6 p-6 glass-card border-slate-100 shadow-xl shadow-indigo-500/5 bg-white/70 backdrop-blur-md rounded-3xl select-none relative z-30">
+<div class="grid grid-cols-1 md:flex md:flex-wrap md:items-center gap-6 p-6 glass-card border-slate-100 shadow-xl shadow-gold-500/5 bg-white/70 backdrop-blur-md rounded-3xl select-none relative z-30">
     
     <!-- Filter Client (Custom Dropdown) -->
     <div class="relative flex-1 min-w-[200px]" x-data="{ open: false }" @click.outside="open = false" :class="{ 'z-30': open, 'z-10': !open }">
@@ -70,12 +70,12 @@
              class="absolute left-0 z-50 mt-2 w-full bg-white/95 backdrop-blur-md border border-slate-100 rounded-2xl shadow-xl max-h-60 overflow-y-auto chat-scroll p-1.5"
              style="display: none;"
         >
-            <button wire:click="$set('clientId', '');" @click="open = false" type="button" class="w-full text-left px-3.5 py-2.5 text-xs font-bold rounded-xl text-slate-655 hover:bg-slate-50 hover:text-indigo-650 transition-colors">
+            <button wire:click="$set('clientId', '');" @click="open = false" type="button" class="w-full text-left px-3.5 py-2.5 text-xs font-bold rounded-xl text-slate-655 hover:bg-slate-50 hover:text-gold-600 transition-colors">
                 {{ __('All Clients') }}
             </button>
             @foreach($clients as $client)
                 <button wire:click="$set('clientId', {{ $client->id }});" @click="open = false" type="button" class="w-full text-left px-3.5 py-2.5 text-xs font-bold rounded-xl transition-colors
-                    {{ $clientId == $client->id ? 'bg-indigo-50 text-indigo-755' : 'text-slate-655 hover:bg-slate-50 hover:text-indigo-650' }}"
+                    {{ $clientId == $client->id ? 'bg-gold-50 text-gold-700' : 'text-slate-655 hover:bg-slate-50 hover:text-gold-600' }}"
                 >
                     {{ $client->nama_client }}
                 </button>
@@ -90,8 +90,8 @@
         </label>
         <div class="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-0.5">
             <button wire:click="$set('status', '')" type="button" 
-                class="px-3.5 py-2.5 rounded-xl text-xs font-bold border transition-all duration-200 active:scale-95
-                {{ $status === '' ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-600/15' : 'bg-white/70 text-slate-600 border-slate-200/60 hover:bg-slate-50' }}"
+                class="px-3.5 py-2.5 rounded-xl text-xs font-black border transition-all duration-200 active:scale-95
+                {{ $status === '' ? 'bg-gold-500 text-slate-950 border-gold-500 shadow-md shadow-gold-500/15' : 'bg-white/70 text-slate-600 border-slate-200/60 hover:bg-slate-50' }}"
             >
                 {{ __('All') }}
             </button>
@@ -152,12 +152,12 @@
              class="absolute left-0 z-50 mt-2 w-full bg-white/95 backdrop-blur-md border border-slate-100 rounded-2xl shadow-xl max-h-60 overflow-y-auto chat-scroll p-1.5"
              style="display: none;"
         >
-            <button wire:click="$set('staffId', '');" @click="open = false" type="button" class="w-full text-left px-3.5 py-2.5 text-xs font-bold rounded-xl text-slate-655 hover:bg-slate-50 hover:text-indigo-650 transition-colors">
+            <button wire:click="$set('staffId', '');" @click="open = false" type="button" class="w-full text-left px-3.5 py-2.5 text-xs font-bold rounded-xl text-slate-655 hover:bg-slate-50 hover:text-gold-600 transition-colors">
                 {{ __('All Staff') }}
             </button>
             @foreach($staffs as $staff)
                 <button wire:click="$set('staffId', {{ $staff->id }});" @click="open = false" type="button" class="w-full text-left px-3.5 py-2.5 text-xs font-bold rounded-xl transition-colors
-                    {{ $staffId == $staff->id ? 'bg-indigo-50 text-indigo-755' : 'text-slate-655 hover:bg-slate-50 hover:text-indigo-650' }}"
+                    {{ $staffId == $staff->id ? 'bg-gold-50 text-gold-700' : 'text-slate-655 hover:bg-slate-50 hover:text-gold-600' }}"
                 >
                     {{ $staff->name }}
                 </button>
@@ -169,7 +169,7 @@
     <!-- Reset Button -->
     <div class="flex items-end h-full pt-6 md:pt-0">
         <button wire:click="$set('clientId', ''); $set('status', ''); $set('staffId', '')" 
-            class="p-3 text-slate-400 hover:text-indigo-650 hover:bg-indigo-50/50 rounded-2xl transition-all duration-200 active:scale-90 border border-transparent hover:border-slate-100" 
+            class="p-3 text-slate-400 hover:text-gold-600 hover:bg-gold-50/50 rounded-2xl transition-all duration-200 active:scale-90 border border-transparent hover:border-slate-100" 
             title="{{ __('Reset Filters') }}"
         >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">

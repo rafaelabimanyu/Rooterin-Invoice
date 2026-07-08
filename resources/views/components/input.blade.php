@@ -13,7 +13,7 @@
         value="{{ old($name, $value) }}"
         placeholder="{{ $placeholder }}"
         {{ $required ? 'required' : '' }}
-        {{ $attributes->merge(['class' => 'w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none text-slate-900 placeholder:text-slate-400']) }}
+        {{ $attributes->merge(['class' => 'w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all outline-none text-slate-900 placeholder:text-slate-400']) }}
     >
     @error($name)
         <p class="text-xs text-rose-500 font-medium">{{ $message }}</p>

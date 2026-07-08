@@ -63,8 +63,8 @@
             <div class="space-y-2">
                 <x-input-label for="update_password_current_password" value="{{ app()->getLocale() == 'en' ? 'Current Password' : 'Kata Sandi Saat Ini' }}" class="text-[11px] font-black text-slate-400 uppercase tracking-widest" />
                 <div class="relative">
-                    <x-text-input id="update_password_current_password" name="current_password" x-bind:type="showCurrent ? 'text' : 'password'" class="w-full bg-slate-50/50 border-slate-200 focus:border-indigo-500 focus:ring-indigo-500 rounded-xl py-3 pr-12" autocomplete="current-password" />
-                    <button type="button" @click="showCurrent = !showCurrent" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 transition-colors">
+                    <x-text-input id="update_password_current_password" name="current_password" x-bind:type="showCurrent ? 'text' : 'password'" class="w-full bg-slate-50/50 border-slate-200 focus:border-gold-500 focus:ring-gold-500 rounded-xl py-3 pr-12" autocomplete="current-password" />
+                    <button type="button" @click="showCurrent = !showCurrent" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-gold-600 transition-colors">
                         <template x-if="!showCurrent"><i data-lucide="eye" class="w-4 h-4"></i></template>
                         <template x-if="showCurrent"><i data-lucide="eye-off" class="w-4 h-4"></i></template>
                     </button>
@@ -76,19 +76,19 @@
             <div class="space-y-2">
                 <div class="flex justify-between items-end">
                     <x-input-label for="update_password_password" value="{{ app()->getLocale() == 'en' ? 'New Password' : 'Kata Sandi Baru' }}" class="text-[11px] font-black text-slate-400 uppercase tracking-widest" />
-                    <button type="button" @click="generatePassword()" class="text-[10px] font-black text-indigo-600 uppercase tracking-widest hover:text-indigo-800 transition-colors flex items-center gap-1.5 mb-1 font-jakarta">
+                    <button type="button" @click="generatePassword()" class="text-[10px] font-black text-gold-600 uppercase tracking-widest hover:text-gold-800 transition-colors flex items-center gap-1.5 mb-1 font-jakarta">
                         <i data-lucide="sparkles" class="w-3 h-3"></i>
                         {{ app()->getLocale() == 'en' ? 'Generate Strong Password' : 'Buat Kata Sandi Kuat' }}
                     </button>
                 </div>
                 <div class="relative">
-                    <x-text-input id="update_password_password" name="password" x-bind:type="showNew ? 'text' : 'password'" class="w-full bg-slate-50/50 border-slate-200 focus:border-indigo-500 focus:ring-indigo-500 rounded-xl py-3 pr-24" autocomplete="new-password" x-model="password" @input="calculateStrength" />
+                    <x-text-input id="update_password_password" name="password" x-bind:type="showNew ? 'text' : 'password'" class="w-full bg-slate-50/50 border-slate-200 focus:border-gold-500 focus:ring-gold-500 rounded-xl py-3 pr-24" autocomplete="new-password" x-model="password" @input="calculateStrength" />
                     <div class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-3">
-                        <button type="button" x-show="password.length > 0" @click="copyToClipboard()" class="text-slate-400 hover:text-indigo-600 transition-colors" title="Copy to clipboard">
+                        <button type="button" x-show="password.length > 0" @click="copyToClipboard()" class="text-slate-400 hover:text-gold-600 transition-colors" title="Copy to clipboard">
                             <template x-if="!copied"><i data-lucide="copy" class="w-4 h-4"></i></template>
                             <template x-if="copied"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i></template>
                         </button>
-                        <button type="button" @click="showNew = !showNew" class="text-slate-400 hover:text-indigo-600 transition-colors">
+                        <button type="button" @click="showNew = !showNew" class="text-slate-400 hover:text-gold-600 transition-colors">
                             <template x-if="!showNew"><i data-lucide="eye" class="w-4 h-4"></i></template>
                             <template x-if="showNew"><i data-lucide="eye-off" class="w-4 h-4"></i></template>
                         </button>
@@ -113,8 +113,8 @@
             <div class="space-y-2">
                 <x-input-label for="update_password_password_confirmation" value="{{ app()->getLocale() == 'en' ? 'Confirm Password' : 'Konfirmasi Kata Sandi' }}" class="text-[11px] font-black text-slate-400 uppercase tracking-widest" />
                 <div class="relative">
-                    <x-text-input id="update_password_password_confirmation" name="password_confirmation" x-bind:type="showConfirm ? 'text' : 'password'" class="w-full bg-slate-50/50 border-slate-200 focus:border-indigo-500 focus:ring-indigo-500 rounded-xl py-3 pr-12" autocomplete="new-password" x-model="password_confirmation" />
-                    <button type="button" @click="showConfirm = !showConfirm" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 transition-colors">
+                    <x-text-input id="update_password_password_confirmation" name="password_confirmation" x-bind:type="showConfirm ? 'text' : 'password'" class="w-full bg-slate-50/50 border-slate-200 focus:border-gold-500 focus:ring-gold-500 rounded-xl py-3 pr-12" autocomplete="new-password" x-model="password_confirmation" />
+                    <button type="button" @click="showConfirm = !showConfirm" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-gold-600 transition-colors">
                         <template x-if="!showConfirm"><i data-lucide="eye" class="w-4 h-4"></i></template>
                         <template x-if="showConfirm"><i data-lucide="eye-off" class="w-4 h-4"></i></template>
                     </button>

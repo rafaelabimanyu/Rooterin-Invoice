@@ -3,7 +3,7 @@
         <!-- Background Elements -->
         <div class="absolute inset-0">
             <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-red-600/5 rounded-full blur-[120px] -mr-[300px] -mt-[300px]"></div>
-            <div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-indigo-600/5 rounded-full blur-[120px] -ml-[300px] -mb-[300px]"></div>
+            <div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gold-600/5 rounded-full blur-[120px] -ml-[300px] -mb-[300px]"></div>
             <div class="absolute inset-0 opacity-[0.02]" style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 30px 30px;"></div>
         </div>
 
@@ -33,10 +33,10 @@
                         </p>
                         
                         <div class="inline-flex flex-col items-center gap-4">
-                            <div class="px-6 py-3 bg-indigo-500 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-lg shadow-indigo-500/20">
+                            <div class="px-6 py-3 bg-gold-500 text-slate-950 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-lg shadow-gold-500/20">
                                 Contact Admin
                             </div>
-                            <p class="text-indigo-400 text-sm font-black tracking-widest uppercase">admin@jnjgroup.com</p>
+                            <p class="text-gold-400 text-sm font-black tracking-widest uppercase">admin@jnjgroup.com</p>
                             <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1">+62 8xx-xxxx-xxxx (WhatsApp)</p>
                         </div>
                     </div>

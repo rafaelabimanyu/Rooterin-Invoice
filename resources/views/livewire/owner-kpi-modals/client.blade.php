@@ -7,7 +7,7 @@
                 <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">{{ $client->nama_perusahaan }}</p>
             </div>
             <div class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center">
-                <i data-lucide="building-2" class="w-5 h-5 text-indigo-400"></i>
+                <i data-lucide="building-2" class="w-5 h-5 text-gold-400"></i>
             </div>
         </div>
 
@@ -15,7 +15,7 @@
             <h4 class="text-xs font-black text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Enterprise Valuation (LTV)' : 'Valuasi perusahaan (LTV)' }}</h4>
             <div class="flex items-center justify-between">
                 <span class="text-sm font-semibold text-slate-600">{{ app()->getLocale() == 'en' ? 'Valuation Sum' : 'Total Nilai Kontrak' }}</span>
-                <span class="text-base font-black text-indigo-600">Rp {{ number_format($client->invoices_sum_total, 0, ',', '.') }}</span>
+                <span class="text-base font-black text-gold-600">Rp {{ number_format($client->invoices_sum_total, 0, ',', '.') }}</span>
             </div>
             <div class="flex items-center justify-between pt-3 border-t border-slate-100">
                 <span class="text-xs font-semibold text-slate-600">{{ app()->getLocale() == 'en' ? 'Invoice Volume' : 'Volume Transaksi' }}</span>

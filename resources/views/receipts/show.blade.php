@@ -2,7 +2,7 @@
     <div class="mb-8 md:mb-12 flex flex-col lg:flex-row lg:items-end justify-between gap-6 px-4 md:px-0">
         <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2 text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 overflow-hidden">
-                <a href="{{ route('receipts.index') }}" class="hover:text-indigo-600 transition-colors shrink-0">{{ app()->getLocale() == 'en' ? 'Receipts' : 'Kuitansi' }}</a>
+                <a href="{{ route('receipts.index') }}" class="hover:text-gold-600 transition-colors shrink-0">{{ app()->getLocale() == 'en' ? 'Receipts' : 'Kuitansi' }}</a>
                 <i data-lucide="chevron-right" class="w-3 h-3 shrink-0"></i>
                 <span class="text-slate-900 truncate">{{ $receipt->receipt_number }}</span>
             </div>
@@ -27,7 +27,7 @@
             @if($receipt->status !== 'invoiced' && $receipt->status !== 'rejected')
                 <form action="{{ route('receipts.convert', $receipt) }}" method="POST" class="w-full sm:w-auto">
                     @csrf
-                    <button type="submit" class="w-full px-6 py-3 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2 active:scale-95">
+                    <button type="submit" class="w-full px-6 py-3 bg-gold-500 text-slate-950 rounded-xl text-sm font-black hover:bg-gold-600 transition-all shadow-lg shadow-gold-500/20 flex items-center justify-center gap-2 active:scale-95">
                         <i data-lucide="file-check" class="w-4 h-4"></i>
                         {{ app()->getLocale() == 'en' ? 'Convert to Invoice' : 'Ubah ke Faktur' }}
                     </button>
@@ -38,7 +38,7 @@
 
     <div class="bg-white rounded-[24px] md:rounded-[32px] border border-slate-200/60 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] overflow-hidden max-w-5xl mx-auto mb-20 relative w-full">
         <!-- Decorative Elements -->
-        <div class="hidden sm:block absolute top-0 right-0 w-64 h-64 bg-indigo-50/30 rounded-full blur-3xl -mr-32 -mt-32"></div>
+        <div class="hidden sm:block absolute top-0 right-0 w-64 h-64 bg-gold-50/30 rounded-full blur-3xl -mr-32 -mt-32"></div>
         <div class="hidden sm:block absolute bottom-0 left-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl -ml-32 -mb-32"></div>
         
         <!-- Professional Receipt Header -->
@@ -102,7 +102,7 @@
                 <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">{{ app()->getLocale() == 'en' ? 'Client Account' : 'Akun Klien' }}</p>
                 <div class="space-y-2">
                     <p class="text-base md:text-lg font-black text-slate-900">{{ $receipt->client->nama_client }}</p>
-                    <p class="text-xs md:text-sm font-bold text-indigo-600">{{ $receipt->client->nama_perusahaan }}</p>
+                    <p class="text-xs md:text-sm font-bold text-gold-600">{{ $receipt->client->nama_perusahaan }}</p>
                     <p class="text-xs md:text-sm text-slate-500 leading-relaxed max-w-xs">
                         {{ $receipt->client->alamat }}
                     </p>
@@ -191,7 +191,7 @@
                     </div>
                     <div class="pt-6 border-t border-slate-200 flex justify-between items-center">
                         <span class="text-xs md:text-sm font-black text-slate-900 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Grand Total' : 'Total Keseluruhan' }}</span>
-                        <span class="text-xl md:text-3xl font-black text-indigo-600 font-outfit">Rp {{ number_format($receipt->total, 0, ',', '.') }}</span>
+                        <span class="text-xl md:text-3xl font-black text-gold-600 font-outfit">Rp {{ number_format($receipt->total, 0, ',', '.') }}</span>
                     </div>
                 </div>
             </div>

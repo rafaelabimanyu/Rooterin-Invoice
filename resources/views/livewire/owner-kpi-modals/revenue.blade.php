@@ -1,18 +1,18 @@
 <div class="space-y-6 animate-fade-in">
-    <div class="p-6 bg-indigo-600 rounded-2xl text-white shadow-xl shadow-indigo-600/10 flex justify-between items-center">
+    <div class="p-6 bg-gold-500 rounded-2xl text-slate-950 shadow-xl shadow-gold-500/10 flex justify-between items-center font-bold">
         <div>
-            <span class="px-2.5 py-0.5 bg-white/20 rounded-full text-[8px] font-black uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Revenue (MTD)' : 'Pendapatan (Bulan Berjalan)' }}</span>
+            <span class="px-2.5 py-0.5 bg-slate-950/10 rounded-full text-[8px] font-black uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Revenue (MTD)' : 'Pendapatan (Bulan Berjalan)' }}</span>
             <h3 class="text-2xl font-black mt-3 font-jakarta tracking-tight">Rp {{ number_format($currentMonthRevenue, 0, ',', '.') }}</h3>
             <div class="flex items-center gap-1.5 mt-2">
-                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black {{ $revenueChange >= 0 ? 'bg-emerald-500/20 text-emerald-300' : 'bg-rose-500/20 text-rose-300' }}">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black {{ $revenueChange >= 0 ? 'bg-emerald-950/10 text-emerald-900' : 'bg-rose-950/10 text-rose-900' }}">
                     <i data-lucide="{{ $revenueChange >= 0 ? 'trending-up' : 'trending-down' }}" class="w-3 h-3"></i>
                     {{ number_format(abs($revenueChange), 1) }}%
                 </span>
-                <span class="text-[9.5px] text-indigo-200 font-medium">{{ app()->getLocale() == 'en' ? 'vs Last Month' : 'vs Bulan Lalu' }}</span>
+                <span class="text-[9.5px] text-slate-800 font-bold">{{ app()->getLocale() == 'en' ? 'vs Last Month' : 'vs Bulan Lalu' }}</span>
             </div>
         </div>
-        <div class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center">
-            <i data-lucide="banknote" class="w-6 h-6 text-indigo-200"></i>
+        <div class="w-12 h-12 rounded-xl bg-slate-950/10 flex items-center justify-center">
+            <i data-lucide="banknote" class="w-6 h-6 text-slate-800"></i>
         </div>
     </div>
 

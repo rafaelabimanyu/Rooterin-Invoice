@@ -1,17 +1,17 @@
-<div class="glass-card p-10 flex flex-col shadow-2xl shadow-indigo-500/5 border-slate-100 page-fade-in stagger-4 w-full min-w-0">
+<div class="glass-card p-10 flex flex-col shadow-2xl shadow-gold-500/5 border-slate-100 page-fade-in stagger-4 w-full min-w-0">
     <div class="flex items-center justify-between mb-10">
         <div>
             <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg">{{ app()->getLocale() == 'en' ? 'Upcoming Billing Horizon' : 'Cakrawala Penagihan Mendatang' }}</h3>
             <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">{{ app()->getLocale() == 'en' ? 'Next 7 Days Projections' : 'Proyeksi 7 Hari ke Depan' }}</p>
         </div>
-        <div class="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+        <div class="w-12 h-12 rounded-2xl bg-gold-50 flex items-center justify-center text-gold-600">
             <i data-lucide="calendar-clock" class="w-6 h-6"></i>
         </div>
     </div>
 
     <div class="flex-1 space-y-6 max-h-[480px] overflow-y-auto pr-2 scrollbar-thin">
         @forelse($upcomingInvoices as $invoice)
-            <div class="group flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-transparent hover:border-indigo-100 hover:bg-white transition-all duration-300 gap-3">
+            <div class="group flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-transparent hover:border-gold-200/50 hover:bg-white transition-all duration-300 gap-3">
                 <!-- Left Section: Avatar -->
                 <div class="shrink-0 w-12 h-12 flex flex-col items-center justify-center rounded-xl bg-white shadow-sm border border-slate-100">
                     <span class="text-[9px] font-black uppercase text-slate-400 leading-none mb-1">{{ $invoice->due_date->format('M') }}</span>
@@ -20,7 +20,7 @@
 
                 <!-- Middle Section: Texts -->
                 <div class="flex-1 min-w-0">
-                    <p class="text-[13px] font-black text-slate-900 group-hover:text-indigo-600 transition-colors truncate">
+                    <p class="text-[13px] font-black text-slate-900 group-hover:text-gold-600 transition-colors truncate">
                         {{ $invoice->invoice_number }}
                     </p>
                     <p class="text-[11px] text-slate-500 font-medium truncate">
@@ -60,7 +60,7 @@
                 <i data-lucide="trending-up" class="w-5 h-5 text-emerald-600"></i>
             </div>
         </div>
-        <a href="{{ route('chronos.index') }}" class="mt-6 w-full flex items-center justify-center gap-2 px-4 py-3 bg-slate-50 text-slate-600 rounded-xl font-bold text-xs hover:bg-indigo-600 hover:text-white transition-all duration-300 group">
+        <a href="{{ route('chronos.index') }}" class="mt-6 w-full flex items-center justify-center gap-2 px-4 py-3 bg-slate-50 text-slate-600 rounded-xl font-bold text-xs hover:bg-gold-500 hover:text-slate-950 transition-all duration-300 group">
             <i data-lucide="calendar-days" class="w-4 h-4 group-hover:scale-110 transition-transform"></i>
             {{ app()->getLocale() == 'en' ? 'View Full Calendar' : 'Lihat Kalender Lengkap' }}
         </a>

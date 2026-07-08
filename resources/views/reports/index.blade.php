@@ -13,17 +13,17 @@
             <div class="glass-card p-6">
                 <form action="{{ route('reports.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
                     <input type="hidden" name="tab" :value="tab">
-                    <div class="space-y-2 md:col-span-3">
+                     <div class="space-y-2 md:col-span-3">
                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Start Date' : 'Tanggal Mulai' }}</label>
-                        <input type="date" name="start_date" value="{{ $startDate }}" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-indigo-500 focus:bg-white transition-colors font-medium">
+                        <input type="date" name="start_date" value="{{ $startDate }}" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-gold-500 focus:bg-white transition-colors font-medium">
                     </div>
                     <div class="space-y-2 md:col-span-3">
                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'End Date' : 'Tanggal Selesai' }}</label>
-                        <input type="date" name="end_date" value="{{ $endDate }}" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-indigo-500 focus:bg-white transition-colors font-medium">
+                        <input type="date" name="end_date" value="{{ $endDate }}" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-gold-500 focus:bg-white transition-colors font-medium">
                     </div>
                     <div class="space-y-2 md:col-span-3">
                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Client Account' : 'Akun Klien' }}</label>
-                        <select name="client_id" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-indigo-500 focus:bg-white transition-colors font-medium">
+                        <select name="client_id" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-gold-500 focus:bg-white transition-colors font-medium">
                             <option value="">{{ app()->getLocale() == 'en' ? 'All Clients' : 'Semua Klien' }}</option>
                             @foreach($clients as $client)
                                 <option value="{{ $client->id }}" {{ $clientId == $client->id ? 'selected' : '' }}>{{ $client->nama_client }}</option>
@@ -44,13 +44,13 @@
             <div>
                 <!-- Tabs -->
                 <div class="flex flex-wrap items-center gap-4 sm:gap-8 border-b border-slate-100 mb-10">
-                    <button @click="tab = 'invoices'" :class="tab === 'invoices' ? 'text-indigo-600 border-indigo-600' : 'text-slate-400 border-transparent'" class="pb-4 text-xs font-black border-b-2 transition-all uppercase tracking-widest">
+                     <button @click="tab = 'invoices'" :class="tab === 'invoices' ? 'text-gold-600 border-gold-600' : 'text-slate-400 border-transparent'" class="pb-4 text-xs font-black border-b-2 transition-all uppercase tracking-widest">
                         {{ app()->getLocale() == 'en' ? 'Invoice Performance' : 'Kinerja Faktur' }}
                     </button>
-                    <button @click="tab = 'receipts'" :class="tab === 'receipts' ? 'text-indigo-600 border-indigo-600' : 'text-slate-400 border-transparent'" class="pb-4 text-xs font-black border-b-2 transition-all uppercase tracking-widest">
+                    <button @click="tab = 'receipts'" :class="tab === 'receipts' ? 'text-gold-600 border-gold-600' : 'text-slate-400 border-transparent'" class="pb-4 text-xs font-black border-b-2 transition-all uppercase tracking-widest">
                         {{ app()->getLocale() == 'en' ? 'Receipts & Payments' : 'Kuitansi & Pembayaran' }}
                     </button>
-                    <button @click="tab = 'clients'" :class="tab === 'clients' ? 'text-indigo-600 border-indigo-600' : 'text-slate-400 border-transparent'" class="pb-4 text-xs font-black border-b-2 transition-all uppercase tracking-widest">
+                    <button @click="tab = 'clients'" :class="tab === 'clients' ? 'text-gold-600 border-gold-600' : 'text-slate-400 border-transparent'" class="pb-4 text-xs font-black border-b-2 transition-all uppercase tracking-widest">
                         {{ app()->getLocale() == 'en' ? 'Client Analytics & Trends' : 'Analisis Klien & Tren' }}
                     </button>
                 </div>
@@ -59,12 +59,12 @@
                 <div x-show="tab === 'invoices'" x-transition>
                     <!-- Metric Cards -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                        <!-- Total Faktur -->
+                         <!-- Total Faktur -->
                         <div class="glass-card p-6 relative overflow-hidden group hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-                            <div class="absolute -right-6 -top-6 w-24 h-24 bg-indigo-500/5 blur-xl group-hover:bg-indigo-500/10 transition-colors duration-500 rounded-full"></div>
+                            <div class="absolute -right-6 -top-6 w-24 h-24 bg-gold-500/5 blur-xl group-hover:bg-gold-500/10 transition-colors duration-500 rounded-full"></div>
                             <div class="flex items-center justify-between mb-4">
                                 <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">{{ app()->getLocale() == 'en' ? 'Total Invoices' : 'Total Faktur' }}</p>
-                                <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100 shadow-sm transition-transform duration-500 group-hover:rotate-3">
+                                <div class="w-10 h-10 rounded-xl bg-gold-50 text-gold-600 flex items-center justify-center border border-gold-100 shadow-sm transition-transform duration-500 group-hover:rotate-3">
                                     <i data-lucide="file-text" class="w-5 h-5"></i>
                                 </div>
                             </div>
@@ -89,13 +89,13 @@
                                 <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'vs last period' : 'dibanding periode lalu' }}</span>
                             </div>
                         </div>
-
+ 
                         <!-- Total Tagihan Kotor -->
                         <div class="glass-card p-6 relative overflow-hidden group hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-                            <div class="absolute -right-6 -top-6 w-24 h-24 bg-indigo-500/5 blur-xl group-hover:bg-indigo-500/10 transition-colors duration-500 rounded-full"></div>
+                            <div class="absolute -right-6 -top-6 w-24 h-24 bg-gold-500/5 blur-xl group-hover:bg-gold-500/10 transition-colors duration-500 rounded-full"></div>
                             <div class="flex items-center justify-between mb-4">
                                 <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">{{ app()->getLocale() == 'en' ? 'Gross Billing' : 'Total Tagihan Kotor' }}</p>
-                                <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100 shadow-sm transition-transform duration-500 group-hover:rotate-3">
+                                <div class="w-10 h-10 rounded-xl bg-gold-50 text-gold-600 flex items-center justify-center border border-gold-100 shadow-sm transition-transform duration-500 group-hover:rotate-3">
                                     <i data-lucide="banknote" class="w-5 h-5"></i>
                                 </div>
                             </div>
@@ -198,7 +198,7 @@
                                 <h4 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-sm">{{ app()->getLocale() == 'en' ? 'Recent Transaction Logs' : 'Aktivitas Transaksi Terakhir' }}</h4>
                                 <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1">{{ app()->getLocale() == 'en' ? 'Realtime invoice audit log' : 'Log audit faktur secara realtime' }}</p>
                             </div>
-                            <div class="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600">
+                            <div class="w-10 h-10 rounded-xl bg-gold-50 border border-gold-100 flex items-center justify-center text-gold-600">
                                 <i data-lucide="history" class="w-5 h-5"></i>
                             </div>
                         </div>
@@ -217,7 +217,7 @@
                                     @forelse($recentInvoices as $invoice)
                                         <tr class="hover:bg-slate-50/50 transition-colors duration-200">
                                             <td class="px-8 py-4">
-                                                <span class="text-xs font-black text-indigo-600">{{ $invoice->invoice_number }}</span>
+                                                <span class="text-xs font-black text-gold-600">{{ $invoice->invoice_number }}</span>
                                             </td>
                                             <td class="px-8 py-4">
                                                 <div class="flex flex-col">
@@ -282,12 +282,12 @@
                             </div>
                         </div>
 
-                        <!-- Tingkat Pengumpulan -->
+                         <!-- Tingkat Pengumpulan -->
                         <div class="glass-card p-6 relative overflow-hidden group hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-                            <div class="absolute -right-6 -top-6 w-24 h-24 bg-indigo-500/5 blur-xl group-hover:bg-indigo-500/10 transition-colors duration-500 rounded-full"></div>
+                            <div class="absolute -right-6 -top-6 w-24 h-24 bg-gold-500/5 blur-xl group-hover:bg-gold-500/10 transition-colors duration-500 rounded-full"></div>
                             <div class="flex items-center justify-between mb-4">
                                 <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">{{ app()->getLocale() == 'en' ? 'Collection Rate' : 'Tingkat Pengumpulan' }}</p>
-                                <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100 shadow-sm transition-transform duration-500 group-hover:rotate-3">
+                                <div class="w-10 h-10 rounded-xl bg-gold-50 text-gold-600 flex items-center justify-center border border-gold-100 shadow-sm transition-transform duration-500 group-hover:rotate-3">
                                     <i data-lucide="percent" class="w-5 h-5"></i>
                                 </div>
                             </div>
@@ -295,7 +295,7 @@
                                 {{ $invoiceStats['total_value'] > 0 ? round(($paymentStats['total_collected'] / $invoiceStats['total_value']) * 100) : 0 }}%
                             </h3>
                             <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-4 shadow-inner">
-                                <div class="bg-indigo-600 h-full" style="width: {{ $invoiceStats['total_value'] > 0 ? ($paymentStats['total_collected'] / $invoiceStats['total_value']) * 100 : 0 }}%"></div>
+                                <div class="bg-gold-500 h-full" style="width: {{ $invoiceStats['total_value'] > 0 ? ($paymentStats['total_collected'] / $invoiceStats['total_value']) * 100 : 0 }}%"></div>
                             </div>
                         </div>
                     </div>
@@ -332,7 +332,7 @@
                                                 </div>
                                             </td>
                                             <td class="px-8 py-4">
-                                                <span class="text-xs font-bold text-indigo-600">{{ $payment->invoice->invoice_number }}</span>
+                                                <span class="text-xs font-bold text-gold-600">{{ $payment->invoice->invoice_number }}</span>
                                             </td>
                                             <td class="px-8 py-4 text-right">
                                                 <span class="text-xs font-black text-slate-900">Rp {{ number_format($payment->amount, 0, ',', '.') }}</span>

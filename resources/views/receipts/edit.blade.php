@@ -2,7 +2,7 @@
     <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 px-4 md:px-0">
         <div>
             <div class="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">
-                <a href="{{ route('receipts.index') }}" class="hover:text-indigo-600 transition-colors">{{ app()->getLocale() == 'en' ? 'Receipts' : 'Kuitansi' }}</a>
+                <a href="{{ route('receipts.index') }}" class="hover:text-gold-600 transition-colors">{{ app()->getLocale() == 'en' ? 'Receipts' : 'Kuitansi' }}</a>
                 <i data-lucide="chevron-right" class="w-3 h-3"></i>
                 <span class="text-slate-900">{{ app()->getLocale() == 'en' ? 'Edit Receipt' : 'Edit Kuitansi' }}</span>
             </div>
@@ -23,7 +23,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Client Account' : 'Akun Klien' }}</label>
-                            <select name="client_id" required class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200/60 rounded-lg text-sm text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500/10 transition-all">
+                            <select name="client_id" required class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200/60 rounded-lg text-sm text-slate-900 outline-none focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 transition-all">
                                 @foreach($clients as $client)
                                     <option value="{{ $client->id }}" {{ $receipt->client_id == $client->id ? 'selected' : '' }}>
                                         {{ $client->nama_client }} ({{ $client->nama_perusahaan }})
@@ -52,7 +52,7 @@
                 <div class="glass-card overflow-hidden">
                     <div class="px-6 md:px-10 py-6 border-b border-slate-50 flex items-center justify-between">
                         <h3 class="text-sm font-bold text-slate-900 uppercase tracking-widest">2. {{ app()->getLocale() == 'en' ? 'Service Items' : 'Item Layanan' }}</h3>
-                        <button type="button" @click="addItem" class="text-[12px] font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1.5">
+                        <button type="button" @click="addItem" class="text-[12px] font-bold text-gold-600 hover:text-gold-700 flex items-center gap-1.5">
                             <i data-lucide="plus" class="w-4 h-4"></i> {{ app()->getLocale() == 'en' ? 'Append Item' : 'Tambah Item' }}
                         </button>
                     </div>
@@ -85,7 +85,7 @@
                 
                 <div class="glass-card p-6 md:p-10">
                     <h3 class="text-sm font-bold text-slate-900 uppercase tracking-widest mb-6">3. {{ app()->getLocale() == 'en' ? 'Terms & Conditions' : 'Syarat & Ketentuan' }}</h3>
-                    <textarea name="terms_condition" class="w-full px-4 py-3 bg-slate-50/50 border border-slate-200/60 rounded-lg text-sm text-slate-600 outline-none focus:ring-2 focus:ring-indigo-500/10 transition-all min-h-[120px]">{{ $receipt->terms_condition }}</textarea>
+                    <textarea name="terms_condition" class="w-full px-4 py-3 bg-slate-50/50 border border-slate-200/60 rounded-lg text-sm text-slate-600 outline-none focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 transition-all min-h-[120px]">{{ $receipt->terms_condition }}</textarea>
                 </div>
             </div>
 
@@ -101,7 +101,7 @@
                         </div>
                         <div class="flex justify-between items-center gap-4">
                             <span class="text-slate-400 text-sm font-medium">{{ app()->getLocale() == 'en' ? 'Tax (%)' : 'Pajak (%)' }}</span>
-                            <input type="number" name="tax_percent" x-model="tax_percent" @input="calculateTotal()" class="w-20 bg-slate-800 border-none rounded text-right text-sm font-bold text-indigo-400 p-1">
+                            <input type="number" name="tax_percent" x-model="tax_percent" @input="calculateTotal()" class="w-20 bg-slate-800 border-none rounded text-right text-sm font-bold text-gold-400 p-1">
                         </div>
                         <div class="flex justify-between items-center gap-4">
                             <span class="text-slate-400 text-sm font-medium">{{ app()->getLocale() == 'en' ? 'Discount (%)' : 'Diskon (%)' }}</span>
@@ -113,7 +113,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold text-[13px] transition-all shadow-lg shadow-indigo-600/20 uppercase tracking-widest">
+                    <button type="submit" class="w-full py-4 bg-gold-500 hover:bg-gold-600 text-slate-950 rounded-lg font-black text-[13px] transition-all shadow-lg shadow-gold-500/20 uppercase tracking-widest">
                         {{ app()->getLocale() == 'en' ? 'Update Receipt' : 'Perbarui Kuitansi' }}
                     </button>
                 </div>

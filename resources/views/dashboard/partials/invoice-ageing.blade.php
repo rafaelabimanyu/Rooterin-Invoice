@@ -26,7 +26,7 @@
                 <span class="font-black text-slate-900">Rp {{ number_format($invoiceAgeing['current'], 0, ',', '.') }}</span>
             </div>
             <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                <div class="bg-indigo-500 h-full rounded-full transition-all duration-500" style="width: {{ ($invoiceAgeing['current'] / $maxAgeingVal) * 100 }}%"></div>
+                <div class="bg-gold-500 h-full rounded-full transition-all duration-500" style="width: {{ ($invoiceAgeing['current'] / $maxAgeingVal) * 100 }}%"></div>
             </div>
         </div>
 
@@ -66,7 +66,7 @@
 
     <div class="mt-5 pt-4 border-t border-slate-50 flex justify-between items-center">
         <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Total Outstanding' : 'Total Piutang Aktif' }}</span>
-        <span class="text-sm font-black text-indigo-600 font-jakarta">Rp {{ number_format($totalUnpaid, 0, ',', '.') }}</span>
+        <span class="text-sm font-black text-gold-600 font-jakarta">Rp {{ number_format($totalUnpaid, 0, ',', '.') }}</span>
     </div>
 @else
     <div class="glass-card p-6 flex flex-col justify-between hover:shadow-lg transition-all duration-300">
@@ -98,7 +98,7 @@
                         <span class="font-black text-slate-900">Rp {{ number_format($invoiceAgeing['current'], 0, ',', '.') }}</span>
                     </div>
                     <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                        <div class="bg-indigo-500 h-full rounded-full transition-all duration-500" style="width: {{ ($invoiceAgeing['current'] / $maxAgeingVal) * 100 }}%"></div>
+                        <div class="bg-gold-500 h-full rounded-full transition-all duration-500" style="width: {{ ($invoiceAgeing['current'] / $maxAgeingVal) * 100 }}%"></div>
                     </div>
                 </div>
 
@@ -138,7 +138,7 @@
 
             <div class="mt-5 pt-4 border-t border-slate-50 flex justify-between items-center">
                 <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Total Outstanding' : 'Total Piutang Aktif' }}</span>
-                <span class="text-sm font-black text-indigo-600 font-jakarta">Rp {{ number_format($totalUnpaid, 0, ',', '.') }}</span>
+                <span class="text-sm font-black text-gold-600 font-jakarta">Rp {{ number_format($totalUnpaid, 0, ',', '.') }}</span>
             </div>
         </div>
     </div>

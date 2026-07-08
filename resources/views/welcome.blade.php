@@ -15,7 +15,7 @@
         :root {
             --enterprise-navy: #0a0f1d;
             --titanium-white: #f8fafc;
-            --electric-blue: #c89d3c;
+            --accent-gold: #D4AF37;
         }
 
         html { scroll-behavior: smooth; }
@@ -32,7 +32,7 @@
             position: fixed;
             width: 30px;
             height: 30px;
-            background: var(--electric-blue);
+            background: var(--accent-gold);
             border-radius: 50%;
             pointer-events: none;
             z-index: 9999;
@@ -79,7 +79,7 @@
         .hero-bg-gradient {
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.08) 0%, var(--enterprise-navy) 80%);
+            background: radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.08) 0%, var(--enterprise-navy) 80%);
             z-index: 0;
         }
 
@@ -98,7 +98,7 @@
         .nav-link { position: relative; padding-bottom: 4px; }
         .nav-link::after {
             content: ''; position: absolute; bottom: 0; left: 0;
-            width: 0; height: 2px; background: var(--electric-blue);
+            width: 0; height: 2px; background: var(--accent-gold);
             transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .nav-link:hover::after { width: 100%; }
@@ -115,16 +115,16 @@
             border: 1px solid rgba(255, 255, 255, 0.03);
             transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .glass-card:hover { border-color: var(--electric-blue); box-shadow: 0 0 40px rgba(59, 130, 246, 0.1); }
+        .glass-card:hover { border-color: var(--accent-gold); box-shadow: 0 0 40px rgba(212, 175, 55, 0.1); }
 
         .pulse-icon { animation: heartbeat 4s infinite ease-in-out; }
         @keyframes heartbeat {
             0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 transparent); }
-            50% { transform: scale(1.1); filter: drop-shadow(0 0 10px var(--electric-blue)); }
+            50% { transform: scale(1.1); filter: drop-shadow(0 0 10px var(--accent-gold)); }
         }
 
         .gradient-text { 
-            background: linear-gradient(135deg, var(--electric-blue) 0%, #a855f7 100%); 
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #C5A059 100%); 
             -webkit-background-clip: text; 
             -webkit-text-fill-color: transparent; 
         }
@@ -152,7 +152,7 @@
                 <a href="#solutions" class="nav-link text-[11px] font-black text-slate-400 hover:text-white transition-colors uppercase tracking-[0.3em]">Solutions</a>
                 <a href="#ai-solutions" class="nav-link text-[11px] font-black text-slate-400 hover:text-white transition-colors uppercase tracking-[0.3em]">AI Solutions</a>
                 <div class="h-4 w-px bg-white/10"></div>
-                <a href="{{ route('login') }}" class="px-8 py-3 bg-white text-slate-900 rounded-2xl font-black text-[11px] shadow-2xl hover:bg-blue-50 transition-all uppercase tracking-[0.2em]">Portal Login</a>
+                <a href="{{ route('login') }}" class="px-8 py-3 bg-white text-slate-900 rounded-2xl font-black text-[11px] shadow-2xl hover:bg-gold-50/50 transition-all uppercase tracking-[0.2em]">Portal Login</a>
             </div>
 
             <button @click="mobileMenu = true" class="md:hidden p-2 text-white">
@@ -170,10 +170,10 @@
             </button>
 
             <div class="flex flex-col gap-12">
-                <a @click="mobileMenu = false" href="#core" class="text-3xl font-black text-white uppercase tracking-tighter hover:text-blue-500 transition-colors">Core Systems</a>
-                <a @click="mobileMenu = false" href="#capabilities" class="text-3xl font-black text-white uppercase tracking-tighter hover:text-blue-500 transition-colors">Capabilities</a>
-                <a @click="mobileMenu = false" href="#solutions" class="text-3xl font-black text-white uppercase tracking-tighter hover:text-blue-500 transition-colors">Solutions</a>
-                <a @click="mobileMenu = false" href="#ai-solutions" class="text-3xl font-black text-white uppercase tracking-tighter hover:text-blue-500 transition-colors">AI Solutions</a>
+                <a @click="mobileMenu = false" href="#core" class="text-3xl font-black text-white uppercase tracking-tighter hover:text-gold-500 transition-colors">Core Systems</a>
+                <a @click="mobileMenu = false" href="#capabilities" class="text-3xl font-black text-white uppercase tracking-tighter hover:text-gold-500 transition-colors">Capabilities</a>
+                <a @click="mobileMenu = false" href="#solutions" class="text-3xl font-black text-white uppercase tracking-tighter hover:text-gold-500 transition-colors">Solutions</a>
+                <a @click="mobileMenu = false" href="#ai-solutions" class="text-3xl font-black text-white uppercase tracking-tighter hover:text-gold-500 transition-colors">AI Solutions</a>
                 <div class="h-px w-20 bg-white/10 mx-auto"></div>
                 <a href="{{ route('login') }}" class="px-10 py-5 bg-white text-slate-900 rounded-3xl font-black shadow-2xl uppercase tracking-widest text-sm">Portal Login</a>
             </div>
@@ -185,10 +185,10 @@
     <!-- Hero Section -->
     <section class="relative min-h-[90vh] flex items-center justify-center pt-24 px-8 overflow-hidden">
         <div class="max-w-7xl mx-auto text-center relative z-10">
-            <div id="hero-tag" class="inline-flex items-center gap-3 px-6 py-3 bg-white/5 border border-white/10 rounded-full text-blue-400 text-[10px] md:text-[11px] font-black uppercase tracking-[0.5em] mb-12 initial-hidden">
+            <div id="hero-tag" class="inline-flex items-center gap-3 px-6 py-3 bg-white/5 border border-white/10 rounded-full text-gold-400 text-[10px] md:text-[11px] font-black uppercase tracking-[0.5em] mb-12 initial-hidden">
                 <span class="relative flex h-2 w-2">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-gold-500"></span>
                 </span>
                 Operational Intelligence
             </div>
@@ -218,24 +218,24 @@
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16 px-2 md:px-0">
                     <div class="stagger-card p-10 md:p-12 group">
-                        <div class="w-20 h-20 bg-white/5 rounded-[32px] flex items-center justify-center text-white mb-10 pulse-icon transition-all group-hover:bg-blue-600">
+                        <div class="w-20 h-20 bg-white/5 rounded-[32px] flex items-center justify-center text-white mb-10 pulse-icon transition-all group-hover:bg-gold-600">
                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14.5 2 14.5 7 20 7"/></svg>
                         </div>
-                        <h3 class="text-2xl font-black mb-6 uppercase tracking-tight text-white group-hover:text-blue-400">Enterprise Ledger</h3>
+                        <h3 class="text-2xl font-black mb-6 uppercase tracking-tight text-white group-hover:text-gold-400">Enterprise Ledger</h3>
                         <p class="text-base text-slate-500 leading-relaxed font-medium">Generate high-conversion, professional documents that elevate your brand's technical authority.</p>
                     </div>
                     <div class="stagger-card p-10 md:p-12 group">
-                        <div class="w-20 h-20 bg-white/5 rounded-[32px] flex items-center justify-center text-white mb-10 pulse-icon transition-all group-hover:bg-blue-600">
+                        <div class="w-20 h-20 bg-white/5 rounded-[32px] flex items-center justify-center text-white mb-10 pulse-icon transition-all group-hover:bg-gold-600">
                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-activity"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
                         </div>
-                        <h3 class="text-2xl font-black mb-6 uppercase tracking-tight text-white group-hover:text-blue-400">Node Sync</h3>
+                        <h3 class="text-2xl font-black mb-6 uppercase tracking-tight text-white group-hover:text-gold-400">Node Sync</h3>
                         <p class="text-base text-slate-500 leading-relaxed font-medium">Automated reconciliation and real-time ledger updates for deposit and partial settlements.</p>
                     </div>
                     <div class="stagger-card p-10 md:p-12 group">
-                        <div class="w-20 h-20 bg-white/5 rounded-[32px] flex items-center justify-center text-white mb-10 pulse-icon transition-all group-hover:bg-blue-600">
+                        <div class="w-20 h-20 bg-white/5 rounded-[32px] flex items-center justify-center text-white mb-10 pulse-icon transition-all group-hover:bg-gold-600">
                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                         </div>
-                        <h3 class="text-2xl font-black mb-6 uppercase tracking-tight text-white group-hover:text-blue-400">Entity Vault</h3>
+                        <h3 class="text-2xl font-black mb-6 uppercase tracking-tight text-white group-hover:text-gold-400">Entity Vault</h3>
                         <p class="text-base text-slate-500 leading-relaxed font-medium">A centralized vault for B2B documentation, historical job logs, and entity billing profiles.</p>
                     </div>
                 </div>
@@ -251,32 +251,32 @@
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12 px-2 md:px-0">
                     <div class="stagger-card glass-card p-10 rounded-[48px] group">
-                        <div class="w-14 h-14 bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-400 mb-8 pulse-icon">
+                        <div class="w-14 h-14 bg-gold-500/10 rounded-2xl flex items-center justify-center text-gold-400 mb-8 pulse-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cpu"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>
                         </div>
                         <h4 class="text-xl font-black mb-4 uppercase text-white">Autonomous Ledger</h4>
                         <p class="text-sm text-slate-400 leading-relaxed">Eliminate manual entry with AI-driven transaction matching and autonomous processing nodes.</p>
                     </div>
                     <div class="stagger-card glass-card p-10 rounded-[48px] group">
-                        <div class="w-14 h-14 bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-400 mb-8 pulse-icon">
+                        <div class="w-14 h-14 bg-gold-500/10 rounded-2xl flex items-center justify-center text-gold-400 mb-8 pulse-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-lock"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
                         </div>
                         <h4 class="text-xl font-black mb-4 uppercase text-white">Deep Security Vault</h4>
                         <p class="text-sm text-slate-400 leading-relaxed">Enterprise-grade encryption for your most sensitive financial data and documentation vault.</p>
                     </div>
                     <div class="stagger-card glass-card p-10 rounded-[48px] group">
-                        <div class="w-14 h-14 bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-400 mb-8 pulse-icon">
+                        <div class="w-14 h-14 bg-gold-500/10 rounded-2xl flex items-center justify-center text-gold-400 mb-8 pulse-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bar-chart-3"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
                         </div>
                         <h4 class="text-xl font-black mb-4 uppercase text-white">Real-time Analytics</h4>
                         <p class="text-sm text-slate-400 leading-relaxed">Monitor global operations with sub-second latency data feeds and neural intelligence reports.</p>
                     </div>
-                    <div class="stagger-card glass-card p-10 rounded-[48px] group border-indigo-500/20 relative overflow-hidden">
-                        <div class="absolute -right-16 -top-16 w-32 h-32 bg-gradient-to-br from-indigo-500 via-purple-500 to-cyan-500 opacity-20 rounded-full blur-2xl group-hover:opacity-40 transition-opacity pointer-events-none"></div>
-                        <div class="w-14 h-14 bg-gradient-to-br from-indigo-500 via-purple-500 to-cyan-500 rounded-2xl flex items-center justify-center text-white mb-8 pulse-icon shadow-lg shadow-indigo-500/20">
+                    <div class="stagger-card glass-card p-10 rounded-[48px] group border-gold-500/20 relative overflow-hidden">
+                        <div class="absolute -right-16 -top-16 w-32 h-32 bg-gradient-to-br from-gold-500 via-[#C5A059] to-gold-300 opacity-20 rounded-full blur-2xl group-hover:opacity-40 transition-opacity pointer-events-none"></div>
+                        <div class="w-14 h-14 bg-gradient-to-br from-gold-500 via-[#C5A059] to-gold-300 rounded-2xl flex items-center justify-center text-white mb-8 pulse-icon shadow-lg shadow-gold-500/20">
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="m5 3 1 2.5L8.5 6 6 7 5 9.5 4 7 1.5 6 4 5 5 3Z"/><path d="m19 17 1 2.5 2.5.5-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1 1-2.5Z"/></svg>
                         </div>
-                        <h4 class="text-xl font-black mb-4 uppercase text-white group-hover:text-indigo-300 transition-all">Cognitive Intelligence</h4>
+                        <h4 class="text-xl font-black mb-4 uppercase text-white group-hover:text-gold-300 transition-all">Cognitive Intelligence</h4>
                         <p class="text-sm text-slate-400 leading-relaxed">Empower your financial workflow with Google Gemini-powered intelligence. Automated contextual billing drafts, real-time liquidity forecasting, and instant natural language system insights at your fingertips.</p>
                     </div>
                 </div>
@@ -293,7 +293,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12 px-2 md:px-0">
                     <div class="stagger-card glass-card p-12 md:p-16 rounded-[56px] group">
                         <div class="flex items-center gap-6 mb-10">
-                            <div class="w-16 h-16 bg-blue-600 rounded-[20px] flex items-center justify-center text-white shadow-lg">
+                            <div class="w-16 h-16 bg-gold-600 rounded-[20px] flex items-center justify-center text-white shadow-lg">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-briefcase"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
                             </div>
                             <h4 class="text-2xl font-black uppercase text-white">B2B Providers</h4>
@@ -302,7 +302,7 @@
                     </div>
                     <div class="stagger-card glass-card p-12 md:p-16 rounded-[56px] group">
                         <div class="flex items-center gap-6 mb-10">
-                            <div class="w-16 h-16 bg-purple-600 rounded-[20px] flex items-center justify-center text-white shadow-lg">
+                            <div class="w-16 h-16 bg-gold-600 rounded-[20px] flex items-center justify-center text-white shadow-lg">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-globe"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                             </div>
                             <h4 class="text-2xl font-black uppercase text-white">Global Nodes</h4>
@@ -321,30 +321,30 @@
                     <p class="text-[10px] md:text-[11px] font-black uppercase tracking-[0.4em] text-transparent bg-clip-text bg-gradient-to-r from-gold-400 via-amber-400 to-yellow-400">J&J GROUP AI 2.0 Engine</p>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12 px-2 md:px-0">
-                    <div class="stagger-card glass-card p-12 rounded-[48px] relative overflow-hidden group hover:border-indigo-500/30">
-                        <div class="absolute -right-12 -top-12 w-28 h-28 bg-indigo-500/5 rounded-full blur-2xl group-hover:bg-indigo-500/10 transition-all pointer-events-none"></div>
-                        <div class="w-14 h-14 bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 rounded-2xl flex items-center justify-center mb-8 pulse-icon group-hover:bg-gradient-to-br group-hover:from-indigo-500 group-hover:to-purple-500 group-hover:text-white transition-all duration-500">
+                    <div class="stagger-card glass-card p-12 rounded-[48px] relative overflow-hidden group hover:border-gold-500/30">
+                        <div class="absolute -right-12 -top-12 w-28 h-28 bg-gold-500/5 rounded-full blur-2xl group-hover:bg-gold-500/10 transition-all pointer-events-none"></div>
+                        <div class="w-14 h-14 bg-gold-600/10 border border-gold-500/20 text-gold-400 rounded-2xl flex items-center justify-center mb-8 pulse-icon group-hover:bg-gradient-to-br group-hover:from-gold-500 group-hover:to-gold-600 group-hover:text-white transition-all duration-500">
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="m5 3 1 2.5L8.5 6 6 7 5 9.5 4 7 1.5 6 4 5 5 3Z"/><path d="m19 17 1 2.5 2.5.5-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1 1-2.5Z"/></svg>
                         </div>
-                        <h4 class="text-xl font-black mb-4 uppercase text-white group-hover:text-indigo-400 transition-colors">AI Financial Advisory</h4>
+                        <h4 class="text-xl font-black mb-4 uppercase text-white group-hover:text-gold-400 transition-colors">AI Financial Advisory</h4>
                         <p class="text-sm text-slate-400 leading-relaxed font-medium">Real-time analysis of accounts receivable and cash flow patterns with instant strategic recommendations.</p>
                     </div>
 
-                    <div class="stagger-card glass-card p-12 rounded-[48px] relative overflow-hidden group hover:border-purple-500/30">
-                        <div class="absolute -right-12 -top-12 w-28 h-28 bg-purple-500/5 rounded-full blur-2xl group-hover:bg-purple-500/10 transition-all pointer-events-none"></div>
-                        <div class="w-14 h-14 bg-purple-600/10 border border-purple-500/20 text-purple-400 rounded-2xl flex items-center justify-center mb-8 pulse-icon group-hover:bg-gradient-to-br group-hover:from-purple-500 group-hover:to-pink-500 group-hover:text-white transition-all duration-500">
+                    <div class="stagger-card glass-card p-12 rounded-[48px] relative overflow-hidden group hover:border-gold-500/30">
+                        <div class="absolute -right-12 -top-12 w-28 h-28 bg-gold-500/5 rounded-full blur-2xl group-hover:bg-gold-500/10 transition-all pointer-events-none"></div>
+                        <div class="w-14 h-14 bg-gold-600/10 border border-gold-500/20 text-gold-400 rounded-2xl flex items-center justify-center mb-8 pulse-icon group-hover:bg-gradient-to-br group-hover:from-gold-500 group-hover:to-gold-600 group-hover:text-white transition-all duration-500">
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wand2"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>
                         </div>
-                        <h4 class="text-xl font-black mb-4 uppercase text-white group-hover:text-purple-400 transition-colors">Automated Billing Drafts</h4>
+                        <h4 class="text-xl font-black mb-4 uppercase text-white group-hover:text-gold-400 transition-colors">Automated Billing Drafts</h4>
                         <p class="text-sm text-slate-400 leading-relaxed font-medium">High-conversion, multi-tone invoice notification drafts generated contextually in seconds.</p>
                     </div>
 
-                    <div class="stagger-card glass-card p-12 rounded-[48px] relative overflow-hidden group hover:border-cyan-500/30">
-                        <div class="absolute -right-12 -top-12 w-28 h-28 bg-cyan-500/5 rounded-full blur-2xl group-hover:bg-cyan-500/10 transition-all pointer-events-none"></div>
-                        <div class="w-14 h-14 bg-cyan-600/10 border border-cyan-500/20 text-cyan-400 rounded-2xl flex items-center justify-center mb-8 pulse-icon group-hover:bg-gradient-to-br group-hover:from-cyan-500 group-hover:to-blue-500 group-hover:text-white transition-all duration-500">
+                    <div class="stagger-card glass-card p-12 rounded-[48px] relative overflow-hidden group hover:border-gold-500/30">
+                        <div class="absolute -right-12 -top-12 w-28 h-28 bg-gold-500/5 rounded-full blur-2xl group-hover:bg-gold-500/10 transition-all pointer-events-none"></div>
+                        <div class="w-14 h-14 bg-gold-600/10 border border-gold-500/20 text-gold-400 rounded-2xl flex items-center justify-center mb-8 pulse-icon group-hover:bg-gradient-to-br group-hover:from-gold-500 group-hover:to-gold-600 group-hover:text-white transition-all duration-500">
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-messages-square"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg>
                         </div>
-                        <h4 class="text-xl font-black mb-4 uppercase text-white group-hover:text-cyan-400 transition-colors">Omni Chatbot Assistant</h4>
+                        <h4 class="text-xl font-black mb-4 uppercase text-white group-hover:text-gold-400 transition-colors">Omni Chatbot Assistant</h4>
                         <p class="text-sm text-slate-400 leading-relaxed font-medium">Advanced natural-language interface with dynamic session history and smart systemic action routing.</p>
                     </div>
                 </div>
@@ -436,14 +436,14 @@
                 this.trail = [];
             }
             draw() {
-                ctx.fillStyle = 'rgba(59, 130, 246, 0.4)';
+                ctx.fillStyle = 'rgba(212, 175, 55, 0.4)';
                 ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
                 
                 if (!isMobile && this.trail.length > 0) {
                     ctx.beginPath();
                     ctx.moveTo(this.trail[0].x, this.trail[0].y);
                     for(let i=1; i<this.trail.length; i++) ctx.lineTo(this.trail[i].x, this.trail[i].y);
-                    ctx.strokeStyle = `rgba(59, 130, 246, 0.05)`;
+                    ctx.strokeStyle = `rgba(212, 175, 55, 0.05)`;
                     ctx.stroke();
                 }
             }

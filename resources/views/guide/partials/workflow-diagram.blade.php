@@ -4,7 +4,7 @@
             <h3 class="text-sm font-black text-slate-900 uppercase tracking-widest font-outfit">{{ app()->getLocale() == 'en' ? 'Workflow Overview' : 'Ikhtisar Alur Kerja' }}</h3>
             <p class="text-xs text-slate-500 mt-1">{{ app()->getLocale() == 'en' ? 'Standard operational cycle of the system' : 'Siklus operasional standar sistem' }}</p>
         </div>
-        <div class="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-[10px] font-black uppercase tracking-widest hidden sm:block">
+        <div class="px-3 py-1 bg-gold-50 text-gold-600 rounded-full text-[10px] font-black uppercase tracking-widest hidden sm:block">
             {{ strtoupper($role) }}
         </div>
     </div>
@@ -19,13 +19,13 @@
         @foreach($guideData['workflow'] as $index => $step)
         <div class="flex flex-row md:flex-col items-center group relative cursor-pointer w-full md:w-1/4">
             <!-- Bubble -->
-            <div class="w-10 h-10 rounded-xl bg-white border-2 border-slate-200 flex items-center justify-center text-slate-400 font-bold text-sm group-hover:border-indigo-500 group-hover:text-indigo-600 group-hover:bg-indigo-50 shadow-sm group-hover:shadow-md transition-all z-10 md:group-hover:-translate-y-1 duration-300 shrink-0">
+            <div class="w-10 h-10 rounded-xl bg-white border-2 border-slate-200 flex items-center justify-center text-slate-400 font-bold text-sm group-hover:border-gold-500 group-hover:text-gold-600 group-hover:bg-gold-50 shadow-sm group-hover:shadow-md transition-all z-10 md:group-hover:-translate-y-1 duration-300 shrink-0">
                 {{ $index + 1 }}
             </div>
             
             <!-- Text -->
             <div class="ml-4 md:ml-0 md:mt-4 text-left md:text-center w-full">
-                <h4 class="text-sm font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">{{ is_array(__($step['label'])) ? $step['label'] : __($step['label']) }}</h4>
+                <h4 class="text-sm font-bold text-slate-900 group-hover:text-gold-600 transition-colors">{{ is_array(__($step['label'])) ? $step['label'] : __($step['label']) }}</h4>
                 <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-wide mt-1">{{ is_array(__($step['desc'])) ? $step['desc'] : __($step['desc']) }}</p>
             </div>
             

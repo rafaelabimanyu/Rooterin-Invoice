@@ -393,7 +393,7 @@
                     success: 'bg-white border-emerald-500/20 text-emerald-600 shadow-emerald-500/10',
                     warning: 'bg-white border-amber-500/20 text-amber-600 shadow-amber-500/10',
                     danger: 'bg-white border-rose-500/20 text-rose-600 shadow-rose-500/10',
-                    info: 'bg-white border-indigo-500/20 text-indigo-600 shadow-indigo-500/10'
+                    info: 'bg-white border-gold-500/20 text-gold-600 shadow-gold-500/10'
                 };
                 const theme = themes[type] || themes.success;
 

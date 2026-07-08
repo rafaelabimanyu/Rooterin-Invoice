@@ -10,7 +10,7 @@
 </head>
 <body class="bg-[#f8fafc] h-screen flex items-center justify-center p-8 font-inter">
     <div class="text-center max-w-md">
-        <div class="mb-10 inline-flex items-center justify-center w-24 h-24 bg-indigo-50 rounded-3xl text-indigo-500 shadow-xl shadow-indigo-500/10">
+        <div class="mb-10 inline-flex items-center justify-center w-24 h-24 bg-gold-50 rounded-3xl text-gold-500 shadow-xl shadow-gold-500/10">
             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-x"><path d="m13.5 8.5-5 5"/><path d="m8.5 8.5 5 5"/><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
         </div>
         <h1 class="text-6xl font-black text-slate-900 font-outfit mb-4">404</h1>

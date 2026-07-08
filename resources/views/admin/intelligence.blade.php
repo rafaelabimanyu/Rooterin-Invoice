@@ -4,7 +4,7 @@
             <div class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">
                 <span>Security Console</span>
                 <i data-lucide="chevron-right" class="w-3 h-3"></i>
-                <span class="text-indigo-600">Intelligence Center</span>
+                <span class="text-gold-600">Intelligence Center</span>
             </div>
             <h1 class="text-3xl font-black text-slate-900 font-jakarta tracking-tight uppercase">Security Intelligence</h1>
             <p class="text-sm text-slate-500 font-medium mt-1">Deep analysis of system transmissions, security logs, and operative activity.</p>
@@ -27,7 +27,7 @@
                         <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">Manual Verification Requests & Login Attempts</p>
                     </div>
                     <div class="p-3 bg-white border border-slate-200 rounded-xl">
-                        <i data-lucide="shield-check" class="w-5 h-5 text-indigo-500"></i>
+                        <i data-lucide="shield-check" class="w-5 h-5 text-gold-600"></i>
                     </div>
                 </div>
 
@@ -94,7 +94,7 @@
             <div class="glass-card p-10 page-fade-in stagger-2">
                 <div class="flex items-center justify-between mb-10">
                     <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg">Notifications</h3>
-                    <span class="px-3 py-1 bg-indigo-600 text-white text-[10px] font-black rounded-full uppercase tracking-widest">
+                    <span class="px-3 py-1 bg-gold-500 text-slate-950 text-[10px] font-black rounded-full uppercase tracking-widest">
                         {{ auth()->user()->unreadNotifications->count() }} Unread
                     </span>
                 </div>
@@ -102,14 +102,14 @@
                 <div class="space-y-6">
                     @forelse($notifications as $notification)
                         <div class="relative pl-12 group">
-                            <div class="absolute left-0 top-0 w-8 h-8 rounded-xl {{ $notification->read_at ? 'bg-slate-100 text-slate-400' : 'bg-indigo-50 text-indigo-600' }} flex items-center justify-center transition-all group-hover:scale-110">
+                            <div class="absolute left-0 top-0 w-8 h-8 rounded-xl {{ $notification->read_at ? 'bg-slate-100 text-slate-400' : 'bg-gold-50 text-gold-600' }} flex items-center justify-center transition-all group-hover:scale-110">
                                 <i data-lucide="{{ match($notification->data['type'] ?? 'system') { 'security' => 'shield-alert', 'finance' => 'wallet', 'critical' => 'alert-triangle', default => 'bell' } }}" class="w-4 h-4"></i>
                             </div>
                             <div class="space-y-1">
                                 <div class="flex items-center justify-between">
                                     <p class="text-[13px] font-black text-slate-900 leading-tight uppercase tracking-tight">{{ $notification->data['title'] ?? 'System Update' }}</p>
                                     @if(!$notification->read_at)
-                                        <a href="{{ route('intelligence.read', $notification->id) }}" class="p-1 text-slate-300 hover:text-indigo-600 transition-colors" title="Mark as read">
+                                        <a href="{{ route('intelligence.read', $notification->id) }}" class="p-1 text-slate-300 hover:text-gold-600 transition-colors" title="Mark as read">
                                             <i data-lucide="check-circle-2" class="w-4 h-4"></i>
                                         </a>
                                     @endif
@@ -133,8 +133,8 @@
 
             <!-- Security Stats -->
             <div class="glass-card p-10 bg-slate-900 text-white overflow-hidden relative page-fade-in stagger-3">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
-                <h4 class="text-xs font-black uppercase tracking-[0.3em] text-indigo-400 mb-6">Security Integrity</h4>
+                <div class="absolute top-0 right-0 w-32 h-32 bg-gold-500/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
+                <h4 class="text-xs font-black uppercase tracking-[0.3em] text-gold-400 mb-6">Security Integrity</h4>
                 <div class="space-y-6">
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-bold text-slate-400">Total Logs</span>
@@ -150,7 +150,7 @@
                             <span class="text-[10px] font-black uppercase tracking-[0.2em]">Firewall Active</span>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                            <span class="w-2 h-2 rounded-full bg-gold-500"></span>
                             <span class="text-[10px] font-black uppercase tracking-[0.2em]">Encryption Verified</span>
                         </div>
                     </div>

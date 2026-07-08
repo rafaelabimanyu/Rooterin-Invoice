@@ -44,7 +44,7 @@ class InvoiceChronosNotification extends Notification
     public function toArray(object $notifiable): array
     {
         $icon = 'bell';
-        $color = 'indigo';
+        $color = 'gold';
 
         if ($this->type === 'overdue') {
             $icon = 'alert-octagon';

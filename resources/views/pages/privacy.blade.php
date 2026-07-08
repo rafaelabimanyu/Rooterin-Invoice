@@ -7,10 +7,10 @@
                 <div class="lg:sticky lg:top-24 space-y-6 bg-slate-50/50 border border-slate-100 rounded-3xl p-6">
                     <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-3">{{ __('privacy.toc.title') }}</h4>
                     <nav class="flex flex-col gap-3">
-                        <a href="#data-collection" class="text-xs font-black uppercase tracking-wider text-slate-500 hover:text-indigo-600 transition-colors">
+                        <a href="#data-collection" class="text-xs font-black uppercase tracking-wider text-slate-500 hover:text-gold-600 transition-colors">
                             1. {{ __('privacy.toc.data_collection') }}
                         </a>
-                        <a href="#data-security" class="text-xs font-black uppercase tracking-wider text-slate-500 hover:text-indigo-600 transition-colors">
+                        <a href="#data-security" class="text-xs font-black uppercase tracking-wider text-slate-500 hover:text-gold-600 transition-colors">
                             2. {{ __('privacy.toc.data_security') }}
                         </a>
                     </nav>

@@ -49,10 +49,10 @@
             <div x-show="localLoading" class="absolute inset-0 bg-white/80 backdrop-blur-md z-50 flex flex-col items-center justify-center rounded-t-3xl md:rounded-[32px] rounded-b-none md:rounded-b-[32px] transition-all duration-350" style="display: none;">
                 <div class="flex flex-col items-center gap-4">
                     <div class="relative flex items-center justify-center">
-                        <div class="w-12 h-12 border-4 border-indigo-500/20 rounded-full absolute"></div>
-                        <div class="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                        <div class="w-12 h-12 border-4 border-gold-500/20 rounded-full absolute"></div>
+                        <div class="w-12 h-12 border-4 border-gold-600 border-t-transparent rounded-full animate-spin"></div>
                     </div>
-                    <p class="text-[10px] font-black text-indigo-650 uppercase tracking-[0.2em] animate-pulse">
+                    <p class="text-[10px] font-black text-gold-600 uppercase tracking-[0.2em] animate-pulse">
                         {{ __('Processing Event...') }}
                     </p>
                 </div>
@@ -60,10 +60,10 @@
             <div wire:loading class="absolute inset-0 bg-white/80 backdrop-blur-md z-50 flex flex-col items-center justify-center rounded-t-3xl md:rounded-[32px] rounded-b-none md:rounded-b-[32px] transition-all duration-350">
                 <div class="flex flex-col items-center gap-4">
                     <div class="relative flex items-center justify-center">
-                        <div class="w-12 h-12 border-4 border-indigo-500/20 rounded-full absolute"></div>
-                        <div class="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                        <div class="w-12 h-12 border-4 border-gold-500/20 rounded-full absolute"></div>
+                        <div class="w-12 h-12 border-4 border-gold-600 border-t-transparent rounded-full animate-spin"></div>
                     </div>
-                    <p class="text-[10px] font-black text-indigo-650 uppercase tracking-[0.2em] animate-pulse">
+                    <p class="text-[10px] font-black text-gold-600 uppercase tracking-[0.2em] animate-pulse">
                         {{ __('Processing Event...') }}
                     </p>
                 </div>
@@ -115,7 +115,7 @@
                                 {{ __('Color Indicator') }}
                             </label>
                             <select wire:model="reminderColor" class="premium-input w-full">
-                                <option value="indigo">{{ __('Indigo') }}</option>
+                                <option value="gold">{{ __('Gold') }}</option>
                                 <option value="emerald">{{ __('Emerald') }}</option>
                                 <option value="amber">{{ __('Amber') }}</option>
                                 <option value="rose">{{ __('Rose') }}</option>
@@ -227,10 +227,10 @@
             <div wire:loading wire:target="viewInvoiceDetails" class="absolute inset-0 bg-white/80 backdrop-blur-md z-50 flex flex-col items-center justify-center rounded-[32px] transition-all duration-355">
                 <div class="flex flex-col items-center gap-4">
                     <div class="relative flex items-center justify-center">
-                        <div class="w-12 h-12 border-4 border-indigo-500/20 rounded-full absolute"></div>
-                        <div class="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                        <div class="w-12 h-12 border-4 border-gold-500/20 rounded-full absolute"></div>
+                        <div class="w-12 h-12 border-4 border-gold-600 border-t-transparent rounded-full animate-spin"></div>
                     </div>
-                    <p class="text-[10px] font-black text-indigo-650 uppercase tracking-[0.2em] animate-pulse">
+                    <p class="text-[10px] font-black text-gold-600 uppercase tracking-[0.2em] animate-pulse">
                         {{ __('Loading Details...') }}
                     </p>
                 </div>
@@ -239,8 +239,8 @@
             @if($viewedInvoice)
                 <div class="p-8">
                     <div class="flex items-center justify-between mb-8">
-                        <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-white bg-indigo-655/10 border border-indigo-200/40">
-                            <svg class="w-8 h-8 text-indigo-655" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-white bg-gold-500/10 border border-gold-200/40">
+                            <svg class="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"></path>
                             </svg>
                         </div>

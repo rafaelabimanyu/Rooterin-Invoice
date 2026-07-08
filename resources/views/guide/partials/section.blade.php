@@ -1,7 +1,7 @@
 @php
-    $color = $activeSectionData['color'] ?? 'indigo';
+    $color = $activeSectionData['color'] ?? 'gold';
     $iconColors = [
-        'indigo' => 'bg-indigo-50 text-indigo-600',
+        'gold' => 'bg-gold-50 text-gold-600',
         'emerald' => 'bg-emerald-50 text-emerald-600',
         'sky' => 'bg-sky-50 text-sky-600',
         'amber' => 'bg-amber-50 text-amber-600',
@@ -10,7 +10,7 @@
         'slate' => 'bg-slate-100 text-slate-600',
         'blue' => 'bg-blue-50 text-blue-600',
     ];
-    $iconClass = $iconColors[$color] ?? $iconColors['indigo'];
+    $iconClass = $iconColors[$color] ?? $iconColors['gold'];
 @endphp
 
 <section class="space-y-6 lg:space-y-8 animate-in fade-in duration-500 break-words" x-data="{ show: false }" x-init="setTimeout(() => show = true, 50)" x-show="show" x-transition.opacity.duration.500ms>
@@ -37,7 +37,7 @@
         @if(isset($activeSectionData['sub_sections']) && count($activeSectionData['sub_sections']) > 0)
         <!-- Mobile Expand/Collapse Button -->
         <div class="lg:hidden mt-8 pt-4 border-t border-slate-100 flex justify-center">
-            <button @click="expanded = !expanded" class="flex items-center gap-2 px-6 py-2.5 bg-indigo-50 text-indigo-600 rounded-full text-sm font-bold shadow-sm border border-indigo-100 hover:bg-indigo-100 transition-colors">
+            <button @click="expanded = !expanded" class="flex items-center gap-2 px-6 py-2.5 bg-gold-50 text-gold-600 rounded-full text-sm font-bold shadow-sm border border-gold-100 hover:bg-gold-100 transition-colors">
                 <span x-text="expanded ? '{{ app()->getLocale() == 'en' ? 'Hide Details' : 'Sembunyikan Detail' }}' : '{{ app()->getLocale() == 'en' ? 'Show Details' : 'Tampilkan Detail' }}'"></span>
                 <i data-lucide="chevron-down" class="w-4 h-4 transition-transform duration-300" :class="expanded ? 'rotate-180' : ''"></i>
             </button>
@@ -52,16 +52,16 @@
             <div id="{{ $subKey }}" 
                  x-data="{ open: window.innerWidth >= 1024 }" 
                  @resize.window="if(window.innerWidth >= 1024) open = true"
-                 class="glass-card p-0 overflow-hidden border-l-4 border-l-slate-350 hover:border-l-indigo-500 hover:-translate-y-0.5 transition-all duration-300 scroll-mt-32 cursor-pointer lg:cursor-default group"
+                 class="glass-card p-0 overflow-hidden border-l-4 border-l-slate-350 hover:border-l-gold-500 hover:-translate-y-0.5 transition-all duration-300 scroll-mt-32 cursor-pointer lg:cursor-default group"
                  @click="if(window.innerWidth < 1024) open = !open"
             >
                 <!-- Accordion Header -->
                 <div class="px-4 lg:px-6 py-5 flex items-center justify-between gap-4 select-none">
-                    <h5 class="font-bold text-slate-900 text-sm lg:text-base group-hover:text-indigo-700 transition-colors">
+                    <h5 class="font-bold text-slate-900 text-sm lg:text-base group-hover:text-gold-700 transition-colors">
                         {{ is_array(__($subSec['title'])) ? $subSec['title'] : __($subSec['title']) }}
                     </h5>
                     <!-- Mobile toggle chevron indicator -->
-                    <div class="lg:hidden p-1 bg-slate-50 text-slate-400 group-hover:text-indigo-600 rounded-lg">
+                    <div class="lg:hidden p-1 bg-slate-50 text-slate-400 group-hover:text-gold-600 rounded-lg">
                         <i data-lucide="chevron-down" class="w-4 h-4 transition-transform duration-300" :class="open ? 'rotate-180' : ''"></i>
                     </div>
                 </div>

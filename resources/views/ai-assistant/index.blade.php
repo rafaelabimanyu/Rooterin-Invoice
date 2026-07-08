@@ -71,14 +71,14 @@
                 >
                     <div class="flex flex-col h-full overflow-hidden">
                         <!-- Drawer Header -->
-                        <div class="p-5 border-b border-slate-100 flex items-center justify-between shrink-0">
+                         <div class="p-5 border-b border-slate-100 flex items-center justify-between shrink-0">
                             <div>
                                 <h3 class="text-xs font-black text-slate-800 uppercase tracking-wider font-jakarta">{{ app()->getLocale() == 'en' ? 'Chat History' : 'Riwayat Obrolan' }}</h3>
                                 <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">J&J GROUP AI 2.0</p>
                             </div>
                             <div class="flex items-center gap-1.5">
                                 <button @click="newChat(); showDrawer = false" 
-                                    class="p-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-xl transition-all active:scale-95" 
+                                    class="p-2 bg-gold-50 hover:bg-gold-100 text-gold-600 rounded-xl transition-all active:scale-95" 
                                     title="{{ app()->getLocale() == 'en' ? 'Start New Chat' : 'Mulai Obrolan Baru' }}">
                                     <i data-lucide="plus-circle" class="w-4.5 h-4.5"></i>
                                 </button>
@@ -93,9 +93,9 @@
                         <!-- Drawer History Items -->
                         <div x-ref="drawerHistoryContainer" class="flex-1 overflow-y-auto p-4 space-y-2.5 chat-scroll">
                             <template x-for="sess in sessions" :key="'drawer-' + sess.session_id">
-                                <div class="relative group w-full flex items-center justify-between rounded-2xl border transition-all"
+                                 <div class="relative group w-full flex items-center justify-between rounded-2xl border transition-all"
                                     :class="currentSessionId === sess.session_id 
-                                        ? 'bg-indigo-50/80 border-indigo-200 text-indigo-950 font-semibold shadow-sm' 
+                                        ? 'bg-gold-50/80 border-gold-200 text-slate-950 font-semibold shadow-sm' 
                                         : 'bg-white hover:bg-slate-50 border-slate-100/90 text-slate-700 hover:text-slate-900'"
                                 >
                                     <!-- Regular view -->
@@ -105,21 +105,21 @@
                                                 <div class="flex items-center gap-2 w-full">
                                                     <i data-lucide="message-square" 
                                                         class="w-4 h-4 shrink-0"
-                                                        :class="currentSessionId === sess.session_id ? 'text-indigo-600' : 'text-slate-400'"
+                                                        :class="currentSessionId === sess.session_id ? 'text-gold-600' : 'text-slate-400'"
                                                     ></i>
                                                     <span class="text-xs font-bold truncate flex-1 leading-tight" x-text="sess.title"></span>
                                                 </div>
                                                 <span class="text-[9px] font-medium tracking-wide uppercase self-start"
-                                                    :class="currentSessionId === sess.session_id ? 'text-indigo-500' : 'text-slate-400'"
+                                                    :class="currentSessionId === sess.session_id ? 'text-gold-500' : 'text-slate-400'"
                                                     x-text="sess.date_formatted"
                                                 ></span>
                                             </button>
                                             
                                             <!-- Actions on mobile drawer -->
                                             <div class="flex items-center gap-1.5 shrink-0 px-2 bg-gradient-to-l from-white via-white/95 to-transparent absolute right-2 top-1/2 -translate-y-1/2 py-1.5 pl-4 rounded-lg"
-                                                 :class="currentSessionId === sess.session_id ? 'from-indigo-50 via-indigo-50/95' : ''">
+                                                 :class="currentSessionId === sess.session_id ? 'from-gold-50 via-gold-50/95' : ''">
                                                 <!-- Rename -->
-                                                <button @click.stop="startRename(sess)" class="p-1 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-all active:scale-90" title="Rename">
+                                                <button @click.stop="startRename(sess)" class="p-1 text-slate-400 hover:text-gold-600 hover:bg-gold-50 rounded-md transition-all active:scale-90" title="Rename">
                                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"></path>
                                                     </svg>
@@ -135,13 +135,13 @@
                                     </template>
 
                                     <!-- Editing view -->
-                                    <template x-if="editingSessionId === sess.session_id">
+                                     <template x-if="editingSessionId === sess.session_id">
                                         <div class="flex items-center gap-1.5 p-2 w-full">
                                             <input x-model="editingTitle" 
                                                 @keydown.enter="saveRename(sess.session_id)"
                                                 @keydown.escape="cancelRename()"
                                                 type="text" 
-                                                class="flex-1 px-2.5 py-1.5 text-xs bg-slate-50 border border-indigo-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500/20 font-semibold text-slate-850"
+                                                class="flex-1 px-2.5 py-1.5 text-xs bg-slate-50 border border-gold-200 rounded-xl outline-none focus:ring-2 focus:ring-gold-500/20 font-semibold text-slate-850"
                                                 x-ref="drawerRenameInput"
                                             >
                                             <button @click="saveRename(sess.session_id)" class="p-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-xl transition-all active:scale-95" title="Save">
@@ -176,13 +176,13 @@
         <div class="hidden lg:flex lg:w-80 bg-white lg:border-r border-slate-200/80 flex-col justify-between shrink-0 lg:h-full">
             <div class="flex flex-col h-full overflow-hidden">
                 <!-- Sidebar Header -->
-                <div class="p-6 border-b border-slate-100 flex items-center justify-between shrink-0">
+                 <div class="p-6 border-b border-slate-100 flex items-center justify-between shrink-0">
                     <div>
                         <h3 class="text-sm font-black text-slate-800 uppercase tracking-wider font-jakarta">{{ app()->getLocale() == 'en' ? 'Chat History' : 'Riwayat Obrolan' }}</h3>
                         <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">J&J GROUP AI 2.0</p>
                     </div>
                     <button @click="newChat()" 
-                        class="p-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-xl transition-all active:scale-95 group" 
+                        class="p-2 bg-gold-50 hover:bg-gold-100 text-gold-600 rounded-xl transition-all active:scale-95 group" 
                         title="{{ app()->getLocale() == 'en' ? 'Start New Chat' : 'Mulai Obrolan Baru' }}">
                         <i data-lucide="plus-circle" class="w-5 h-5 transition-transform group-hover:rotate-45"></i>
                     </button>
@@ -191,9 +191,9 @@
                 <!-- History Items -->
                 <div x-ref="historyContainer" class="flex-1 overflow-y-auto p-4 space-y-2.5 chat-scroll">
                     <template x-for="sess in sessions" :key="sess.session_id">
-                        <div class="relative group w-full flex items-center justify-between rounded-2xl border transition-all"
+                         <div class="relative group w-full flex items-center justify-between rounded-2xl border transition-all"
                             :class="currentSessionId === sess.session_id 
-                                ? 'bg-indigo-50/80 border-indigo-200 text-indigo-950 font-semibold shadow-sm' 
+                                ? 'bg-gold-50/80 border-gold-200 text-slate-950 font-semibold shadow-sm' 
                                 : 'bg-white hover:bg-slate-50 border-slate-100/90 text-slate-700 hover:text-slate-900'"
                         >
                             <!-- If not editing, show the regular button with actions on hover -->
@@ -203,21 +203,21 @@
                                         <div class="flex items-center gap-2 w-full">
                                             <i data-lucide="message-square" 
                                                 class="w-4 h-4 shrink-0"
-                                                :class="currentSessionId === sess.session_id ? 'text-indigo-600' : 'text-slate-400'"
+                                                :class="currentSessionId === sess.session_id ? 'text-gold-600' : 'text-slate-400'"
                                             ></i>
                                             <span class="text-xs font-bold truncate flex-1 leading-tight" x-text="sess.title"></span>
                                         </div>
                                         <span class="text-[9px] font-medium tracking-wide uppercase self-start"
-                                            :class="currentSessionId === sess.session_id ? 'text-indigo-500' : 'text-slate-400'"
+                                            :class="currentSessionId === sess.session_id ? 'text-gold-500' : 'text-slate-400'"
                                             x-text="sess.date_formatted"
                                         ></span>
                                     </button>
                                     
                                     <!-- Hover actions -->
                                     <div class="hidden group-hover:flex items-center gap-1.5 shrink-0 px-2 bg-gradient-to-l from-slate-50 via-slate-50/95 to-transparent absolute right-2 top-1/2 -translate-y-1/2 py-1.5 pl-4 rounded-lg"
-                                         :class="currentSessionId === sess.session_id ? 'from-indigo-50 via-indigo-50/95' : ''">
+                                         :class="currentSessionId === sess.session_id ? 'from-gold-50 via-gold-50/95' : ''">
                                         <!-- Rename Button -->
-                                        <button @click.stop="startRename(sess)" class="p-1 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-all active:scale-90" title="{{ app()->getLocale() == 'en' ? 'Rename' : 'Ubah Nama' }}">
+                                        <button @click.stop="startRename(sess)" class="p-1 text-slate-400 hover:text-gold-600 hover:bg-gold-50 rounded-md transition-all active:scale-90" title="{{ app()->getLocale() == 'en' ? 'Rename' : 'Ubah Nama' }}">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"></path>
                                             </svg>
@@ -239,7 +239,7 @@
                                         @keydown.enter="saveRename(sess.session_id)"
                                         @keydown.escape="cancelRename()"
                                         type="text" 
-                                        class="flex-1 px-2.5 py-1.5 text-xs bg-slate-50 border border-indigo-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500/20 font-semibold text-slate-850"
+                                        class="flex-1 px-2.5 py-1.5 text-xs bg-slate-50 border border-gold-200 rounded-xl outline-none focus:ring-2 focus:ring-gold-500/20 font-semibold text-slate-850"
                                         x-ref="renameInput"
                                     >
                                     <button @click="saveRename(sess.session_id)" class="p-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-xl transition-all active:scale-95" title="{{ app()->getLocale() == 'en' ? 'Save' : 'Simpan' }}">
@@ -284,9 +284,9 @@
             <!-- Chat Window Header -->
             <div class="px-4 lg:px-8 py-4 lg:py-5 bg-white border-b border-slate-200/80 flex items-center justify-between gap-3 shrink-0">
                 <div class="flex items-center gap-3 lg:gap-4 min-w-0">
-                    <div class="w-10 h-10 lg:w-11 lg:h-11 rounded-2xl bg-indigo-600/10 flex items-center justify-center text-indigo-600 border border-indigo-200/40 shadow-sm relative transition-all duration-300 shrink-0"
-                        :class="loading ? 'animate-pulse ring-4 ring-indigo-500/25' : ''">
-                        <i data-lucide="bot" class="w-5.5 h-5.5 lg:w-6 lg:h-6 text-indigo-600"></i>
+                    <div class="w-10 h-10 lg:w-11 lg:h-11 rounded-2xl bg-gold-600/10 flex items-center justify-center text-gold-600 border border-gold-200/40 shadow-sm relative transition-all duration-300 shrink-0"
+                        :class="loading ? 'animate-pulse ring-4 ring-gold-500/25' : ''">
+                        <i data-lucide="bot" class="w-5.5 h-5.5 lg:w-6 lg:h-6 text-gold-600"></i>
                     </div>
                     
                     <div class="min-w-0">
@@ -317,11 +317,11 @@
             <!-- Messages List & Initial Deck -->
             <div x-ref="chatContainer" class="flex-1 min-h-[350px] max-h-[60vh] lg:min-h-0 lg:max-h-none p-4 lg:p-8 overflow-y-auto space-y-4 lg:space-y-6 chat-scroll">
                 
-                <!-- Welcome & Suggestions Screen -->
+                 <!-- Welcome & Suggestions Screen -->
                 <template x-if="messages.length <= 1 && !loading">
                     <div class="max-w-2xl mx-auto py-4 lg:py-8 space-y-6 lg:space-y-8 h-auto px-2 lg:px-0">
                         <div class="text-center space-y-2 lg:space-y-3 h-auto py-1">
-                            <div class="w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-[1.25rem] lg:rounded-3xl flex items-center justify-center text-white mx-auto shadow-lg shadow-indigo-500/20">
+                            <div class="w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-gold-500 to-gold-600 rounded-[1.25rem] lg:rounded-3xl flex items-center justify-center text-slate-950 mx-auto shadow-lg shadow-gold-500/20">
                                 <i data-lucide="sparkles" class="w-6 h-6 lg:w-8 lg:h-8"></i>
                             </div>
                             <h3 class="text-base lg:text-lg font-black text-slate-900 font-jakarta uppercase tracking-tight">{{ app()->getLocale() == 'en' ? 'Welcome to J&J GROUP AI 2.0' : 'Selamat Datang di J&J GROUP AI 2.0' }}</h3>
@@ -334,60 +334,60 @@
                         <div class="space-y-3 w-full max-w-full overflow-hidden">
                             <p class="text-[9px] lg:text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-center px-4">{{ app()->getLocale() == 'en' ? 'Recommended Popular Questions' : 'Rekomendasi Pertanyaan Populer' }}</p>
                             
-                            <!-- Container: Horizontal Scroll on Mobile, Grid on Desktop -->
+                             <!-- Container: Horizontal Scroll on Mobile, Grid on Desktop -->
                             <div class="flex overflow-x-auto snap-x snap-mandatory gap-3 pb-2 no-scrollbar lg:grid lg:grid-cols-2 lg:overflow-x-visible lg:gap-4 lg:pb-0 px-4 lg:px-0">
                                 
                                 <button @click="sendSuggestion('{{ app()->getLocale() == 'en' ? 'This month\'s cash flow analysis' : 'Analisis arus kas bulan ini' }}')" 
-                                    class="min-w-[85%] snap-center lg:min-w-0 lg:w-auto shrink-0 lg:shrink text-left p-4 bg-white hover:bg-indigo-50/30 border border-slate-200 hover:border-indigo-300 rounded-2xl transition-all flex items-center gap-3.5 group shadow-sm hover:shadow active:scale-98">
-                                    <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-all">
+                                    class="min-w-[85%] snap-center lg:min-w-0 lg:w-auto shrink-0 lg:shrink text-left p-4 bg-white hover:bg-gold-50/30 border border-slate-200 hover:border-gold-300 rounded-2xl transition-all flex items-center gap-3.5 group shadow-sm hover:shadow active:scale-98">
+                                    <div class="w-8 h-8 rounded-xl bg-gold-50 text-gold-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-all">
                                         <i data-lucide="trending-up" class="w-4 h-4"></i>
                                     </div>
                                     <div class="space-y-0.5 min-w-0">
-                                        <span class="text-xs font-bold text-slate-800 group-hover:text-indigo-950 transition-colors block truncate">{{ app()->getLocale() == 'en' ? 'Cash Flow Analysis' : 'Analisis Arus Kas' }}</span>
+                                        <span class="text-xs font-bold text-slate-800 group-hover:text-slate-950 transition-colors block truncate">{{ app()->getLocale() == 'en' ? 'Cash Flow Analysis' : 'Analisis Arus Kas' }}</span>
                                         <p class="text-[10px] text-slate-400 font-medium truncate">{{ app()->getLocale() == 'en' ? 'Compare paid & overdue this month.' : 'Bandingkan lunas & overdue bulan ini.' }}</p>
                                     </div>
                                 </button>
-
+ 
                                 <button @click="sendSuggestion('{{ app()->getLocale() == 'en' ? 'Who are the most overdue clients?' : 'Siapa klien yang paling sering menunggak?' }}')" 
-                                    class="min-w-[85%] snap-center lg:min-w-0 lg:w-auto shrink-0 lg:shrink text-left p-4 bg-white hover:bg-indigo-50/30 border border-slate-200 hover:border-indigo-300 rounded-2xl transition-all flex items-center gap-3.5 group shadow-sm hover:shadow active:scale-98">
+                                    class="min-w-[85%] snap-center lg:min-w-0 lg:w-auto shrink-0 lg:shrink text-left p-4 bg-white hover:bg-gold-50/30 border border-slate-200 hover:border-gold-300 rounded-2xl transition-all flex items-center gap-3.5 group shadow-sm hover:shadow active:scale-98">
                                     <div class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-all">
                                         <i data-lucide="users" class="w-4 h-4"></i>
                                     </div>
                                     <div class="space-y-0.5 min-w-0">
-                                        <span class="text-xs font-bold text-slate-800 group-hover:text-indigo-950 transition-colors block truncate">{{ app()->getLocale() == 'en' ? 'Overdue Clients' : 'Klien Terlambat Bayar' }}</span>
+                                        <span class="text-xs font-bold text-slate-800 group-hover:text-slate-950 transition-colors block truncate">{{ app()->getLocale() == 'en' ? 'Overdue Clients' : 'Klien Terlambat Bayar' }}</span>
                                         <p class="text-[10px] text-slate-400 font-medium truncate">{{ app()->getLocale() == 'en' ? 'Detect clients with accumulated receivables.' : 'Deteksi klien dengan piutang menumpuk.' }}</p>
                                     </div>
                                 </button>
-
+ 
                                 <button @click="sendSuggestion('{{ app()->getLocale() == 'en' ? 'Create summary report for owner meeting' : 'Buat laporan ringkas untuk meeting owner' }}')" 
-                                    class="min-w-[85%] snap-center lg:min-w-0 lg:w-auto shrink-0 lg:shrink text-left p-4 bg-white hover:bg-indigo-50/30 border border-slate-200 hover:border-indigo-300 rounded-2xl transition-all flex items-center gap-3.5 group shadow-sm hover:shadow active:scale-98">
+                                    class="min-w-[85%] snap-center lg:min-w-0 lg:w-auto shrink-0 lg:shrink text-left p-4 bg-white hover:bg-gold-50/30 border border-slate-200 hover:border-gold-300 rounded-2xl transition-all flex items-center gap-3.5 group shadow-sm hover:shadow active:scale-98">
                                     <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-all">
                                         <i data-lucide="file-text" class="w-4 h-4"></i>
                                     </div>
                                     <div class="space-y-0.5 min-w-0">
-                                        <span class="text-xs font-bold text-slate-800 group-hover:text-indigo-950 transition-colors block truncate">{{ app()->getLocale() == 'en' ? 'Summary Executive Meeting' : 'Ringkasan Executive Meeting' }}</span>
+                                        <span class="text-xs font-bold text-slate-800 group-hover:text-slate-950 transition-colors block truncate">{{ app()->getLocale() == 'en' ? 'Summary Executive Meeting' : 'Ringkasan Executive Meeting' }}</span>
                                         <p class="text-[10px] text-slate-400 font-medium truncate">{{ app()->getLocale() == 'en' ? 'Summary of latest operational KPIs.' : 'Ringkasan KPI operasional terkini.' }}</p>
                                     </div>
                                 </button>
-
+ 
                                 <button @click="sendSuggestion('{{ app()->getLocale() == 'en' ? 'Revenue projection for the next 3 months' : 'Prediksi pendapatan 3 bulan ke depan' }}')" 
-                                    class="min-w-[85%] snap-center lg:min-w-0 lg:w-auto shrink-0 lg:shrink text-left p-4 bg-white hover:bg-indigo-50/30 border border-slate-200 hover:border-indigo-300 rounded-2xl transition-all flex items-center gap-3.5 group shadow-sm hover:shadow active:scale-98">
-                                    <div class="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-all">
+                                    class="min-w-[85%] snap-center lg:min-w-0 lg:w-auto shrink-0 lg:shrink text-left p-4 bg-white hover:bg-gold-50/30 border border-slate-200 hover:border-gold-300 rounded-2xl transition-all flex items-center gap-3.5 group shadow-sm hover:shadow active:scale-98">
+                                    <div class="w-8 h-8 rounded-xl bg-gold-50 text-gold-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-all">
                                         <i data-lucide="line-chart" class="w-4 h-4"></i>
                                     </div>
                                     <div class="space-y-0.5 min-w-0">
-                                        <span class="text-xs font-bold text-slate-800 group-hover:text-indigo-950 transition-colors block truncate">{{ app()->getLocale() == 'en' ? 'Revenue Projection' : 'Prediksi Pendapatan' }}</span>
+                                        <span class="text-xs font-bold text-slate-800 group-hover:text-slate-950 transition-colors block truncate">{{ app()->getLocale() == 'en' ? 'Revenue Projection' : 'Prediksi Pendapatan' }}</span>
                                         <p class="text-[10px] text-slate-400 font-medium truncate">{{ app()->getLocale() == 'en' ? 'Cash projection based on 3-month trend.' : 'Proyeksi kas berdasarkan tren 3 bulan.' }}</p>
                                     </div>
                                 </button>
-
+ 
                                 <button @click="sendSuggestion('{{ app()->getLocale() == 'en' ? 'How to improve invoice collectibility?' : 'Bagaimana cara meningkatkan kolektibilitas invoice?' }}')" 
-                                    class="min-w-[85%] snap-center lg:min-w-0 lg:w-auto lg:col-span-2 shrink-0 lg:shrink text-left p-4 bg-white hover:bg-indigo-50/30 border border-slate-200 hover:border-indigo-300 rounded-2xl transition-all flex items-center gap-3.5 group shadow-sm hover:shadow active:scale-98">
-                                    <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-all">
+                                    class="min-w-[85%] snap-center lg:min-w-0 lg:w-auto lg:col-span-2 shrink-0 lg:shrink text-left p-4 bg-white hover:bg-gold-50/30 border border-slate-200 hover:border-gold-300 rounded-2xl transition-all flex items-center gap-3.5 group shadow-sm hover:shadow active:scale-98">
+                                    <div class="w-8 h-8 rounded-xl bg-gold-50 text-gold-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-all">
                                         <i data-lucide="help-circle" class="w-4 h-4"></i>
                                     </div>
                                     <div class="space-y-0.5 min-w-0">
-                                        <span class="text-xs font-bold text-slate-800 group-hover:text-indigo-950 transition-colors block truncate">{{ app()->getLocale() == 'en' ? 'Optimize Invoice Collectibility' : 'Optimalkan Kolektibilitas Invoice' }}</span>
+                                        <span class="text-xs font-bold text-slate-800 group-hover:text-slate-950 transition-colors block truncate">{{ app()->getLocale() == 'en' ? 'Optimize Invoice Collectibility' : 'Optimalkan Kolektibilitas Invoice' }}</span>
                                         <p class="text-[10px] text-slate-400 font-medium truncate">{{ app()->getLocale() == 'en' ? 'Tactical advice to reduce overdue receivables and maintain cash rotation.' : 'Saran taktis untuk mengurangi piutang overdue dan menjaga perputaran kas.' }}</p>
                                     </div>
                                 </button>
@@ -402,17 +402,17 @@
                         <!-- Message Bubble -->
                         <div class="max-w-[85%] lg:max-w-[75%] px-4 lg:px-5 py-3 lg:py-4 rounded-[1.25rem] lg:rounded-[1.75rem] text-xs lg:text-sm leading-relaxed" 
                             :class="msg.sender === 'user' 
-                                ? 'bg-indigo-600 text-white rounded-tr-none shadow-md shadow-indigo-600/10 font-medium' 
+                                ? 'bg-gold-500 text-slate-950 rounded-tr-none shadow-md shadow-gold-500/20 font-bold' 
                                 : 'bg-white border border-slate-200 text-slate-800 rounded-tl-none shadow-sm'"
                         >
                             <div class="chat-bubble-content" x-html="renderMarkdown(msg.text)"></div>
                         </div>
 
-                        <!-- Copy to Clipboard & Action Bar (AI responses only) -->
+                         <!-- Copy to Clipboard & Action Bar (AI responses only) -->
                         <template x-if="msg.sender === 'ai' && idx > 0">
                             <div class="flex items-center gap-3 mt-1.5 ml-3">
                                 <button @click="copyToClipboard(msg.text, idx)" 
-                                    class="inline-flex items-center gap-1.5 text-[10px] font-bold text-slate-400 hover:text-indigo-655 transition-colors uppercase tracking-wider group"
+                                    class="inline-flex items-center gap-1.5 text-[10px] font-bold text-slate-400 hover:text-gold-600 transition-colors uppercase tracking-wider group"
                                 >
                                     <svg class="w-3.5 h-3.5 group-hover:scale-105 transition-transform" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5A3.375 3.375 0 006.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0015 2.25h-1.5a2.251 2.251 0 00-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 00-9-9z"></path>
@@ -426,7 +426,7 @@
                         <template x-if="msg.navigateUrl">
                             <div class="mt-2.5 pl-4">
                                 <a :href="msg.navigateUrl" 
-                                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-600 rounded-2xl text-xs font-bold transition-all shadow-sm hover:-translate-y-0.5 active:scale-98">
+                                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-gold-50 hover:bg-gold-100 border border-gold-200 text-gold-600 rounded-2xl text-xs font-bold transition-all shadow-sm hover:-translate-y-0.5 active:scale-98">
                                     <i data-lucide="external-link" class="w-4 h-4"></i>
                                     <span x-text="msg.navigateLabel"></span>
                                 </a>
@@ -435,17 +435,17 @@
                     </div>
                 </template>
 
-                <!-- Loading / Thinking Bubble -->
+                 <!-- Loading / Thinking Bubble -->
                 <div x-show="loading" class="flex items-start gap-3.5 transition-all duration-300" style="display: none;">
-                    <div class="w-9 h-9 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shrink-0 relative animate-pulse ring-4 ring-indigo-500/15">
-                        <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <div class="w-9 h-9 rounded-xl bg-gold-50 border border-gold-100 flex items-center justify-center text-gold-600 shrink-0 relative animate-pulse ring-4 ring-gold-500/15">
+                        <svg class="w-5 h-5 text-gold-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M12 17v4m-6-4v4m12-4v4M9 11h.008v.008H9V11zm6 0h.008v.008H15V11zm-9 4a6 6 0 0112 0H6z"></path>
                         </svg>
                     </div>
                     <div class="bg-white border border-slate-200 text-slate-400 rounded-3xl rounded-tl-none px-5 py-4 shadow-sm flex items-center gap-1.5">
-                        <span class="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style="animation-delay: 0.1s"></span>
-                        <span class="w-2 h-2 bg-indigo-600 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
-                        <span class="w-2 h-2 bg-indigo-700 rounded-full animate-bounce" style="animation-delay: 0.3s"></span>
+                        <span class="w-2 h-2 bg-gold-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></span>
+                        <span class="w-2 h-2 bg-gold-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
+                        <span class="w-2 h-2 bg-gold-600 rounded-full animate-bounce" style="animation-delay: 0.3s"></span>
                     </div>
                 </div>
             </div>
@@ -482,7 +482,7 @@
                 <input x-model="input" 
                     type="text" 
                     placeholder="{{ app()->getLocale() == 'en' ? 'Ask financial analysis, overdue bills...' : 'Tanyakan analisis keuangan, tagihan overdue...' }}" 
-                    class="flex-1 min-w-0 px-3.5 lg:px-5 py-3 lg:py-3.5 bg-slate-50 border border-slate-200 rounded-xl lg:rounded-2xl text-[11px] lg:text-xs outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500/80 transition-all text-slate-800 font-medium" 
+                    class="flex-1 min-w-0 px-3.5 lg:px-5 py-3 lg:py-3.5 bg-slate-50 border border-slate-200 rounded-xl lg:rounded-2xl text-[11px] lg:text-xs outline-none focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500/80 transition-all text-slate-800 font-medium" 
                     :disabled="loading"
                     autofocus>
                 
@@ -499,7 +499,7 @@
                 </button>
 
                 <button type="submit" 
-                    class="w-10 h-10 lg:w-12 lg:h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl lg:rounded-2xl flex items-center justify-center shrink-0 transition-all active:scale-95 disabled:opacity-50 shadow-md shadow-indigo-600/10" 
+                    class="w-10 h-10 lg:w-12 lg:h-12 bg-gold-500 hover:bg-gold-600 text-slate-950 font-bold rounded-xl lg:rounded-2xl flex items-center justify-center shrink-0 transition-all active:scale-95 disabled:opacity-50 shadow-md shadow-gold-500/10" 
                     :disabled="loading">
                     <i data-lucide="send" class="w-4.5 h-4.5 lg:w-5 lg:h-5"></i>
                 </button>

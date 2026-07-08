@@ -149,7 +149,7 @@ class ClientManager extends Component
                 <div class='pt-6 border-t border-slate-100'>
                     <div class='flex items-center justify-between mb-4'>
                         <h4 class='text-[11px] font-black text-slate-900 uppercase tracking-widest'>Billing Summary</h4>
-                        <a href='/clients/{$client->id}' class='text-[10px] font-black text-indigo-600 uppercase tracking-widest'>Open Full History</a>
+                        <a href='/clients/{$client->id}' class='text-[10px] font-black text-gold-600 uppercase tracking-widest'>Open Full History</a>
                     </div>
                     <div class='grid grid-cols-1 sm:grid-cols-2 gap-4'>
                         <div class='p-4 bg-slate-50 rounded-2xl'>

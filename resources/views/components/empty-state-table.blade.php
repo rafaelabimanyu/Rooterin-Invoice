@@ -15,7 +15,7 @@
         {{ $description }}
     </p>
     @if($buttonLink !== '#')
-        <a href="{{ $buttonLink }}" class="flex items-center gap-2 px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-indigo-600/20">
+        <a href="{{ $buttonLink }}" class="flex items-center gap-2 px-6 py-2.5 bg-gold-500 hover:bg-gold-600 text-slate-950 rounded-xl font-black transition-all shadow-lg shadow-gold-500/20">
             <i data-lucide="plus" class="w-4 h-4"></i>
             {{ $buttonLabel }}
         </a>

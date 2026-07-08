@@ -6,15 +6,15 @@
         
         @foreach($guideData['navigation'] as $key => $nav)
             <a href="{{ route('guide.index', $key) }}" 
-               class="group flex items-center px-4 py-2.5 text-sm font-bold rounded-lg transition-all border {{ $activeSectionKey === $key ? 'bg-indigo-50 text-indigo-700 border-indigo-100 shadow-sm' : 'text-slate-600 hover:bg-slate-50 border-transparent hover:border-slate-200' }}">
-                <i data-lucide="{{ $nav['icon'] ?? 'file-text' }}" class="w-4 h-4 mr-3 {{ $activeSectionKey === $key ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600' }}"></i>
+               class="group flex items-center px-4 py-2.5 text-sm font-bold rounded-lg transition-all border {{ $activeSectionKey === $key ? 'bg-gold-50 text-gold-700 border-gold-100 shadow-sm' : 'text-slate-600 hover:bg-slate-50 border-transparent hover:border-slate-200' }}">
+                <i data-lucide="{{ $nav['icon'] ?? 'file-text' }}" class="w-4 h-4 mr-3 {{ $activeSectionKey === $key ? 'text-gold-600' : 'text-slate-400 group-hover:text-slate-600' }}"></i>
                 {{ is_array(__($nav['title'])) ? $nav['title'] : __($nav['title']) }}
             </a>
             
             @if(isset($nav['sub_sections']) && count($nav['sub_sections']) > 0 && $activeSectionKey === $key)
-                <div class="ml-6 mt-2 mb-4 pl-4 border-l-2 border-indigo-100 space-y-1">
+                <div class="ml-6 mt-2 mb-4 pl-4 border-l-2 border-gold-100 space-y-1">
                     @foreach($nav['sub_sections'] as $subKey => $subSec)
-                        <a href="#{{ $subKey }}" class="block px-3 py-1.5 text-xs font-semibold text-slate-500 hover:text-indigo-700 hover:bg-indigo-50/50 rounded-md transition-colors">
+                        <a href="#{{ $subKey }}" class="block px-3 py-1.5 text-xs font-semibold text-slate-500 hover:text-gold-700 hover:bg-gold-50/50 rounded-md transition-colors">
                             {{ __($subSec['title']) }}
                         </a>
                     @endforeach

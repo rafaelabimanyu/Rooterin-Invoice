@@ -6,7 +6,7 @@
             <div class="flex items-center gap-2 text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-3">
                 <span>Enterprise</span>
                 <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
-                <span class="text-blue-600">{{ app()->getLocale() == 'en' ? 'Receipts' : 'Kuitansi' }}</span>
+                <span class="text-gold-600">{{ app()->getLocale() == 'en' ? 'Receipts' : 'Kuitansi' }}</span>
             </div>
             <h1 class="text-5xl font-extrabold text-slate-900 tracking-tight mb-2 font-outfit">{{ app()->getLocale() == 'en' ? 'Receipts' : 'Kuitansi' }}</h1>
             <p class="text-[15px] text-slate-400 font-medium">{{ app()->getLocale() == 'en' ? 'Manage payment receipts for your clients' : 'Kelola kuitansi pembayaran untuk klien Anda' }}</p>
@@ -35,7 +35,7 @@
             <div class="row-floating grid grid-cols-12 gap-6 items-center px-10 py-6 group">
                 <!-- REC NUMBER -->
                 <div class="col-span-2">
-                    <a href="{{ route('receipts.show', $receipt) }}" class="text-[14px] font-bold text-slate-900 hover:text-blue-600 transition-colors tracking-tight">
+                    <a href="{{ route('receipts.show', $receipt) }}" class="text-[14px] font-bold text-slate-900 hover:text-gold-600 transition-colors tracking-tight">
                         {{ $receipt->receipt_number }}
                     </a>
                 </div>
@@ -66,10 +66,10 @@
                 <!-- ACTIONS -->
                 <div class="col-span-2">
                     <div class="flex items-center justify-end gap-4 opacity-40 group-hover:opacity-100 transition-all duration-300">
-                        <a href="{{ route('receipts.show', $receipt) }}" class="p-1 text-slate-400 hover:text-blue-600 transition-colors" title="{{ app()->getLocale() == 'en' ? 'View Detail' : 'Lihat Detail' }}">
+                        <a href="{{ route('receipts.show', $receipt) }}" class="p-1 text-slate-400 hover:text-gold-600 transition-colors" title="{{ app()->getLocale() == 'en' ? 'View Detail' : 'Lihat Detail' }}">
                             <i data-lucide="eye" class="w-4.5 h-4.5"></i>
                         </a>
-                        <a href="{{ route('receipts.pdf', $receipt) }}" class="p-1 text-slate-400 hover:text-indigo-600 transition-colors" title="{{ app()->getLocale() == 'en' ? 'Download PDF' : 'Unduh PDF' }}">
+                        <a href="{{ route('receipts.pdf', $receipt) }}" class="p-1 text-slate-400 hover:text-gold-600 transition-colors" title="{{ app()->getLocale() == 'en' ? 'Download PDF' : 'Unduh PDF' }}">
                             <i data-lucide="download" class="w-4.5 h-4.5"></i>
                         </a>
                         @if($receipt->status !== 'invoiced')
@@ -115,7 +115,7 @@
                     <!-- Second Row: Client Name & Total Amount -->
                     <div class="flex items-center justify-between">
                         <span class="text-[13px] font-black text-slate-900 truncate leading-tight">{{ $receipt->client->nama_client }}</span>
-                        <span class="text-[14px] font-black text-indigo-650 tracking-tight shrink-0 pl-2">Rp {{ number_format($receipt->total, 0, ',', '.') }}</span>
+                        <span class="text-[14px] font-black text-gold-650 tracking-tight shrink-0 pl-2">Rp {{ number_format($receipt->total, 0, ',', '.') }}</span>
                     </div>
                 </div>
                 
@@ -123,7 +123,7 @@
                 <div class="shrink-0 flex items-center border-l border-slate-100 pl-3">
                     <button 
                         onclick="event.stopPropagation(); window.location='{{ route('receipts.pdf', $receipt) }}'"
-                        class="p-2 bg-slate-50 hover:bg-indigo-50 text-slate-400 hover:text-indigo-600 rounded-xl transition-all active:scale-90"
+                        class="p-2 bg-slate-50 hover:bg-gold-50/50 text-slate-400 hover:text-gold-600 rounded-xl transition-all active:scale-90"
                         title="{{ app()->getLocale() == 'en' ? 'Download PDF' : 'Unduh PDF' }}"
                     >
                         <i data-lucide="download" class="w-4 h-4"></i>

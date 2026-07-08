@@ -4,7 +4,7 @@
             <div class="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">
                 <span>{{ app()->getLocale() == 'en' ? 'System' : 'Sistem' }}</span>
                 <i data-lucide="chevron-right" class="w-3 h-3"></i>
-                <span class="text-indigo-600">{{ app()->getLocale() == 'en' ? 'User Profile' : 'Profil Pengguna' }}</span>
+                <span class="text-gold-600">{{ app()->getLocale() == 'en' ? 'User Profile' : 'Profil Pengguna' }}</span>
             </div>
             <h1 class="text-3xl font-black text-slate-900 font-jakarta tracking-tight truncate">{{ __('Profile Information') }}</h1>
             <p class="text-sm text-slate-500 font-medium">{{ app()->getLocale() == 'en' ? 'Manage your identity, security preferences, and system localization.' : 'Kelola identitas, preferensi keamanan, dan lokalisasi sistem Anda.' }}</p>
@@ -14,7 +14,7 @@
             <!-- Left Column: Profile Summary -->
             <div class="lg:col-span-4 space-y-8">
                 <div class="glass-card p-10 text-center relative overflow-hidden group">
-                    <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+                    <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-gold-500 via-amber-500 to-gold-600"></div>
                     
                     <!-- Profile Image -->
                     <div class="relative inline-block mb-6">
@@ -29,7 +29,7 @@
 
                     <div class="grid grid-cols-1 gap-4">
                         <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex items-center gap-4 text-left">
-                            <div class="p-2.5 bg-indigo-100 rounded-xl text-indigo-600">
+                            <div class="p-2.5 bg-gold-50 text-gold-600">
                                 <i data-lucide="calendar" class="w-5 h-5"></i>
                             </div>
                             <div>
@@ -71,7 +71,7 @@
                             <div class="space-y-4">
                                 @forelse($activityLogs as $log)
                                     <div class="flex gap-3">
-                                        <div class="shrink-0 w-1.5 h-1.5 rounded-full bg-indigo-500 mt-1.5"></div>
+                                        <div class="shrink-0 w-1.5 h-1.5 rounded-full bg-gold-500 mt-1.5"></div>
                                         <div class="min-w-0">
                                             <p class="text-xs font-bold text-slate-700 leading-tight">{{ $log->description }}</p>
                                             <p class="text-[10px] text-slate-400 mt-1 font-medium">{{ $log->created_at->diffForHumans() }}</p>

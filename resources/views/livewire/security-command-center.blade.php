@@ -65,7 +65,7 @@
         <!-- Sidebar Navigation -->
         <div class="lg:col-span-3 space-y-6">
             <div class="glass-card p-6 bg-slate-900 text-white overflow-hidden relative">
-                <div class="absolute -right-10 -top-10 w-32 h-32 bg-indigo-500/20 blur-3xl rounded-full"></div>
+                <div class="absolute -right-10 -top-10 w-32 h-32 bg-gold-500/20 blur-3xl rounded-full"></div>
                 <div class="flex items-center gap-4 mb-8 relative z-10">
                     <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
                         <i data-lucide="fingerprint" class="w-5 h-5"></i>
@@ -99,7 +99,7 @@
                 <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">{{ app()->getLocale() == 'en' ? 'Security Intelligence' : 'Kecerdasan Keamanan' }}</h4>
                 <div class="space-y-6">
                     <div class="flex items-center gap-4">
-                        <div class="w-1.5 h-1.5 rounded-full bg-indigo-500"></div>
+                        <div class="w-1.5 h-1.5 rounded-full bg-gold-500"></div>
                         <div>
                             <p class="text-[10px] font-black text-slate-900 uppercase tracking-tight">{{ app()->getLocale() == 'en' ? 'Brute Force Guard' : 'Perlindungan Brute Force' }}</p>
                             <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Active (3 Attempts Max)' : 'Aktif (Maks 3 Percobaan)' }}</p>
@@ -149,16 +149,16 @@
                             @endif
                         </div>
 
-                        <div class="space-y-4">
+                        <div>
                             @forelse($sessions as $session)
                                 <div wire:key="session-{{ $session['id'] }}" class="flex items-center justify-between p-6 bg-slate-50/50 rounded-[24px] border border-transparent hover:border-slate-200 hover:bg-white transition-all group">
                                     <div class="flex items-center gap-5">
                                         <!-- Multi-Icon Indicator -->
                                         <div class="relative shrink-0">
-                                            <div class="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-slate-400 group-hover:text-indigo-600 transition-colors">
+                                            <div class="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-slate-400 group-hover:text-gold-600 transition-colors">
                                                 <i data-lucide="{{ $session['platform_icon'] }}" class="w-6 h-6"></i>
                                             </div>
-                                            <div class="absolute -right-1 -bottom-1 w-6 h-6 rounded-lg bg-indigo-500 text-white flex items-center justify-center shadow-lg ring-2 ring-white">
+                                            <div class="absolute -right-1 -bottom-1 w-6 h-6 rounded-lg bg-gold-500 text-slate-950 flex items-center justify-center shadow-lg ring-2 ring-white font-bold">
                                                 <i data-lucide="{{ $session['browser_icon'] }}" class="w-3.5 h-3.5"></i>
                                             </div>
                                         </div>
@@ -205,12 +205,11 @@
                             </div>
                             <x-badge :status="auth()->user()->two_factor_confirmed_at ? 'aktif' : 'nonaktif'" />
                         </div>
-
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
                             <div class="space-y-8">
-                                <div class="glass-card p-8 bg-indigo-50/50 border-indigo-100">
+                                <div class="glass-card p-8 bg-gold-50/50 border-gold-100">
                                     <div class="flex items-start gap-4">
-                                        <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white shrink-0">
+                                        <div class="w-10 h-10 rounded-xl bg-gold-500 flex items-center justify-center text-slate-950 shrink-0 font-bold">
                                             <i data-lucide="smartphone" class="w-5 h-5"></i>
                                         </div>
                                         <div>
@@ -222,11 +221,10 @@
                                         @if(auth()->user()->two_factor_confirmed_at)
                                             <button wire:click="disable2FA" class="w-full py-4 bg-white border-2 border-rose-100 text-rose-500 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-rose-500 hover:text-white transition-all">{{ app()->getLocale() == 'en' ? 'Disable Protection' : 'Nonaktifkan Perlindungan' }}</button>
                                         @else
-                                            <button wire:click="initiate2FA" class="w-full py-4 bg-slate-900 text-white rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-indigo-600 transition-all shadow-xl shadow-slate-900/20">{{ app()->getLocale() == 'en' ? 'Begin Activation' : 'Mulai Aktivasi' }}</button>
+                                            <button wire:click="initiate2FA" class="w-full py-4 bg-slate-900 text-white rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-gold-600 hover:text-slate-950 transition-all shadow-xl shadow-slate-900/20">{{ app()->getLocale() == 'en' ? 'Begin Activation' : 'Mulai Aktivasi' }}</button>
                                         @endif
                                     </div>
                                 </div>
-
                                 @if($recoveryCodes)
                                     <div class="glass-card p-8 border-amber-200 bg-amber-50/30">
                                         <h4 class="text-[10px] font-black text-amber-600 uppercase tracking-widest mb-4">{{ app()->getLocale() == 'en' ? 'Emergency Recovery Codes' : 'Kode Pemulihan Darurat' }}</h4>
@@ -247,14 +245,14 @@
                                             {!! $qrCodeSvg !!}
                                         </div>
                                         <div class="space-y-4">
-                                            <p class="text-xs text-slate-500 font-bold text-center">{{ app()->getLocale() == 'en' ? 'Scan the QR code above or enter the key manually:' : 'Pindai kode QR di atas atau masukkan kunci secara manual:' }} <br><span class="text-indigo-600 font-black text-sm tracking-widest uppercase">{{ $twoFactorSecret }}</span></p>
+                                            <p class="text-xs text-slate-500 font-bold text-center">{{ app()->getLocale() == 'en' ? 'Scan the QR code above or enter the key manually:' : 'Pindai kode QR di atas atau masukkan kunci secara manual:' }} <br><span class="text-gold-600 font-black text-sm tracking-widest uppercase">{{ $twoFactorSecret }}</span></p>
                                             
                                             <div class="space-y-2">
                                                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Verification Pulse' : 'Pulsa Verifikasi' }}</label>
-                                                <input type="text" wire:model="twoFactorCode" placeholder="{{ app()->getLocale() == 'en' ? 'Enter 6-digit code' : 'Masukkan kode 6 digit' }}" class="w-full px-6 py-4 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all font-black text-slate-900 tracking-[0.5em] text-center">
+                                                <input type="text" wire:model="twoFactorCode" placeholder="{{ app()->getLocale() == 'en' ? 'Enter 6-digit code' : 'Masukkan kode 6 digit' }}" class="w-full px-6 py-4 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-gold-500/5 focus:border-gold-500 transition-all font-black text-slate-900 tracking-[0.5em] text-center">
                                                 @error('twoFactorCode') <span class="text-[10px] text-rose-500 font-bold uppercase tracking-wide">{{ $message }}</span> @enderror
                                             </div>
-                                            <button wire:click="confirm2FA" class="w-full py-4 bg-indigo-600 text-white rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-indigo-500 transition-all shadow-xl shadow-indigo-600/20">{{ app()->getLocale() == 'en' ? 'Finalize Encryption' : 'Selesaikan Enkripsi' }}</button>
+                                            <button wire:click="confirm2FA" class="w-full py-4 bg-gold-500 text-slate-950 font-bold rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-gold-600 transition-all shadow-xl shadow-gold-500/20">{{ app()->getLocale() == 'en' ? 'Finalize Encryption' : 'Selesaikan Enkripsi' }}</button>
                                         </div>
                                     </div>
                                 @endif
@@ -284,7 +282,7 @@
                                             <p class="text-xs font-black text-slate-900 uppercase tracking-tight">{{ $log->activity }}</p>
                                             <div class="flex items-center gap-2 mt-0.5">
                                                 <div x-data="{ showIP: false }" class="relative">
-                                                    <button @click="showIP = !showIP" class="text-[10px] text-indigo-600 font-black uppercase tracking-widest hover:underline font-mono">
+                                                    <button @click="showIP = !showIP" class="text-[10px] text-gold-600 font-black uppercase tracking-widest hover:underline font-mono">
                                                         IP: {{ $log->ip_address }}
                                                     </button>
                                                     <!-- IP Intelligence Popover -->
@@ -335,6 +333,4 @@
              </div>
          </div>
      </div>
- </div>v>
-    </div>
 </div>

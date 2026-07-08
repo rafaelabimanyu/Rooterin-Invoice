@@ -8,7 +8,7 @@
             <div class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">
                 <span>{{ app()->getLocale() == 'en' ? 'Administration' : 'Administrasi' }}</span>
                 <i data-lucide="chevron-right" class="w-3 h-3"></i>
-                <span class="text-indigo-600">{{ app()->getLocale() == 'en' ? 'Team Control Center' : 'Pusat Kontrol Tim' }}</span>
+                <span class="text-gold-600">{{ app()->getLocale() == 'en' ? 'Team Control Center' : 'Pusat Kontrol Tim' }}</span>
             </div>
             <h1 class="text-3xl font-black text-slate-900 font-jakarta tracking-tight uppercase">{{ __('ui.users') ?? (app()->getLocale() == 'en' ? 'Team Management' : 'Manajemen Tim') }}</h1>
             <p class="text-sm text-slate-500 font-medium mt-1">{{ app()->getLocale() == 'en' ? 'Manage operatives, security clearances, and operational status.' : 'Kelola staf pelaksana, izin keamanan, dan status operasional.' }}</p>
@@ -18,7 +18,7 @@
             <input type="text" style="display:none;" />
             <input type="password" style="display:none;" />
             <div class="relative w-64">
-                <input type="search" autocomplete="new-password" wire:model.live="search" placeholder="{{ app()->getLocale() == 'en' ? 'Search operative...' : 'Cari pelaksana...' }}" class="w-full pl-10 pr-4 py-2 bg-white rounded-xl border border-slate-200 shadow-sm text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500/10 transition-all">
+                <input type="search" autocomplete="new-password" wire:model.live="search" placeholder="{{ app()->getLocale() == 'en' ? 'Search operative...' : 'Cari pelaksana...' }}" class="w-full pl-10 pr-4 py-2 bg-white rounded-xl border border-slate-200 shadow-sm text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-gold-500/10 transition-all">
                 <div class="absolute left-3 top-2.5 text-slate-400">
                     <i data-lucide="search" class="w-4 h-4"></i>
                 </div>
@@ -41,7 +41,7 @@
                 <!-- Status Indicator -->
                 <div class="absolute top-0 right-0 p-4">
                     <div class="flex flex-col items-end gap-1.5">
-                        <div class="flex items-center gap-2 px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-widest {{ $user->is_active ? 'bg-indigo-50 text-indigo-600 border border-indigo-100' : 'bg-rose-50 text-rose-600 border border-rose-100' }}">
+                        <div class="flex items-center gap-2 px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-widest {{ $user->is_active ? 'bg-gold-50 text-gold-600 border border-gold-100' : 'bg-rose-50 text-rose-600 border border-rose-100' }}">
                             {{ $user->is_active ? (app()->getLocale() == 'en' ? 'Authorized' : 'Diizinkan') : (app()->getLocale() == 'en' ? 'Suspended' : 'Ditangguhkan') }}
                         </div>
                         @if($user->isOnline())
@@ -59,7 +59,7 @@
                 </div>
 
                 <!-- Role Accent -->
-                <div class="absolute top-0 left-0 w-1.5 h-full {{ $user->role === 'owner' ? 'bg-indigo-500' : ($user->role === 'admin' ? 'bg-emerald-500' : 'bg-slate-300') }}"></div>
+                <div class="absolute top-0 left-0 w-1.5 h-full {{ $user->role === 'owner' ? 'bg-gold-500' : ($user->role === 'admin' ? 'bg-emerald-500' : 'bg-slate-300') }}"></div>
                 
                 <div class="flex items-start justify-between mb-8">
                     <div class="flex items-center gap-5">
@@ -71,7 +71,7 @@
                         </div>
                         <div class="flex flex-col">
                             <div class="flex items-center gap-2">
-                                <h3 class="text-lg font-black text-slate-900 tracking-tight group-hover:text-indigo-600 transition-colors">{{ $user->name }}</h3>
+                                <h3 class="text-lg font-black text-slate-900 tracking-tight group-hover:text-gold-600 transition-colors">{{ $user->name }}</h3>
                                 @if($user->two_factor_secret)
                                     <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-500" title="2FA Enabled"></i>
                                 @endif
@@ -83,10 +83,10 @@
 
                 <!-- Stats Row -->
                 <div class="grid grid-cols-2 gap-4 mb-8">
-                    <div class="p-4 bg-slate-50/50 rounded-2xl border border-slate-100 group-hover:bg-white group-hover:border-indigo-100 transition-all duration-500">
+                    <div class="p-4 bg-slate-50/50 rounded-2xl border border-slate-100 group-hover:bg-white group-hover:border-gold-100 transition-all duration-500">
                         <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Productivity' : 'Produktivitas' }}</p>
                         <div class="flex items-center gap-2">
-                            <i data-lucide="file-text" class="w-3.5 h-3.5 text-indigo-500"></i>
+                            <i data-lucide="file-text" class="w-3.5 h-3.5 text-gold-500"></i>
                             <span class="text-sm font-black text-slate-900">{{ $user->invoices_count }} {{ app()->getLocale() == 'en' ? 'Invoices' : 'Faktur' }}</span>
                         </div>
                     </div>
@@ -103,7 +103,7 @@
                 <div class="flex items-center justify-between pt-6 border-t border-slate-100">
                     <div class="flex items-center gap-2">
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black border uppercase tracking-wider
-                            {{ $user->role === 'owner' ? 'bg-indigo-50 text-indigo-700 border-indigo-100' : 
+                            {{ $user->role === 'owner' ? 'bg-gold-50 text-gold-700 border-gold-100' : 
                                ($user->role === 'admin' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-slate-50 text-slate-700 border-slate-100') }}">
                             {{ $user->role }}
                         </span>
@@ -113,13 +113,13 @@
                         <button 
                             wire:click="openPermissions({{ $user->id }})"
                             @click="showPermissionsModal = true"
-                            class="p-2.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all relative flex items-center justify-center"
+                            class="p-2.5 text-slate-400 hover:text-gold-600 hover:bg-gold-50 rounded-xl transition-all relative flex items-center justify-center"
                             title="{{ app()->getLocale() == 'en' ? 'Atur Hak Akses Staf' : 'Atur Hak Akses Staf' }}"
                             wire:loading.class="opacity-50 pointer-events-none"
                             wire:target="openPermissions({{ $user->id }})"
                         >
                             <i data-lucide="sliders" class="w-5 h-5" wire:loading.remove wire:target="openPermissions({{ $user->id }})"></i>
-                            <svg class="animate-spin w-5 h-5 text-indigo-600 hidden" wire:loading.class="!block" wire:target="openPermissions({{ $user->id }})" fill="none" viewBox="0 0 24 24">
+                            <svg class="animate-spin w-5 h-5 text-gold-600 hidden" wire:loading.class="!block" wire:target="openPermissions({{ $user->id }})" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
@@ -129,13 +129,13 @@
                         <button 
                             wire:click="openEditModal({{ $user->id }})"
                             @click="showEditModal = true"
-                            class="p-2.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all relative flex items-center justify-center"
+                            class="p-2.5 text-slate-400 hover:text-gold-600 hover:bg-gold-50 rounded-xl transition-all relative flex items-center justify-center"
                             title="{{ app()->getLocale() == 'en' ? 'Edit Profil & Kredensial' : 'Edit Profil & Kredensial' }}"
                             wire:loading.class="opacity-50 pointer-events-none"
                             wire:target="openEditModal({{ $user->id }})"
                         >
                             <i data-lucide="settings-2" class="w-5 h-5" wire:loading.remove wire:target="openEditModal({{ $user->id }})"></i>
-                            <svg class="animate-spin w-5 h-5 text-indigo-600 hidden" wire:loading.class="!block" wire:target="openEditModal({{ $user->id }})" fill="none" viewBox="0 0 24 24">
+                            <svg class="animate-spin w-5 h-5 text-gold-600 hidden" wire:loading.class="!block" wire:target="openEditModal({{ $user->id }})" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>

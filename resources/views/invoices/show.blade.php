@@ -17,9 +17,9 @@
                     <button title="Print" class="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-500 hover:text-slate-900 transition-all shadow-sm active:scale-95">
                         <i data-lucide="printer" class="w-4 h-4"></i>
                     </button>
-                    <a href="{{ route('invoices.pdf', $invoice) }}" title="Download PDF" class="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-500 hover:text-indigo-600 transition-all shadow-sm active:scale-95">
+                    <button type="button" @click="$dispatch('download-pdf', { url: '{{ route('invoices.pdf', $invoice) }}', filename: 'Invoice-{{ $invoice->invoice_number }}.pdf' })" title="Download PDF" class="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-500 hover:text-indigo-600 transition-all shadow-sm active:scale-95">
                         <i data-lucide="download" class="w-4 h-4"></i>
-                    </a>
+                    </button>
                 </div>
             </div>
             <button @click="$dispatch('open-modal', 'ai-copywriter'); setTimeout(() => typeof lucide !== 'undefined' && lucide.createIcons(), 50)" class="w-full sm:w-auto px-6 py-3 bg-white border border-slate-200 text-slate-700 hover:text-indigo-600 rounded-xl text-sm font-bold transition-all shadow-sm flex items-center justify-center gap-2 active:scale-95">

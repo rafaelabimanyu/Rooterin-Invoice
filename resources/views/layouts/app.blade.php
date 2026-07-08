@@ -240,6 +240,50 @@
             </template>
         </div>
 
+        <!-- PDF Download Loading Overlay -->
+        <div 
+            x-data="pdfDownloader"
+            x-show="show"
+            x-transition:enter="transition ease-out duration-500"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            @download-pdf.window="download($event.detail.url, $event.detail.filename)"
+            class="fixed inset-0 z-[9999] flex items-center justify-center bg-gradient-to-br from-[#05111E]/95 via-[#0F2A44]/90 to-[#173F66]/95 backdrop-blur-md border border-amber-500/10"
+            x-cloak
+        >
+            <div class="bg-[#0B1E33]/85 border border-amber-500/30 shadow-[0_0_50px_rgba(212,175,55,0.15)] rounded-2xl p-8 max-w-sm w-full mx-4 text-center">
+                <!-- Icon Loader with Pulse and Gold Accent -->
+                <div class="relative flex justify-center mb-6">
+                    <div class="absolute -inset-3 bg-[#D4AF37]/15 rounded-full blur-xl animate-pulse"></div>
+                    <div class="relative w-16 h-16 rounded-2xl bg-[#0F2A44]/80 border border-amber-500/30 flex items-center justify-center text-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.2)]">
+                        <svg class="w-8 h-8 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Status Message -->
+                <h3 class="text-transparent bg-clip-text bg-gradient-to-r from-[#FDB931] to-[#D4AF37] font-outfit font-black text-lg uppercase tracking-wider mb-2" x-text="statusText"></h3>
+                <p class="text-slate-300 text-xs font-medium mb-6" x-text="subText"></p>
+
+                <!-- Elegant Progress Bar Container -->
+                <div class="w-full h-2.5 bg-slate-950/60 rounded-full overflow-hidden border border-amber-500/10 relative shadow-inner">
+                    <div 
+                        class="h-full rounded-full transition-all duration-300 ease-out shadow-[0_0_15px_rgba(212,175,55,0.7)]"
+                        :style="`width: ${progress}%; background: linear-gradient(90deg, #D4AF37, #FDB931);`"
+                    ></div>
+                </div>
+                
+                <div class="flex justify-between items-center mt-2.5 text-[10px] font-bold text-[#D4AF37] uppercase tracking-widest">
+                    <span x-text="`${Math.round(progress)}%`"></span>
+                    <span x-text="phaseText"></span>
+                </div>
+            </div>
+        </div>
+
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 if (typeof lucide !== 'undefined') {
@@ -250,6 +294,87 @@
                 if (typeof lucide !== 'undefined') {
                     lucide.createIcons();
                 }
+            });
+            
+            document.addEventListener('alpine:init', () => {
+                Alpine.data('pdfDownloader', () => ({
+                    show: false,
+                    progress: 0,
+                    statusText: '',
+                    subText: '',
+                    phaseText: '',
+                    intervalId: null,
+                    
+                    async download(url, filename) {
+                        if (this.show) return;
+                        
+                        this.show = true;
+                        this.progress = 0;
+                        
+                        // Phase 1: Memuat Data (0% - 30%)
+                        this.statusText = 'Memuat Data...';
+                        this.subText = 'Menghubungkan ke server dan menyiapkan basis data.';
+                        this.phaseText = 'Loading';
+                        
+                        let targetProgress = 30;
+                        let step = 1.5;
+                        this.progress = 5;
+                        
+                        this.intervalId = setInterval(() => {
+                            if (this.progress < targetProgress) {
+                                this.progress += step;
+                            } else if (this.progress >= 30 && this.progress < 80) {
+                                // Phase 2: Merender Dokumen PDF (30% - 80%)
+                                this.statusText = 'Merender Dokumen PDF...';
+                                this.subText = 'Menyusun template HTML & memproses visual PDF.';
+                                this.phaseText = 'Processing';
+                                targetProgress = 80;
+                                step = 0.5;
+                                this.progress += step;
+                            } else if (this.progress >= 80 && this.progress < 95) {
+                                this.progress += 0.1;
+                            }
+                        }, 80);
+                        
+                        try {
+                            const response = await fetch(url);
+                            if (!response.ok) {
+                                throw new Error('Render PDF gagal.');
+                            }
+                            
+                            const blob = await response.blob();
+                            
+                            // Phase 3: Unduhan Dimulai! (80% - 100%)
+                            clearInterval(this.intervalId);
+                            this.progress = 100;
+                            this.statusText = 'Unduhan Dimulai!';
+                            this.subText = 'File PDF Anda sedang diunduh.';
+                            this.phaseText = 'Download Triggered';
+                            
+                            const downloadUrl = window.URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = downloadUrl;
+                            a.download = filename;
+                            document.body.appendChild(a);
+                            a.click();
+                            a.remove();
+                            window.URL.revokeObjectURL(downloadUrl);
+                            
+                            setTimeout(() => {
+                                this.show = false;
+                            }, 1000);
+                            
+                        } catch (error) {
+                            clearInterval(this.intervalId);
+                            this.show = false;
+                            
+                            this.$dispatch('notify', {
+                                type: 'danger',
+                                message: error.message || 'Gagal mengunduh dokumen PDF.'
+                            });
+                        }
+                    }
+                }));
             });
         </script>
         @livewireScripts

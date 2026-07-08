@@ -16,9 +16,9 @@
                     <button title="Print" class="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-500 hover:text-slate-900 transition-all shadow-sm active:scale-95">
                         <i data-lucide="printer" class="w-4 h-4"></i>
                     </button>
-                    <a href="{{ route('receipts.pdf', $receipt) }}" title="{{ app()->getLocale() == 'en' ? 'Download PDF' : 'Unduh PDF' }}" class="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-500 hover:text-indigo-600 transition-all shadow-sm active:scale-95">
+                    <button type="button" @click="$dispatch('download-pdf', { url: '{{ route('receipts.pdf', $receipt) }}', filename: 'Receipt-{{ $receipt->receipt_number }}.pdf' })" title="{{ app()->getLocale() == 'en' ? 'Download PDF' : 'Unduh PDF' }}" class="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-500 hover:text-indigo-600 transition-all shadow-sm active:scale-95">
                         <i data-lucide="download" class="w-4 h-4"></i>
-                    </a>
+                    </button>
                 </div>
             </div>
             

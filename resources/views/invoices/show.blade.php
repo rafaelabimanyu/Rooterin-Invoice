@@ -70,12 +70,7 @@
                             @endphp
                             T: 
                             @foreach($reordered as $phone)
-                                @if($phone === $primary)
-                                    <span class="font-bold text-slate-900">{{ $phone }} (Utama)</span>
-                                @else
-                                    {{ $phone }}
-                                @endif
-                                @if(!$loop->last) / @endif
+                                <span class="font-bold text-slate-900">{{ $phone }}</span>@if(!$loop->last) / @endif
                             @endforeach
                             <br>
                             E: {{ \App\Models\Setting::get('company_email', 'Jayarooter@gmail.com / Jawarooter@gmail.com') }}<br>

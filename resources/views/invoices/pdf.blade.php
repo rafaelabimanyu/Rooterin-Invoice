@@ -168,12 +168,7 @@
                             @endphp
                             <span style="vertical-align: middle;">
                                 @foreach($reordered as $index => $phone)
-                                    @if($phone === $primary)
-                                        <strong style="color: #0f172a;">{{ $phone }} (Utama)</strong>
-                                    @else
-                                        {{ $phone }}
-                                    @endif
-                                    @if(!$loop->last) / @endif
+                                    <strong style="color: #0f172a;">{{ $phone }}</strong>@if(!$loop->last) / @endif
                                 @endforeach
                             </span>
                         </div>
@@ -315,7 +310,7 @@
 
     <!-- Footer -->
     <div class="footer">
-        J&J GROUP PLUMBING SERVICES &bull; E: {{ explode(' / ', \App\Models\Setting::get('company_email', 'Jayarooter@gmail.com'))[0] }} &bull; T: 0812-40000-759 (Utama)
+        J&J GROUP PLUMBING SERVICES &bull; E: {{ explode(' / ', \App\Models\Setting::get('company_email', 'Jayarooter@gmail.com'))[0] }} &bull; T: {{ \App\Models\Setting::get('company_phone', '0812-40000-759 / 0812-40000-749 / 0812-83-300-900') }}
     </div>
 
     <!-- Documentation Page -->

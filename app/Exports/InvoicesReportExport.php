@@ -29,28 +29,29 @@ class InvoicesReportExport implements FromCollection, WithHeadings, ShouldAutoSi
 
     public function collection()
     {
-        $query = Invoice::with('client')
+        $query = Invoice::with(['client', 'businessUnit'])
             ->whereBetween('created_at', [$this->startDate, $this->endDate]);
-
+ 
         if ($this->clientId) {
             $query->where('client_id', $this->clientId);
         }
-
+ 
         $invoices = $query->orderBy('created_at')->get();
         $data = collect();
-
+ 
         foreach ($invoices as $invoice) {
             $data->push([
                 $invoice->invoice_number,
                 $invoice->client->nama_client,
                 $invoice->client->nama_perusahaan,
+                $invoice->businessUnit ? $invoice->businessUnit->name : '-',
                 $invoice->created_at ? $invoice->created_at->format('Y-m-d') : '-',
                 $invoice->due_date ? Carbon::parse($invoice->due_date)->format('Y-m-d') : '-',
                 $invoice->total,
                 strtoupper($invoice->status),
             ]);
         }
-
+ 
         $count = $data->count();
         // Append Total Row
         $data->push([
@@ -59,52 +60,54 @@ class InvoicesReportExport implements FromCollection, WithHeadings, ShouldAutoSi
             '',
             '',
             '',
-            '=SUM(F2:F' . ($count + 1) . ')',
+            '',
+            '=SUM(G2:G' . ($count + 1) . ')',
             '',
         ]);
-
+ 
         return $data;
     }
-
+ 
     public function headings(): array
     {
         return [
             'NO. FAKTUR',
             'KLIEN',
             'PERUSAHAAN',
+            'UNIT BISNIS',
             'TANGGAL INVOICE',
             'TANGGAL JATUH TEMPO',
             'TOTAL',
             'STATUS',
         ];
     }
-
+ 
     public function columnFormats(): array
     {
         return [
-            'F' => '_("Rp"* #,##0_);_("Rp"* \(#,##0\);_("Rp"* "-"_);_(@_)',
+            'G' => '_("Rp"* #,##0_);_("Rp"* \(#,##0\);_("Rp"* "-"_);_(@_)',
         ];
     }
-
+ 
     public function styles(Worksheet $sheet)
     {
         $lastRow = $sheet->getHighestRow();
-
+ 
         // Set row heights
         $sheet->getRowDimension(1)->setRowHeight(28);
         for ($row = 2; $row <= $lastRow; $row++) {
             $sheet->getRowDimension($row)->setRowHeight(22);
         }
-
+ 
         // Standard alignments
         $sheet->getStyle('A2:A' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-        $sheet->getStyle('B2:C' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-        $sheet->getStyle('D2:E' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('F2:F' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-        $sheet->getStyle('G2:G' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('B2:D' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+        $sheet->getStyle('E2:F' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('G2:G' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->getStyle('H2:H' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         
         // Vertical alignment for clean padding
-        $sheet->getStyle('A2:G' . $lastRow)->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('A2:H' . $lastRow)->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
 
         return [
             1 => [

@@ -12,7 +12,7 @@ class ReceiptController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Receipt::with('invoice.client');
+        $query = Receipt::with(['invoice.client', 'invoice.businessUnit']);
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -21,6 +21,12 @@ class ReceiptController extends Controller
                       $q->where('nama_client', 'like', "%{$search}%")
                         ->orWhere('nama_perusahaan', 'like', "%{$search}%");
                   });
+        }
+
+        if ($request->filled('business_unit_id')) {
+            $query->whereHas('invoice', function ($q) use ($request) {
+                $q->where('business_unit_id', $request->business_unit_id);
+            });
         }
 
         if (auth()->user()->role === 'staff') {
@@ -32,8 +38,9 @@ class ReceiptController extends Controller
         }
 
         $receipts = $query->latest()->paginate(10);
+        $businessUnits = \App\Models\BusinessUnit::orderBy('name')->get();
 
-        return view('receipts.index', compact('receipts'));
+        return view('receipts.index', compact('receipts', 'businessUnits'));
     }
 
     public function create()

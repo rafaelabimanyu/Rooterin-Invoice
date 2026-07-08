@@ -183,6 +183,8 @@
             @include('dashboard.partials.billing-operations')
 
             @if(!$isStaff)
+                @include('dashboard.partials.business-units-summary')
+
                 <!-- Top Clients & Invoice Ageing Widgets (Desktop Version) -->
                 <div class="hidden md:grid md:grid-cols-2 gap-6 mt-8 page-fade-in stagger-6">
                     @include('dashboard.partials.top-clients')

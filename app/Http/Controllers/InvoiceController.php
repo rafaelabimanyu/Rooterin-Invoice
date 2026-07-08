@@ -22,7 +22,7 @@ class InvoiceController extends Controller
 
     public function index(Request $request)
     {
-        $query = Invoice::with('client');
+        $query = Invoice::with(['client', 'businessUnit']);
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -37,6 +37,10 @@ class InvoiceController extends Controller
             $query->where('status', $request->status);
         }
 
+        if ($request->filled('business_unit_id')) {
+            $query->where('business_unit_id', $request->business_unit_id);
+        }
+
         if (auth()->user()->role === 'staff') {
             if (Schema::hasColumn('invoices', 'created_by')) {
                 $query->where('created_by', auth()->id())
@@ -45,8 +49,9 @@ class InvoiceController extends Controller
         }
 
         $invoices = $query->latest()->paginate(10);
+        $businessUnits = BusinessUnit::orderBy('name')->get();
 
-        return view('invoices.index', compact('invoices'));
+        return view('invoices.index', compact('invoices', 'businessUnits'));
     }
 
     public function create()

@@ -19,16 +19,52 @@
         </div>
     </div>
 
+    <!-- Filters -->
+    <div class="glass-card p-6 mb-10">
+        <form action="{{ route('receipts.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
+            <!-- Search Text -->
+            <div class="space-y-2 md:col-span-6">
+                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Search Receipt' : 'Cari Kuitansi' }}</label>
+                <div class="relative">
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="{{ app()->getLocale() == 'en' ? 'Receipt number, client name...' : 'Nomor kuitansi, nama klien...' }}" class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-gold-500 focus:bg-white transition-colors font-medium">
+                    <div class="absolute left-3.5 top-2.5 text-slate-400">
+                        <i data-lucide="search" class="w-4 h-4"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Business Unit Filter -->
+            <div class="space-y-2 md:col-span-4">
+                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Business Unit' : 'Unit Bisnis' }}</label>
+                <select name="business_unit_id" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-gold-500 focus:bg-white transition-colors font-medium">
+                    <option value="">{{ app()->getLocale() == 'en' ? 'All Units' : 'Semua Unit' }}</option>
+                    @foreach($businessUnits as $unit)
+                        <option value="{{ $unit->id }}" {{ request('business_unit_id') == $unit->id ? 'selected' : '' }}>{{ $unit->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            
+            <!-- Buttons -->
+            <div class="flex gap-2 md:col-span-2">
+                <button type="submit" class="flex-1 btn-premium py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider text-center font-medium">
+                    Filter
+                </button>
+                <a href="{{ route('receipts.index') }}" class="btn-secondary py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider flex items-center justify-center font-medium">Reset</a>
+            </div>
+        </form>
+    </div>
+
     <!-- Desktop List View (Floating Rows) -->
     <div class="hidden md:block space-y-4">
         <!-- List Header -->
         <div class="grid grid-cols-12 gap-6 px-10 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 bg-slate-50/50 rounded-2xl mb-2">
             <div class="col-span-2">{{ app()->getLocale() == 'en' ? 'Rec Number' : 'No. Kuitansi' }}</div>
             <div class="col-span-3">{{ app()->getLocale() == 'en' ? 'Client Account' : 'Akun Klien' }}</div>
+            <div class="col-span-2">{{ app()->getLocale() == 'en' ? 'Business Unit' : 'Unit Bisnis' }}</div>
             <div class="col-span-2">{{ app()->getLocale() == 'en' ? 'Amount' : 'Jumlah' }}</div>
             <div class="col-span-1 text-center">{{ app()->getLocale() == 'en' ? 'Date' : 'Tanggal' }}</div>
-            <div class="col-span-2 text-center">Status</div>
-            <div class="col-span-2 text-right">{{ app()->getLocale() == 'en' ? 'Actions' : 'Aksi' }}</div>
+            <div class="col-span-1 text-center">Status</div>
+            <div class="col-span-1 text-right">{{ app()->getLocale() == 'en' ? 'Actions' : 'Aksi' }}</div>
         </div>
 
         @forelse($receipts as $receipt)
@@ -48,6 +84,13 @@
                     </div>
                 </div>
 
+                <!-- BUSINESS UNIT -->
+                <div class="col-span-2">
+                    <span class="text-[12px] font-black text-slate-700 bg-slate-100/80 px-2.5 py-1 rounded-lg border border-slate-200/40 uppercase tracking-wider">
+                        {{ $receipt->invoice && $receipt->invoice->businessUnit ? $receipt->invoice->businessUnit->name : '-' }}
+                    </span>
+                </div>
+
                 <!-- AMOUNT -->
                 <div class="col-span-2">
                     <span class="text-[15px] font-black text-slate-900 tracking-tight">Rp {{ number_format($receipt->total, 0, ',', '.') }}</span>
@@ -59,28 +102,28 @@
                 </div>
 
                 <!-- STATUS -->
-                <div class="col-span-2 flex justify-center">
+                <div class="col-span-1 flex justify-center">
                     <x-badge :status="$receipt->status" />
                 </div>
 
                 <!-- ACTIONS -->
-                <div class="col-span-2">
-                    <div class="flex items-center justify-end gap-4 opacity-40 group-hover:opacity-100 transition-all duration-300">
+                <div class="col-span-1">
+                    <div class="flex items-center justify-end gap-3 opacity-40 group-hover:opacity-100 transition-all duration-300">
                         <a href="{{ route('receipts.show', $receipt) }}" class="p-1 text-slate-400 hover:text-gold-600 transition-colors" title="{{ app()->getLocale() == 'en' ? 'View Detail' : 'Lihat Detail' }}">
-                            <i data-lucide="eye" class="w-4.5 h-4.5"></i>
+                            <i data-lucide="eye" class="w-4 h-4"></i>
                         </a>
                         <a href="{{ route('receipts.pdf', $receipt) }}" class="p-1 text-slate-400 hover:text-gold-600 transition-colors" title="{{ app()->getLocale() == 'en' ? 'Download PDF' : 'Unduh PDF' }}">
-                            <i data-lucide="download" class="w-4.5 h-4.5"></i>
+                            <i data-lucide="download" class="w-4 h-4"></i>
                         </a>
                         @if($receipt->status !== 'invoiced')
                         <a href="{{ route('receipts.edit', $receipt) }}" class="p-1 text-slate-400 hover:text-amber-600 transition-colors" title="{{ app()->getLocale() == 'en' ? 'Edit' : 'Ubah' }}">
-                            <i data-lucide="edit-3" class="w-4.5 h-4.5"></i>
+                            <i data-lucide="edit-3" class="w-4 h-4"></i>
                         </a>
                         @endif
                         <form action="{{ route('receipts.destroy', $receipt) }}" method="POST" onsubmit="return confirm('{{ app()->getLocale() == 'en' ? 'Delete this receipt?' : 'Hapus kuitansi ini?' }}')" class="inline">
                             @csrf @method('DELETE')
                             <button class="p-1 text-slate-400 hover:text-rose-600 transition-colors" title="{{ app()->getLocale() == 'en' ? 'Delete' : 'Hapus' }}">
-                                <i data-lucide="trash-2" class="w-4.5 h-4.5"></i>
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
                             </button>
                         </form>
                     </div>
@@ -104,9 +147,9 @@
         @forelse($receipts as $receipt)
             <div 
                 onclick="window.location='{{ route('receipts.show', $receipt) }}'" 
-                class="bg-white border border-slate-200/60 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all active:scale-[0.98] cursor-pointer flex items-center justify-between gap-4"
+                class="bg-white border border-slate-200/60 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all active:scale-[0.98] cursor-pointer flex flex-col gap-2"
             >
-                <div class="flex-1 min-w-0">
+                <div class="flex-grow min-w-0">
                     <!-- First Row: Receipt Number & Status -->
                     <div class="flex items-center justify-between mb-1.5">
                         <span class="text-xs font-bold text-slate-500 tracking-tight truncate">{{ $receipt->receipt_number }}</span>
@@ -115,18 +158,23 @@
                     <!-- Second Row: Client Name & Total Amount -->
                     <div class="flex items-center justify-between">
                         <span class="text-[13px] font-black text-slate-900 truncate leading-tight">{{ optional($receipt->client)->nama_client ?? 'Klien Tidak Ditemukan' }}</span>
-                        <span class="text-[14px] font-black text-gold-650 tracking-tight shrink-0 pl-2">Rp {{ number_format($receipt->total, 0, ',', '.') }}</span>
+                        <span class="text-[14px] font-bold text-gold-600 tracking-tight shrink-0 pl-2">Rp {{ number_format($receipt->total, 0, ',', '.') }}</span>
+                    </div>
+                    <!-- Third Row: Business Unit -->
+                    <div class="flex items-center justify-between mt-1 pt-1.5 border-t border-slate-100">
+                        <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'UNIT' : 'UNIT' }}</span>
+                        <span class="text-[10px] font-bold text-slate-650 bg-slate-100 px-2 py-0.5 rounded uppercase tracking-wider">{{ $receipt->invoice && $receipt->invoice->businessUnit ? $receipt->invoice->businessUnit->name : '-' }}</span>
                     </div>
                 </div>
                 
                 <!-- Action: Download PDF -->
-                <div class="shrink-0 flex items-center border-l border-slate-100 pl-3">
+                <div class="flex items-center justify-end mt-2 pt-2 border-t border-slate-100 gap-2">
                     <button 
                         onclick="event.stopPropagation(); window.location='{{ route('receipts.pdf', $receipt) }}'"
-                        class="p-2 bg-slate-50 hover:bg-gold-50/50 text-slate-400 hover:text-gold-600 rounded-xl transition-all active:scale-90"
-                        title="{{ app()->getLocale() == 'en' ? 'Download PDF' : 'Unduh PDF' }}"
+                        class="px-3 py-1.5 bg-slate-50 hover:bg-gold-50/50 text-slate-500 hover:text-gold-600 rounded-xl transition-all text-xs font-bold flex items-center gap-1.5"
                     >
-                        <i data-lucide="download" class="w-4 h-4"></i>
+                        <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                        <span>PDF</span>
                     </button>
                 </div>
             </div>

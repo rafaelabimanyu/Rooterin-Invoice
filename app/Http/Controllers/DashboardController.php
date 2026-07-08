@@ -280,6 +280,17 @@ class DashboardController extends Controller
                 }
             }
         }
+
+        $businessUnitSummary = \App\Models\BusinessUnit::withCount(['invoices as total_orders'])
+            ->withSum(['invoices as total_revenue' => function($query) {
+                $query->where('status', 'paid');
+            }], 'total')
+            ->orderByDesc('total_revenue')
+            ->get()
+            ->map(function ($unit) {
+                $unit->total_revenue = $unit->total_revenue ?? 0;
+                return $unit;
+            });
         
         return view('dashboard', compact(
             'totalClients', 
@@ -303,7 +314,8 @@ class DashboardController extends Controller
             'securityLogs',
             'cashFlowData',
             'topClients',
-            'invoiceAgeing'
+            'invoiceAgeing',
+            'businessUnitSummary'
         ));
     }
 

@@ -91,7 +91,22 @@ class ReceiptController extends Controller
         }
 
         $receipt->load(['invoice.client', 'invoice.items']);
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('receipts.pdf', compact('receipt'));
+
+        // Convert logo to Base64
+        $logoPath = public_path('img/logo-jnj.png');
+        $logoBase64 = null;
+        if (file_exists($logoPath)) {
+            $logoBase64 = 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath));
+        }
+
+        // Convert signature (ttd) to Base64
+        $ttdPath = public_path('img/ttd.png');
+        $ttdBase64 = null;
+        if (file_exists($ttdPath)) {
+            $ttdBase64 = 'data:image/png;base64,' . base64_encode(file_get_contents($ttdPath));
+        }
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('receipts.pdf', compact('receipt', 'logoBase64', 'ttdBase64'));
         return $pdf->download("Receipt-{$receipt->receipt_number}.pdf");
     }
 

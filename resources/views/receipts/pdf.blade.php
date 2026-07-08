@@ -134,15 +134,8 @@
                     <div style="font-size: 8.5pt; color: #c89d3c; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px;">SOLUSI PINTAR, SALURAN LANCAR, TANPA BONGKAR*</div>
                 </td>
                 <td style="width: 35%; vertical-align: top; text-align: right;">
-                    @php
-                        $logoPath = public_path('img/logo-jnj.png');
-                        $logoData = "";
-                        if (file_exists($logoPath)) {
-                            $logoData = base64_encode(file_get_contents($logoPath));
-                        }
-                    @endphp
-                    @if($logoData)
-                        <img src="data:image/png;base64,{{ $logoData }}" style="height: 60px;">
+                    @if(isset($logoBase64) && $logoBase64)
+                        <img src="{{ $logoBase64 }}" style="height: 60px;">
                     @else
                         <div style="font-size: 20px; font-weight: 900; color: #0f172a;">J&J GROUP<span style="color: #c89d3c;">.</span></div>
                     @endif
@@ -293,8 +286,8 @@
 
                         <!-- Tanda Tangan (di bawah ringkasan keuangan, margin-top cukup, dipusatkan) -->
                         <div style="margin-top: 35px; text-align: center;">
-                            @if(file_exists(public_path('img/ttd.png')))
-                                <img src="{{ public_path('img/ttd.png') }}" style="width: 180px; display: inline-block;">
+                            @if(isset($ttdBase64) && $ttdBase64)
+                                <img src="{{ $ttdBase64 }}" style="width: 180px; display: inline-block;">
                             @else
                                 <div style="height: 70px; color: #94a3b8; font-style: italic; font-size: 9pt; line-height: 70px;">(Tanda Tangan)</div>
                             @endif

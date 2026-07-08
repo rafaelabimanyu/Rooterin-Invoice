@@ -78,6 +78,8 @@ class InvoiceController extends Controller
             'pph' => 'nullable|numeric|min:0',
             'cause_of_problem' => 'nullable|string',
             'notes' => 'nullable|string',
+            'attachments' => 'nullable|array',
+            'attachments.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
         ]);
 
         try {
@@ -123,6 +125,15 @@ class InvoiceController extends Controller
                     'harga' => $item['harga'],
                     'total' => $item['qty'] * $item['harga'],
                 ]);
+            }
+
+            if ($request->hasFile('attachments')) {
+                foreach ($request->file('attachments') as $file) {
+                    $path = $file->store('attachments', 'public');
+                    $invoice->attachments()->create([
+                        'file_path' => $path,
+                    ]);
+                }
             }
 
             // If status is paid, trigger automatic receipt generation
@@ -180,6 +191,8 @@ class InvoiceController extends Controller
             'pph' => 'nullable|numeric|min:0',
             'cause_of_problem' => 'nullable|string',
             'notes' => 'nullable|string',
+            'attachments' => 'nullable|array',
+            'attachments.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
         ]);
 
         // Security check: status 'paid' requires vital fields to be completed
@@ -228,6 +241,15 @@ class InvoiceController extends Controller
                 ]);
             }
 
+            if ($request->hasFile('attachments')) {
+                foreach ($request->file('attachments') as $file) {
+                    $path = $file->store('attachments', 'public');
+                    $invoice->attachments()->create([
+                        'file_path' => $path,
+                    ]);
+                }
+            }
+
             // Logika pelunasan otomatis kwitansi
             if ($request->status === 'paid' && $invoice->getOriginal('status') !== 'paid') {
                 $this->invoiceService->markAsPaid($invoice);
@@ -255,7 +277,38 @@ class InvoiceController extends Controller
         }
 
         $invoice->load(['client', 'items', 'receipt', 'attachments']);
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('invoices.pdf', compact('invoice'))
+
+        // Convert attachments to Base64
+        foreach ($invoice->attachments as $attachment) {
+            $path = storage_path('app/public/' . $attachment->file_path);
+            if (file_exists($path)) {
+                try {
+                    $mime = mime_content_type($path) ?: 'image/jpeg';
+                    $data = file_get_contents($path);
+                    $attachment->base64_data = 'data:' . $mime . ';base64,' . base64_encode($data);
+                } catch (\Exception $e) {
+                    $attachment->base64_data = null;
+                }
+            } else {
+                $attachment->base64_data = null;
+            }
+        }
+
+        // Convert logo to Base64
+        $logoPath = public_path('img/logo-jnj.png');
+        $logoBase64 = null;
+        if (file_exists($logoPath)) {
+            $logoBase64 = 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath));
+        }
+
+        // Convert signature (ttd) to Base64
+        $ttdPath = public_path('img/ttd.png');
+        $ttdBase64 = null;
+        if (file_exists($ttdPath)) {
+            $ttdBase64 = 'data:image/png;base64,' . base64_encode(file_get_contents($ttdPath));
+        }
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('invoices.pdf', compact('invoice', 'logoBase64', 'ttdBase64'))
             ->setPaper('a4')
             ->setOption([
                 'isRemoteEnabled' => true, 

@@ -48,10 +48,35 @@
                         <span class="text-xl font-black text-slate-900 tracking-tighter uppercase">J&J GROUP<span class="text-gold-500">.</span></span>
                     </div>
                     <div class="space-y-1 text-sm text-slate-500">
-                        <p class="font-bold text-slate-900">{{ \App\Models\Setting::get('company_name', 'J&J GROUP Technical Services') }}</p>
+                        <p class="font-bold text-slate-900">{{ \App\Models\Setting::get('company_name', 'J&J GROUP PLUMBING SERVICES') }}</p>
                         <p>{{ \App\Models\Setting::get('company_address', 'Jl. Dewa RT.002/002 No.70, Ciracas, Jakarta Timur') }}</p>
                         <p class="pt-2 font-medium">
-                            T: {{ \App\Models\Setting::get('company_phone', '0812-400-0749 / 0812-8330-0900') }}<br>
+                            @php
+                                $phonesStr = \App\Models\Setting::get('company_phone', '0812-40000-759 / 0812-40000-749 / 0812-83-300-900');
+                                $phones = array_map('trim', explode('/', $phonesStr));
+                                $primary = '0812-40000-759';
+                                $reordered = [];
+                                if (in_array($primary, $phones)) {
+                                    $reordered[] = $primary;
+                                    foreach ($phones as $phone) {
+                                        if ($phone !== $primary) {
+                                            $reordered[] = $phone;
+                                        }
+                                    }
+                                } else {
+                                    $reordered = $phones;
+                                }
+                            @endphp
+                            T: 
+                            @foreach($reordered as $phone)
+                                @if($phone === $primary)
+                                    <span class="font-bold text-slate-900">{{ $phone }} (Utama)</span>
+                                @else
+                                    {{ $phone }}
+                                @endif
+                                @if(!$loop->last) / @endif
+                            @endforeach
+                            <br>
                             E: {{ \App\Models\Setting::get('company_email', 'Jayarooter@gmail.com / Jawarooter@gmail.com') }}<br>
                             W: {{ \App\Models\Setting::get('company_website', 'Jayarooter.com / Jawarooter.com') }}
                         </p>

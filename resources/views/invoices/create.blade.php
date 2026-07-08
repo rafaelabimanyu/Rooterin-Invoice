@@ -168,28 +168,53 @@
                             </div>
                         </div>
 
-                        <!-- Terms & Memo -->
+                        <!-- Terms & Bank Details -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div class="bg-slate-50/50 p-6 rounded-xl border border-slate-200/50 space-y-3">
-                                <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ __('Internal Memo') }}</label>
-                                <textarea name="notes_internal" rows="3" placeholder="{{ __('Private notes for the team...') }}" class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-700"></textarea>
-                            </div>
-                            <div class="bg-slate-50/50 p-6 rounded-xl border border-slate-200/50 space-y-3">
+                            <div class="bg-slate-50/50 p-6 rounded-xl border border-slate-200/50 space-y-3 md:col-span-2">
                                 <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ __('Client Terms') }}</label>
                                 <textarea name="terms_condition" rows="3" class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-700">{{ app()->getLocale() == 'en' ? 'Net 7. Please remit payment via bank transfer.' : 'Tempo 7 Hari. Harap lakukan pembayaran via transfer bank.' }}</textarea>
                             </div>
-                            <div class="bg-slate-50/50 p-6 rounded-xl border border-slate-200/50 space-y-3 md:col-span-2">
-                                <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ app()->getLocale() == 'en' ? 'Bank Account Details (Displayed on PDF)' : 'Rincian Rekening Bank (Ditampilkan pada PDF)' }}</label>
-                                <textarea name="bank_account_info" rows="3" placeholder="Bank BCA Account No: 123456..." class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-700">Bank Central Asia (BCA)
-Acc No: 123-456-7890
-Name: J&J GROUP Technical Services</textarea>
+                            <div class="bg-slate-50/50 p-6 rounded-xl border border-slate-200/50 space-y-3">
+                                <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ app()->getLocale() == 'en' ? 'Bank Account Details' : 'Rincian Rekening Bank' }}</label>
+                                <div class="text-[13px] text-slate-700 font-semibold space-y-1">
+                                    <p>Bank: <span class="text-slate-900">Bank Central Asia (BCA)</span></p>
+                                    <p>Acc No: <span class="text-slate-900">6281873404</span></p>
+                                    <p>Name: <span class="text-slate-900">Wibowo Pratikno</span></p>
+                                </div>
+                            </div>
+                            <div class="bg-slate-50/50 p-6 rounded-xl border border-slate-200/50 space-y-3">
+                                <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ app()->getLocale() == 'en' ? 'Company Brand & Contacts' : 'Identitas Perusahaan & Kontak' }}</label>
+                                <div class="text-[13px] text-slate-700 space-y-2">
+                                    <div>
+                                        <p class="text-xs font-bold text-slate-900">J&J GROUP PLUMBING SERVICES</p>
+                                        <p class="text-[11px] text-slate-500 font-medium italic">"SOLUSI PINTAR, SALURAN LANCAR, TANPA BONGKAR*"</p>
+                                    </div>
+                                    <div class="pt-1">
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Contact Numbers</p>
+                                        <div class="flex flex-col gap-1 mt-1 font-semibold">
+                                            <span class="text-indigo-600 flex items-center gap-1.5">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-indigo-600 animate-pulse"></span>
+                                                0812-40000-759 <span class="text-[9px] bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded uppercase font-bold tracking-wider">Primary</span>
+                                            </span>
+                                            <span class="text-slate-700 pl-3">0812-40000-749</span>
+                                            <span class="text-slate-700 pl-3">0812-83-300-900</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         <!-- Warranty -->
                         <div class="bg-slate-50/50 p-6 rounded-xl border border-slate-200/50 space-y-2">
                             <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ __('Warranty Period') }}</label>
-                            <input type="text" name="warranty" placeholder="e.g. 1 Month, 1 Year..." class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-700 font-semibold">
+                            <div class="flex items-center gap-3">
+                                <input type="number" name="warranty_value" placeholder="e.g. 1, 3, 6..." min="1" class="w-32 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 font-semibold focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none">
+                                <select name="warranty_unit" class="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 font-semibold focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none">
+                                    <option value="Hari">{{ app()->getLocale() == 'en' ? 'Days' : 'Hari' }}</option>
+                                    <option value="Bulan" selected>{{ app()->getLocale() == 'en' ? 'Months' : 'Bulan' }}</option>
+                                    <option value="Tahun">{{ app()->getLocale() == 'en' ? 'Years' : 'Tahun' }}</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -350,8 +375,10 @@ Name: J&J GROUP Technical Services</textarea>
                 },
                 calculateTotal() {
                     this.subtotal = this.items.reduce((acc, item) => acc + (item.qty * Math.max(0, item.harga)), 0);
-                    let taxAmount = this.subtotal * (this.tax_percent / 100);
-                    let discountAmount = this.subtotal * (this.discount_percent / 100);
+                    let tax = parseFloat(this.tax_percent) || 0;
+                    let discount = parseFloat(this.discount_percent) || 0;
+                    let taxAmount = this.subtotal * (tax / 100);
+                    let discountAmount = this.subtotal * (discount / 100);
                     this.total = this.subtotal + taxAmount - discountAmount;
                 },
                 formatCurrency(value) {

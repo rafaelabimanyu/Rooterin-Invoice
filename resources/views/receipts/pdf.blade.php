@@ -130,9 +130,8 @@
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px;">
             <tr>
                 <td style="width: 65%; vertical-align: top;">
-                    <div style="font-size: 8pt; color: #64748b; font-weight: 300; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Jawa Dan Jaya Rooter</div>
-                    <div style="font-size: 14pt; font-weight: 900; color: #0f172a; text-transform: uppercase; margin: 0; line-height: 1.2;">{{ strtoupper(\App\Models\Setting::get('company_name', 'J&J GROUP Technical Services')) }}</div>
-                    <div style="font-size: 8.5pt; color: #c89d3c; font-weight: 300; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 3px;">{{ strtoupper(app()->getLocale() == 'en' ? 'High-Precision Operational Solutions' : 'Solusi Operasional Presisi Tinggi') }}</div>
+                    <div style="font-size: 14pt; font-weight: 900; color: #0f172a; text-transform: uppercase; margin: 0; line-height: 1.2;">J&J GROUP PLUMBING SERVICES</div>
+                    <div style="font-size: 8.5pt; color: #c89d3c; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px;">SOLUSI PINTAR, SALURAN LANCAR, TANPA BONGKAR*</div>
                 </td>
                 <td style="width: 35%; vertical-align: top; text-align: right;">
                     @php
@@ -159,7 +158,32 @@
                         <span style="color: #0f172a; font-weight: bold; display: block; margin-bottom: 6px;">{{ \App\Models\Setting::get('company_address', 'Jl. Dewa RT.002/002 No.70, Ciracas, Jakarta Timur') }}</span>
                         <div style="margin-top: 5px;">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="10" height="10" style="display: inline-block; vertical-align: middle; margin-right: 6px;" fill="none" stroke="#c89d3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                            <span style="vertical-align: middle;">{{ \App\Models\Setting::get('company_phone', '0812-400-0749 / 0812-8330-0900') }}</span>
+                            @php
+                                $phonesStr = \App\Models\Setting::get('company_phone', '0812-40000-759 / 0812-40000-749 / 0812-83-300-900');
+                                $phones = array_map('trim', explode('/', $phonesStr));
+                                $primary = '0812-40000-759';
+                                $reordered = [];
+                                if (in_array($primary, $phones)) {
+                                    $reordered[] = $primary;
+                                    foreach ($phones as $phone) {
+                                        if ($phone !== $primary) {
+                                            $reordered[] = $phone;
+                                        }
+                                    }
+                                } else {
+                                    $reordered = $phones;
+                                }
+                            @endphp
+                            <span style="vertical-align: middle;">
+                                @foreach($reordered as $index => $phone)
+                                    @if($phone === $primary)
+                                        <strong style="color: #0f172a;">{{ $phone }} (Utama)</strong>
+                                    @else
+                                        {{ $phone }}
+                                    @endif
+                                    @if(!$loop->last) / @endif
+                                @endforeach
+                            </span>
                         </div>
                         <div style="margin-top: 4px;">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="10" height="10" style="display: inline-block; vertical-align: middle; margin-right: 6px;" fill="none" stroke="#c89d3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
@@ -239,9 +263,9 @@
                     <!-- Kolom Kiri (50%): Informasi Rekening Bank -->
                     <td style="width: 50%; vertical-align: top; padding-right: 25px;">
                         <div class="bank-box" style="margin: 0;">
-                            <span class="bank-title">{{ app()->getLocale() == 'en' ? 'Bank Account' : 'Rekening Bank' }}</span>
+                             <span class="bank-title">{{ app()->getLocale() == 'en' ? 'Bank Account' : 'Rekening Bank' }}</span>
                             <div class="bank-details" style="font-size: 9.5pt; line-height: 1.6; color: #475569;">
-                                {!! nl2br(e(\App\Models\Setting::get('bank_account_info') ?: "Bank Central Asia (BCA)\nAccount: 7712 888 123\nName: J&J GROUP Technical Services")) !!}
+                                {!! nl2br(e(\App\Models\Setting::get('bank_account_info') ?: "Bank: Bank Central Asia (BCA)\nAcc No: 6281873404\nName: Wibowo Pratikno")) !!}
                             </div>
                         </div>
                     </td>
@@ -287,7 +311,7 @@
 
     <!-- Footer -->
     <div class="footer">
-        {{ \App\Models\Setting::get('company_name', 'J&J GROUP') }} &bull; E: {{ explode(' / ', \App\Models\Setting::get('company_email', 'Jayarooter@gmail.com'))[0] }} &bull; T: {{ explode(' / ', \App\Models\Setting::get('company_phone', '0812-400-0749'))[0] }}
+        J&J GROUP PLUMBING SERVICES &bull; E: {{ explode(' / ', \App\Models\Setting::get('company_email', 'Jayarooter@gmail.com'))[0] }} &bull; T: 0812-40000-759 (Utama)
     </div>
 </body>
 </html>

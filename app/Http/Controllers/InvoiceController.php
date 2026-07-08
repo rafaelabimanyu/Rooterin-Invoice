@@ -62,10 +62,17 @@ class InvoiceController extends Controller
             'discount_percent' => 'nullable|numeric|min:0|max:100',
             'attachments' => 'nullable|array',
             'attachments.*' => 'image|mimes:jpg,jpeg,png|max:2048',
+            'warranty_value' => 'nullable|integer|min:1',
+            'warranty_unit' => 'nullable|string|in:Hari,Bulan,Tahun,Days,Months,Years',
         ]);
 
         try {
             DB::beginTransaction();
+
+            $warranty = null;
+            if ($request->filled('warranty_value')) {
+                $warranty = $request->warranty_value . ' ' . ($request->warranty_unit ?? 'Bulan');
+            }
 
             $financials = $this->calculateFinancials(
                 $request->items,
@@ -78,15 +85,15 @@ class InvoiceController extends Controller
                 'client_id' => $request->client_id,
                 'tanggal_invoice' => $request->tanggal_invoice,
                 'due_date' => $request->due_date,
-                'warranty' => $request->warranty,
+                'warranty' => $warranty,
                 'status' => 'sent',
                 'subtotal' => $financials['subtotal'],
                 'tax_percent' => $financials['tax_percent'],
                 'discount_percent' => $financials['discount_percent'],
                 'total' => $financials['total'],
-                'notes_internal' => $request->notes_internal,
+                'notes_internal' => null,
                 'terms_condition' => $request->terms_condition,
-                'bank_account_info' => $request->bank_account_info,
+                'bank_account_info' => "Bank: Bank Central Asia (BCA)\nAcc No: 6281873404\nName: Wibowo Pratikno",
                 'created_by' => auth()->id(),
             ]);
 
@@ -150,10 +157,19 @@ class InvoiceController extends Controller
             'items.*.deskripsi' => 'required|string',
             'items.*.qty' => 'required|numeric|min:1',
             'items.*.harga' => 'required|numeric|min:0',
+            'tax_percent' => 'nullable|numeric|min:0|max:100',
+            'discount_percent' => 'nullable|numeric|min:0|max:100',
+            'warranty_value' => 'nullable|integer|min:1',
+            'warranty_unit' => 'nullable|string|in:Hari,Bulan,Tahun,Days,Months,Years',
         ]);
 
         try {
             DB::beginTransaction();
+
+            $warranty = null;
+            if ($request->filled('warranty_value')) {
+                $warranty = $request->warranty_value . ' ' . ($request->warranty_unit ?? 'Bulan');
+            }
 
             $financials = $this->calculateFinancials(
                 $request->items,
@@ -165,15 +181,15 @@ class InvoiceController extends Controller
                 'client_id' => $request->client_id,
                 'tanggal_invoice' => $request->tanggal_invoice,
                 'due_date' => $request->due_date,
-                'warranty' => $request->warranty,
+                'warranty' => $warranty,
                 'status' => $request->status,
                 'subtotal' => $financials['subtotal'],
                 'tax_percent' => $financials['tax_percent'],
                 'discount_percent' => $financials['discount_percent'],
                 'total' => $financials['total'],
-                'notes_internal' => $request->notes_internal,
+                'notes_internal' => null,
                 'terms_condition' => $request->terms_condition,
-                'bank_account_info' => $request->bank_account_info,
+                'bank_account_info' => "Bank: Bank Central Asia (BCA)\nAcc No: 6281873404\nName: Wibowo Pratikno",
             ]);
 
             $invoice->items()->delete();

@@ -16,11 +16,13 @@
                     <button title="Print" class="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-500 hover:text-slate-900 transition-all shadow-sm active:scale-95">
                         <i data-lucide="printer" class="w-4 h-4"></i>
                     </button>
-                    <button type="button" @click="$dispatch('download-pdf', { url: '{{ route('receipts.pdf', $receipt) }}', filename: 'Receipt-{{ $receipt->receipt_number }}.pdf' })" title="{{ app()->getLocale() == 'en' ? 'Download PDF' : 'Unduh PDF' }}" class="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-500 hover:text-indigo-600 transition-all shadow-sm active:scale-95">
-                        <i data-lucide="download" class="w-4 h-4"></i>
-                    </button>
                 </div>
             </div>
+            
+            <button type="button" @click="$dispatch('download-pdf', { url: '{{ route('receipts.pdf', $receipt) }}', filename: 'Receipt-{{ $receipt->receipt_number }}.pdf' })" title="{{ app()->getLocale() == 'en' ? 'Download PDF' : 'Unduh PDF' }}" class="w-full sm:w-auto px-6 py-3 bg-[#0F2A44] text-white rounded-xl text-sm font-bold hover:bg-slate-800 transition-all shadow-lg hover:shadow-[#0F2A44]/30 flex items-center justify-center gap-2 active:scale-95">
+                <i data-lucide="download" class="w-4 h-4 text-[#D4AF37]"></i>
+                <span class="whitespace-nowrap">{{ app()->getLocale() == 'en' ? 'Download PDF' : 'Unduh PDF' }}</span>
+            </button>
             
             @if($receipt->status !== 'invoiced' && $receipt->status !== 'rejected')
                 <form action="{{ route('receipts.convert', $receipt) }}" method="POST" class="w-full sm:w-auto">

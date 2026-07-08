@@ -17,11 +17,12 @@
                     <button title="Print" class="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-500 hover:text-slate-900 transition-all shadow-sm active:scale-95">
                         <i data-lucide="printer" class="w-4 h-4"></i>
                     </button>
-                    <button type="button" @click="$dispatch('download-pdf', { url: '{{ route('invoices.pdf', $invoice) }}', filename: 'Invoice-{{ $invoice->invoice_number }}.pdf' })" title="Download PDF" class="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-500 hover:text-indigo-600 transition-all shadow-sm active:scale-95">
-                        <i data-lucide="download" class="w-4 h-4"></i>
-                    </button>
                 </div>
             </div>
+            <button type="button" @click="$dispatch('download-pdf', { url: '{{ route('invoices.pdf', $invoice) }}', filename: 'Invoice-{{ $invoice->invoice_number }}.pdf' })" title="Download PDF" class="w-full sm:w-auto px-6 py-3 bg-[#0F2A44] text-white rounded-xl text-sm font-bold hover:bg-slate-800 transition-all shadow-lg hover:shadow-[#0F2A44]/30 flex items-center justify-center gap-2 active:scale-95">
+                <i data-lucide="download" class="w-4 h-4 text-[#D4AF37]"></i>
+                <span class="whitespace-nowrap">Download PDF</span>
+            </button>
             <button @click="$dispatch('open-modal', 'ai-copywriter'); setTimeout(() => typeof lucide !== 'undefined' && lucide.createIcons(), 50)" class="w-full sm:w-auto px-6 py-3 bg-white border border-slate-200 text-slate-700 hover:text-indigo-600 rounded-xl text-sm font-bold transition-all shadow-sm flex items-center justify-center gap-2 active:scale-95">
                 <i data-lucide="sparkles" class="w-4 h-4 text-indigo-500"></i>
                 <span class="whitespace-nowrap">AI Copywriter</span>

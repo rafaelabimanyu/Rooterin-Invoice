@@ -25,7 +25,11 @@ class InvoicePolicy
      */
     public function view(User $user, Invoice $invoice): bool
     {
-        return $user->id === $invoice->created_by 
+        $createdBy = $invoice->created_by ?? null;
+        if (is_null($createdBy)) {
+            return true;
+        }
+        return $user->id === $createdBy 
             && $invoice->created_at >= now()->subHours(24);
     }
 
@@ -34,7 +38,11 @@ class InvoicePolicy
      */
     public function update(User $user, Invoice $invoice): bool
     {
-        return $user->id === $invoice->created_by 
+        $createdBy = $invoice->created_by ?? null;
+        if (is_null($createdBy)) {
+            return true;
+        }
+        return $user->id === $createdBy 
             && $invoice->created_at >= now()->subHours(24);
     }
 
@@ -43,7 +51,11 @@ class InvoicePolicy
      */
     public function delete(User $user, Invoice $invoice): bool
     {
-        return $user->id === $invoice->created_by 
+        $createdBy = $invoice->created_by ?? null;
+        if (is_null($createdBy)) {
+            return true;
+        }
+        return $user->id === $createdBy 
             && $invoice->created_at >= now()->subHours(24);
     }
 }

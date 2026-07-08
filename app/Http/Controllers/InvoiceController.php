@@ -5,13 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
-use App\Traits\CalculatesTotals;
+use App\Models\BusinessUnit;
+use App\Services\InvoiceService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class InvoiceController extends Controller
 {
-    use CalculatesTotals;
+    protected $invoiceService;
+
+    public function __construct(InvoiceService $invoiceService)
+    {
+        $this->invoiceService = $invoiceService;
+    }
 
     public function index(Request $request)
     {
@@ -31,8 +38,10 @@ class InvoiceController extends Controller
         }
 
         if (auth()->user()->role === 'staff') {
-            $query->where('created_by', auth()->id())
-                  ->where('created_at', '>=', now()->subHours(24));
+            if (Schema::hasColumn('invoices', 'created_by')) {
+                $query->where('created_by', auth()->id())
+                      ->where('created_at', '>=', now()->subHours(24));
+            }
         }
 
         $invoices = $query->latest()->paginate(10);
@@ -42,60 +51,65 @@ class InvoiceController extends Controller
 
     public function create()
     {
-        $invoice_number = Invoice::generateNumber();
+        $invoice_number = $this->invoiceService->generateInvoiceNumber();
         $clients = Client::where('status', 'aktif')->orderBy('nama_client')->get();
-        return view('invoices.create', compact('invoice_number', 'clients'));
+        $businessUnits = BusinessUnit::orderBy('name')->get();
+        return view('invoices.create', compact('invoice_number', 'clients', 'businessUnits'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'invoice_number' => 'required|unique:invoices,invoice_number',
+            'business_unit_id' => 'required|exists:business_units,id',
             'client_id' => 'required|exists:clients,id',
-            'tanggal_invoice' => 'required|date',
-            'due_date' => 'required|date|after_or_equal:tanggal_invoice',
+            'due_date' => 'nullable|date',
+            'status' => 'nullable|string|in:draft,sent,pending,paid,overdue,cancelled',
             'items' => 'required|array|min:1',
             'items.*.deskripsi' => 'required|string',
             'items.*.qty' => 'required|numeric|min:1',
             'items.*.harga' => 'required|numeric|min:0',
-            'tax_percent' => 'nullable|numeric|min:0|max:100',
-            'discount_percent' => 'nullable|numeric|min:0|max:100',
-            'attachments' => 'nullable|array',
-            'attachments.*' => 'image|mimes:jpg,jpeg,png|max:2048',
-            'warranty_value' => 'nullable|integer|min:1',
-            'warranty_unit' => 'nullable|string|in:Hari,Bulan,Tahun,Days,Months,Years',
+            'discount' => 'nullable|numeric|min:0',
+            'ppn' => 'nullable|numeric|min:0',
+            'pph' => 'nullable|numeric|min:0',
+            'cause_of_problem' => 'nullable|string',
+            'notes' => 'nullable|string',
         ]);
 
         try {
             DB::beginTransaction();
 
-            $warranty = null;
-            if ($request->filled('warranty_value')) {
-                $warranty = $request->warranty_value . ' ' . ($request->warranty_unit ?? 'Bulan');
+            $subtotal = 0;
+            foreach ($request->items as $item) {
+                $subtotal += $item['qty'] * $item['harga'];
             }
 
-            $financials = $this->calculateFinancials(
-                $request->items,
-                $request->tax_percent,
-                $request->discount_percent
-            );
+            $discount = (float) $request->input('discount', 0);
+            $ppn = (float) $request->input('ppn', 0);
+            $pph = (float) $request->input('pph', 0);
 
-            $invoice = Invoice::create([
-                'invoice_number' => $request->invoice_number,
+            $total = $this->invoiceService->calculateTotal($subtotal, $discount, $ppn, $pph);
+            $invoiceNumber = $this->invoiceService->generateInvoiceNumber();
+
+            $invoiceData = [
+                'invoice_number' => $invoiceNumber,
+                'business_unit_id' => $request->business_unit_id,
                 'client_id' => $request->client_id,
-                'tanggal_invoice' => $request->tanggal_invoice,
+                'subtotal' => $subtotal,
+                'discount' => $discount,
+                'ppn' => $ppn,
+                'pph' => $pph,
+                'total' => $total,
+                'status' => $request->input('status', 'draft'),
                 'due_date' => $request->due_date,
-                'warranty' => $warranty,
-                'status' => 'sent',
-                'subtotal' => $financials['subtotal'],
-                'tax_percent' => $financials['tax_percent'],
-                'discount_percent' => $financials['discount_percent'],
-                'total' => $financials['total'],
-                'notes_internal' => null,
-                'terms_condition' => $request->terms_condition,
-                'bank_account_info' => "Bank: Bank Central Asia (BCA)\nAcc No: 6281873404\nName: Wibowo Pratikno",
-                'created_by' => auth()->id(),
-            ]);
+                'cause_of_problem' => $request->cause_of_problem,
+                'notes' => $request->notes,
+            ];
+
+            if (Schema::hasColumn('invoices', 'created_by')) {
+                $invoiceData['created_by'] = auth()->id();
+            }
+
+            $invoice = Invoice::create($invoiceData);
 
             foreach ($request->items as $item) {
                 $invoice->items()->create([
@@ -106,20 +120,15 @@ class InvoiceController extends Controller
                 ]);
             }
 
-            // Handle Job Documentation
-            if ($request->hasFile('attachments')) {
-                foreach ($request->file('attachments') as $file) {
-                    $path = $file->store('documentation', 'public');
-                    $invoice->attachments()->create([
-                        'file_path' => $path,
-                    ]);
-                }
+            // If status is paid, trigger automatic receipt generation
+            if ($invoice->status === 'paid') {
+                $this->invoiceService->markAsPaid($invoice);
             }
 
             DB::commit();
-            
-            \App\Models\ActivityLog::log('created_invoice', "Issued new invoice #{$invoice->invoice_number} with documentation", $invoice);
-            
+
+            \App\Models\ActivityLog::log('created_invoice', "Issued new invoice #{$invoice->invoice_number}", $invoice);
+
             return redirect()->route('invoices.index')->with('success', 'Invoice created successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -131,7 +140,7 @@ class InvoiceController extends Controller
     {
         \Illuminate\Support\Facades\Gate::authorize('view', $invoice);
 
-        $invoice->load(['client', 'items', 'creator', 'payments']);
+        $invoice->load(['client', 'items', 'payments']);
         return view('invoices.show', compact('invoice'));
     }
 
@@ -141,7 +150,8 @@ class InvoiceController extends Controller
 
         $invoice->load('items');
         $clients = Client::where('status', 'aktif')->orderBy('nama_client')->get();
-        return view('invoices.edit', compact('invoice', 'clients'));
+        $businessUnits = BusinessUnit::orderBy('name')->get();
+        return view('invoices.edit', compact('invoice', 'clients', 'businessUnits'));
     }
 
     public function update(Request $request, Invoice $invoice)
@@ -149,47 +159,55 @@ class InvoiceController extends Controller
         \Illuminate\Support\Facades\Gate::authorize('update', $invoice);
 
         $request->validate([
+            'business_unit_id' => 'required|exists:business_units,id',
             'client_id' => 'required|exists:clients,id',
-            'tanggal_invoice' => 'required|date',
-            'due_date' => 'required|date|after_or_equal:tanggal_invoice',
-            'status' => 'required|in:draft,sent,pending,dp,paid,overdue,cancelled',
+            'due_date' => 'nullable|date',
+            'status' => 'required|string|in:draft,sent,pending,paid,overdue,cancelled',
             'items' => 'required|array|min:1',
             'items.*.deskripsi' => 'required|string',
             'items.*.qty' => 'required|numeric|min:1',
             'items.*.harga' => 'required|numeric|min:0',
-            'tax_percent' => 'nullable|numeric|min:0|max:100',
-            'discount_percent' => 'nullable|numeric|min:0|max:100',
-            'warranty_value' => 'nullable|integer|min:1',
-            'warranty_unit' => 'nullable|string|in:Hari,Bulan,Tahun,Days,Months,Years',
+            'discount' => 'nullable|numeric|min:0',
+            'ppn' => 'nullable|numeric|min:0',
+            'pph' => 'nullable|numeric|min:0',
+            'cause_of_problem' => 'nullable|string',
+            'notes' => 'nullable|string',
         ]);
+
+        // Security check: status 'paid' requires vital fields to be completed
+        if ($request->status === 'paid') {
+            $request->validate([
+                'due_date' => 'required|date',
+                'business_unit_id' => 'required',
+                'client_id' => 'required',
+            ]);
+        }
 
         try {
             DB::beginTransaction();
 
-            $warranty = null;
-            if ($request->filled('warranty_value')) {
-                $warranty = $request->warranty_value . ' ' . ($request->warranty_unit ?? 'Bulan');
+            $subtotal = 0;
+            foreach ($request->items as $item) {
+                $subtotal += $item['qty'] * $item['harga'];
             }
 
-            $financials = $this->calculateFinancials(
-                $request->items,
-                $request->tax_percent,
-                $request->discount_percent
-            );
+            $discount = (float) $request->input('discount', 0);
+            $ppn = (float) $request->input('ppn', 0);
+            $pph = (float) $request->input('pph', 0);
+
+            $total = $this->invoiceService->calculateTotal($subtotal, $discount, $ppn, $pph);
 
             $invoice->update([
+                'business_unit_id' => $request->business_unit_id,
                 'client_id' => $request->client_id,
-                'tanggal_invoice' => $request->tanggal_invoice,
+                'subtotal' => $subtotal,
+                'discount' => $discount,
+                'ppn' => $ppn,
+                'pph' => $pph,
+                'total' => $total,
                 'due_date' => $request->due_date,
-                'warranty' => $warranty,
-                'status' => $request->status,
-                'subtotal' => $financials['subtotal'],
-                'tax_percent' => $financials['tax_percent'],
-                'discount_percent' => $financials['discount_percent'],
-                'total' => $financials['total'],
-                'notes_internal' => null,
-                'terms_condition' => $request->terms_condition,
-                'bank_account_info' => "Bank: Bank Central Asia (BCA)\nAcc No: 6281873404\nName: Wibowo Pratikno",
+                'cause_of_problem' => $request->cause_of_problem,
+                'notes' => $request->notes,
             ]);
 
             $invoice->items()->delete();
@@ -202,19 +220,18 @@ class InvoiceController extends Controller
                 ]);
             }
 
-            // Handle New Attachments with Captions
-            if ($request->hasFile('attachments')) {
-                $captions = $request->input('captions', []);
-                foreach ($request->file('attachments') as $index => $file) {
-                    $path = $file->store('invoice_attachments', 'public');
-                    $invoice->attachments()->create([
-                        'file_path' => $path,
-                        'caption' => $captions[$index] ?? null,
-                    ]);
-                }
+            // Logika pelunasan otomatis kwitansi
+            if ($request->status === 'paid' && $invoice->getOriginal('status') !== 'paid') {
+                $this->invoiceService->markAsPaid($invoice);
+            } else {
+                // Update status normally if it is not a new paid transition
+                $invoice->update(['status' => $request->status]);
             }
 
             DB::commit();
+
+            \App\Models\ActivityLog::log('updated_invoice', "Updated invoice #{$invoice->invoice_number}", $invoice);
+
             return redirect()->route('invoices.index')->with('success', 'Invoice updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();

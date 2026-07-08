@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Receipt extends Model
@@ -14,48 +13,20 @@ class Receipt extends Model
 
     protected $fillable = [
         'receipt_number',
-        'client_id',
-        'tanggal_receipt',
-        'expiry_date',
-        'status',
-        'subtotal',
-        'tax_percent',
-        'discount_percent',
-        'total',
-        'notes_internal',
-        'terms_condition',
-        'created_by',
+        'invoice_id',
+        'amount_received',
+        'payment_date',
     ];
 
     protected $casts = [
-        'tanggal_receipt' => 'date',
-        'expiry_date' => 'date',
+        'payment_date' => 'datetime',
     ];
 
-    public function client(): BelongsTo
+    /**
+     * Get the invoice that owns this receipt (1-to-1).
+     */
+    public function invoice(): BelongsTo
     {
-        return $this->belongsTo(Client::class);
-    }
-
-    public function items(): HasMany
-    {
-        return $this->hasMany(ReceiptItem::class);
-    }
-
-    public function creator(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'created_by');
-    }
-
-    public static function generateNumber(): string
-    {
-        $lastReceipt = self::withTrashed()->orderBy('id', 'desc')->first();
-        if ($lastReceipt) {
-            preg_match('/(\d+)$/', $lastReceipt->receipt_number, $matches);
-            $number = isset($matches[1]) ? ((int) $matches[1]) + 1 : 1;
-        } else {
-            $number = 1;
-        }
-        return 'JNJ-KWT-' . str_pad($number, 4, '0', STR_PAD_LEFT);
+        return $this->belongsTo(Invoice::class);
     }
 }

@@ -261,8 +261,7 @@ class TeamManager extends Component
 
     public function render()
     {
-        $users = User::withCount('invoices')
-            ->with(['activityLogs' => fn($q) => $q->latest()->limit(5)])
+        $users = User::with(['activityLogs' => fn($q) => $q->latest()->limit(5)])
             ->when($this->search, function ($q) {
                 $q->where('name', 'like', '%' . $this->search . '%')
                   ->orWhere('email', 'like', '%' . $this->search . '%')

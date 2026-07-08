@@ -11,8 +11,7 @@ class UserManagementController extends Controller
 {
     public function index()
     {
-        $users = User::withCount('invoices')
-            ->with(['activityLogs' => fn($q) => $q->latest()->limit(5)])
+        $users = User::with(['activityLogs' => fn($q) => $q->latest()->limit(5)])
             ->latest()
             ->get();
         return view('users.index', compact('users'));

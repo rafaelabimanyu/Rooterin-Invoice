@@ -29,8 +29,8 @@ class FinancialAdvisory extends Component
     protected function loadInsight()
     {
         $monthlyRevenue = Invoice::where('status', 'paid')
-            ->whereMonth('tanggal_invoice', Carbon::now()->month)
-            ->whereYear('tanggal_invoice', Carbon::now()->year)
+            ->whereMonth('created_at', Carbon::now()->month)
+            ->whereYear('created_at', Carbon::now()->year)
             ->sum('total');
 
         $overdueRevenue = Invoice::whereIn('status', ['sent', 'pending', 'dp'])
@@ -39,13 +39,13 @@ class FinancialAdvisory extends Component
 
         // Compile 3 months trend
         $threeMonthsAgo = Carbon::now()->subMonths(2)->startOfMonth();
-        $recentThreeMonthsInvoices = Invoice::where('tanggal_invoice', '>=', $threeMonthsAgo)->get();
+        $recentThreeMonthsInvoices = Invoice::where('created_at', '>=', $threeMonthsAgo)->get();
 
         $trendSummary = [];
         for ($i = 2; $i >= 0; $i--) {
             $monthDate = Carbon::now()->subMonths($i);
             $monthTotal = $recentThreeMonthsInvoices->filter(function($invoice) use ($monthDate) {
-                return $invoice->tanggal_invoice && $invoice->tanggal_invoice->format('Y-m') === $monthDate->format('Y-m');
+                return $invoice->created_at && $invoice->created_at->format('Y-m') === $monthDate->format('Y-m');
             })->sum('total');
             
             $trendSummary[] = $monthDate->format('F Y') . ": Rp " . number_format($monthTotal, 0, ',', '.');

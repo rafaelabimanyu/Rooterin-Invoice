@@ -43,8 +43,8 @@
                 <!-- CLIENT ACCOUNT -->
                 <div class="col-span-3">
                     <div class="flex flex-col">
-                        <span class="text-[14px] font-bold text-slate-800">{{ $receipt->client->nama_client }}</span>
-                        <span class="text-[12px] text-slate-400 font-medium">{{ $receipt->client->nama_perusahaan }}</span>
+                        <span class="text-[14px] font-bold text-slate-800">{{ optional($receipt->client)->nama_client ?? 'Klien Tidak Ditemukan' }}</span>
+                        <span class="text-[12px] text-slate-400 font-medium">{{ optional($receipt->client)->nama_perusahaan ?? '-' }}</span>
                     </div>
                 </div>
 
@@ -114,7 +114,7 @@
                     </div>
                     <!-- Second Row: Client Name & Total Amount -->
                     <div class="flex items-center justify-between">
-                        <span class="text-[13px] font-black text-slate-900 truncate leading-tight">{{ $receipt->client->nama_client }}</span>
+                        <span class="text-[13px] font-black text-slate-900 truncate leading-tight">{{ optional($receipt->client)->nama_client ?? 'Klien Tidak Ditemukan' }}</span>
                         <span class="text-[14px] font-black text-gold-650 tracking-tight shrink-0 pl-2">Rp {{ number_format($receipt->total, 0, ',', '.') }}</span>
                     </div>
                 </div>

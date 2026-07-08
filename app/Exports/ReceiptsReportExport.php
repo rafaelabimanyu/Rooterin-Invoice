@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\Payment;
+use App\Models\Receipt;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -28,7 +28,7 @@ class ReceiptsReportExport implements FromCollection, WithHeadings, ShouldAutoSi
 
     public function collection()
     {
-        $query = Payment::with(['invoice.client'])
+        $query = Receipt::with(['invoice.client'])
             ->whereBetween('payment_date', [$this->startDate, $this->endDate]);
 
         if ($this->clientId) {
@@ -46,7 +46,7 @@ class ReceiptsReportExport implements FromCollection, WithHeadings, ShouldAutoSi
                 $payment->invoice->client->nama_client ?? '-',
                 $payment->invoice->client->nama_perusahaan ?? '-',
                 $payment->invoice->invoice_number ?? '-',
-                $payment->reference_number ?? '-',
+                $payment->receipt_number ?? '-',
                 $payment->amount,
                 strtoupper($payment->payment_method),
             ]);

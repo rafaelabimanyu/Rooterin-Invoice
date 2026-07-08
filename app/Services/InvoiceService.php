@@ -13,8 +13,7 @@ class InvoiceService
      */
     public function generateInvoiceNumber(): string
     {
-        $lastInvoice = Invoice::withTrashed()
-            ->where('invoice_number', 'LIKE', 'INV-%')
+        $lastInvoice = Invoice::where('invoice_number', 'LIKE', 'INV-%')
             ->orderBy('id', 'desc')
             ->first();
 

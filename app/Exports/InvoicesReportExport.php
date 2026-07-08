@@ -1,8 +1,9 @@
 <?php
-
+ 
 namespace App\Exports;
-
+ 
 use App\Models\Invoice;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -29,13 +30,13 @@ class InvoicesReportExport implements FromCollection, WithHeadings, ShouldAutoSi
     public function collection()
     {
         $query = Invoice::with('client')
-            ->whereBetween('tanggal_invoice', [$this->startDate, $this->endDate]);
+            ->whereBetween('created_at', [$this->startDate, $this->endDate]);
 
         if ($this->clientId) {
             $query->where('client_id', $this->clientId);
         }
 
-        $invoices = $query->orderBy('tanggal_invoice')->get();
+        $invoices = $query->orderBy('created_at')->get();
         $data = collect();
 
         foreach ($invoices as $invoice) {
@@ -43,8 +44,8 @@ class InvoicesReportExport implements FromCollection, WithHeadings, ShouldAutoSi
                 $invoice->invoice_number,
                 $invoice->client->nama_client,
                 $invoice->client->nama_perusahaan,
-                $invoice->tanggal_invoice ? $invoice->tanggal_invoice->format('Y-m-d') : '-',
-                $invoice->expiry_date ? $invoice->expiry_date->format('Y-m-d') : '-',
+                $invoice->created_at ? $invoice->created_at->format('Y-m-d') : '-',
+                $invoice->due_date ? Carbon::parse($invoice->due_date)->format('Y-m-d') : '-',
                 $invoice->total,
                 strtoupper($invoice->status),
             ]);

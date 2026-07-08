@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use App\Models\Client;
 use App\Models\Invoice;
-use App\Models\Payment;
+use App\Models\BusinessUnit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use Livewire\Livewire;
@@ -93,7 +93,10 @@ class OwnerKpiTest extends TestCase
     public function test_owner_kpi_livewire_can_open_payment_modal(): void
     {
         $user = User::factory()->create(['role' => 'owner']);
-        
+        $businessUnit = BusinessUnit::create([
+            'name' => 'Jaya-Website',
+            'slug' => 'jaya-website',
+        ]);
         $client = Client::create([
             'kode_client' => 'CL-002',
             'nama_client' => 'Client 2',
@@ -103,21 +106,21 @@ class OwnerKpiTest extends TestCase
         $invoice = Invoice::create([
             'invoice_number' => 'INV-001',
             'client_id' => $client->id,
-            'created_by' => $user->id,
-            'tanggal_invoice' => now(),
+            'business_unit_id' => $businessUnit->id,
             'due_date' => now()->addDays(30),
             'subtotal' => 1000000,
-            'tax' => 0,
+            'discount' => 0,
+            'ppn' => 0,
+            'pph' => 0,
             'total' => 1000000,
             'status' => 'pending'
         ]);
 
-        $payment = Payment::create([
+        $payment = \App\Models\Receipt::create([
+            'receipt_number' => 'KWT-001',
             'invoice_id' => $invoice->id,
-            'amount' => 500000,
+            'amount_received' => 500000,
             'payment_date' => now(),
-            'payment_method' => 'Transfer',
-            'reference_number' => 'REF-001'
         ]);
 
         Livewire::actingAs($user)

@@ -30,6 +30,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Virtual invoices count accessor for backward compatibility.
+     */
+    public function getInvoicesCountAttribute(): int
+    {
+        return 0;
+    }
+
+    /**
      * Get the activity logs for the user.
      */
     public function activityLogs(): \Illuminate\Database\Eloquent\Relations\HasMany

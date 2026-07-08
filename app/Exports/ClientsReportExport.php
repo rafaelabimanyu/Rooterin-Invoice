@@ -41,27 +41,27 @@ class ClientsReportExport implements FromCollection, WithHeadings, ShouldAutoSiz
         $query->addSelect(DB::raw("
             (SELECT COUNT(*) FROM invoices 
              WHERE invoices.client_id = clients.id 
-             AND invoices.tanggal_invoice BETWEEN '" . $this->startDate . "' AND '" . $this->endDate . "') as total_invoices_count
+             AND invoices.created_at BETWEEN '" . $this->startDate . "' AND '" . $this->endDate . "') as total_invoices_count
         "));
 
         $query->addSelect(DB::raw("
             (SELECT COALESCE(SUM(total), 0) FROM invoices 
              WHERE invoices.client_id = clients.id 
-             AND invoices.tanggal_invoice BETWEEN '" . $this->startDate . "' AND '" . $this->endDate . "') as total_invoice_value
+             AND invoices.created_at BETWEEN '" . $this->startDate . "' AND '" . $this->endDate . "') as total_invoice_value
         "));
 
         $query->addSelect(DB::raw("
             (SELECT COALESCE(SUM(total), 0) FROM invoices 
              WHERE invoices.client_id = clients.id 
              AND invoices.status = 'paid' 
-             AND invoices.tanggal_invoice BETWEEN '" . $this->startDate . "' AND '" . $this->endDate . "') as total_revenue
+             AND invoices.created_at BETWEEN '" . $this->startDate . "' AND '" . $this->endDate . "') as total_revenue
         "));
 
         $query->addSelect(DB::raw("
-            (SELECT COALESCE(SUM(total - COALESCE((SELECT SUM(amount) FROM payments WHERE payments.invoice_id = invoices.id), 0)), 0) FROM invoices 
+            (SELECT COALESCE(SUM(total - COALESCE((SELECT SUM(amount_received) FROM receipts WHERE receipts.invoice_id = invoices.id), 0)), 0) FROM invoices 
              WHERE invoices.client_id = clients.id 
              AND invoices.status IN ('sent', 'dp', 'pending', 'overdue') 
-             AND invoices.tanggal_invoice BETWEEN '" . $this->startDate . "' AND '" . $this->endDate . "') as total_outstanding
+             AND invoices.created_at BETWEEN '" . $this->startDate . "' AND '" . $this->endDate . "') as total_outstanding
         "));
 
         $clients = $query->orderBy('clients.nama_client')->get();

@@ -1,13 +1,13 @@
-<x-app-layout :title="app()->getLocale() == 'en' ? 'Billing & Invoice List' : 'Daftar Penagihan & Invoice'">
+<x-app-layout :title="app()->getLocale() == 'en' ? 'Edit Invoice' : 'Ubah Invoice'">
     <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
             <div class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
                 <a href="{{ route('invoices.index') }}" class="hover:text-gold-600 transition-colors">{{ app()->getLocale() == 'en' ? 'Invoices' : 'Invoice' }}</a>
                 <i data-lucide="chevron-right" class="w-3 h-3"></i>
-                <span class="text-slate-900">{{ __('Create Invoice') }}</span>
+                <span class="text-slate-900">{{ __('Edit Invoice') }}</span>
             </div>
-            <h1 class="text-3xl font-bold text-slate-900 font-outfit leading-tight">{{ __('Create Invoice') }}</h1>
-            <p class="text-slate-500 mt-1">{{ __('Configure billing details and items for your client.') }}</p>
+            <h1 class="text-3xl font-bold text-slate-900 font-outfit leading-tight">{{ __('Edit Invoice') }}</h1>
+            <p class="text-slate-500 mt-1">{{ __('Update billing details, status, and items for this invoice.') }}</p>
         </div>
         <div class="flex items-center gap-3">
             <a href="{{ route('invoices.index') }}" class="px-5 py-2.5 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-all">
@@ -26,48 +26,54 @@
         </div>
     @endif
 
-    <form action="{{ route('invoices.store') }}" method="POST" x-data="invoiceForm()" enctype="multipart/form-data" class="pb-24 md:pb-0">
+    <form action="{{ route('invoices.update', $invoice) }}" method="POST" x-data="invoiceForm()" enctype="multipart/form-data" class="pb-24 md:pb-0">
         @csrf
+        @method('PUT')
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
             <!-- Left Side -->
             <div class="lg:col-span-8 space-y-8">
                 <div class="bg-white p-10 rounded-xl border border-slate-200 shadow-sm">
                     <div class="flex items-center justify-between mb-8 pb-4 border-b border-slate-50">
                         <h3 class="text-sm font-bold text-slate-900 uppercase tracking-widest">1. {{ __('Client & Business Unit') }}</h3>
-                        <button type="button" @click="$dispatch('open-modal', 'quick-client')" class="text-[11px] font-bold text-gold-600 hover:text-gold-700 flex items-center gap-1.5">
-                            <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> {{ __('Add New Client') }}
-                        </button>
                     </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ __('Business Unit') }}</label>
-                            <select name="business_unit_id" required class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200/60 rounded-lg text-sm text-slate-900 outline-none focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 transition-all">
+                            <select name="business_unit_id" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 outline-none focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 transition-all">
                                 <option value="">{{ __('Choose Business Unit...') }}</option>
                                 @foreach($businessUnits as $bu)
-                                    <option value="{{ $bu->id }}">{{ $bu->name }}</option>
+                                    <option value="{{ $bu->id }}" {{ $invoice->business_unit_id == $bu->id ? 'selected' : '' }}>{{ $bu->name }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ __('Client Account') }}</label>
-                            <select name="client_id" id="client_select" required class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200/60 rounded-lg text-sm text-slate-900 outline-none focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 transition-all">
+                            <select name="client_id" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 outline-none focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 transition-all">
                                 <option value="">{{ __('Choose a client...') }}</option>
                                 @foreach($clients as $client)
-                                    <option value="{{ $client->id }}">{{ $client->nama_client }} ({{ $client->nama_perusahaan }})</option>
+                                    <option value="{{ $client->id }}" {{ $invoice->client_id == $client->id ? 'selected' : '' }}>{{ $client->nama_client }} ({{ $client->nama_perusahaan }})</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ __('Invoice Identifier') }}</label>
-                            <input type="text" name="invoice_number" value="{{ $invoice_number }}" readonly class="w-full px-4 py-2.5 bg-slate-100 border border-slate-200 rounded-lg text-sm text-slate-500 font-mono cursor-not-allowed">
+                            <input type="text" value="{{ $invoice->invoice_number }}" readonly class="w-full px-4 py-2.5 bg-slate-100 border border-slate-200 rounded-lg text-sm text-slate-500 font-mono cursor-not-allowed">
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 gap-8 mt-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ __('Due Date') }}</label>
-                            <input type="date" name="due_date" value="{{ date('Y-m-d', strtotime('+7 days')) }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none text-sm text-slate-900 transition-all">
+                            <input type="date" name="due_date" value="{{ $invoice->due_date ? $invoice->due_date->format('Y-m-d') : '' }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none text-sm text-slate-900 transition-all">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Status</label>
+                            <select name="status" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 outline-none focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 transition-all">
+                                @foreach(['draft', 'sent', 'pending', 'paid', 'overdue', 'cancelled'] as $statusOption)
+                                    <option value="{{ $statusOption }}" {{ $invoice->status == $statusOption ? 'selected' : '' }}>{{ strtoupper($statusOption) }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -155,7 +161,14 @@
                                 <i data-lucide="image" class="w-4 h-4 text-gold-500"></i>
                                 {{ __('Job Documentation') }}
                             </h4>
-                            <p class="text-xs text-slate-500">{{ __('Upload work evidence or job site documentation. Support multiple files.') }}</p>
+                            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-4">
+                                @foreach($invoice->attachments as $attachment)
+                                    <div class="relative aspect-square rounded-lg overflow-hidden border border-slate-200 shadow-sm group">
+                                        <img src="{{ asset('storage/' . $attachment->file_path) }}" class="w-full h-full object-cover">
+                                    </div>
+                                @endforeach
+                            </div>
+                            <p class="text-xs text-slate-500">{{ __('Upload additional work evidence or job site documentation. Support multiple files.') }}</p>
                             <div class="relative group cursor-pointer border-2 border-dashed border-slate-200 rounded-xl p-8 hover:border-gold-500 transition-all flex flex-col items-center justify-center bg-slate-50/50">
                                 <input type="file" name="attachments[]" multiple @change="handleFiles" class="absolute inset-0 opacity-0 cursor-pointer">
                                 <i data-lucide="upload-cloud" class="w-8 h-8 text-slate-400 group-hover:text-gold-500 mb-2"></i>
@@ -175,15 +188,15 @@
                             </div>
                         </div>
 
-                        <!-- Terms, Cause of Problem, Notes & Bank Details -->
+                        <!-- Cause of Problem & Notes -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div class="bg-slate-50/50 p-6 rounded-xl border border-slate-200/50 space-y-3 md:col-span-2">
                                 <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ __('Penyebab Mampet') }}</label>
-                                <input type="text" name="cause_of_problem" placeholder="Contoh: Penyebab Mampet: Pasir dan Batu" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none">
+                                <input type="text" name="cause_of_problem" value="{{ $invoice->cause_of_problem }}" placeholder="Contoh: Penyebab Mampet: Pasir dan Batu" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none">
                             </div>
                             <div class="bg-slate-50/50 p-6 rounded-xl border border-slate-200/50 space-y-3 md:col-span-2">
                                 <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ __('Catatan') }}</label>
-                                <textarea name="notes" rows="3" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none">Pekerjaan ini telah diverifikasi langsung di lokasi oleh teknisi kami menggunakan peralatan presisi tinggi, sesuai dengan standar kualitas J&J GROUP.</textarea>
+                                <textarea name="notes" rows="3" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none">{{ $invoice->notes }}</textarea>
                             </div>
                             <div class="bg-slate-50/50 p-6 rounded-xl border border-slate-200/50 space-y-3">
                                 <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ app()->getLocale() == 'en' ? 'Bank Account Details' : 'Rincian Rekening Bank' }}</label>
@@ -219,11 +232,20 @@
                         <div class="bg-slate-50/50 p-6 rounded-xl border border-slate-200/50 space-y-2">
                             <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ __('Warranty Period') }}</label>
                             <div class="flex items-center gap-3">
-                                <input type="number" name="warranty_value" placeholder="e.g. 1, 3, 6..." min="1" class="w-32 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 font-semibold focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none">
+                                @php
+                                    $warrantyValue = '';
+                                    $warrantyUnit = 'Bulan';
+                                    if ($invoice->warranty) {
+                                        $parts = explode(' ', $invoice->warranty);
+                                        $warrantyValue = $parts[0] ?? '';
+                                        $warrantyUnit = $parts[1] ?? 'Bulan';
+                                    }
+                                @endphp
+                                <input type="number" name="warranty_value" value="{{ $warrantyValue }}" placeholder="e.g. 1, 3, 6..." min="1" class="w-32 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 font-semibold focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none">
                                 <select name="warranty_unit" class="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 font-semibold focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none">
-                                    <option value="Hari">{{ app()->getLocale() == 'en' ? 'Days' : 'Hari' }}</option>
-                                    <option value="Bulan" selected>{{ app()->getLocale() == 'en' ? 'Months' : 'Bulan' }}</option>
-                                    <option value="Tahun">{{ app()->getLocale() == 'en' ? 'Years' : 'Tahun' }}</option>
+                                    <option value="Hari" {{ $warrantyUnit == 'Hari' ? 'selected' : '' }}>{{ app()->getLocale() == 'en' ? 'Days' : 'Hari' }}</option>
+                                    <option value="Bulan" {{ $warrantyUnit == 'Bulan' ? 'selected' : '' }}>{{ app()->getLocale() == 'en' ? 'Months' : 'Bulan' }}</option>
+                                    <option value="Tahun" {{ $warrantyUnit == 'Tahun' ? 'selected' : '' }}>{{ app()->getLocale() == 'en' ? 'Years' : 'Tahun' }}</option>
                                 </select>
                             </div>
                         </div>
@@ -270,7 +292,7 @@
                         </div>
                         <button type="submit" class="px-5 py-3 bg-gold-500 hover:bg-gold-600 text-slate-950 rounded-xl font-black text-[12px] uppercase tracking-widest flex items-center gap-2 active:scale-95 transition-all md:w-full md:py-4 md:rounded-lg md:text-[13px] md:justify-center md:shadow-lg md:shadow-gold-500/20">
                             <i data-lucide="check-circle" class="w-4 h-4"></i>
-                            {{ __('Confirm & Issue') }}
+                            {{ __('Save Changes') }}
                         </button>
                     </div>
 
@@ -280,108 +302,19 @@
         </div>
     </form>
 
-    <!-- Quick Client Modal -->
-    <x-modal name="quick-client" :show="false">
-        <div class="p-10" x-data="quickClientForm()">
-            <h3 class="text-xl font-bold text-slate-900 font-outfit mb-2">{{ __('Add New Client') }}</h3>
-            <p class="text-sm text-slate-500 mb-8">{{ app()->getLocale() == 'en' ? 'Register a new client account directly to the system ledger.' : 'Daftarkan akun klien baru langsung ke buku besar sistem.' }}</p>
-            
-            <form @submit.prevent="submitForm" class="space-y-6">
-                <div class="grid grid-cols-2 gap-6">
-                    <div class="space-y-2">
-                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Full Name' : 'Nama Lengkap' }}</label>
-                        <input type="text" x-model="form.nama_client" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Client Type' : 'Tipe Klien' }}</label>
-                        <select x-model="form.client_type" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
-                            <option value="perumahan">{{ app()->getLocale() == 'en' ? 'Home' : 'Perumahan' }}</option>
-                            <option value="perusahaan">{{ app()->getLocale() == 'en' ? 'Corporate' : 'Perusahaan' }}</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="space-y-2">
-                    <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Company Name (Optional)' : 'Nama Perusahaan (Opsional)' }}</label>
-                    <input type="text" x-model="form.nama_perusahaan" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
-                </div>
-
-                <div class="grid grid-cols-2 gap-6">
-                    <div class="space-y-2">
-                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Email Address' : 'Alamat Email' }}</label>
-                        <input type="email" x-model="form.email" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'WhatsApp / Phone' : 'WhatsApp / Telepon' }}</label>
-                        <input type="text" x-model="form.no_hp" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
-                    </div>
-                </div>
-
-                <div class="space-y-2">
-                    <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Primary Address' : 'Alamat Utama' }}</label>
-                    <textarea x-model="form.alamat" rows="2" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none"></textarea>
-                </div>
-
-                <div class="pt-6 flex items-center justify-end gap-3">
-                    <button type="button" @click="$dispatch('close-modal', 'quick-client')" class="px-5 py-2.5 text-sm font-bold text-slate-500">{{ app()->getLocale() == 'en' ? 'Cancel' : 'Batal' }}</button>
-                    <button type="submit" :disabled="loading" class="px-8 py-2.5 bg-gold-500 text-slate-950 rounded-lg text-sm font-black shadow-lg shadow-gold-500/20 hover:bg-gold-600 disabled:opacity-50">
-                        <span x-show="!loading">{{ app()->getLocale() == 'en' ? 'Register & Select' : 'Daftar & Pilih' }}</span>
-                        <span x-show="loading">{{ app()->getLocale() == 'en' ? 'Processing...' : 'Memproses...' }}</span>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </x-modal>
-
     <script>
-        function quickClientForm() {
-            return {
-                form: {
-                    nama_client: '',
-                    client_type: 'perumahan',
-                    nama_perusahaan: '',
-                    email: '',
-                    no_hp: '',
-                    alamat: '',
-                    status: 'aktif'
-                },
-                loading: false,
-                async submitForm() {
-                    this.loading = true;
-                    try {
-                        const response = await fetch('{{ route('api.clients.store') }}', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            body: JSON.stringify(this.form)
-                        });
-                        const data = await response.json();
-                        if (data.success) {
-                            const select = document.getElementById('client_select');
-                            const option = new Option(`${data.client.nama_client} (${data.client.nama_perusahaan || 'Individual'})`, data.client.id, true, true);
-                            select.add(option);
-                            this.$dispatch('close-modal', 'quick-client');
-                            this.form = { nama_client: '', nama_perusahaan: '', email: '', no_hp: '', alamat: '', status: 'aktif' };
-                        }
-                    } catch (error) {
-                        alert('{{ app()->getLocale() == "en" ? "Failed to register client. Please check your data." : "Gagal mendaftarkan klien. Silakan periksa kembali data Anda." }}');
-                    } finally {
-                        this.loading = false;
-                    }
-                }
-            }
-        }
-
         function invoiceForm() {
             return {
-                items: [{ deskripsi: '', qty: 1, harga: 0 }],
+                items: @json($invoice->items->map(fn($item) => ['deskripsi' => $item->deskripsi, 'qty' => (float)$item->qty, 'harga' => (float)$item->harga])),
                 subtotal: 0,
-                discount: 0,
-                ppn: 0,
-                pph: 0,
+                discount: {{ (float)$invoice->discount }},
+                ppn: {{ (float)$invoice->ppn }},
+                pph: {{ (float)$invoice->pph }},
                 total: 0,
                 previews: [],
+                init() {
+                    this.calculateTotal();
+                },
                 addItem() {
                     this.items.push({ deskripsi: '', qty: 1, harga: 0 });
                     this.$nextTick(() => lucide.createIcons());

@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use App\Models\Client;
 use App\Models\Invoice;
+use App\Models\BusinessUnit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -37,6 +38,10 @@ class VoiceCommandTest extends TestCase
     public function test_voice_command_queries_largest_unpaid_invoice(): void
     {
         $user = User::factory()->create(['role' => 'admin']);
+        $businessUnit = BusinessUnit::create([
+            'name' => 'Jaya-Website',
+            'slug' => 'jaya-website',
+        ]);
         $client = Client::create([
             'kode_client' => Client::generateCode(),
             'nama_client' => 'Budi Santoso',
@@ -50,12 +55,14 @@ class VoiceCommandTest extends TestCase
         $invoice = Invoice::create([
             'invoice_number' => 'JNJ-INV-9999',
             'client_id' => $client->id,
-            'tanggal_invoice' => now(),
+            'business_unit_id' => $businessUnit->id,
             'due_date' => now()->addDays(7),
             'status' => 'sent',
             'subtotal' => 50000000,
+            'discount' => 0,
+            'ppn' => 0,
+            'pph' => 0,
             'total' => 50000000,
-            'created_by' => $user->id,
         ]);
 
         $response = $this->actingAs($user)->postJson(route('ai-assistant.voice-command'), [
@@ -76,6 +83,10 @@ class VoiceCommandTest extends TestCase
     public function test_voice_command_queries_total_arrears(): void
     {
         $user = User::factory()->create(['role' => 'staff']);
+        $businessUnit = BusinessUnit::create([
+            'name' => 'Jaya-Website',
+            'slug' => 'jaya-website',
+        ]);
         $client = Client::create([
             'kode_client' => Client::generateCode(),
             'nama_client' => 'Siti Aminah',
@@ -89,12 +100,14 @@ class VoiceCommandTest extends TestCase
         Invoice::create([
             'invoice_number' => 'JNJ-INV-1111',
             'client_id' => $client->id,
-            'tanggal_invoice' => now(),
+            'business_unit_id' => $businessUnit->id,
             'due_date' => now()->addDays(7),
             'status' => 'sent',
             'subtotal' => 83571900,
+            'discount' => 0,
+            'ppn' => 0,
+            'pph' => 0,
             'total' => 83571900,
-            'created_by' => $user->id,
         ]);
 
         $response = $this->actingAs($user)->postJson(route('ai-assistant.voice-command'), [

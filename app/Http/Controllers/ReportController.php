@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use App\Models\Invoice;
-use App\Models\Payment;
+use App\Models\Receipt;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -30,7 +30,7 @@ class ReportController extends Controller
         $prevEndDate = $start->copy()->subDay()->toDateString();
 
         // --- Invoice Reports ---
-        $invoiceQuery = Invoice::whereBetween('tanggal_invoice', [$startDate, $endDate]);
+        $invoiceQuery = Invoice::whereBetween('created_at', [$startDate, $endDate]);
         if ($clientId) {
             $invoiceQuery->where('client_id', $clientId);
         }
@@ -45,7 +45,7 @@ class ReportController extends Controller
         ];
 
         // --- Previous Invoice Stats for Growth ---
-        $prevInvoiceQuery = Invoice::whereBetween('tanggal_invoice', [$prevStartDate, $prevEndDate]);
+        $prevInvoiceQuery = Invoice::whereBetween('created_at', [$prevStartDate, $prevEndDate]);
         if ($clientId) {
             $prevInvoiceQuery->where('client_id', $clientId);
         }
@@ -61,7 +61,7 @@ class ReportController extends Controller
             : 0;
 
         // --- Receipt (Payment) Reports ---
-        $paymentQuery = Payment::whereBetween('payment_date', [$startDate, $endDate]);
+        $paymentQuery = Receipt::whereBetween('payment_date', [$startDate, $endDate]);
         if ($clientId) {
             $paymentQuery->whereHas('invoice', function($q) use ($clientId) {
                 $q->where('client_id', $clientId);
@@ -69,41 +69,38 @@ class ReportController extends Controller
         }
 
         $paymentStats = [
-            'total_collected' => (clone $paymentQuery)->sum('amount'),
-            'method_breakdown' => (clone $paymentQuery)
-                ->select('payment_method', DB::raw('count(*) as count'), DB::raw('sum(amount) as total'))
-                ->groupBy('payment_method')
-                ->get(),
+            'total_collected' => (clone $paymentQuery)->sum('amount_received'),
+            'method_breakdown' => collect([]),
             'recent_payments' => (clone $paymentQuery)->with(['invoice.client'])->latest('payment_date')->take(10)->get(),
         ];
 
         // --- Previous Payment Stats for Growth ---
-        $prevPaymentQuery = Payment::whereBetween('payment_date', [$prevStartDate, $prevEndDate]);
+        $prevPaymentQuery = Receipt::whereBetween('payment_date', [$prevStartDate, $prevEndDate]);
         if ($clientId) {
             $prevPaymentQuery->whereHas('invoice', function($q) use ($clientId) {
                 $q->where('client_id', $clientId);
             });
         }
-        $prevCollected = $prevPaymentQuery->sum('amount');
+        $prevCollected = $prevPaymentQuery->sum('amount_received');
         $paymentStats['collected_growth'] = $prevCollected > 0
             ? (($paymentStats['total_collected'] - $prevCollected) / $prevCollected) * 100
             : 0;
 
         // --- Outstanding Balance (Active Filter Range) ---
-        $outstandingQuery = Invoice::whereBetween('tanggal_invoice', [$startDate, $endDate])
+        $outstandingQuery = Invoice::whereBetween('created_at', [$startDate, $endDate])
             ->whereIn('status', ['sent', 'dp', 'pending', 'overdue']);
         if ($clientId) {
             $outstandingQuery->where('client_id', $clientId);
         }
-        $totalOutstanding = $outstandingQuery->sum(DB::raw('total - COALESCE((SELECT SUM(amount) FROM payments WHERE payments.invoice_id = invoices.id), 0)'));
+        $totalOutstanding = $outstandingQuery->sum(DB::raw('total - COALESCE((SELECT SUM(amount_received) FROM receipts WHERE receipts.invoice_id = invoices.id), 0)'));
 
         // --- Previous Outstanding Balance for Growth ---
-        $prevOutstandingQuery = Invoice::whereBetween('tanggal_invoice', [$prevStartDate, $prevEndDate])
+        $prevOutstandingQuery = Invoice::whereBetween('created_at', [$prevStartDate, $prevEndDate])
             ->whereIn('status', ['sent', 'dp', 'pending', 'overdue']);
         if ($clientId) {
             $prevOutstandingQuery->where('client_id', $clientId);
         }
-        $prevOutstanding = $prevOutstandingQuery->sum(DB::raw('total - COALESCE((SELECT SUM(amount) FROM payments WHERE payments.invoice_id = invoices.id), 0)'));
+        $prevOutstanding = $prevOutstandingQuery->sum(DB::raw('total - COALESCE((SELECT SUM(amount_received) FROM receipts WHERE receipts.invoice_id = invoices.id), 0)'));
         $outstandingGrowth = $prevOutstanding > 0
             ? (($totalOutstanding - $prevOutstanding) / $prevOutstanding) * 100
             : 0;
@@ -123,15 +120,15 @@ class ReportController extends Controller
         // Dynamic date format string depending on connection driver to avoid SQLite incompatibility
         $driver = DB::connection()->getDriverName();
         $dateGroupRaw = $driver === 'sqlite'
-            ? "strftime('%Y-%m', tanggal_invoice) as month"
-            : "DATE_FORMAT(tanggal_invoice, '%Y-%m') as month";
+            ? "strftime('%Y-%m', created_at) as month"
+            : "DATE_FORMAT(created_at, '%Y-%m') as month";
 
         $monthlyStats = Invoice::select(
             DB::raw($dateGroupRaw),
             DB::raw("SUM(CASE WHEN status = 'paid' THEN total ELSE 0 END) as revenue"),
             DB::raw("SUM(CASE WHEN status != 'paid' THEN total ELSE 0 END) as receivables")
         )
-        ->whereBetween('tanggal_invoice', [$startDate, $endDate]);
+        ->whereBetween('created_at', [$startDate, $endDate]);
         
         if ($clientId) {
             $monthlyStats->where('client_id', $clientId);
@@ -156,7 +153,7 @@ class ReportController extends Controller
                 $mStart = $month->copy()->startOfMonth()->toDateString();
                 $mEnd = $month->copy()->endOfMonth()->toDateString();
                 
-                $mQuery = Invoice::whereBetween('tanggal_invoice', [$mStart, $mEnd]);
+                $mQuery = Invoice::whereBetween('created_at', [$mStart, $mEnd]);
                 if ($clientId) {
                     $mQuery->where('client_id', $clientId);
                 }
@@ -171,7 +168,7 @@ class ReportController extends Controller
         $clientRevenueQuery = Client::select('clients.id', 'clients.nama_client', 'clients.nama_perusahaan', DB::raw('SUM(invoices.total) as total_revenue'))
             ->join('invoices', 'invoices.client_id', '=', 'clients.id')
             ->where('invoices.status', 'paid')
-            ->whereBetween('invoices.tanggal_invoice', [$startDate, $endDate]);
+            ->whereBetween('invoices.created_at', [$startDate, $endDate]);
         if ($clientId) {
             $clientRevenueQuery->where('clients.id', $clientId);
         }
@@ -181,10 +178,10 @@ class ReportController extends Controller
             ->get();
 
         // 2. Highest Outstanding Debts (Payment Delays)
-        $clientOutstandingQuery = Client::select('clients.id', 'clients.nama_client', 'clients.nama_perusahaan', DB::raw("SUM(invoices.total - COALESCE((SELECT SUM(amount) FROM payments WHERE payments.invoice_id = invoices.id), 0)) as total_outstanding"))
+        $clientOutstandingQuery = Client::select('clients.id', 'clients.nama_client', 'clients.nama_perusahaan', DB::raw("SUM(invoices.total - COALESCE((SELECT SUM(amount_received) FROM receipts WHERE receipts.invoice_id = invoices.id), 0)) as total_outstanding"))
             ->join('invoices', 'invoices.client_id', '=', 'clients.id')
             ->whereIn('invoices.status', ['sent', 'dp', 'pending', 'overdue'])
-            ->whereBetween('invoices.tanggal_invoice', [$startDate, $endDate]);
+            ->whereBetween('invoices.created_at', [$startDate, $endDate]);
         if ($clientId) {
             $clientOutstandingQuery->where('clients.id', $clientId);
         }

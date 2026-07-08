@@ -103,7 +103,18 @@ class RealisticBusinessSeeder extends Seeder
 
         $allUsers = User::all();
 
-        // 2. Diverse Clients Setup (Multi-Sector & Flexible Client Types)
+        // 2. Business Units Setup
+        $businessUnitsData = [
+            ['name' => 'Jaya-Website', 'slug' => 'jaya-website'],
+            ['name' => 'Jaya-Sosmed', 'slug' => 'jaya-sosmed'],
+            ['name' => 'Jaya-Operational', 'slug' => 'jaya-operational'],
+        ];
+        foreach ($businessUnitsData as $bu) {
+            \App\Models\BusinessUnit::create($bu);
+        }
+        $businessUnits = \App\Models\BusinessUnit::all();
+
+        // 3. Diverse Clients Setup
         $clientsData = [
             [
                 'nama_client' => 'Budi Santoso',
@@ -171,7 +182,7 @@ class RealisticBusinessSeeder extends Seeder
             ],
             [
                 'nama_client' => 'drg. Ratih Rahmawati',
-                'nama_perusahaan' => 'Klinik Medika Utama',
+                'nama_perusahaan' => 'Klinik Gigi Medika Utama',
                 'client_type' => 'corporate',
                 'industry_sector' => 'healthcare',
                 'kota' => 'Tangerang',
@@ -286,7 +297,7 @@ class RealisticBusinessSeeder extends Seeder
 
         $clients = Client::all();
 
-        // 3. Service Descriptions for Invoices
+        // 4. Service Descriptions for Invoices
         $jobDescriptions = [
             'Pembuatan & Integrasi Sistem Dashboard Utama',
             'Piping & Maintenance HVAC Tower A',
@@ -302,40 +313,39 @@ class RealisticBusinessSeeder extends Seeder
             'Desain Menu & Media Promosi Kopi Group'
         ];
 
-        // 4. Invoices & Billing Lifecycle
-        $statuses = ['draft', 'sent', 'pending', 'dp', 'paid', 'overdue', 'cancelled'];
+        // 5. Invoices & Billing Lifecycle
+        $statuses = ['draft', 'sent', 'pending', 'paid', 'overdue', 'cancelled'];
         
         for ($i = 1; $i <= 30; $i++) {
             $client = $clients->random();
+            $bu = $businessUnits->random();
             $subtotal = $faker->numberBetween(8, 120) * 200000;
-            $discountPercent = $faker->randomElement([0, 0, 0, 5, 10]);
-            $discount = $subtotal * ($discountPercent / 100);
-            $taxPercent = 11;
-            $tax = ($subtotal - $discount) * ($taxPercent / 100);
-            $total = ($subtotal - $discount) + $tax;
+            $discount = $faker->randomElement([0, 0, 50000, 100000]);
+            $ppn = ($subtotal - $discount) * 0.11;
+            $pph = ($subtotal - $discount) * 0.02;
+            $total = ($subtotal - $discount) + $ppn - $pph;
 
             $status = $faker->randomElement($statuses);
             $date = Carbon::now()->subDays($faker->numberBetween(1, 90));
             $dueDate = $date->copy()->addDays($faker->randomElement([7, 14, 30]));
 
-            // Ensure correct status based on date
             if ($status === 'pending' && $dueDate->isPast()) {
                 $status = 'overdue';
             }
 
             $invoice = Invoice::create([
-                'invoice_number' => "JNJ-INV-" . str_pad($i, 5, '0', STR_PAD_LEFT),
+                'invoice_number' => "INV-" . (5003 + $i) . "-2026",
+                'business_unit_id' => $bu->id,
                 'client_id' => $client->id,
-                'tanggal_invoice' => $date,
-                'due_date' => $dueDate,
-                'status' => $status,
                 'subtotal' => $subtotal,
-                'tax_percent' => $taxPercent,
-                'discount_percent' => $discountPercent,
+                'discount' => $discount,
+                'ppn' => $ppn,
+                'pph' => $pph,
                 'total' => $total,
-                'notes_internal' => 'Generated automatically by J&J GROUP Master Seeder.',
-                'terms_condition' => 'Metode Pembayaran Transfer Bank: BCA 800-1234-567 a/n PT J&J Group Indonesia.',
-                'created_by' => $allUsers->random()->id,
+                'status' => $status,
+                'due_date' => $dueDate,
+                'cause_of_problem' => $faker->randomElement(['Pasir dan Batu', 'Lemak dan Kerak', 'Tisu dan Pembalut', null]),
+                'notes' => 'Pekerjaan ini telah diverifikasi langsung di lokasi oleh teknisi kami menggunakan peralatan presisi tinggi, sesuai dengan standar kualitas J&J GROUP.',
             ]);
 
             // Add Invoice Items
@@ -352,85 +362,57 @@ class RealisticBusinessSeeder extends Seeder
 
             // Generate Payments & Receipts for 'paid' status
             if ($status === 'paid') {
-                Payment::create([
+                Receipt::create([
+                    'receipt_number' => "KWT-" . (5003 + $i) . "-2026",
                     'invoice_id' => $invoice->id,
+                    'amount_received' => $total,
                     'payment_date' => $date->copy()->addDays($faker->numberBetween(1, 5)),
-                    'amount' => $total,
-                    'payment_method' => $faker->randomElement(['transfer', 'cash', 'transfer']),
-                    'reference_number' => 'REF-' . strtoupper($faker->bothify('##??##??')),
-                    'notes' => 'Lunas dibayar secara penuh.',
-                ]);
-
-                // Generate corresponding Receipt (Kwitansi)
-                $receipt = Receipt::create([
-                    'receipt_number' => "JNJ-KWT-" . str_pad($i, 5, '0', STR_PAD_LEFT),
-                    'client_id' => $client->id,
-                    'tanggal_receipt' => $date->copy()->addDays($faker->numberBetween(1, 5)),
-                    'expiry_date' => $dueDate,
-                    'status' => 'approved',
-                    'subtotal' => $subtotal,
-                    'tax_percent' => $taxPercent,
-                    'discount_percent' => $discountPercent,
-                    'total' => $total,
-                    'notes_internal' => "Kwitansi otomatis dari pelunasan Invoice {$invoice->invoice_number}.",
-                    'terms_condition' => 'Kwitansi ini adalah bukti pembayaran yang sah.',
-                    'created_by' => $invoice->created_by,
-                ]);
-
-                // Copy items to receipt
-                foreach ($invoice->items as $invItem) {
-                    $receipt->items()->create([
-                        'deskripsi' => $invItem->deskripsi,
-                        'qty' => $invItem->qty,
-                        'harga' => $invItem->harga,
-                        'total' => $invItem->total,
-                    ]);
-                }
-            } elseif ($status === 'dp') {
-                $dpAmount = $total * 0.3;
-                Payment::create([
-                    'invoice_id' => $invoice->id,
-                    'payment_date' => $date->copy()->addDays(1),
-                    'amount' => $dpAmount,
-                    'payment_method' => 'transfer',
-                    'reference_number' => 'DP-' . strtoupper($faker->bothify('##??##??')),
-                    'notes' => 'Uang muka 30% diterima.',
                 ]);
             }
         }
 
-        // 5. Standalone Receipts (Kwitansi) to add extra variety
+        // 6. Additional Paid Invoices and Receipts
         for ($i = 1; $i <= 8; $i++) {
             $client = $clients->random();
+            $bu = $businessUnits->random();
             $subtotal = $faker->numberBetween(10, 100) * 150000;
-            $taxPercent = 11;
-            $tax = $subtotal * ($taxPercent / 100);
-            $total = $subtotal + $tax;
+            $discount = 0;
+            $ppn = $subtotal * 0.11;
+            $pph = 0;
+            $total = $subtotal + $ppn;
             $number = 30 + $i;
 
-            $receipt = Receipt::create([
-                'receipt_number' => "JNJ-KWT-" . str_pad($number, 5, '0', STR_PAD_LEFT),
+            $invoice = Invoice::create([
+                'invoice_number' => "INV-" . (5003 + 30 + $i) . "-2026",
+                'business_unit_id' => $bu->id,
                 'client_id' => $client->id,
-                'tanggal_receipt' => Carbon::now()->subDays($faker->numberBetween(1, 45)),
-                'expiry_date' => Carbon::now()->addDays(30),
-                'status' => $faker->randomElement(['sent', 'approved', 'rejected']),
                 'subtotal' => $subtotal,
-                'tax_percent' => $taxPercent,
+                'discount' => $discount,
+                'ppn' => $ppn,
+                'pph' => $pph,
                 'total' => $total,
-                'notes_internal' => 'Layanan pemeliharaan sistem ad-hoc.',
-                'terms_condition' => 'Kwitansi bukti bayar manual.',
-                'created_by' => $allUsers->random()->id,
+                'status' => 'paid',
+                'due_date' => Carbon::now()->addDays(30),
+                'cause_of_problem' => null,
+                'notes' => 'Pekerjaan ini telah diverifikasi langsung di lokasi oleh teknisi kami menggunakan peralatan presisi tinggi, sesuai dengan standar kualitas J&J GROUP.',
             ]);
 
-            $receipt->items()->create([
+            $invoice->items()->create([
                 'deskripsi' => 'Layanan Perawatan Teknis Tambahan',
                 'qty' => 1,
                 'harga' => $subtotal,
                 'total' => $subtotal,
             ]);
+
+            Receipt::create([
+                'receipt_number' => "KWT-" . (5003 + 30 + $i) . "-2026",
+                'invoice_id' => $invoice->id,
+                'amount_received' => $total,
+                'payment_date' => Carbon::now()->subDays($faker->numberBetween(1, 45)),
+            ]);
         }
 
-        // 6. AI Chat Histories & Telemetry Logs
+        // 7. AI Chat Histories & Telemetry Logs
         $aiMessages = [
             [
                 'msg' => 'Berapa total piutang jatuh tempo bulan ini?',
@@ -456,7 +438,6 @@ class RealisticBusinessSeeder extends Seeder
 
         foreach ($allUsers as $user) {
             if ($user->role !== User::ROLE_STAFF) {
-                // Generate 2 sessions for owner/admins
                 for ($session = 1; $session <= 2; $session++) {
                     $sessionId = 'sess_' . $faker->bothify('??##??##');
                     foreach ($aiMessages as $chat) {
@@ -474,7 +455,7 @@ class RealisticBusinessSeeder extends Seeder
             }
         }
 
-        // 7. Activity & Security Logs (to populate dashboards)
+        // 8. Activity & Security Logs
         $actions = [
             'login' => 'Telah masuk ke dalam aplikasi.',
             'create_invoice' => 'Membuat invoice baru dengan nomor JNJ-INV-',
@@ -504,7 +485,6 @@ class RealisticBusinessSeeder extends Seeder
                 'created_at' => Carbon::now()->subHours($faker->numberBetween(1, 100)),
             ]);
 
-            // Add Security Logs for some login/failed events
             if ($actionKey === 'login') {
                 SecurityLog::create([
                     'user_id' => $user->id,
@@ -518,7 +498,6 @@ class RealisticBusinessSeeder extends Seeder
             }
         }
 
-        // Add 3 failed login attempts
         for ($k = 1; $k <= 3; $k++) {
             SecurityLog::create([
                 'user_id' => null,
@@ -531,7 +510,7 @@ class RealisticBusinessSeeder extends Seeder
             ]);
         }
 
-        // 8. Custom Chronos Operational Events & Reminders
+        // 9. Custom Chronos Operational Events & Reminders
         \App\Models\ChronosEvent::create([
             'title' => 'Pengerjaan Fitur A & B (Internal Dev)',
             'description' => 'Selesaikan layout mobile & API untuk client management.',

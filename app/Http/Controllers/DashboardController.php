@@ -20,11 +20,11 @@ class DashboardController extends Controller
         $pendingRevenue = Invoice::whereIn('status', ['sent', 'pending', 'dp'])->sum('total');
         
         $totalReceipts = \App\Models\Receipt::count();
-        $pendingReceipts = \App\Models\Receipt::where('status', 'sent')->count();
+        $pendingReceipts = 0;
 
         $monthlyRevenue = Invoice::where('status', 'paid')
-            ->whereMonth('tanggal_invoice', Carbon::now()->month)
-            ->whereYear('tanggal_invoice', Carbon::now()->year)
+            ->whereMonth('created_at', Carbon::now()->month)
+            ->whereYear('created_at', Carbon::now()->year)
             ->sum('total');
 
         $overdueRevenue = Invoice::whereIn('status', ['sent', 'pending', 'dp'])
@@ -33,13 +33,13 @@ class DashboardController extends Controller
 
         // Compile 3 months trend
         $threeMonthsAgo = Carbon::now()->subMonths(2)->startOfMonth();
-        $recentThreeMonthsInvoices = Invoice::where('tanggal_invoice', '>=', $threeMonthsAgo)->get();
+        $recentThreeMonthsInvoices = Invoice::where('created_at', '>=', $threeMonthsAgo)->get();
 
         $trendSummary = [];
         for ($i = 2; $i >= 0; $i--) {
             $monthDate = Carbon::now()->subMonths($i);
             $monthTotal = $recentThreeMonthsInvoices->filter(function($invoice) use ($monthDate) {
-                return $invoice->tanggal_invoice && $invoice->tanggal_invoice->format('Y-m') === $monthDate->format('Y-m');
+                return $invoice->created_at && $invoice->created_at->format('Y-m') === $monthDate->format('Y-m');
             })->sum('total');
             
             $trendSummary[] = $monthDate->format('F Y') . ": Rp " . number_format($monthTotal, 0, ',', '.');
@@ -154,15 +154,15 @@ class DashboardController extends Controller
                     
                     if ($log->action === 'create_invoice' || $log->action === 'created_invoice') {
                         $action = 'invoice_created';
-                        preg_match('/(JNJ|ROOT)-INV-\d+/i', $log->description, $matches);
-                        $invNum = $matches[0] ?? 'JNJ-INV-XXXX';
+                        preg_match('/(INV-\d+-\d+|[A-Z0-9-]+)/i', $log->description, $matches);
+                        $invNum = $matches[0] ?? 'INV-XXXX-YYYY';
                         
                         $details_key = 'created_invoice';
                         $details_params = ['inv' => $invNum];
                     } elseif ($log->action === 'update_invoice' || $log->action === 'updated_invoice') {
                         $action = 'invoice_updated';
-                        preg_match('/(JNJ|ROOT)-INV-\d+/i', $log->description, $matches);
-                        $invNum = $matches[0] ?? 'JNJ-INV-XXXX';
+                        preg_match('/(INV-\d+-\d+|[A-Z0-9-]+)/i', $log->description, $matches);
+                        $invNum = $matches[0] ?? 'INV-XXXX-YYYY';
                         
                         $clientName = 'Klien';
                         if ($log->model_type === 'App\Models\Invoice') {
@@ -198,15 +198,14 @@ class DashboardController extends Controller
             for ($i = 5; $i >= 0; $i--) {
                 $monthDate = Carbon::now()->subMonths($i);
                 
-                $revenue = (float) \App\Models\Payment::whereMonth('payment_date', $monthDate->month)
+                $revenue = (float) \App\Models\Receipt::whereMonth('payment_date', $monthDate->month)
                     ->whereYear('payment_date', $monthDate->year)
-                    ->sum('amount');
+                    ->sum('amount_received');
                     
-                $receivables = (float) Invoice::with('payments')->whereMonth('tanggal_invoice', $monthDate->month)
-                    ->whereYear('tanggal_invoice', $monthDate->year)
+                $receivables = (float) Invoice::whereMonth('created_at', $monthDate->month)
+                    ->whereYear('created_at', $monthDate->year)
                     ->where('status', '!=', 'paid')
-                    ->get()
-                    ->sum(fn($inv) => $inv->total - $inv->payments->sum('amount'));
+                    ->sum('total');
                     
                 $maxVal = max($maxVal, $revenue, $receivables);
                 
@@ -243,7 +242,7 @@ class DashboardController extends Controller
                     'receivables_formatted' => $this->formatChartAmount($item['receivables'], $locale),
                 ];
             }
-
+ 
             // A. TOP CLIENTS BY REVENUE
             $topClients = Client::whereHas('invoices', function ($query) {
                     $query->where('status', 'paid');
@@ -254,15 +253,14 @@ class DashboardController extends Controller
                 ->orderByDesc('invoices_sum_total')
                 ->take(5)
                 ->get();
-
+ 
             // B. INVOICE AGEING SUMMARY
             $unpaidInvoices = Invoice::whereIn('status', ['sent', 'pending', 'dp', 'overdue'])
-                ->with('payments')
                 ->get();
-
+ 
             $today = Carbon::today();
             foreach ($unpaidInvoices as $invoice) {
-                $amountDue = $invoice->total - $invoice->payments->sum('amount');
+                $amountDue = $invoice->total;
                 if ($amountDue <= 0) {
                     continue;
                 }

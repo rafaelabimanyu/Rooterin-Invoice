@@ -140,7 +140,7 @@ class InvoiceController extends Controller
     {
         \Illuminate\Support\Facades\Gate::authorize('view', $invoice);
 
-        $invoice->load(['client', 'items', 'payments']);
+        $invoice->load(['client', 'items', 'receipt']);
         return view('invoices.show', compact('invoice'));
     }
 
@@ -246,7 +246,7 @@ class InvoiceController extends Controller
             \Illuminate\Support\Facades\App::setLocale($locale);
         }
 
-        $invoice->load(['client', 'items', 'payments', 'attachments']);
+        $invoice->load(['client', 'items', 'receipt', 'attachments']);
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('invoices.pdf', compact('invoice'))
             ->setPaper('a4')
             ->setOption([

@@ -9,13 +9,19 @@
             'dot' => 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]',
             'border' => 'border-emerald-200/50'
         ],
+        'sent' => [
+            'bg' => 'bg-blue-100/50',
+            'text' => 'text-blue-800',
+            'dot' => 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.4)]',
+            'border' => 'border-blue-200/50'
+        ],
         'nonaktif', 'cancelled', 'overdue', 'rejected' => [
             'bg' => 'bg-rose-100/50',
             'text' => 'text-rose-800',
             'dot' => 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.4)]',
             'border' => 'border-rose-200/50'
         ],
-        'pending', 'dp', 'sent', 'partial' => [
+        'pending', 'dp', 'partial' => [
             'bg' => 'bg-amber-100/50',
             'text' => 'text-amber-800',
             'dot' => 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.4)]',

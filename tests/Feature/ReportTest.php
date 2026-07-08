@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use App\Models\Client;
 use App\Models\Invoice;
-use App\Models\Payment;
+use App\Models\BusinessUnit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -47,6 +47,10 @@ class ReportTest extends TestCase
     public function test_reports_page_filters_data_correctly(): void
     {
         $owner = User::factory()->create(['role' => 'owner']);
+        $businessUnit = BusinessUnit::create([
+            'name' => 'Jaya-Website',
+            'slug' => 'jaya-website',
+        ]);
         
         $client1 = Client::create([
             'kode_client' => 'CL-001',
@@ -61,30 +65,36 @@ class ReportTest extends TestCase
         ]);
 
         // Invoice for client 1
-        $invoice1 = Invoice::create([
+        $invoice1 = new Invoice([
             'invoice_number' => 'INV-C1-01',
             'client_id' => $client1->id,
-            'created_by' => $owner->id,
-            'tanggal_invoice' => '2026-05-10',
+            'business_unit_id' => $businessUnit->id,
             'due_date' => '2026-06-10',
             'subtotal' => 1000000,
-            'tax' => 0,
+            'discount' => 0,
+            'ppn' => 0,
+            'pph' => 0,
             'total' => 1000000,
             'status' => 'pending'
         ]);
+        $invoice1->created_at = '2026-05-10 12:00:00';
+        $invoice1->save();
 
         // Invoice for client 2
-        $invoice2 = Invoice::create([
+        $invoice2 = new Invoice([
             'invoice_number' => 'INV-C2-01',
             'client_id' => $client2->id,
-            'created_by' => $owner->id,
-            'tanggal_invoice' => '2026-05-15',
+            'business_unit_id' => $businessUnit->id,
             'due_date' => '2026-06-15',
             'subtotal' => 2000000,
-            'tax' => 0,
+            'discount' => 0,
+            'ppn' => 0,
+            'pph' => 0,
             'total' => 2000000,
             'status' => 'paid'
         ]);
+        $invoice2->created_at = '2026-05-15 12:00:00';
+        $invoice2->save();
 
         // Access reports filtering by client 1
         $response = $this->actingAs($owner)->get(route('reports.index', [

@@ -5,35 +5,30 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\Receipt;
-use App\Models\ReceiptItem;
-use App\Traits\CalculatesTotals;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class ReceiptController extends Controller
 {
-    use CalculatesTotals;
-
     public function index(Request $request)
     {
-        $query = Receipt::with('client');
+        $query = Receipt::with('invoice.client');
 
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where('receipt_number', 'like', "%{$search}%")
-                  ->orWhereHas('client', function($q) use ($search) {
+                  ->orWhereHas('invoice.client', function($q) use ($search) {
                       $q->where('nama_client', 'like', "%{$search}%")
                         ->orWhere('nama_perusahaan', 'like', "%{$search}%");
                   });
         }
 
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
         if (auth()->user()->role === 'staff') {
-            $query->where('created_by', auth()->id())
-                  ->where('created_at', '>=', now()->subHours(24));
+            $query->whereHas('invoice', function($q) {
+                if (Schema::hasColumn('invoices', 'created_by')) {
+                    $q->where('created_by', auth()->id());
+                }
+            })->where('created_at', '>=', now()->subHours(24));
         }
 
         $receipts = $query->latest()->paginate(10);
@@ -43,175 +38,42 @@ class ReceiptController extends Controller
 
     public function create()
     {
-        $receipt_number = Receipt::generateNumber();
-        $clients = Client::where('status', 'aktif')->orderBy('nama_client')->get();
-        return view('receipts.create', compact('receipt_number', 'clients'));
+        return redirect()->route('invoices.index')->with('info', 'Kuitansi otomatis dibuat saat status invoice diubah menjadi Paid.');
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'receipt_number' => 'required|unique:receipts,receipt_number',
-            'client_id' => 'required|exists:clients,id',
-            'tanggal_receipt' => 'required|date',
-            'expiry_date' => 'required|date|after_or_equal:tanggal_receipt',
-            'items' => 'required|array|min:1',
-            'items.*.deskripsi' => 'required|string',
-            'items.*.qty' => 'required|numeric|min:1',
-            'items.*.harga' => 'required|numeric|min:0',
-        ]);
-
-        try {
-            DB::beginTransaction();
-
-            $financials = $this->calculateFinancials(
-                $request->items,
-                $request->tax_percent,
-                $request->discount_percent
-            );
-
-            $receipt = Receipt::create([
-                'receipt_number' => $request->receipt_number,
-                'client_id' => $request->client_id,
-                'tanggal_receipt' => $request->tanggal_receipt,
-                'expiry_date' => $request->expiry_date,
-                'status' => 'draft',
-                'subtotal' => $financials['subtotal'],
-                'tax_percent' => $financials['tax_percent'],
-                'discount_percent' => $financials['discount_percent'],
-                'total' => $financials['total'],
-                'notes_internal' => $request->notes_internal,
-                'terms_condition' => $request->terms_condition,
-                'created_by' => auth()->id(),
-            ]);
-
-            foreach ($request->items as $item) {
-                $receipt->items()->create([
-                    'deskripsi' => $item['deskripsi'],
-                    'qty' => $item['qty'],
-                    'harga' => $item['harga'],
-                    'total' => $item['qty'] * $item['harga'],
-                ]);
-            }
-
-            DB::commit();
-            return redirect()->route('receipts.index')->with('success', 'Receipt created successfully.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Error: ' . $e->getMessage());
-        }
+        return redirect()->route('receipts.index');
     }
 
     public function show(Receipt $receipt)
     {
         if (auth()->user()->role === 'staff') {
-            if ($receipt->created_by !== auth()->id() || $receipt->created_at < now()->subHours(24)) {
-                abort(403, 'Access restricted to your own items created within 24 hours.');
+            $hasCreatedBy = false;
+            $invoice = $receipt->invoice;
+            if ($invoice && Schema::hasColumn('invoices', 'created_by')) {
+                if ($invoice->created_by !== auth()->id() || $receipt->created_at < now()->subHours(24)) {
+                    abort(403, 'Access restricted.');
+                }
             }
         }
-        $receipt->load(['client', 'items', 'creator']);
+        $receipt->load(['invoice.client', 'invoice.items']);
         return view('receipts.show', compact('receipt'));
     }
 
     public function edit(Receipt $receipt)
     {
-        if (auth()->user()->role === 'staff') {
-            if ($receipt->created_by !== auth()->id() || $receipt->created_at < now()->subHours(24)) {
-                abort(403, 'Unauthorized edit access.');
-            }
-        }
-        $receipt->load('items');
-        $clients = Client::where('status', 'aktif')->orderBy('nama_client')->get();
-        return view('receipts.edit', compact('receipt', 'clients'));
+        return redirect()->route('receipts.index')->with('info', 'Kuitansi otomatis tidak dapat diedit secara manual.');
     }
 
     public function update(Request $request, Receipt $receipt)
     {
-        $request->validate([
-            'client_id' => 'required|exists:clients,id',
-            'tanggal_receipt' => 'required|date',
-            'expiry_date' => 'required|date|after_or_equal:tanggal_receipt',
-            'status' => 'required|in:draft,sent,approved,rejected,invoiced',
-            'items' => 'required|array|min:1',
-        ]);
-
-        try {
-            DB::beginTransaction();
-
-            $financials = $this->calculateFinancials(
-                $request->items,
-                $request->tax_percent,
-                $request->discount_percent
-            );
-
-            $receipt->update([
-                'client_id' => $request->client_id,
-                'tanggal_receipt' => $request->tanggal_receipt,
-                'expiry_date' => $request->expiry_date,
-                'status' => $request->status,
-                'subtotal' => $financials['subtotal'],
-                'tax_percent' => $financials['tax_percent'],
-                'discount_percent' => $financials['discount_percent'],
-                'total' => $financials['total'],
-                'notes_internal' => $request->notes_internal,
-                'terms_condition' => $request->terms_condition,
-            ]);
-
-            $receipt->items()->delete();
-            foreach ($request->items as $item) {
-                $receipt->items()->create([
-                    'deskripsi' => $item['deskripsi'],
-                    'qty' => $item['qty'],
-                    'harga' => $item['harga'],
-                    'total' => $item['qty'] * $item['harga'],
-                ]);
-            }
-
-            DB::commit();
-            return redirect()->route('receipts.index')->with('success', 'Receipt updated successfully.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Error: ' . $e->getMessage());
-        }
+        return redirect()->route('receipts.index');
     }
 
     public function convertToInvoice(Receipt $receipt)
     {
-        try {
-            DB::beginTransaction();
-
-            $invoice = Invoice::create([
-                'invoice_number' => Invoice::generateNumber(),
-                'client_id' => $receipt->client_id,
-                'tanggal_invoice' => now(),
-                'due_date' => now()->addDays(7),
-                'status' => 'draft',
-                'subtotal' => $receipt->subtotal,
-                'tax_percent' => $receipt->tax_percent,
-                'discount_percent' => $receipt->discount_percent,
-                'total' => $receipt->total,
-                'notes_internal' => "Generated from Receipt #" . $receipt->receipt_number . ". " . $receipt->notes_internal,
-                'terms_condition' => $receipt->terms_condition,
-                'created_by' => auth()->id(),
-            ]);
-
-            foreach ($receipt->items as $item) {
-                $invoice->items()->create([
-                    'deskripsi' => $item->deskripsi,
-                    'qty' => $item->qty,
-                    'harga' => $item->harga,
-                    'total' => $item->total,
-                ]);
-            }
-
-            $receipt->update(['status' => 'invoiced']);
-
-            DB::commit();
-            return redirect()->route('invoices.show', $invoice)->with('success', 'Receipt converted to Invoice successfully.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Error: ' . $e->getMessage());
-        }
+        return redirect()->route('receipts.index');
     }
 
     public function downloadPdf(Request $request, Receipt $receipt)
@@ -221,7 +83,7 @@ class ReceiptController extends Controller
             \Illuminate\Support\Facades\App::setLocale($locale);
         }
 
-        $receipt->load(['client', 'items']);
+        $receipt->load(['invoice.client', 'invoice.items']);
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('receipts.pdf', compact('receipt'));
         return $pdf->download("Receipt-{$receipt->receipt_number}.pdf");
     }

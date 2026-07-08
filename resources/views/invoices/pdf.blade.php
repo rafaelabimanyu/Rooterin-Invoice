@@ -191,8 +191,8 @@
                     <div style="font-size: 24pt; font-weight: 900; color: #0f172a; text-transform: uppercase; margin-bottom: 2px; letter-spacing: -1px;">{{ __('invoice.title') }}</div>
                     <div style="font-size: 13pt; font-weight: 700; color: #c89d3c; margin-bottom: 15px;">#{{ $invoice->invoice_number }}</div>
                     <div style="font-size: 9.5pt; color: #64748b; line-height: 1.4;">
-                        {{ __('invoice.date') }}: <b style="color: #0f172a;">{{ $invoice->tanggal_invoice->format('d M Y') }}</b><br>
-                        {{ __('invoice.due_date') }}: <b style="color: #0f172a;">{{ $invoice->due_date->format('d M Y') }}</b>
+                        {{ __('invoice.date') }}: <b style="color: #0f172a;">{{ $invoice->tanggal_invoice ? $invoice->tanggal_invoice->format('d M Y') : '-' }}</b><br>
+                        {{ __('invoice.due_date') }}: <b style="color: #0f172a;">{{ $invoice->due_date ? $invoice->due_date->format('d M Y') : '-' }}</b>
                     </div>
                 </td>
             </tr>
@@ -205,12 +205,12 @@
             <div class="bill-to">
                 <span class="section-label">{{ __('invoice.bill_to') }}</span>
                 <div class="client-card">
-                    <div class="client-name">{{ $invoice->client->nama_client }}</div>
+                    <div class="client-name">{{ optional($invoice->client)->nama_client ?? 'Klien Tidak Ditemukan' }}</div>
                     <div class="client-details">
-                        <b>{{ $invoice->client->nama_perusahaan }}</b><br>
-                        {{ $invoice->client->alamat }}<br>
-                        {{ $invoice->client->kota }}, {{ $invoice->client->provinsi }}<br>
-                        {{ __('ui.contact') }}: {{ $invoice->client->no_hp }}
+                        <b>{{ optional($invoice->client)->nama_perusahaan ?? '-' }}</b><br>
+                        {{ optional($invoice->client)->alamat ?? '-' }}<br>
+                        {{ optional($invoice->client)->kota ?? '-' }}, {{ optional($invoice->client)->provinsi ?? '-' }}<br>
+                        {{ __('ui.contact') }}: {{ optional($invoice->client)->no_hp ?? '-' }}
                     </div>
                 </div>
             </div>

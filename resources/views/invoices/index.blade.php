@@ -102,10 +102,10 @@
                 <div class="col-span-2">
                     <div class="flex flex-col">
                         @php
-                            $isOverdue = $invoice->due_date->isPast() && $invoice->status !== 'paid';
+                            $isOverdue = $invoice->due_date && $invoice->due_date->isPast() && $invoice->status !== 'paid';
                         @endphp
                         <span class="text-[13px] font-bold {{ $isOverdue ? 'text-rose-500' : 'text-slate-500' }}">
-                            {{ $invoice->due_date->format('M d, Y') }}
+                            {{ $invoice->due_date ? $invoice->due_date->format('M d, Y') : '-' }}
                         </span>
                         @if($isOverdue)
                             <span class="text-[9px] font-black text-rose-500 uppercase tracking-tighter mt-0.5">{{ app()->getLocale() == 'en' ? 'OVERDUE' : 'TERLAMBAT' }}</span>

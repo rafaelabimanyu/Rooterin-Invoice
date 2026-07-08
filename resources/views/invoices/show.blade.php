@@ -8,7 +8,7 @@
                 <span class="text-slate-900 truncate">{{ $invoice->invoice_number }}</span>
             </div>
             <h1 class="text-2xl md:text-3xl font-bold text-slate-900 font-outfit leading-tight truncate">{{ app()->getLocale() == 'en' ? 'Invoice Details' : 'Rincian Invoice' }}</h1>
-            <p class="text-sm text-slate-500 mt-1 truncate">{{ app()->getLocale() == 'en' ? 'Manage billing for ' : 'Kelola tagihan untuk ' }}{{ $invoice->client->nama_client }}.</p>
+            <p class="text-sm text-slate-500 mt-1 truncate">{{ app()->getLocale() == 'en' ? 'Manage billing for ' : 'Kelola tagihan untuk ' }}{{ optional($invoice->client)->nama_client ?? 'Klien Tidak Ditemukan' }}.</p>
         </div>
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 md:gap-4">
             <div class="flex items-center justify-between sm:justify-start gap-4">
@@ -88,9 +88,9 @@
                     <h2 class="text-xs font-bold text-slate-400 uppercase tracking-[0.3em] mb-4 md:mb-6">{{ app()->getLocale() == 'en' ? 'Tax Invoice' : 'Faktur Pajak' }}</h2>
                     <div class="space-y-1">
                         <p class="text-2xl font-black text-slate-900 font-outfit">{{ $invoice->invoice_number }}</p>
-                        <p class="text-xs font-bold text-slate-500">{{ app()->getLocale() == 'en' ? 'Issued' : 'Dibuat' }}: {{ $invoice->tanggal_invoice->format('M d, Y') }}</p>
+                        <p class="text-xs font-bold text-slate-500">{{ app()->getLocale() == 'en' ? 'Issued' : 'Dibuat' }}: {{ $invoice->tanggal_invoice ? $invoice->tanggal_invoice->format('M d, Y') : '-' }}</p>
                         <div class="inline-block mt-4 px-3 py-1 bg-rose-50 text-rose-600 border border-rose-100 rounded text-[10px] font-bold uppercase tracking-widest">
-                            {{ app()->getLocale() == 'en' ? 'Due' : 'Tempo' }}: {{ $invoice->due_date->format('M d, Y') }}
+                            {{ app()->getLocale() == 'en' ? 'Due' : 'Tempo' }}: {{ $invoice->due_date ? $invoice->due_date->format('M d, Y') : '-' }}
                         </div>
                     </div>
                 </div>
@@ -102,11 +102,11 @@
             <div class="w-full md:flex-1">
                 <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">{{ app()->getLocale() == 'en' ? 'Customer Account' : 'Akun Pelanggan' }}</p>
                 <div class="space-y-2">
-                    <p class="text-base md:text-lg font-black text-slate-900">{{ $invoice->client->nama_client }}</p>
-                    <p class="text-xs md:text-sm font-bold text-gold-600">{{ $invoice->client->nama_perusahaan }}</p>
+                    <p class="text-base md:text-lg font-black text-slate-900">{{ optional($invoice->client)->nama_client ?? 'Klien Tidak Ditemukan' }}</p>
+                    <p class="text-xs md:text-sm font-bold text-gold-600">{{ optional($invoice->client)->nama_perusahaan ?? '-' }}</p>
                     <p class="text-xs md:text-sm text-slate-500 leading-relaxed max-w-xs">
-                        {{ $invoice->client->alamat }}<br>
-                        {{ $invoice->client->kota }}, {{ $invoice->client->provinsi }}
+                        {{ optional($invoice->client)->alamat ?? '-' }}<br>
+                        {{ optional($invoice->client)->kota ?? '-' }}, {{ optional($invoice->client)->provinsi ?? '-' }}
                     </p>
                 </div>
             </div>
@@ -185,7 +185,7 @@
                             @foreach($invoice->payments as $payment)
                             <div class="flex items-center justify-between p-4 bg-white border border-slate-200/60 rounded-xl shadow-sm">
                                 <div class="flex flex-col">
-                                    <span class="text-[11px] font-bold text-slate-900">{{ $payment->payment_date->format('M d, Y') }}</span>
+                                    <span class="text-[11px] font-bold text-slate-900">{{ $payment->payment_date ? $payment->payment_date->format('M d, Y') : '-' }}</span>
                                     <span class="text-[9px] text-slate-400 uppercase mt-0.5">{{ $payment->payment_method }}</span>
                                 </div>
                                 <div class="flex items-center gap-4">
@@ -246,7 +246,7 @@
                 </div>
                 <div class="text-left md:text-right w-full md:w-auto">
                     <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Digitally Issued By' : 'Diterbitkan Secara Digital Oleh' }}</p>
-                    <p class="text-xs font-black text-slate-900 uppercase">{{ $invoice->creator->name }}</p>
+                    <p class="text-xs font-black text-slate-900 uppercase">{{ optional($invoice->creator)->name ?? 'System' }}</p>
                 </div>
             </div>
         </div>

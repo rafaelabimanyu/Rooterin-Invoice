@@ -128,21 +128,102 @@
             -webkit-background-clip: text; 
             -webkit-text-fill-color: transparent; 
         }
+
+        /* --- Luxury Button Styling --- */
+        .btn-primary-luxury {
+            background: #ffffff;
+            color: #0a0f1d;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .btn-primary-luxury:hover {
+            transform: translateY(-4px);
+            background: var(--accent-gold);
+            color: #0a0f1d;
+            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.25), 0 0 30px rgba(212, 175, 55, 0.15);
+        }
+
+        .btn-secondary-luxury {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .btn-secondary-luxury:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.1);
+        }
+
+        /* --- Exit Loading Overlay Animation --- */
+        @keyframes loadingBar {
+            0% { left: -100%; width: 50%; }
+            50% { width: 70%; }
+            100% { left: 100%; width: 50%; }
+        }
+
+        @media (max-width: 768px) {
+            #particle-canvas { display: none !important; }
+        }
     </style>
 </head>
 
-<body class="font-jakarta antialiased" x-data="{ mobileMenu: false }">
+<body class="font-jakarta antialiased" x-data="{ mobileMenu: false, exiting: false }" :class="{ 'overflow-hidden': exiting || mobileMenu }">
     <div id="cursor-follower"></div>
     <div class="hero-bg-gradient"></div>
     <canvas id="particle-canvas" class="initial-hidden"></canvas>
+
+    <!-- Transition exiting screen overlay -->
+    <div x-show="exiting" 
+         x-transition:enter="transition ease-out duration-500" 
+         x-transition:enter-start="opacity-0" 
+         x-transition:enter-end="opacity-100" 
+         class="fixed inset-0 bg-[#0a0f1d] z-[9999] flex flex-col items-center justify-center pointer-events-auto"
+         x-cloak>
+        <div class="flex flex-col items-center gap-6">
+            <x-portal-logo class="w-16 h-16 animate-pulse" />
+            <div class="h-1 w-32 bg-white/10 rounded-full overflow-hidden relative">
+                <div class="absolute inset-y-0 left-0 bg-gradient-to-r from-gold-500 to-amber-500 rounded-full w-1/2 animate-[loadingBar_0.85s_ease-in-out_infinite]"></div>
+            </div>
+            <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] animate-pulse">Initializing Portal Node</span>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div x-show="mobileMenu" 
+         x-cloak 
+         class="fixed inset-0 bg-[#0F2A44]/95 backdrop-blur-3xl z-[999] p-10 flex flex-col items-center justify-center text-center" 
+         x-transition:enter="transition ease-out duration-300" 
+         x-transition:enter-start="opacity-0 scale-95" 
+         x-transition:enter-end="opacity-100 scale-100"
+         x-transition:leave="transition ease-in duration-200" 
+         x-transition:leave-start="opacity-100 scale-100" 
+         x-transition:leave-end="opacity-0 scale-95">
+        
+        <button @click="mobileMenu = false" class="absolute top-6 right-6 p-3 bg-white/5 hover:bg-white/10 border border-white/10 text-white hover:text-[#D4AF37] rounded-xl transition-all duration-300 focus:outline-none flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+
+        <div class="flex flex-col gap-10">
+            <a @click="mobileMenu = false" href="#core" class="text-2xl font-black text-white uppercase tracking-wider hover:text-[#D4AF37] transition-all duration-300">Core Systems</a>
+            <a @click="mobileMenu = false" href="#capabilities" class="text-2xl font-black text-white uppercase tracking-wider hover:text-[#D4AF37] transition-all duration-300">Capabilities</a>
+            <a @click="mobileMenu = false" href="#solutions" class="text-2xl font-black text-white uppercase tracking-wider hover:text-[#D4AF37] transition-all duration-300">Solutions</a>
+            <a @click="mobileMenu = false" href="#ai-solutions" class="text-2xl font-black text-white uppercase tracking-wider hover:text-[#D4AF37] transition-all duration-300">AI Solutions</a>
+            <div class="h-[2px] w-20 bg-[#D4AF37]/20 mx-auto my-2"></div>
+            <a href="{{ route('login') }}" 
+               @click.prevent="mobileMenu = false; exiting = true; setTimeout(() => window.location = $el.href, 850)"
+               class="px-10 py-5 bg-transparent border border-[#D4AF37]/50 text-white rounded-3xl font-black shadow-[0_0_20px_rgba(212,175,55,0.15)] hover:bg-[#D4AF37] hover:text-[#0F2A44] hover:shadow-[0_0_30px_rgba(212,175,55,0.35)] transition-all duration-300 uppercase tracking-widest text-xs text-center">Portal Login</a>
+        </div>
+        
+        <div class="absolute bottom-12 text-[10px] text-slate-400 font-black uppercase tracking-[0.4em]">jnjgroup.com</div>
+    </div>
 
     <!-- Navbar -->
     <nav id="master-nav" class="fixed top-0 w-full z-[100] bg-[#0a0f1d]/80 backdrop-blur-3xl border-b border-white/5 initial-hidden fade-down">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-white flex items-center justify-center text-slate-900 shadow-xl transition-transform hover:rotate-12 duration-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap fill-current text-gold-600"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                </div>
+                <x-portal-logo />
                 <span class="text-xl md:text-2xl font-black font-outfit uppercase text-white tracking-tighter">J&J <span class="text-gold-500">GROUP</span></span>
             </div>
             
@@ -152,33 +233,19 @@
                 <a href="#solutions" class="nav-link text-[11px] font-black text-slate-400 hover:text-white transition-colors uppercase tracking-[0.3em]">Solutions</a>
                 <a href="#ai-solutions" class="nav-link text-[11px] font-black text-slate-400 hover:text-white transition-colors uppercase tracking-[0.3em]">AI Solutions</a>
                 <div class="h-4 w-px bg-white/10"></div>
-                <a href="{{ route('login') }}" class="px-8 py-3 bg-white text-slate-900 rounded-2xl font-black text-[11px] shadow-2xl hover:bg-gold-50/50 transition-all uppercase tracking-[0.2em]">Portal Login</a>
+                <a href="{{ route('login') }}" 
+                   @click.prevent="exiting = true; setTimeout(() => window.location = $el.href, 850)"
+                   class="px-8 py-3 bg-white text-slate-900 rounded-2xl font-black text-[11px] shadow-2xl hover:bg-gold-50/50 transition-all uppercase tracking-[0.2em]">Portal Login</a>
             </div>
 
-            <button @click="mobileMenu = true" class="md:hidden p-2 text-white">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+            <button @click="mobileMenu = true" class="md:hidden p-2.5 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-all duration-300 text-white hover:text-gold-500 focus:outline-none flex items-center justify-center" aria-label="Open menu">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layout-grid">
+                    <rect width="7" height="7" x="3" y="3" rx="1.5"/>
+                    <rect width="7" height="7" x="14" y="3" rx="1.5"/>
+                    <rect width="7" height="7" x="14" y="14" rx="1.5"/>
+                    <rect width="7" height="7" x="3" y="14" rx="1.5"/>
+                </svg>
             </button>
-        </div>
-
-        <!-- Mobile Menu Overlay -->
-        <div x-show="mobileMenu" x-cloak class="fixed inset-0 bg-[#0a0f1d]/95 backdrop-blur-2xl z-[110] p-10 flex flex-col items-center justify-center text-center" 
-             x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-x-full" x-transition:enter-end="opacity-100 translate-x-0"
-             x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 translate-x-0" x-transition:leave-end="opacity-0 translate-x-full">
-            
-            <button @click="mobileMenu = false" class="absolute top-8 right-8 p-4 bg-white/5 rounded-2xl text-white">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-            </button>
-
-            <div class="flex flex-col gap-12">
-                <a @click="mobileMenu = false" href="#core" class="text-3xl font-black text-white uppercase tracking-tighter hover:text-gold-500 transition-colors">Core Systems</a>
-                <a @click="mobileMenu = false" href="#capabilities" class="text-3xl font-black text-white uppercase tracking-tighter hover:text-gold-500 transition-colors">Capabilities</a>
-                <a @click="mobileMenu = false" href="#solutions" class="text-3xl font-black text-white uppercase tracking-tighter hover:text-gold-500 transition-colors">Solutions</a>
-                <a @click="mobileMenu = false" href="#ai-solutions" class="text-3xl font-black text-white uppercase tracking-tighter hover:text-gold-500 transition-colors">AI Solutions</a>
-                <div class="h-px w-20 bg-white/10 mx-auto"></div>
-                <a href="{{ route('login') }}" class="px-10 py-5 bg-white text-slate-900 rounded-3xl font-black shadow-2xl uppercase tracking-widest text-sm">Portal Login</a>
-            </div>
-            
-            <div class="absolute bottom-12 text-[10px] text-slate-500 font-black uppercase tracking-[0.4em]">jnjgroup.com</div>
         </div>
     </nav>
 
@@ -195,12 +262,14 @@
             <h1 id="hero-title" class="responsive-title font-black mb-12 uppercase font-outfit opacity-0">
                 Next-Gen <br> <span class="gradient-text">Operations.</span>
             </h1>
-            <p id="hero-subtext" class="text-base md:text-xl text-slate-400 max-w-3xl mx-auto mb-16 font-medium leading-relaxed tracking-tight initial-hidden fade-up">
+            <p id="hero-subtext" class="text-[15px] sm:text-base md:text-xl text-slate-300 max-w-3xl mx-auto mb-16 font-medium leading-relaxed tracking-wide px-2 md:px-0 initial-hidden fade-up">
                 The definitive operating system for high-stakes billing, autonomous tracking, and enterprise-grade financial intelligence at <span class="text-white font-bold">jnjgroup.com</span>.
             </p>
             <div id="hero-buttons" class="flex flex-col md:flex-row items-center justify-center gap-6 initial-hidden fade-up">
-                <a href="{{ route('login') }}" class="w-full md:w-auto px-16 py-7 bg-white text-slate-900 rounded-[40px] font-black shadow-[0_20px_50px_rgba(255,255,255,0.1)] hover:-translate-y-2 transition-all duration-500 uppercase tracking-widest text-[13px]">Initialize Portal</a>
-                <a href="#core" class="w-full md:w-auto px-16 py-7 bg-white/5 border border-white/10 text-white rounded-[40px] font-black hover:bg-white/10 transition-all duration-500 uppercase tracking-widest text-[13px]">
+                <a href="{{ route('login') }}" 
+                   @click.prevent="exiting = true; setTimeout(() => window.location = $el.href, 850)"
+                   class="w-full md:w-auto px-16 py-7 btn-primary-luxury text-slate-900 rounded-[40px] font-black uppercase tracking-widest text-[13px] text-center">Initialize Portal</a>
+                <a href="#core" class="w-full md:w-auto px-16 py-7 btn-secondary-luxury text-white rounded-[40px] font-black uppercase tracking-widest text-[13px] text-center">
                     Technical Specs
                 </a>
             </div>
@@ -356,9 +425,7 @@
     <footer class="py-32 border-t border-white/5 text-center bg-[#0a0f1d] relative overflow-hidden">
         <div class="max-w-7xl mx-auto px-6 relative z-10">
             <div class="flex items-center justify-center gap-3 mb-10 reveal-section">
-                <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-slate-900 shadow-xl">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap fill-current text-gold-600"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                </div>
+                <x-portal-logo class="w-12 h-12" />
                 <span class="text-3xl font-black font-outfit uppercase text-white tracking-tighter">jnjgroup<span class="text-gold-500">.com</span></span>
             </div>
             <div class="flex flex-wrap items-center justify-center gap-6 md:gap-12 mb-12 reveal-section">
@@ -470,11 +537,17 @@
 
         function initParticles() {
             particleArray = [];
-            let count = isMobile ? 40 : 120;
+            if (isMobile) return; // Completely disable particles on mobile to maximize performance
+            let count = 120;
             for (let i = 0; i < count; i++) particleArray.push(new Particle());
         }
 
         function animate() {
+            if (isMobile) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                requestAnimationFrame(animate);
+                return;
+            }
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             particleArray.forEach(p => { p.update(); p.draw(); });
             requestAnimationFrame(animate);

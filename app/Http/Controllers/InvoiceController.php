@@ -78,6 +78,7 @@ class InvoiceController extends Controller
             'pph' => 'nullable|numeric|min:0',
             'cause_of_problem' => 'nullable|string',
             'notes' => 'nullable|string',
+            'technician_names' => 'nullable|string',
             'attachments' => 'nullable|array',
             'attachments.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
         ]);
@@ -110,6 +111,7 @@ class InvoiceController extends Controller
                 'due_date' => $request->due_date,
                 'cause_of_problem' => $request->cause_of_problem,
                 'notes' => $request->notes,
+                'technician_names' => $request->technician_names,
             ];
 
             if (Schema::hasColumn('invoices', 'created_by')) {
@@ -191,6 +193,7 @@ class InvoiceController extends Controller
             'pph' => 'nullable|numeric|min:0',
             'cause_of_problem' => 'nullable|string',
             'notes' => 'nullable|string',
+            'technician_names' => 'nullable|string',
             'attachments' => 'nullable|array',
             'attachments.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
         ]);
@@ -229,6 +232,7 @@ class InvoiceController extends Controller
                 'due_date' => $request->due_date,
                 'cause_of_problem' => $request->cause_of_problem,
                 'notes' => $request->notes,
+                'technician_names' => $request->technician_names,
             ]);
 
             $invoice->items()->delete();

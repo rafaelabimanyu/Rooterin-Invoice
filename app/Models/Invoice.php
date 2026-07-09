@@ -26,6 +26,7 @@ class Invoice extends Model
         'due_date',
         'cause_of_problem',
         'notes',
+        'technician_names',
         'created_by',
     ];
 

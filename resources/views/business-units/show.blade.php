@@ -8,7 +8,7 @@
         <!-- Header -->
         <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
-                <div class="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-jakarta">
+                <div class="flex flex-wrap items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 font-jakarta">
                     <span>{{ $isEn ? 'Administration' : 'Administrasi' }}</span>
                     <i data-lucide="chevron-right" class="w-3 h-3"></i>
                     <a href="{{ route('business-units.index') }}" class="hover:text-gold-600 transition-colors">{{ __('ui.business_units') }}</a>
@@ -20,7 +20,7 @@
                     {{ $businessUnit->description ?: ($isEn ? 'Performance metrics and transaction log.' : 'Metrik kinerja dan log transaksi.') }}
                 </p>
             </div>
-            <div class="flex gap-3">
+            <div class="flex flex-wrap gap-3">
                 <a href="{{ route('business-units.pdf', $businessUnit) }}" class="btn-secondary py-3 px-5 rounded-2xl text-xs uppercase tracking-wider font-bold inline-flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100/80 text-emerald-700 border-emerald-200/60">
                     <i data-lucide="printer" class="w-4 h-4"></i>
                     {{ $isEn ? 'Print PDF' : 'Cetak Laporan' }}

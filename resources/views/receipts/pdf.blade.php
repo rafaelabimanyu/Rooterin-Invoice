@@ -219,6 +219,12 @@
             </tbody>
         </table>
 
+        @if($receipt->invoice && $receipt->invoice->technician_names)
+        <div style="margin-top: -15px; margin-bottom: 20px; font-size: 9.5pt; color: #475569;">
+            <strong>{{ app()->getLocale() == 'en' ? 'Technician' : 'Teknisi' }}:</strong> <span style="color: #0f172a; font-weight: bold;">{{ $receipt->invoice->technician_names }}</span>
+        </div>
+        @endif
+
         <!-- Bottom Layout Table: Bank Account Info (Left) & Financial Summary + Standalone Signature (Right) -->
         <div class="bottom-section" style="page-break-inside: avoid;">
             <table style="width: 100%; table-layout: fixed; border-collapse: collapse;">

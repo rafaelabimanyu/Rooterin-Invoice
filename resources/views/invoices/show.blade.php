@@ -10,7 +10,7 @@
             <h1 class="text-2xl md:text-3xl font-bold text-slate-900 font-outfit leading-tight truncate">{{ app()->getLocale() == 'en' ? 'Invoice Details' : 'Rincian Invoice' }}</h1>
             <p class="text-sm text-slate-500 mt-1 truncate">{{ app()->getLocale() == 'en' ? 'Manage billing for ' : 'Kelola tagihan untuk ' }}{{ optional($invoice->client)->nama_client ?? 'Klien Tidak Ditemukan' }}.</p>
         </div>
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 md:gap-4">
+        <div class="flex flex-col sm:flex-row flex-wrap sm:flex-nowrap items-slate-900 sm:items-center gap-3 md:gap-4 w-full sm:w-auto">
             <div class="flex items-center justify-between sm:justify-start gap-4">
                 <x-badge :status="$invoice->status" class="px-3 py-1.5 text-[10px] md:text-[11px]" />
                 <div class="flex items-center gap-2">
@@ -19,6 +19,10 @@
                     </button>
                 </div>
             </div>
+            <a href="{{ route('invoices.edit', $invoice) }}" class="hidden md:inline-flex px-6 py-3 bg-amber-500 text-slate-950 rounded-xl text-sm font-bold hover:bg-amber-600 transition-all shadow-lg hover:shadow-amber-500/20 items-center justify-center gap-2 active:scale-95">
+                <i data-lucide="edit-3" class="w-4 h-4"></i>
+                <span class="whitespace-nowrap">{{ __('ui.edit') ?? 'Edit' }}</span>
+            </a>
             <button type="button" @click="$dispatch('download-pdf', { url: '{{ route('invoices.pdf', $invoice) }}', filename: 'Invoice-{{ $invoice->invoice_number }}.pdf' })" title="Download PDF" class="w-full sm:w-auto px-6 py-3 bg-[#0F2A44] text-white rounded-xl text-sm font-bold hover:bg-slate-800 transition-all shadow-lg hover:shadow-[#0F2A44]/30 flex items-center justify-center gap-2 active:scale-95">
                 <i data-lucide="download" class="w-4 h-4 text-[#D4AF37]"></i>
                 <span class="whitespace-nowrap">Download PDF</span>
@@ -171,6 +175,20 @@
                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">{{ app()->getLocale() == 'en' ? 'Terms & Conditions' : 'Syarat & Ketentuan' }}</p>
                         <p class="text-[11px] text-slate-500 leading-relaxed">{{ $invoice->terms_condition }}</p>
                     </div>
+                    
+                    @if($invoice->technician_names)
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">{{ app()->getLocale() == 'en' ? 'Field Technicians' : 'Teknisi Lapangan' }}</p>
+                        <p class="text-xs font-bold text-slate-800 leading-relaxed">{{ $invoice->technician_names }}</p>
+                    </div>
+                    @endif
+
+                    @if($invoice->cause_of_problem)
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">{{ app()->getLocale() == 'en' ? 'Cause of Problem' : 'Penyebab Mampet' }}</p>
+                        <p class="text-xs font-semibold text-slate-700 leading-relaxed">{{ $invoice->cause_of_problem }}</p>
+                    </div>
+                    @endif
                     
                     <!-- Payment History Section -->
                     @if($invoice->payments->count() > 0)
@@ -432,4 +450,24 @@
             </div>
         </div>
     </x-modal>
+
+    <!-- Sticky Mobile Action Bar (Visible only on screens < 768px) -->
+    <div class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0F2A44] border-t border-slate-800 p-4 flex gap-3 shadow-2xl items-center justify-between">
+        <div class="flex items-center gap-2">
+            <x-badge :status="$invoice->status" class="scale-90" />
+        </div>
+        <div class="flex gap-2">
+            <a href="{{ route('invoices.edit', $invoice) }}" class="px-4 py-2.5 bg-amber-500 text-slate-950 rounded-xl text-xs font-bold transition-all active:scale-95 flex items-center gap-1">
+                <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                <span>{{ __('ui.edit') ?? 'Edit' }}</span>
+            </a>
+            <button type="button" @click="$dispatch('download-pdf', { url: '{{ route('invoices.pdf', $invoice) }}', filename: 'Invoice-{{ $invoice->invoice_number }}.pdf' })" class="px-4 py-2.5 bg-white text-[#0F2A44] rounded-xl text-xs font-bold transition-all active:scale-95 flex items-center gap-1">
+                <i data-lucide="download" class="w-3.5 h-3.5 text-[#D4AF37]"></i>
+                <span>PDF</span>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Bottom Spacer to prevent content overlap with sticky bar -->
+    <div class="h-20 md:hidden"></div>
 </x-app-layout>

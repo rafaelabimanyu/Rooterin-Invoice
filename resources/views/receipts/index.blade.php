@@ -112,9 +112,14 @@
                         <a href="{{ route('receipts.show', $receipt) }}" class="p-1 text-slate-400 hover:text-gold-600 transition-colors" title="{{ app()->getLocale() == 'en' ? 'View Detail' : 'Lihat Detail' }}">
                             <i data-lucide="eye" class="w-4 h-4"></i>
                         </a>
-                        <a href="{{ route('receipts.pdf', $receipt) }}" class="p-1 text-slate-400 hover:text-gold-600 transition-colors" title="{{ app()->getLocale() == 'en' ? 'Download PDF' : 'Unduh PDF' }}">
+                        <button 
+                            type="button" 
+                            @click.prevent="$dispatch('download-pdf', { url: '{{ route('receipts.pdf', $receipt) }}', filename: 'Receipt-{{ $receipt->receipt_number }}.pdf' })" 
+                            class="p-1 text-slate-400 hover:text-gold-600 transition-colors focus:outline-none" 
+                            title="{{ app()->getLocale() == 'en' ? 'Download PDF' : 'Unduh PDF' }}"
+                        >
                             <i data-lucide="download" class="w-4 h-4"></i>
-                        </a>
+                        </button>
                         @if($receipt->status !== 'invoiced')
                         <a href="{{ route('receipts.edit', $receipt) }}" class="p-1 text-slate-400 hover:text-amber-600 transition-colors" title="{{ app()->getLocale() == 'en' ? 'Edit' : 'Ubah' }}">
                             <i data-lucide="edit-3" class="w-4 h-4"></i>
@@ -170,7 +175,8 @@
                 <!-- Action: Download PDF -->
                 <div class="flex items-center justify-end mt-2 pt-2 border-t border-slate-100 gap-2">
                     <button 
-                        onclick="event.stopPropagation(); window.location='{{ route('receipts.pdf', $receipt) }}'"
+                        type="button"
+                        @click.stop="$dispatch('download-pdf', { url: '{{ route('receipts.pdf', $receipt) }}', filename: 'Receipt-{{ $receipt->receipt_number }}.pdf' })"
                         class="px-3 py-1.5 bg-slate-50 hover:bg-gold-50/50 text-slate-500 hover:text-gold-600 rounded-xl transition-all text-xs font-bold flex items-center gap-1.5"
                     >
                         <i data-lucide="download" class="w-3.5 h-3.5"></i>

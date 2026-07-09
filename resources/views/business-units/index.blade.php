@@ -84,9 +84,9 @@
                 <div class="row-floating grid grid-cols-12 gap-8 items-center px-10 py-6 group">
                     <!-- NAME -->
                     <div class="col-span-3">
-                        <span class="text-[15px] font-bold text-slate-900 font-outfit tracking-tight block">
+                        <a href="{{ route('business-units.show', $bu) }}" class="text-[15px] font-bold text-slate-900 hover:text-gold-600 font-outfit tracking-tight block transition-colors">
                             {{ $bu->name }}
-                        </span>
+                        </a>
                         <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5 block">
                             {{ $bu->slug }}
                         </span>
@@ -124,6 +124,9 @@
                     <!-- ACTIONS -->
                     <div class="col-span-1">
                         <div class="flex items-center justify-end gap-3 opacity-40 group-hover:opacity-100 transition-all duration-300">
+                            <a href="{{ route('business-units.show', $bu) }}" class="p-1.5 text-slate-400 hover:text-gold-600 transition-colors" title="{{ __('ui.view') ?? 'Detail' }}">
+                                <i data-lucide="eye" class="w-4.5 h-4.5"></i>
+                            </a>
                             <a href="{{ route('business-units.edit', $bu) }}" class="p-1.5 text-slate-400 hover:text-gold-600 transition-colors" title="{{ __('ui.edit') }}">
                                 <i data-lucide="edit-3" class="w-4.5 h-4.5"></i>
                             </a>
@@ -156,7 +159,7 @@
         <!-- Mobile List View -->
         <div class="md:hidden space-y-4">
             @forelse($businessUnits as $bu)
-                <div class="bg-white rounded-3xl border border-slate-200/80 p-6 space-y-4 shadow-sm relative overflow-hidden">
+                <div onclick="window.location='{{ route('business-units.show', $bu) }}'" class="bg-white rounded-3xl border border-slate-200/80 p-6 space-y-4 shadow-sm relative overflow-hidden cursor-pointer hover:border-gold-500/50 transition-all active:scale-[0.99]">
                     <div class="flex justify-between items-start">
                         <div>
                             <span class="text-base font-bold text-slate-900 font-outfit block">{{ $bu->name }}</span>
@@ -185,13 +188,13 @@
                         </span>
                         
                         <div class="flex items-center gap-3">
-                            <a href="{{ route('business-units.edit', $bu) }}" class="p-2 bg-slate-50 hover:bg-gold-50 text-slate-400 hover:text-gold-600 rounded-xl transition-colors">
+                            <a href="{{ route('business-units.edit', $bu) }}" onclick="event.stopPropagation();" class="p-2 bg-slate-50 hover:bg-gold-50 text-slate-400 hover:text-gold-600 rounded-xl transition-colors">
                                 <i data-lucide="edit-3" class="w-4 h-4"></i>
                             </a>
-                            <form action="{{ route('business-units.destroy', $bu) }}" method="POST" onsubmit="return confirm('{{ __('ui.confirm_delete') }}')">
+                            <form action="{{ route('business-units.destroy', $bu) }}" method="POST" onsubmit="event.stopPropagation(); return confirm('{{ __('ui.confirm_delete') }}')">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="p-2 bg-slate-50 hover:bg-rose-50 text-slate-400 hover:text-rose-500 rounded-xl transition-colors">
+                                <button type="submit" onclick="event.stopPropagation();" class="p-2 bg-slate-50 hover:bg-rose-50 text-slate-400 hover:text-rose-500 rounded-xl transition-colors">
                                     <i data-lucide="trash-2" class="w-4 h-4"></i>
                                 </button>
                             </form>

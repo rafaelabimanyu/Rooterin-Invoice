@@ -351,10 +351,20 @@
                             this.subText = 'File PDF Anda sedang diunduh.';
                             this.phaseText = 'Download Triggered';
                             
+                            let finalFilename = filename;
+                            const disposition = response.headers.get('content-disposition');
+                            if (disposition && disposition.indexOf('attachment') !== -1) {
+                                const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                                const matches = filenameRegex.exec(disposition);
+                                if (matches != null && matches[1]) { 
+                                    finalFilename = matches[1].replace(/['"]/g, '');
+                                }
+                            }
+
                             const downloadUrl = window.URL.createObjectURL(blob);
                             const a = document.createElement('a');
                             a.href = downloadUrl;
-                            a.download = filename;
+                            a.download = finalFilename;
                             document.body.appendChild(a);
                             a.click();
                             a.remove();

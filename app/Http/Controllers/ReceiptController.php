@@ -141,12 +141,31 @@ class ReceiptController extends Controller
         }
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('receipts.pdf', compact('receipt', 'attachments', 'logoBase64', 'ttdBase64'));
-        return $pdf->download("Receipt-{$receipt->receipt_number}.pdf");
+        $numberSegments = explode('-', $receipt->receipt_number);
+        $nomorPart = count($numberSegments) >= 2 
+            ? $numberSegments[0] . '-' . $numberSegments[1] 
+            : $receipt->receipt_number;
+
+        $clientName = $receipt->client ? $receipt->client->nama_client : 'General';
+        $cleanedClientName = $this->sanitizeFilenameString($clientName);
+
+        $dateStr = ($receipt->tanggal_receipt ?: ($receipt->payment_date ?: ($receipt->created_at ?: now())))->format('d-m-Y');
+
+        $filename = "Kwitansi-JNJ-{$nomorPart}-{$cleanedClientName}-{$dateStr}.pdf";
+        return $pdf->download($filename);
     }
 
     public function destroy(Receipt $receipt)
     {
         $receipt->delete();
         return redirect()->route('receipts.index')->with('success', 'Receipt deleted successfully.');
+    }
+
+    private function sanitizeFilenameString($string)
+    {
+        $cleaned = preg_replace('/[^\p{L}\p{N}\s\-]/u', '', $string);
+        $cleaned = preg_replace('/[\s_]+/', '-', $cleaned);
+        $cleaned = preg_replace('/-+/', '-', $cleaned);
+        return trim($cleaned, '-');
     }
 }

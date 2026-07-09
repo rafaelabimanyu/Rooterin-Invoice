@@ -347,7 +347,18 @@ class InvoiceController extends Controller
                 'isHtml5ParserEnabled' => true,
                 'defaultFont' => 'sans-serif'
             ]);
-        return $pdf->download("Invoice-{$invoice->invoice_number}.pdf");
+        $numberSegments = explode('-', $invoice->invoice_number);
+        $nomorPart = count($numberSegments) >= 2 
+            ? $numberSegments[0] . '-' . $numberSegments[1] 
+            : $invoice->invoice_number;
+
+        $clientName = $invoice->client ? $invoice->client->nama_client : 'General';
+        $cleanedClientName = $this->sanitizeFilenameString($clientName);
+
+        $dateStr = ($invoice->tanggal_invoice ?: ($invoice->created_at ?: now()))->format('d-m-Y');
+
+        $filename = "Invoice-JNJ-{$nomorPart}-{$cleanedClientName}-{$dateStr}.pdf";
+        return $pdf->download($filename);
     }
 
     public function destroy(Invoice $invoice)
@@ -360,5 +371,13 @@ class InvoiceController extends Controller
         \App\Models\ActivityLog::log('deleted_invoice', "Deleted invoice #{$num}");
         
         return redirect()->route('invoices.index')->with('success', 'Invoice deleted successfully.');
+    }
+
+    private function sanitizeFilenameString($string)
+    {
+        $cleaned = preg_replace('/[^\p{L}\p{N}\s\-]/u', '', $string);
+        $cleaned = preg_replace('/[\s_]+/', '-', $cleaned);
+        $cleaned = preg_replace('/-+/', '-', $cleaned);
+        return trim($cleaned, '-');
     }
 }

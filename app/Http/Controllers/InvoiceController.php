@@ -95,12 +95,12 @@ class InvoiceController extends Controller
             $ppnInput = (float) $request->input('ppn', 0);
             $pphInput = (float) $request->input('pph', 0);
 
-            $discountNominal = $discountInput > 100 ? $discountInput : ($subtotal * ($discountInput / 100));
-            $dpp = $subtotal - $discountNominal;
-            $ppnNominal = $ppnInput > 100 ? $ppnInput : ($dpp * ($ppnInput / 100));
-            $pphNominal = $pphInput > 100 ? $pphInput : ($dpp * ($pphInput / 100));
+            $discountNominal = round($discountInput > 100 ? $discountInput : ($subtotal * ($discountInput / 100)), 2);
+            $dpp = round($subtotal - $discountNominal, 2);
+            $ppnNominal = round($ppnInput > 100 ? $ppnInput : ($dpp * ($ppnInput / 100)), 2);
+            $pphNominal = round($pphInput > 100 ? $pphInput : ($dpp * ($pphInput / 100)), 2);
 
-            $total = $this->invoiceService->calculateTotal($subtotal, $discountNominal, $ppnNominal, $pphNominal);
+            $total = round($this->invoiceService->calculateTotal($subtotal, $discountNominal, $ppnNominal, $pphNominal), 2);
             $invoiceNumber = $this->invoiceService->generateInvoiceNumber();
 
             $invoiceData = [
@@ -224,12 +224,12 @@ class InvoiceController extends Controller
             $ppnInput = (float) $request->input('ppn', 0);
             $pphInput = (float) $request->input('pph', 0);
 
-            $discountNominal = $discountInput > 100 ? $discountInput : ($subtotal * ($discountInput / 100));
-            $dpp = $subtotal - $discountNominal;
-            $ppnNominal = $ppnInput > 100 ? $ppnInput : ($dpp * ($ppnInput / 100));
-            $pphNominal = $pphInput > 100 ? $pphInput : ($dpp * ($pphInput / 100));
+            $discountNominal = round($discountInput > 100 ? $discountInput : ($subtotal * ($discountInput / 100)), 2);
+            $dpp = round($subtotal - $discountNominal, 2);
+            $ppnNominal = round($ppnInput > 100 ? $ppnInput : ($dpp * ($ppnInput / 100)), 2);
+            $pphNominal = round($pphInput > 100 ? $pphInput : ($dpp * ($pphInput / 100)), 2);
 
-            $total = $this->invoiceService->calculateTotal($subtotal, $discountNominal, $ppnNominal, $pphNominal);
+            $total = round($this->invoiceService->calculateTotal($subtotal, $discountNominal, $ppnNominal, $pphNominal), 2);
 
             $invoice->update([
                 'business_unit_id' => $request->business_unit_id,
@@ -345,7 +345,8 @@ class InvoiceController extends Controller
             ->setOption([
                 'isRemoteEnabled' => true, 
                 'isHtml5ParserEnabled' => true,
-                'defaultFont' => 'sans-serif'
+                'defaultFont' => 'sans-serif',
+                'enable_php' => true
             ]);
         $numberSegments = explode('-', $invoice->invoice_number);
         $nomorPart = count($numberSegments) >= 2 

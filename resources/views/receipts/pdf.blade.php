@@ -94,6 +94,7 @@
         .bank-details b { color: #0f172a; }
 
         thead { display: table-header-group; }
+        tfoot { display: table-footer-group; }
         tr { page-break-inside: avoid; }
 
         .bottom-section {
@@ -145,6 +146,8 @@
                         @endforeach
                         <br>
                         Email: {{ strtolower(\App\Models\Setting::get('company_email', 'jayarooter@gmail.com / jawarooter@gmail.com')) }}
+                        <br>
+                        Website: {{ strtolower(\App\Models\Setting::get('company_website', 'jayarooter.com / jawarooter.com')) }}
                     </div>
                 </td>
                 <td style="width: 35%; vertical-align: top; text-align: right;">
@@ -155,9 +158,6 @@
                     @endif
                     <div style="font-size: 24pt; font-weight: 900; color: #0f172a; text-transform: uppercase; margin-bottom: 2px; letter-spacing: -1px; line-height: 1.1;">{{ app()->getLocale() == 'en' ? 'Receipt' : 'Kuitansi' }}</div>
                     <div style="font-size: 13pt; font-weight: 700; color: #c89d3c; margin-bottom: 5px;">#{{ $receipt->receipt_number }}</div>
-                    <div style="font-size: 8.5pt; color: #475569; font-weight: bold; margin-top: 5px;">
-                        {{ strtolower(\App\Models\Setting::get('company_website', 'jayarooter.com / jawarooter.com')) }}
-                    </div>
                 </td>
             </tr>
         </table>
@@ -227,6 +227,11 @@
                 </tr>
                 @endforeach
             </tbody>
+            <tfoot>
+                <tr style="border: none;">
+                    <td colspan="4" style="border: none; padding: 0; height: 10px;"></td>
+                </tr>
+            </tfoot>
         </table>
 
         <!-- Bottom Layout Table: Bank Account Info (Left) & Financial Summary + Standalone Signature (Right) -->
@@ -441,5 +446,15 @@
             </div>
         </div>
     </div>
+<script type="text/php">
+    if (isset($pdf)) {
+        $pdf->page_script('
+            if ($PAGE_COUNT > 2 && $PAGE_NUM < $PAGE_COUNT - 1) {
+                $font = $fontMetrics->get_font("Helvetica", "italic");
+                $pdf->text(360, 460, "Bersambung ke halaman berikutnya...", $font, 8, array(0.58, 0.64, 0.72));
+            }
+        ');
+    }
+</script>
 </body>
 </html>

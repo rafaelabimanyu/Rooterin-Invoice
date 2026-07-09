@@ -242,6 +242,10 @@
                         <span class="text-slate-500 font-medium">{{ app()->getLocale() == 'en' ? 'Discount' : 'Diskon' }} ({{ $invoice->discount_percent }}%)</span>
                         <span class="font-bold text-rose-500">- Rp {{ number_format($invoice->discount, 0, ',', '.') }}</span>
                     </div>
+                    <div class="flex justify-between items-center text-sm border-t border-slate-100/60 pt-2 pb-1">
+                        <span class="text-slate-500 font-medium">{{ app()->getLocale() == 'en' ? 'Tax Base (DPP)' : 'Dasar Pengenaan Pajak (DPP)' }}</span>
+                        <span class="font-bold text-slate-900">Rp {{ number_format($invoice->subtotal - $invoice->discount, 0, ',', '.') }}</span>
+                    </div>
                     @endif
                     @if($invoice->ppn > 0)
                     <div class="flex justify-between items-center text-sm">

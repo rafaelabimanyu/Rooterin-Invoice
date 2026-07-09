@@ -140,7 +140,14 @@ class ReceiptController extends Controller
             $ttdBase64 = 'data:image/png;base64,' . base64_encode(file_get_contents($ttdPath));
         }
 
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('receipts.pdf', compact('receipt', 'attachments', 'logoBase64', 'ttdBase64'));
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('receipts.pdf', compact('receipt', 'attachments', 'logoBase64', 'ttdBase64'))
+            ->setPaper('a4')
+            ->setOption([
+                'isRemoteEnabled' => true, 
+                'isHtml5ParserEnabled' => true,
+                'defaultFont' => 'sans-serif',
+                'enable_php' => true
+            ]);
         $numberSegments = explode('-', $receipt->receipt_number);
         $nomorPart = count($numberSegments) >= 2 
             ? $numberSegments[0] . '-' . $numberSegments[1] 

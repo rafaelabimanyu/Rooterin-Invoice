@@ -120,4 +120,51 @@ class InvoiceManagementTest extends TestCase
             'amount_received' => 330000,
         ]);
     }
+
+    public function test_invoice_calculations_add_both_ppn_and_pph_to_dpp(): void
+    {
+        $user = User::factory()->create();
+        $businessUnit = BusinessUnit::create([
+            'name' => 'Jaya-Website',
+            'slug' => 'jaya-website',
+        ]);
+        $client = Client::create([
+            'kode_client' => 'CL-003',
+            'nama_client' => 'Calculation Client',
+            'status' => 'aktif',
+        ]);
+
+        // Subtotal = 100,000, Discount = 10% (10,000), DPP = 90,000
+        // PPN = 11% of DPP = 9,900
+        // PPh = 2% of DPP = 1,800
+        // Total = 90,000 + 9,900 + 1,800 = 101,700
+        $response = $this->actingAs($user)->post(route('invoices.store'), [
+            'business_unit_id' => $businessUnit->id,
+            'client_id' => $client->id,
+            'due_date' => now()->addDays(7)->format('Y-m-d'),
+            'discount' => '10', // 10%
+            'ppn' => '11', // 11%
+            'pph' => '2', // 2%
+            'items' => [
+                [
+                    'deskripsi' => 'Standard Maintenance',
+                    'qty' => 1,
+                    'harga' => 100000,
+                ]
+            ],
+            'notes' => 'Formula check',
+        ]);
+
+        $response->assertRedirect(route('invoices.index'));
+
+        $this->assertDatabaseHas('invoices', [
+            'business_unit_id' => $businessUnit->id,
+            'client_id' => $client->id,
+            'discount' => 10000, // 10% of 100k
+            'ppn' => 9900, // 11% of 90k
+            'pph' => 1800, // 2% of 90k
+            'subtotal' => 100000,
+            'total' => 101700,
+        ]);
+    }
 }

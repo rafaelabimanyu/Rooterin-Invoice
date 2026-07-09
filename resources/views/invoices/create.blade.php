@@ -67,7 +67,7 @@
                     <div class="grid grid-cols-1 gap-8 mt-8">
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ __('Due Date') }}</label>
-                            <input type="date" name="due_date" value="{{ date('Y-m-d', strtotime('+7 days')) }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none text-sm text-slate-900 transition-all">
+                            <input type="date" name="due_date" value="" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none text-sm text-slate-900 transition-all">
                         </div>
                     </div>
                 </div>
@@ -439,12 +439,12 @@
                     let ppnPercent = parseFloat(this.ppn) || 0;
                     let pphPercent = parseFloat(this.pph) || 0;
 
-                    this.discountNominal = this.subtotal * (discountPercent / 100);
-                    this.dpp = this.subtotal - this.discountNominal;
-                    this.ppnNominal = this.dpp * (ppnPercent / 100);
-                    this.pphNominal = this.dpp * (pphPercent / 100);
+                    this.discountNominal = Math.round((this.subtotal * (discountPercent / 100)) * 100) / 100;
+                    this.dpp = Math.round((this.subtotal - this.discountNominal) * 100) / 100;
+                    this.ppnNominal = Math.round((this.dpp * (ppnPercent / 100)) * 100) / 100;
+                    this.pphNominal = Math.round((this.dpp * (pphPercent / 100)) * 100) / 100;
 
-                    this.total = this.dpp + this.ppnNominal + this.pphNominal;
+                    this.total = Math.round((this.dpp + this.ppnNominal + this.pphNominal) * 100) / 100;
                 },
                 formatCurrency(value) {
                     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value);

@@ -379,12 +379,12 @@
                     let ppnPercent = parseFloat(this.ppn) || 0;
                     let pphPercent = parseFloat(this.pph) || 0;
 
-                    this.discountNominal = this.subtotal * (discountPercent / 100);
-                    this.dpp = this.subtotal - this.discountNominal;
-                    this.ppnNominal = this.dpp * (ppnPercent / 100);
-                    this.pphNominal = this.dpp * (pphPercent / 100);
+                    this.discountNominal = Math.round((this.subtotal * (discountPercent / 100)) * 100) / 100;
+                    this.dpp = Math.round((this.subtotal - this.discountNominal) * 100) / 100;
+                    this.ppnNominal = Math.round((this.dpp * (ppnPercent / 100)) * 100) / 100;
+                    this.pphNominal = Math.round((this.dpp * (pphPercent / 100)) * 100) / 100;
 
-                    this.total = this.dpp + this.ppnNominal + this.pphNominal;
+                    this.total = Math.round((this.dpp + this.ppnNominal + this.pphNominal) * 100) / 100;
                 },
                 formatCurrency(value) {
                     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value);

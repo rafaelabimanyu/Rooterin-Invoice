@@ -34,7 +34,7 @@ class User extends Authenticatable
      */
     public function getInvoicesCountAttribute(): int
     {
-        return 0;
+        return $this->invoices()->count();
     }
 
     /**

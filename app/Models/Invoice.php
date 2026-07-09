@@ -26,6 +26,7 @@ class Invoice extends Model
         'due_date',
         'cause_of_problem',
         'notes',
+        'created_by',
     ];
 
     protected $casts = [
@@ -103,11 +104,22 @@ class Invoice extends Model
     }
 
     /**
+     * Get the payments for the invoice.
+     */
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    /**
      * Backward compatibility accessor for payments relation/collection.
      */
     public function getPaymentsAttribute()
     {
-        return $this->receipt ? collect([$this->receipt]) : collect();
+        if ($this->relationLoaded('payments')) {
+            return $this->getRelationValue('payments');
+        }
+        return $this->payments()->get();
     }
 
     /**
@@ -132,10 +144,21 @@ class Invoice extends Model
     }
 
     /**
+     * Get the user who created the invoice.
+     */
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
      * Backward compatibility accessor for creator relation.
      */
     public function getCreatorAttribute()
     {
-        return User::first() ?: new User(['name' => 'System']);
+        if ($this->relationLoaded('creator')) {
+            return $this->getRelationValue('creator') ?: User::first() ?: new User(['name' => 'System']);
+        }
+        return $this->creator()->first() ?: User::first() ?: new User(['name' => 'System']);
     }
 }

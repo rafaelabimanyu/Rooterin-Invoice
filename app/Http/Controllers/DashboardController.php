@@ -63,7 +63,9 @@ class DashboardController extends Controller
             $todayInvoicesCount = Invoice::where('created_by', auth()->id())
                 ->where('created_at', '>=', now()->startOfDay())
                 ->count();
-            $todayReceiptsCount = \App\Models\Receipt::where('created_by', auth()->id())
+            $todayReceiptsCount = \App\Models\Receipt::whereHas('invoice', function ($q) {
+                $q->where('created_by', auth()->id());
+            })
                 ->where('created_at', '>=', now()->startOfDay())
                 ->count();
             $todayRevenue = Invoice::where('created_by', auth()->id())

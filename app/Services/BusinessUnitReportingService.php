@@ -49,6 +49,10 @@ class BusinessUnitReportingService
                 $pendingOutstanding += $remaining;
             }
         }
+        $statusBreakdown = (clone $invoiceQuery)
+            ->select('status', DB::raw('count(*) as count'), DB::raw('sum(total) as total'))
+            ->groupBy('status')
+            ->get();
 
         return [
             'total_billed' => (float) $totalBilled,
@@ -59,6 +63,7 @@ class BusinessUnitReportingService
             'pending_outstanding' => (float) $pendingOutstanding,
             'overdue_outstanding' => (float) $overdueOutstanding,
             'total_outstanding' => (float) ($pendingOutstanding + $overdueOutstanding),
+            'status_breakdown' => $statusBreakdown,
         ];
     }
 
@@ -68,7 +73,6 @@ class BusinessUnitReportingService
     public function getMonthlyTrend(array $filters = [], int $months = 6): array
     {
         $trendData = [];
-        $today = Carbon::today();
         $locale = app()->getLocale();
 
         $monthNamesId = [
@@ -80,13 +84,38 @@ class BusinessUnitReportingService
             7 => 'Jul', 8 => 'Aug', 9 => 'Sep', 10 => 'Oct', 11 => 'Nov', 12 => 'Dec'
         ];
 
-        for ($i = $months - 1; $i >= 0; $i--) {
-            $monthDate = $today->copy()->subMonths($i);
+        $startDate = $filters['start_date'] ?? null;
+        $endDate = $filters['end_date'] ?? null;
+
+        // Extract base filters (without date limits) to allow monthly querying
+        $baseFilters = $filters;
+        unset($baseFilters['start_date'], $baseFilters['end_date']);
+
+        if ($startDate && $endDate) {
+            $start = Carbon::parse($startDate)->startOfMonth();
+            $end = Carbon::parse($endDate)->startOfMonth();
+            $monthsList = [];
+            
+            // Limit to maximum of 24 months to avoid performance issues
+            $safetyCounter = 0;
+            while ($start->lessThanOrEqualTo($end) && $safetyCounter < 24) {
+                $monthsList[] = $start->copy();
+                $start->addMonth();
+                $safetyCounter++;
+            }
+        } else {
+            $today = Carbon::today();
+            $monthsList = [];
+            for ($i = $months - 1; $i >= 0; $i--) {
+                $monthsList[] = $today->copy()->subMonths($i)->startOfMonth();
+            }
+        }
+
+        foreach ($monthsList as $monthDate) {
             $startOfMonth = $monthDate->copy()->startOfMonth()->toDateString();
             $endOfMonth = $monthDate->copy()->endOfMonth()->toDateString();
 
-            // Set up monthly filters
-            $monthlyFilters = array_merge($filters, [
+            $monthlyFilters = array_merge($baseFilters, [
                 'start_date' => $startOfMonth,
                 'end_date' => $endOfMonth,
             ]);
@@ -97,6 +126,7 @@ class BusinessUnitReportingService
 
             $trendData[] = [
                 'month_label' => $label . ' ' . $monthDate->year,
+                'total_billed' => $stats['total_billed'],
                 'revenue' => $stats['total_revenue'],
                 'receivables' => $stats['total_outstanding'],
             ];

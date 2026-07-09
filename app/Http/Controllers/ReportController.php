@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\Receipt;
+use App\Services\BusinessUnitReportingService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -15,6 +16,12 @@ use App\Exports\ClientsReportExport;
 
 class ReportController extends Controller
 {
+    protected $reportingService;
+
+    public function __construct(BusinessUnitReportingService $reportingService)
+    {
+        $this->reportingService = $reportingService;
+    }
     public function index(Request $request)
     {
         $startDate = $request->get('start_date', Carbon::now()->startOfMonth()->toDateString());
@@ -29,36 +36,32 @@ class ReportController extends Controller
         $prevStartDate = $start->copy()->subDays($daysDiff)->toDateString();
         $prevEndDate = $start->copy()->subDay()->toDateString();
 
-        // --- Invoice Reports ---
-        $invoiceQuery = Invoice::whereBetween('created_at', [$startDate, $endDate]);
-        if ($clientId) {
-            $invoiceQuery->where('client_id', $clientId);
-        }
-
-        $invoiceStats = [
-            'total_count' => (clone $invoiceQuery)->count(),
-            'total_value' => (clone $invoiceQuery)->sum('total'),
-            'status_breakdown' => (clone $invoiceQuery)
-                ->select('status', DB::raw('count(*) as count'), DB::raw('sum(total) as total'))
-                ->groupBy('status')
-                ->get(),
+        $filters = [
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+            'client_id' => $clientId,
         ];
+        $stats = $this->reportingService->getSummaryStats($filters);
 
-        // --- Previous Invoice Stats for Growth ---
-        $prevInvoiceQuery = Invoice::whereBetween('created_at', [$prevStartDate, $prevEndDate]);
-        if ($clientId) {
-            $prevInvoiceQuery->where('client_id', $clientId);
-        }
-        $prevInvoiceCount = $prevInvoiceQuery->count();
-        $prevInvoiceValue = $prevInvoiceQuery->sum('total');
+        $prevFilters = [
+            'start_date' => $prevStartDate,
+            'end_date' => $prevEndDate,
+            'client_id' => $clientId,
+        ];
+        $prevStats = $this->reportingService->getSummaryStats($prevFilters);
 
-        $invoiceStats['count_growth'] = $prevInvoiceCount > 0 
-            ? (($invoiceStats['total_count'] - $prevInvoiceCount) / $prevInvoiceCount) * 100 
-            : 0;
-            
-        $invoiceStats['value_growth'] = $prevInvoiceValue > 0 
-            ? (($invoiceStats['total_value'] - $prevInvoiceValue) / $prevInvoiceValue) * 100 
-            : 0;
+        // --- Invoice Reports ---
+        $invoiceStats = [
+            'total_count' => $stats['total_invoices_count'],
+            'total_value' => $stats['total_billed'],
+            'status_breakdown' => $stats['status_breakdown'],
+            'count_growth' => $prevStats['total_invoices_count'] > 0 
+                ? (($stats['total_invoices_count'] - $prevStats['total_invoices_count']) / $prevStats['total_invoices_count']) * 100 
+                : 0,
+            'value_growth' => $prevStats['total_billed'] > 0 
+                ? (($stats['total_billed'] - $prevStats['total_billed']) / $prevStats['total_billed']) * 100 
+                : 0,
+        ];
 
         // --- Receipt (Payment) Reports ---
         $paymentQuery = Receipt::whereBetween('payment_date', [$startDate, $endDate]);
@@ -87,20 +90,10 @@ class ReportController extends Controller
             : 0;
 
         // --- Outstanding Balance (Active Filter Range) ---
-        $outstandingQuery = Invoice::whereBetween('created_at', [$startDate, $endDate])
-            ->whereIn('status', ['sent', 'dp', 'pending', 'overdue']);
-        if ($clientId) {
-            $outstandingQuery->where('client_id', $clientId);
-        }
-        $totalOutstanding = $outstandingQuery->sum(DB::raw('total - COALESCE((SELECT SUM(amount_received) FROM receipts WHERE receipts.invoice_id = invoices.id), 0)'));
+        $totalOutstanding = $stats['total_outstanding'];
 
         // --- Previous Outstanding Balance for Growth ---
-        $prevOutstandingQuery = Invoice::whereBetween('created_at', [$prevStartDate, $prevEndDate])
-            ->whereIn('status', ['sent', 'dp', 'pending', 'overdue']);
-        if ($clientId) {
-            $prevOutstandingQuery->where('client_id', $clientId);
-        }
-        $prevOutstanding = $prevOutstandingQuery->sum(DB::raw('total - COALESCE((SELECT SUM(amount_received) FROM receipts WHERE receipts.invoice_id = invoices.id), 0)'));
+        $prevOutstanding = $prevStats['total_outstanding'];
         $outstandingGrowth = $prevOutstanding > 0
             ? (($totalOutstanding - $prevOutstanding) / $prevOutstanding) * 100
             : 0;
@@ -117,31 +110,11 @@ class ReportController extends Controller
         $trendRevenue = [];
         $trendReceivables = [];
 
-        // Dynamic date format string depending on connection driver to avoid SQLite incompatibility
-        $driver = DB::connection()->getDriverName();
-        $dateGroupRaw = $driver === 'sqlite'
-            ? "strftime('%Y-%m', created_at) as month"
-            : "DATE_FORMAT(created_at, '%Y-%m') as month";
-
-        $monthlyStats = Invoice::select(
-            DB::raw($dateGroupRaw),
-            DB::raw("SUM(CASE WHEN status = 'paid' THEN total ELSE 0 END) as revenue"),
-            DB::raw("SUM(CASE WHEN status != 'paid' THEN total ELSE 0 END) as receivables")
-        )
-        ->whereBetween('created_at', [$startDate, $endDate]);
-        
-        if ($clientId) {
-            $monthlyStats->where('client_id', $clientId);
-        }
-        
-        $monthlyStats = $monthlyStats->groupBy('month')
-            ->orderBy('month')
-            ->get();
-
-        foreach ($monthlyStats as $stat) {
-            $trendMonths[] = Carbon::parse($stat->month . '-01')->format('M Y');
-            $trendRevenue[] = (float)$stat->revenue;
-            $trendReceivables[] = (float)$stat->receivables;
+        $monthlyTrend = $this->reportingService->getMonthlyTrend($filters);
+        foreach ($monthlyTrend as $item) {
+            $trendMonths[] = $item['month_label'];
+            $trendRevenue[] = $item['revenue'];
+            $trendReceivables[] = $item['receivables'];
         }
 
         // Fallback to last 6 months if date range has no transactions

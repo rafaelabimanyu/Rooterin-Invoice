@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Invoice;
 use App\Models\Receipt;
 use App\Models\Client;
+use App\Services\BusinessUnitReportingService;
 use Carbon\Carbon;
 class OwnerKpi extends Component
 {
@@ -46,40 +47,51 @@ class OwnerKpi extends Component
 
         switch ($cardType) {
             case 'total-revenue':
-                $totalRevenue = Invoice::where('status', 'paid')->sum('total');
+                $reportingService = app(BusinessUnitReportingService::class);
+                $stats = $reportingService->getSummaryStats();
+                $totalRevenue = $stats['total_revenue'];
                 $paidInvoices = Invoice::with('client')
                     ->where('status', 'paid')
                     ->orderByDesc('updated_at')
                     ->take(10)
                     ->get();
                 return compact('totalRevenue', 'paidInvoices');
-
+ 
             case 'collection-rate':
-                $totalInvoicesCount = Invoice::count();
-                $paidInvoicesCount = Invoice::where('status', 'paid')->count();
-                $collectionRate = $totalInvoicesCount > 0 ? ($paidInvoicesCount / $totalInvoicesCount) * 100 : 0;
-                
+                $reportingService = app(BusinessUnitReportingService::class);
+                $stats = $reportingService->getSummaryStats();
+                $totalInvoicesCount = $stats['total_invoices_count'];
+                $paidInvoicesCount = $stats['paid_invoices_count'];
+                $collectionRate = $stats['collection_rate'];
+                 
                 $recentPaidInvoices = Invoice::with('client')
-                    ->where('status', 'paid')
-                    ->orderByDesc('updated_at')
-                    ->take(5)
-                    ->get();
-                    
+                     ->where('status', 'paid')
+                     ->orderByDesc('updated_at')
+                     ->take(5)
+                     ->get();
+                     
                 $recentUnpaidInvoices = Invoice::with('client')
-                    ->where('status', '!=', 'paid')
-                    ->orderByDesc('due_date')
-                    ->take(5)
-                    ->get();
-                
+                     ->where('status', '!=', 'paid')
+                     ->orderByDesc('due_date')
+                     ->take(5)
+                     ->get();
+                 
                 return compact('totalInvoicesCount', 'paidInvoicesCount', 'collectionRate', 'recentPaidInvoices', 'recentUnpaidInvoices');
-
+ 
             case 'revenue':
-                $currentMonthRevenue = Receipt::whereMonth('payment_date', $now->month)
-                    ->whereYear('payment_date', $now->year)
-                    ->sum('amount_received');
-                $lastMonthRevenue = Receipt::whereMonth('payment_date', $lastMonth->month)
-                    ->whereYear('payment_date', $lastMonth->year)
-                    ->sum('amount_received');
+                $reportingService = app(BusinessUnitReportingService::class);
+                $currentMonthStats = $reportingService->getSummaryStats([
+                    'start_date' => $now->copy()->startOfMonth()->toDateString(),
+                    'end_date' => $now->copy()->endOfMonth()->toDateString(),
+                ]);
+                $currentMonthRevenue = $currentMonthStats['total_revenue'];
+
+                $lastMonthStats = $reportingService->getSummaryStats([
+                    'start_date' => $lastMonth->copy()->startOfMonth()->toDateString(),
+                    'end_date' => $lastMonth->copy()->endOfMonth()->toDateString(),
+                ]);
+                $lastMonthRevenue = $lastMonthStats['total_revenue'];
+
                 $revenueChange = 0;
                 if ($lastMonthRevenue > 0) {
                     $revenueChange = (($currentMonthRevenue - $lastMonthRevenue) / $lastMonthRevenue) * 100;
@@ -87,109 +99,100 @@ class OwnerKpi extends Component
                     $revenueChange = 100;
                 }
                 $paidInvoices = Invoice::with('client')
-                    ->whereMonth('created_at', $now->month)
-                    ->whereYear('created_at', $now->year)
-                    ->where('status', 'paid')
-                    ->orderByDesc('updated_at')
-                    ->take(10)
-                    ->get();
-
-                return compact('currentMonthRevenue', 'lastMonthRevenue', 'revenueChange', 'paidInvoices');
-
-            case 'risks':
-                $allInvoices = Invoice::with('receipt')->where('status', '!=', 'paid')->get();
-                $totalUnpaid = $allInvoices->sum(fn($inv) => $inv->total - ($inv->receipt?->amount_received ?? 0));
-                
-                $pendingUnpaid = Invoice::with('receipt')->whereIn('status', ['pending', 'sent', 'partial'])
-                    ->where('due_date', '>=', $now->toDateString())
-                    ->get()
-                    ->sum(fn($inv) => $inv->total - ($inv->receipt?->amount_received ?? 0));
-
-                $overdueUnpaid = Invoice::with('receipt')->where('due_date', '<', $now->toDateString())
-                    ->where('status', '!=', 'paid')
-                    ->get()
-                    ->sum(fn($inv) => $inv->total - ($inv->receipt?->amount_received ?? 0));
-
-                $unpaidInvoices = Invoice::with('client')
-                    ->where('status', '!=', 'paid')
-                    ->orderByDesc('due_date')
-                    ->take(10)
-                    ->get();
-
-                return compact('totalUnpaid', 'pendingUnpaid', 'overdueUnpaid', 'unpaidInvoices');
-
-            case 'loyalty':
-                $totalClients = Client::count();
-                $repeatClients = Client::has('invoices', '>', 1)->count();
-                $repeatRate = $totalClients > 0 ? ($repeatClients / $totalClients) * 100 : 0;
-                $topClients = Client::withCount('invoices')
-                    ->withSum('invoices', 'total')
-                    ->orderByDesc('invoices_sum_total')
-                    ->take(5)
-                    ->get();
-
-                return compact('repeatRate', 'totalClients', 'topClients');
-
-            case 'prime-asset':
-                $topClients = Client::withCount('invoices')
-                    ->withSum('invoices', 'total')
-                    ->orderByDesc('invoices_sum_total')
-                    ->take(5)
-                    ->get()
-                    ->map(function ($client) {
-                        $lastInvoice = $client->invoices()->orderByDesc('created_at')->first();
-                        $client->last_transaction = $lastInvoice ? $lastInvoice->created_at : null;
-                        return $client;
-                    });
-
-                return compact('topClients');
-
-            case 'new-issuance':
-                $monthlyPerformance = [
-                    'created' => Invoice::whereMonth('created_at', $now->month)
-                        ->whereYear('created_at', $now->year)
-                        ->count(),
-                ];
-                $newInvoices = Invoice::with('client')
-                    ->whereMonth('created_at', $now->month)
-                    ->whereYear('created_at', $now->year)
-                    ->orderByDesc('created_at')
-                    ->take(10)
-                    ->get();
-
-                return compact('monthlyPerformance', 'newInvoices');
-
-            case 'settled-assets':
-                $monthlyPerformance = [
-                    'paid' => Invoice::whereMonth('created_at', $now->month)
-                        ->whereYear('created_at', $now->year)
-                        ->where('status', 'paid')
-                        ->count(),
-                ];
-                $paidInvoices = Invoice::with('client')
-                    ->whereMonth('created_at', $now->month)
-                    ->whereYear('created_at', $now->year)
-                    ->where('status', 'paid')
-                    ->orderByDesc('updated_at')
-                    ->take(10)
-                    ->get();
-
-                return compact('monthlyPerformance', 'paidInvoices');
-
-            case 'stagnant-flow':
-                $monthlyPerformance = [
-                    'overdue' => Invoice::where('due_date', '<', $now->toDateString())
-                        ->where('status', '!=', 'paid')
-                        ->count(),
-                ];
-                $overdueInvoices = Invoice::with('client')
-                    ->where('due_date', '<', $now->toDateString())
-                    ->where('status', '!=', 'paid')
-                    ->orderBy('due_date')
-                    ->take(10)
-                    ->get();
-
-                return compact('monthlyPerformance', 'overdueInvoices');
+                     ->whereMonth('created_at', $now->month)
+                     ->whereYear('created_at', $now->year)
+                     ->where('status', 'paid')
+                     ->orderByDesc('updated_at')
+                     ->take(10)
+                     ->get();
+ 
+                 return compact('currentMonthRevenue', 'lastMonthRevenue', 'revenueChange', 'paidInvoices');
+ 
+             case 'risks':
+                 $reportingService = app(BusinessUnitReportingService::class);
+                 $stats = $reportingService->getSummaryStats();
+                 $totalUnpaid = $stats['total_outstanding'];
+                 $pendingUnpaid = $stats['pending_outstanding'];
+                 $overdueUnpaid = $stats['overdue_outstanding'];
+                 
+                 $unpaidInvoices = Invoice::with('client')
+                     ->where('status', '!=', 'paid')
+                     ->orderByDesc('due_date')
+                     ->take(10)
+                     ->get();
+ 
+                 return compact('totalUnpaid', 'pendingUnpaid', 'overdueUnpaid', 'unpaidInvoices');
+ 
+             case 'loyalty':
+                 $reportingService = app(BusinessUnitReportingService::class);
+                 $totalClients = Client::count();
+                 $repeatClients = Client::has('invoices', '>', 1)->count();
+                 $repeatRate = $totalClients > 0 ? ($repeatClients / $totalClients) * 100 : 0;
+                 $topClients = $reportingService->getTopClients([], 5);
+ 
+                 return compact('repeatRate', 'totalClients', 'topClients');
+ 
+             case 'prime-asset':
+                 $reportingService = app(BusinessUnitReportingService::class);
+                 $topClients = $reportingService->getTopClients([], 5)->map(function ($client) {
+                     $lastInvoice = $client->invoices()->orderByDesc('created_at')->first();
+                     $client->last_transaction = $lastInvoice ? $lastInvoice->created_at : null;
+                     return $client;
+                 });
+ 
+                 return compact('topClients');
+ 
+             case 'new-issuance':
+                 $reportingService = app(BusinessUnitReportingService::class);
+                 $currentMonthStats = $reportingService->getSummaryStats([
+                     'start_date' => $now->copy()->startOfMonth()->toDateString(),
+                     'end_date' => $now->copy()->endOfMonth()->toDateString(),
+                 ]);
+                 $monthlyPerformance = [
+                     'created' => $currentMonthStats['total_invoices_count'],
+                 ];
+                 $newInvoices = Invoice::with('client')
+                     ->whereMonth('created_at', $now->month)
+                     ->whereYear('created_at', $now->year)
+                     ->orderByDesc('created_at')
+                     ->take(10)
+                     ->get();
+ 
+                 return compact('monthlyPerformance', 'newInvoices');
+ 
+             case 'settled-assets':
+                 $reportingService = app(BusinessUnitReportingService::class);
+                 $currentMonthStats = $reportingService->getSummaryStats([
+                     'start_date' => $now->copy()->startOfMonth()->toDateString(),
+                     'end_date' => $now->copy()->endOfMonth()->toDateString(),
+                 ]);
+                 $monthlyPerformance = [
+                     'paid' => $currentMonthStats['paid_invoices_count'],
+                 ];
+                 $paidInvoices = Invoice::with('client')
+                     ->whereMonth('created_at', $now->month)
+                     ->whereYear('created_at', $now->year)
+                     ->where('status', 'paid')
+                     ->orderByDesc('updated_at')
+                     ->take(10)
+                     ->get();
+ 
+                 return compact('monthlyPerformance', 'paidInvoices');
+ 
+             case 'stagnant-flow':
+                 $monthlyPerformance = [
+                     'overdue' => Invoice::where('due_date', '<', $now->toDateString())
+                         ->where('status', '!=', 'paid')
+                         ->count(),
+                 ];
+                 $overdueInvoices = Invoice::with('client')
+                     ->where('due_date', '<', $now->toDateString())
+                     ->where('status', '!=', 'paid')
+                     ->orderBy('due_date')
+                     ->take(10)
+                     ->get();
+ 
+                 return compact('monthlyPerformance', 'overdueInvoices');
 
             case 'client':
                 $client = Client::withCount('invoices')
@@ -251,27 +254,32 @@ class OwnerKpi extends Component
         return 'Details';
     }
 
-    public function render()
+    public function render(BusinessUnitReportingService $reportingService)
     {
         $now = Carbon::now();
         $lastMonth = $now->copy()->subMonth()->startOfMonth();
 
         // Total Lifetime Metrics for Dashboard
-        $totalRevenue = Invoice::where('status', 'paid')->sum('total');
-        $pendingRevenue = Invoice::whereIn('status', ['sent', 'pending', 'dp', 'partial'])->with('receipt')->get()->sum(fn($inv) => $inv->total - ($inv->receipt?->amount_received ?? 0));
+        $globalStats = $reportingService->getSummaryStats();
+        $totalRevenue = $globalStats['total_revenue'];
+        $pendingRevenue = $globalStats['total_outstanding'];
         $totalClientsCount = Client::where('status', 'aktif')->count();
-        $totalInvoicesCount = Invoice::count();
-        $paidInvoicesCount = Invoice::where('status', 'paid')->count();
-        $collectionRate = $totalInvoicesCount > 0 ? ($paidInvoicesCount / $totalInvoicesCount) * 100 : 0;
+        $totalInvoicesCount = $globalStats['total_invoices_count'];
+        $paidInvoicesCount = $globalStats['paid_invoices_count'];
+        $collectionRate = $globalStats['collection_rate'];
 
         // 1. Monthly Revenue & Mom Comparison
-        $currentMonthRevenue = Receipt::whereMonth('payment_date', $now->month)
-            ->whereYear('payment_date', $now->year)
-            ->sum('amount_received');
+        $currentMonthStats = $reportingService->getSummaryStats([
+            'start_date' => $now->copy()->startOfMonth()->toDateString(),
+            'end_date' => $now->copy()->endOfMonth()->toDateString(),
+        ]);
+        $currentMonthRevenue = $currentMonthStats['total_revenue'];
 
-        $lastMonthRevenue = Receipt::whereMonth('payment_date', $lastMonth->month)
-            ->whereYear('payment_date', $lastMonth->year)
-            ->sum('amount_received');
+        $lastMonthStats = $reportingService->getSummaryStats([
+            'start_date' => $lastMonth->copy()->startOfMonth()->toDateString(),
+            'end_date' => $lastMonth->copy()->endOfMonth()->toDateString(),
+        ]);
+        $lastMonthRevenue = $lastMonthStats['total_revenue'];
 
         $revenueChange = 0;
         if ($lastMonthRevenue > 0) {
@@ -281,20 +289,9 @@ class OwnerKpi extends Component
         }
 
         // 2. Unpaid Amount Breakdown
-        $allInvoices = Invoice::where('status', '!=', 'paid')->with('receipt')->get();
-        $totalUnpaid = $allInvoices->sum(fn($inv) => $inv->total - ($inv->receipt?->amount_received ?? 0));
-        
-        $pendingUnpaid = Invoice::whereIn('status', ['pending', 'sent', 'partial'])
-            ->where('due_date', '>=', $now->toDateString())
-            ->with('receipt')
-            ->get()
-            ->sum(fn($inv) => $inv->total - ($inv->receipt?->amount_received ?? 0));
-
-        $overdueUnpaid = Invoice::where('due_date', '<', $now->toDateString())
-            ->where('status', '!=', 'paid')
-            ->with('receipt')
-            ->get()
-            ->sum(fn($inv) => $inv->total - ($inv->receipt?->amount_received ?? 0));
+        $totalUnpaid = $globalStats['total_outstanding'];
+        $pendingUnpaid = $globalStats['pending_outstanding'];
+        $overdueUnpaid = $globalStats['overdue_outstanding'];
 
         // 3. Repeat Customer Rate
         $totalClients = Client::count();
@@ -302,25 +299,18 @@ class OwnerKpi extends Component
         $repeatRate = $totalClients > 0 ? ($repeatClients / $totalClients) * 100 : 0;
 
         // 4. Top 5 Clients
-        $topClients = Client::withCount('invoices')
-            ->withSum('invoices', 'total')
-            ->orderByDesc('invoices_sum_total')
-            ->take(5)
-            ->get()
-            ->map(function ($client) {
-                $lastInvoice = $client->invoices()->orderByDesc('created_at')->first();
-                $client->last_transaction = $lastInvoice ? $lastInvoice->created_at : null;
-                return $client;
-            });
+        $topClients = $reportingService->getTopClients([], 5)->map(function ($client) {
+            $lastInvoice = $client->invoices()->orderByDesc('created_at')->first();
+            $client->last_transaction = $lastInvoice ? $lastInvoice->created_at : null;
+            return $client;
+        });
 
         // 5. Revenue Trend (Last 6 Months)
-        $revenueTrend = collect(range(5, 0))->map(function ($i) use ($now) {
-            $month = $now->copy()->subMonths($i);
+        $monthlyTrend = $reportingService->getMonthlyTrend([], 6);
+        $revenueTrend = collect($monthlyTrend)->map(function ($item) {
             return [
-                'month' => $month->format('M Y'),
-                'revenue' => (float) Receipt::whereMonth('payment_date', $month->month)
-                    ->whereYear('payment_date', $month->year)
-                    ->sum('amount_received')
+                'month' => $item['month_label'],
+                'revenue' => (float) $item['revenue']
             ];
         });
 
@@ -332,13 +322,8 @@ class OwnerKpi extends Component
 
         // 7. Monthly Performance Summary
         $monthlyPerformance = [
-            'created' => Invoice::whereMonth('created_at', $now->month)
-                ->whereYear('created_at', $now->year)
-                ->count(),
-            'paid' => Invoice::whereMonth('created_at', $now->month)
-                ->whereYear('created_at', $now->year)
-                ->where('status', 'paid')
-                ->count(),
+            'created' => $currentMonthStats['total_invoices_count'],
+            'paid' => $currentMonthStats['paid_invoices_count'],
             'overdue' => Invoice::where('due_date', '<', $now->toDateString())
                 ->where('status', '!=', 'paid')
                 ->count(),

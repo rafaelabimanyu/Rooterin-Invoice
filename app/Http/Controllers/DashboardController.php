@@ -4,45 +4,47 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use App\Models\Invoice;
+use App\Services\BusinessUnitReportingService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
+    protected $reportingService;
+
+    public function __construct(BusinessUnitReportingService $reportingService)
+    {
+        $this->reportingService = $reportingService;
+    }
+
     public function index()
     {
         $totalClients = Client::where('status', 'aktif')->count();
-        $totalInvoices = Invoice::count();
-        $paidInvoicesCount = Invoice::where('status', 'paid')->count();
-        $pendingInvoicesCount = Invoice::whereIn('status', ['sent', 'pending', 'dp'])->count();
         
-        $totalRevenue = Invoice::where('status', 'paid')->sum('total');
-        $pendingRevenue = Invoice::whereIn('status', ['sent', 'pending', 'dp'])->sum('total');
+        $globalStats = $this->reportingService->getSummaryStats();
+        $totalInvoices = $globalStats['total_invoices_count'];
+        $paidInvoicesCount = $globalStats['paid_invoices_count'];
+        $pendingInvoicesCount = $totalInvoices - $paidInvoicesCount;
+        
+        $totalRevenue = $globalStats['total_revenue'];
+        $pendingRevenue = $globalStats['total_outstanding'];
         
         $totalReceipts = \App\Models\Receipt::count();
         $pendingReceipts = 0;
 
-        $monthlyRevenue = Invoice::where('status', 'paid')
-            ->whereMonth('created_at', Carbon::now()->month)
-            ->whereYear('created_at', Carbon::now()->year)
-            ->sum('total');
+        $monthlyStats = $this->reportingService->getSummaryStats([
+            'start_date' => Carbon::now()->startOfMonth()->toDateString(),
+            'end_date' => Carbon::now()->endOfMonth()->toDateString(),
+        ]);
+        $monthlyRevenue = $monthlyStats['total_revenue'];
 
-        $overdueRevenue = Invoice::whereIn('status', ['sent', 'pending', 'dp'])
-            ->where('due_date', '<', Carbon::now())
-            ->sum('total');
+        $overdueRevenue = $globalStats['overdue_outstanding'];
 
         // Compile 3 months trend
-        $threeMonthsAgo = Carbon::now()->subMonths(2)->startOfMonth();
-        $recentThreeMonthsInvoices = Invoice::where('created_at', '>=', $threeMonthsAgo)->get();
-
+        $threeMonthsTrend = $this->reportingService->getMonthlyTrend([], 3);
         $trendSummary = [];
-        for ($i = 2; $i >= 0; $i--) {
-            $monthDate = Carbon::now()->subMonths($i);
-            $monthTotal = $recentThreeMonthsInvoices->filter(function($invoice) use ($monthDate) {
-                return $invoice->created_at && $invoice->created_at->format('Y-m') === $monthDate->format('Y-m');
-            })->sum('total');
-            
-            $trendSummary[] = $monthDate->format('F Y') . ": Rp " . number_format($monthTotal, 0, ',', '.');
+        foreach ($threeMonthsTrend as $t) {
+            $trendSummary[] = $t['month_label'] . ": Rp " . number_format($t['total_billed'], 0, ',', '.');
         }
         $trendText = implode(', ', $trendSummary);
 
@@ -194,50 +196,18 @@ class DashboardController extends Controller
                 ];
             });
 
-            // Dynamic Cash Flow Data (Last 6 Months)
-            $rawCashFlow = [];
-            $maxVal = 0;
-            for ($i = 5; $i >= 0; $i--) {
-                $monthDate = Carbon::now()->subMonths($i);
-                
-                $revenue = (float) \App\Models\Receipt::whereMonth('payment_date', $monthDate->month)
-                    ->whereYear('payment_date', $monthDate->year)
-                    ->sum('amount_received');
-                    
-                $receivables = (float) Invoice::whereMonth('created_at', $monthDate->month)
-                    ->whereYear('created_at', $monthDate->year)
-                    ->where('status', '!=', 'paid')
-                    ->sum('total');
-                    
-                $maxVal = max($maxVal, $revenue, $receivables);
-                
-                $rawCashFlow[] = [
-                    'date' => $monthDate,
-                    'revenue' => $revenue,
-                    'receivables' => $receivables,
-                ];
-            }
-            
+            // Dynamic Cash Flow Data (Last 6 Months) using BusinessUnitReportingService
+            $monthlyTrend = $this->reportingService->getMonthlyTrend([], 6);
+            $maxVal = collect($monthlyTrend)->max(fn($t) => max($t['revenue'], $t['receivables'])) ?: 1;
             if ($maxVal <= 0) {
                 $maxVal = 1;
             }
             
             $locale = app()->getLocale();
-            $monthNamesId = [
-                1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'Mei', 6 => 'Jun',
-                7 => 'Jul', 8 => 'Agu', 9 => 'Sep', 10 => 'Okt', 11 => 'Nov', 12 => 'Des'
-            ];
-            $monthNamesEn = [
-                1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'May', 6 => 'Jun',
-                7 => 'Jul', 8 => 'Aug', 9 => 'Sep', 10 => 'Oct', 11 => 'Nov', 12 => 'Dec'
-            ];
-            
-            foreach ($rawCashFlow as $item) {
-                $monthNum = $item['date']->month;
-                $label = $locale === 'id' ? $monthNamesId[$monthNum] : $monthNamesEn[$monthNum];
-                
+            $cashFlowData = [];
+            foreach ($monthlyTrend as $item) {
                 $cashFlowData[] = [
-                    'month_label' => $label,
+                    'month_label' => explode(' ', $item['month_label'])[0],
                     'revenue_height' => round(($item['revenue'] / $maxVal) * 100),
                     'receivables_height' => round(($item['receivables'] / $maxVal) * 100),
                     'revenue_formatted' => $this->formatChartAmount($item['revenue'], $locale),
@@ -246,15 +216,7 @@ class DashboardController extends Controller
             }
  
             // A. TOP CLIENTS BY REVENUE
-            $topClients = Client::whereHas('invoices', function ($query) {
-                    $query->where('status', 'paid');
-                })
-                ->withSum(['invoices' => function ($query) {
-                    $query->where('status', 'paid');
-                }], 'total')
-                ->orderByDesc('invoices_sum_total')
-                ->take(5)
-                ->get();
+            $topClients = $this->reportingService->getTopClients([], 5);
  
             // B. INVOICE AGEING SUMMARY
             $unpaidInvoices = Invoice::whereIn('status', ['sent', 'pending', 'dp', 'overdue'])
@@ -283,16 +245,7 @@ class DashboardController extends Controller
             }
         }
 
-        $businessUnitSummary = \App\Models\BusinessUnit::withCount(['invoices as total_orders'])
-            ->withSum(['invoices as total_revenue' => function($query) {
-                $query->where('status', 'paid');
-            }], 'total')
-            ->orderByDesc('total_revenue')
-            ->get()
-            ->map(function ($unit) {
-                $unit->total_revenue = $unit->total_revenue ?? 0;
-                return $unit;
-            });
+        $businessUnitSummary = $this->reportingService->getBusinessUnitsSummary();
         
         return view('dashboard', compact(
             'totalClients', 

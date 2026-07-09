@@ -91,11 +91,16 @@ class InvoiceController extends Controller
                 $subtotal += $item['qty'] * $item['harga'];
             }
 
-            $discount = (float) $request->input('discount', 0);
-            $ppn = (float) $request->input('ppn', 0);
-            $pph = (float) $request->input('pph', 0);
+            $discountInput = (float) $request->input('discount', 0);
+            $ppnInput = (float) $request->input('ppn', 0);
+            $pphInput = (float) $request->input('pph', 0);
 
-            $total = $this->invoiceService->calculateTotal($subtotal, $discount, $ppn, $pph);
+            $discountNominal = $discountInput > 100 ? $discountInput : ($subtotal * ($discountInput / 100));
+            $dpp = $subtotal - $discountNominal;
+            $ppnNominal = $ppnInput > 100 ? $ppnInput : ($dpp * ($ppnInput / 100));
+            $pphNominal = $pphInput > 100 ? $pphInput : ($dpp * ($pphInput / 100));
+
+            $total = $this->invoiceService->calculateTotal($subtotal, $discountNominal, $ppnNominal, $pphNominal);
             $invoiceNumber = $this->invoiceService->generateInvoiceNumber();
 
             $invoiceData = [
@@ -103,9 +108,9 @@ class InvoiceController extends Controller
                 'business_unit_id' => $request->business_unit_id,
                 'client_id' => $request->client_id,
                 'subtotal' => $subtotal,
-                'discount' => $discount,
-                'ppn' => $ppn,
-                'pph' => $pph,
+                'discount' => $discountNominal,
+                'ppn' => $ppnNominal,
+                'pph' => $pphNominal,
                 'total' => $total,
                 'status' => $request->input('status', 'draft'),
                 'due_date' => $request->due_date,
@@ -215,19 +220,24 @@ class InvoiceController extends Controller
                 $subtotal += $item['qty'] * $item['harga'];
             }
 
-            $discount = (float) $request->input('discount', 0);
-            $ppn = (float) $request->input('ppn', 0);
-            $pph = (float) $request->input('pph', 0);
+            $discountInput = (float) $request->input('discount', 0);
+            $ppnInput = (float) $request->input('ppn', 0);
+            $pphInput = (float) $request->input('pph', 0);
 
-            $total = $this->invoiceService->calculateTotal($subtotal, $discount, $ppn, $pph);
+            $discountNominal = $discountInput > 100 ? $discountInput : ($subtotal * ($discountInput / 100));
+            $dpp = $subtotal - $discountNominal;
+            $ppnNominal = $ppnInput > 100 ? $ppnInput : ($dpp * ($ppnInput / 100));
+            $pphNominal = $pphInput > 100 ? $pphInput : ($dpp * ($pphInput / 100));
+
+            $total = $this->invoiceService->calculateTotal($subtotal, $discountNominal, $ppnNominal, $pphNominal);
 
             $invoice->update([
                 'business_unit_id' => $request->business_unit_id,
                 'client_id' => $request->client_id,
                 'subtotal' => $subtotal,
-                'discount' => $discount,
-                'ppn' => $ppn,
-                'pph' => $pph,
+                'discount' => $discountNominal,
+                'ppn' => $ppnNominal,
+                'pph' => $pphNominal,
                 'total' => $total,
                 'due_date' => $request->due_date,
                 'cause_of_problem' => $request->cause_of_problem,
@@ -243,6 +253,14 @@ class InvoiceController extends Controller
                     'harga' => $item['harga'],
                     'total' => $item['qty'] * $item['harga'],
                 ]);
+            }
+
+            if ($request->has('deleted_attachments') && is_array($request->deleted_attachments)) {
+                $attachmentsToDelete = $invoice->attachments()->whereIn('id', $request->deleted_attachments)->get();
+                foreach ($attachmentsToDelete as $att) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($att->file_path);
+                    $att->delete();
+                }
             }
 
             if ($request->hasFile('attachments')) {

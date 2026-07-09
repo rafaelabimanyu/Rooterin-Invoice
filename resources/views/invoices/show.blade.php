@@ -88,9 +88,11 @@
                     <div class="space-y-1">
                         <p class="text-2xl font-black text-slate-900 font-outfit">{{ $invoice->invoice_number }}</p>
                         <p class="text-xs font-bold text-slate-500">{{ app()->getLocale() == 'en' ? 'Issued' : 'Dibuat' }}: {{ $invoice->tanggal_invoice ? $invoice->tanggal_invoice->format('M d, Y') : '-' }}</p>
+                        @if($invoice->due_date)
                         <div class="inline-block mt-4 px-3 py-1 bg-rose-50 text-rose-600 border border-rose-100 rounded text-[10px] font-bold uppercase tracking-widest">
-                            {{ app()->getLocale() == 'en' ? 'Due' : 'Tempo' }}: {{ $invoice->due_date ? $invoice->due_date->format('M d, Y') : '-' }}
+                            {{ app()->getLocale() == 'en' ? 'Due' : 'Tempo' }}: {{ $invoice->due_date->format('M d, Y') }}
                         </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -99,14 +101,29 @@
         <!-- Billing Relations -->
         <div class="flex flex-col md:flex-row p-6 md:p-16 gap-10 md:gap-16 bg-slate-50/30 border-b border-slate-100">
             <div class="w-full md:flex-1">
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">{{ app()->getLocale() == 'en' ? 'Customer Account' : 'Akun Pelanggan' }}</p>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">
+                    {{ $invoice->status === 'paid' 
+                        ? (app()->getLocale() == 'en' ? 'Client' : 'Klien') 
+                        : (app()->getLocale() == 'en' ? 'Customer Account' : 'Tagihan Ke') }}
+                </p>
                 <div class="space-y-2">
                     <p class="text-base md:text-lg font-black text-slate-900">{{ optional($invoice->client)->nama_client ?? 'Klien Tidak Ditemukan' }}</p>
-                    <p class="text-xs md:text-sm font-bold text-gold-600">{{ optional($invoice->client)->nama_perusahaan ?? '-' }}</p>
-                    <p class="text-xs md:text-sm text-slate-500 leading-relaxed max-w-xs">
-                        {{ optional($invoice->client)->alamat ?? '-' }}<br>
-                        {{ optional($invoice->client)->kota ?? '-' }}, {{ optional($invoice->client)->provinsi ?? '-' }}
-                    </p>
+                    @if(optional($invoice->client)->nama_perusahaan)
+                        <p class="text-xs md:text-sm font-bold text-gold-600">{{ $invoice->client->nama_perusahaan }}</p>
+                    @endif
+                    @if(optional($invoice->client)->alamat || optional($invoice->client)->kota || optional($invoice->client)->provinsi || optional($invoice->client)->no_hp)
+                        <p class="text-xs md:text-sm text-slate-500 leading-relaxed max-w-xs">
+                            @if($invoice->client->alamat)
+                                {{ $invoice->client->alamat }}<br>
+                            @endif
+                            @if($invoice->client->kota || $invoice->client->provinsi)
+                                {{ implode(', ', array_filter([$invoice->client->kota, $invoice->client->provinsi])) }}<br>
+                            @endif
+                            @if($invoice->client->no_hp)
+                                {{ __('ui.contact') ?? 'Kontak' }}: {{ $invoice->client->no_hp }}
+                            @endif
+                        </p>
+                    @endif
                 </div>
             </div>
             
@@ -220,14 +237,24 @@
                         <span class="text-slate-500 font-medium">Subtotal</span>
                         <span class="font-bold text-slate-900">Rp {{ number_format($invoice->subtotal, 0, ',', '.') }}</span>
                     </div>
+                    @if($invoice->discount > 0)
                     <div class="flex justify-between items-center text-sm">
-                        <span class="text-slate-500 font-medium">VAT ({{ $invoice->tax_percent }}%)</span>
-                        <span class="font-bold text-slate-900">+ Rp {{ number_format($invoice->subtotal * ($invoice->tax_percent / 100), 0, ',', '.') }}</span>
+                        <span class="text-slate-500 font-medium">{{ app()->getLocale() == 'en' ? 'Discount' : 'Diskon' }} ({{ $invoice->discount_percent }}%)</span>
+                        <span class="font-bold text-rose-500">- Rp {{ number_format($invoice->discount, 0, ',', '.') }}</span>
                     </div>
+                    @endif
+                    @if($invoice->ppn > 0)
                     <div class="flex justify-between items-center text-sm">
-                        <span class="text-slate-500 font-medium">{{ app()->getLocale() == 'en' ? 'Adjustment' : 'Penyesuaian' }}</span>
-                        <span class="font-bold text-rose-500">- Rp {{ number_format($invoice->subtotal * ($invoice->discount_percent / 100), 0, ',', '.') }}</span>
+                        <span class="text-slate-500 font-medium">PPN ({{ $invoice->tax_percent }}%)</span>
+                        <span class="font-bold text-slate-900">+ Rp {{ number_format($invoice->ppn, 0, ',', '.') }}</span>
                     </div>
+                    @endif
+                    @if($invoice->pph > 0)
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-slate-500 font-medium">PPh ({{ $invoice->pph_percent }}%)</span>
+                        <span class="font-bold text-slate-900">+ Rp {{ number_format($invoice->pph, 0, ',', '.') }}</span>
+                    </div>
+                    @endif
                     
                     @if($invoice->status === 'dp')
                     <div class="flex justify-between items-center p-4 bg-gold-50 rounded-xl border border-gold-100">

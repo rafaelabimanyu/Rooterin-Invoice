@@ -36,7 +36,7 @@ class InvoiceService
      */
     public function calculateTotal(float $subtotal, float $discount, float $ppn, float $pph): float
     {
-        return ($subtotal - $discount) + $ppn - $pph;
+        return ($subtotal - $discount) + $ppn + $pph;
     }
 
     /**

@@ -144,8 +144,7 @@
                             <strong style="color: #0f172a;">{{ $phone }}</strong>@if(!$loop->last) / @endif
                         @endforeach
                         <br>
-                        Email: {{ strtolower(\App\Models\Setting::get('company_email', 'jayarooter@gmail.com / jawarooter@gmail.com')) }} | 
-                        Website: {{ strtolower(\App\Models\Setting::get('company_website', 'jayarooter.com / jawarooter.com')) }}
+                        Email: {{ strtolower(\App\Models\Setting::get('company_email', 'jayarooter@gmail.com / jawarooter@gmail.com')) }}
                     </div>
                 </td>
                 <td style="width: 35%; vertical-align: top; text-align: right;">
@@ -155,7 +154,10 @@
                         <div style="font-size: 20px; font-weight: 900; color: #0f172a; margin-bottom: 8px;">J&J GROUP<span style="color: #c89d3c;">.</span></div>
                     @endif
                     <div style="font-size: 24pt; font-weight: 900; color: #0f172a; text-transform: uppercase; margin-bottom: 2px; letter-spacing: -1px; line-height: 1.1;">{{ app()->getLocale() == 'en' ? 'Receipt' : 'Kuitansi' }}</div>
-                    <div style="font-size: 13pt; font-weight: 700; color: #c89d3c;">#{{ $receipt->receipt_number }}</div>
+                    <div style="font-size: 13pt; font-weight: 700; color: #c89d3c; margin-bottom: 5px;">#{{ $receipt->receipt_number }}</div>
+                    <div style="font-size: 8.5pt; color: #475569; font-weight: bold; margin-top: 5px;">
+                        {{ strtolower(\App\Models\Setting::get('company_website', 'jayarooter.com / jawarooter.com')) }}
+                    </div>
                 </td>
             </tr>
         </table>
@@ -169,10 +171,18 @@
                 <div class="client-card">
                     <div class="client-name">{{ optional($receipt->client)->nama_client ?? 'Klien Tidak Ditemukan' }}</div>
                     <div class="client-details">
-                        <b>{{ optional($receipt->client)->nama_perusahaan ?? '-' }}</b><br>
-                        {{ optional($receipt->client)->alamat ?? '-' }}<br>
-                        {{ optional($receipt->client)->kota ?? '-' }}, {{ optional($receipt->client)->provinsi ?? '-' }}<br>
-                        {{ app()->getLocale() == 'en' ? 'Contact' : 'Kontak' }}: {{ optional($receipt->client)->no_hp ?? '-' }}
+                        @if(optional($receipt->client)->nama_perusahaan)
+                            <b>{{ $receipt->client->nama_perusahaan }}</b><br>
+                        @endif
+                        @if(optional($receipt->client)->alamat)
+                            {{ $receipt->client->alamat }}<br>
+                        @endif
+                        @if(optional($receipt->client)->kota || optional($receipt->client)->provinsi)
+                            {{ implode(', ', array_filter([$receipt->client->kota, $receipt->client->provinsi])) }}<br>
+                        @endif
+                        @if(optional($receipt->client)->no_hp)
+                            {{ app()->getLocale() == 'en' ? 'Contact' : 'Kontak' }}: {{ $receipt->client->no_hp }}
+                        @endif
                     </div>
                 </div>
             </div>
@@ -256,7 +266,7 @@
                             @if($receipt->invoice && $receipt->invoice->pph > 0)
                             <tr>
                                 <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 600; font-size: 10pt;">PPh</td>
-                                <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 700; color: #ef4444; font-size: 10pt;">- Rp {{ number_format($receipt->invoice->pph, 0, ',', '.') }}</td>
+                                <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 700; color: #0f172a; font-size: 10pt;">+ Rp {{ number_format($receipt->invoice->pph, 0, ',', '.') }}</td>
                             </tr>
                             @endif
                             <tr>
@@ -322,10 +332,10 @@
                 @endphp
                 
                 @if($count === 1)
-                    <!-- Single Image Layout -->
+                    <!-- Single Image Layout (50% width aligned to left) -->
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
                         <tr>
-                            <td style="width: 100%; padding: 4px; vertical-align: top;">
+                            <td style="width: 50%; padding: 4px; vertical-align: top;">
                                 <div style="width: 100%; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0; text-align: center; overflow: hidden;">
                                     @if($attachments[0]->base64_data)
                                         <img src="{{ $attachments[0]->base64_data }}" style="width: 100%; height: auto; display: block; margin: 0 auto;">
@@ -337,6 +347,7 @@
                                     <div style="font-size: 8pt; color: #475569; margin-top: 4px; font-weight: 600; text-align: center; line-height: 1.2;">{{ $attachments[0]->caption }}</div>
                                 @endif
                             </td>
+                            <td style="width: 50%; padding: 4px;"></td>
                         </tr>
                     </table>
                 @elseif($count === 2)

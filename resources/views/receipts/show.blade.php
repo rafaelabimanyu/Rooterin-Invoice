@@ -101,13 +101,25 @@
         <!-- Billing Relations -->
         <div class="flex flex-col md:flex-row p-6 md:p-16 gap-10 md:gap-16 bg-slate-50/30 border-b border-slate-100">
             <div class="w-full md:flex-1">
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">{{ app()->getLocale() == 'en' ? 'Client Account' : 'Akun Klien' }}</p>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">{{ app()->getLocale() == 'en' ? 'Client' : 'Klien' }}</p>
                 <div class="space-y-2">
-                    <p class="text-base md:text-lg font-black text-slate-900">{{ $receipt->client->nama_client }}</p>
-                    <p class="text-xs md:text-sm font-bold text-gold-600">{{ $receipt->client->nama_perusahaan }}</p>
-                    <p class="text-xs md:text-sm text-slate-500 leading-relaxed max-w-xs">
-                        {{ $receipt->client->alamat }}
-                    </p>
+                    <p class="text-base md:text-lg font-black text-slate-900">{{ optional($receipt->client)->nama_client ?? 'Klien Tidak Ditemukan' }}</p>
+                    @if(optional($receipt->client)->nama_perusahaan)
+                        <p class="text-xs md:text-sm font-bold text-gold-600">{{ $receipt->client->nama_perusahaan }}</p>
+                    @endif
+                    @if(optional($receipt->client)->alamat || optional($receipt->client)->kota || optional($receipt->client)->provinsi || optional($receipt->client)->no_hp)
+                        <p class="text-xs md:text-sm text-slate-500 leading-relaxed max-w-xs">
+                            @if($receipt->client->alamat)
+                                {{ $receipt->client->alamat }}<br>
+                            @endif
+                            @if($receipt->client->kota || $receipt->client->provinsi)
+                                {{ implode(', ', array_filter([$receipt->client->kota, $receipt->client->provinsi])) }}<br>
+                            @endif
+                            @if($receipt->client->no_hp)
+                                {{ __('ui.contact') ?? 'Kontak' }}: {{ $receipt->client->no_hp }}
+                            @endif
+                        </p>
+                    @endif
                 </div>
             </div>
             
@@ -190,14 +202,24 @@
                         <span class="text-slate-500 font-medium">Subtotal</span>
                         <span class="font-bold text-slate-900">Rp {{ number_format($receipt->subtotal, 0, ',', '.') }}</span>
                     </div>
+                    @if($receipt->invoice && $receipt->invoice->discount > 0)
                     <div class="flex justify-between items-center text-sm">
-                        <span class="text-slate-500 font-medium">VAT ({{ $receipt->tax_percent }}%)</span>
-                        <span class="font-bold text-slate-900">+ Rp {{ number_format($receipt->subtotal * ($receipt->tax_percent / 100), 0, ',', '.') }}</span>
+                        <span class="text-slate-500 font-medium">{{ app()->getLocale() == 'en' ? 'Discount' : 'Diskon' }} ({{ $receipt->discount_percent }}%)</span>
+                        <span class="font-bold text-rose-500">- Rp {{ number_format($receipt->invoice->discount, 0, ',', '.') }}</span>
                     </div>
+                    @endif
+                    @if($receipt->invoice && $receipt->invoice->ppn > 0)
                     <div class="flex justify-between items-center text-sm">
-                        <span class="text-slate-500 font-medium">{{ app()->getLocale() == 'en' ? 'Discount' : 'Diskon' }}</span>
-                        <span class="font-bold text-rose-500">- Rp {{ number_format($receipt->subtotal * ($receipt->discount_percent / 100), 0, ',', '.') }}</span>
+                        <span class="text-slate-500 font-medium">PPN ({{ $receipt->tax_percent }}%)</span>
+                        <span class="font-bold text-slate-900">+ Rp {{ number_format($receipt->invoice->ppn, 0, ',', '.') }}</span>
                     </div>
+                    @endif
+                    @if($receipt->invoice && $receipt->invoice->pph > 0)
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-slate-500 font-medium">PPh ({{ $receipt->invoice->pph_percent }}%)</span>
+                        <span class="font-bold text-slate-900">+ Rp {{ number_format($receipt->invoice->pph, 0, ',', '.') }}</span>
+                    </div>
+                    @endif
                     <div class="pt-6 border-t border-slate-200 flex justify-between items-center">
                         <span class="text-xs md:text-sm font-black text-slate-900 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Grand Total' : 'Total Keseluruhan' }}</span>
                         <span class="text-xl md:text-3xl font-black text-gold-600 font-outfit">Rp {{ number_format($receipt->total, 0, ',', '.') }}</span>

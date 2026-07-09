@@ -87,8 +87,9 @@ class Invoice extends Model
      */
     public function getTaxPercentAttribute()
     {
-        if ($this->subtotal > 0) {
-            return round(($this->ppn / $this->subtotal) * 100, 2);
+        $base = $this->subtotal - $this->discount;
+        if ($base > 0) {
+            return round(($this->ppn / $base) * 100, 2);
         }
         return 0;
     }
@@ -100,6 +101,18 @@ class Invoice extends Model
     {
         if ($this->subtotal > 0) {
             return round(($this->discount / $this->subtotal) * 100, 2);
+        }
+        return 0;
+    }
+
+    /**
+     * Calculate virtual PPh percent based on nominal values.
+     */
+    public function getPphPercentAttribute()
+    {
+        $base = $this->subtotal - $this->discount;
+        if ($base > 0) {
+            return round(($this->pph / $base) * 100, 2);
         }
         return 0;
     }

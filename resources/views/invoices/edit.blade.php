@@ -122,16 +122,16 @@
                             </div>
                             <div class="grid grid-cols-3 gap-4">
                                 <div class="space-y-2">
-                                    <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ __('Discount') }}</label>
-                                    <input type="number" step="0.01" min="0" x-model.number="discount" @input="calculateTotal()" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold text-rose-500 outline-none">
+                                    <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ __('Discount') }} (%)</label>
+                                    <input type="number" step="0.01" min="0" max="100" x-model.number="discount" @input="calculateTotal()" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold text-rose-500 outline-none">
                                 </div>
                                 <div class="space-y-2">
-                                    <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">PPN</label>
-                                    <input type="number" step="0.01" min="0" x-model.number="ppn" @input="calculateTotal()" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold text-gold-600 outline-none">
+                                    <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">PPN (%)</label>
+                                    <input type="number" step="0.01" min="0" max="100" x-model.number="ppn" @input="calculateTotal()" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold text-gold-600 outline-none">
                                 </div>
                                 <div class="space-y-2">
-                                    <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">PPh</label>
-                                    <input type="number" step="0.01" min="0" x-model.number="pph" @input="calculateTotal()" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold text-cyan-500 outline-none">
+                                    <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">PPh (%)</label>
+                                    <input type="number" step="0.01" min="0" max="100" x-model.number="pph" @input="calculateTotal()" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold text-cyan-500 outline-none">
                                 </div>
                             </div>
                         </div>
@@ -161,13 +161,19 @@
                                 <i data-lucide="image" class="w-4 h-4 text-gold-500"></i>
                                 {{ __('Job Documentation') }}
                             </h4>
-                            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-4">
-                                @foreach($invoice->attachments as $attachment)
-                                    <div class="relative aspect-square rounded-lg overflow-hidden border border-slate-200 shadow-sm group">
-                                        <img src="{{ asset('storage/' . $attachment->file_path) }}" class="w-full h-full object-cover">
+                            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-4" x-data="{ existingAttachments: @json($invoice->attachments) }">
+                                <template x-for="attachment in existingAttachments" :key="attachment.id">
+                                    <div x-show="!deletedAttachments.includes(attachment.id)" class="relative aspect-square rounded-lg overflow-hidden border border-slate-200 shadow-sm group">
+                                        <img :src="`/storage/${attachment.file_path}`" class="w-full h-full object-cover">
+                                        <button type="button" @click="deleteExistingAttachment(attachment.id)" class="absolute top-1.5 right-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-full p-1.5 shadow-md transition-all opacity-90 hover:opacity-100 hover:scale-105 z-10">
+                                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                        </button>
                                     </div>
-                                @endforeach
+                                </template>
                             </div>
+                            <template x-for="id in deletedAttachments" :key="id">
+                                <input type="hidden" name="deleted_attachments[]" :value="id">
+                            </template>
                             <p class="text-xs text-slate-500">{{ __('Upload additional work evidence or job site documentation. Support multiple files.') }}</p>
                             <div class="relative group cursor-pointer border-2 border-dashed border-slate-200 rounded-xl p-8 hover:border-gold-500 transition-all flex flex-col items-center justify-center bg-slate-50/50">
                                 <input type="file" name="attachments[]" multiple @change="handleFiles" class="absolute inset-0 opacity-0 cursor-pointer">
@@ -176,13 +182,14 @@
                             </div>
 
                             <!-- Image Preview Grid -->
-                            <div x-show="previews.length > 0" class="mt-6 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4" x-cloak>
-                                <template x-for="(preview, index) in previews" :key="index">
+                            <div x-show="files.length > 0" class="mt-6 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4" x-cloak>
+                                <template x-for="(item, index) in files" :key="index">
                                     <div class="relative aspect-square rounded-lg overflow-hidden border border-slate-200 shadow-sm group">
-                                        <img :src="preview" class="w-full h-full object-cover">
-                                        <div class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center">
-                                            <i data-lucide="image" class="w-5 h-5 text-white"></i>
-                                        </div>
+                                        <img :src="item.preview" class="w-full h-full object-cover">
+                                        <button type="button" @click="removeFile(index)" class="absolute top-1.5 right-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-full p-1.5 shadow-md transition-all opacity-90 hover:opacity-100 hover:scale-105 z-10">
+                                            <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                                        </button>
+                                        <div class="absolute inset-x-0 bottom-0 bg-slate-900/60 text-white text-[9px] truncate px-1.5 py-1 text-center" x-text="item.name"></div>
                                     </div>
                                 </template>
                             </div>
@@ -272,18 +279,52 @@
                             </div>
                             
                             <div class="flex justify-between items-center gap-4">
-                                <span class="text-slate-400 text-sm font-medium">{{ __('Discount') }}</span>
-                                <input type="number" name="discount" step="0.01" min="0" x-model.number="discount" @input="calculateTotal()" class="w-32 bg-slate-800 border-none rounded text-right text-sm font-bold text-rose-400 p-1 focus:ring-1 focus:ring-rose-500">
+                                <span class="text-slate-400 text-sm font-medium">{{ __('Discount') }} (%)</span>
+                                <div class="flex items-center gap-1.5">
+                                    <input type="number" name="discount" step="0.01" min="0" max="100" x-model.number="discount" @input="calculateTotal()" class="w-20 bg-slate-800 border-none rounded text-right text-sm font-bold text-rose-400 p-1 focus:ring-1 focus:ring-rose-500">
+                                    <span class="text-slate-400 text-sm">%</span>
+                                </div>
                             </div>
 
                             <div class="flex justify-between items-center gap-4">
-                                <span class="text-slate-400 text-sm font-medium">PPN</span>
-                                <input type="number" name="ppn" step="0.01" min="0" x-model.number="ppn" @input="calculateTotal()" class="w-32 bg-slate-800 border-none rounded text-right text-sm font-bold text-gold-400 p-1 focus:ring-1 focus:ring-gold-500">
+                                <span class="text-slate-400 text-sm font-medium">PPN (%)</span>
+                                <div class="flex items-center gap-1.5">
+                                    <input type="number" name="ppn" step="0.01" min="0" max="100" x-model.number="ppn" @input="calculateTotal()" class="w-20 bg-slate-800 border-none rounded text-right text-sm font-bold text-gold-400 p-1 focus:ring-1 focus:ring-gold-500">
+                                    <span class="text-slate-400 text-sm">%</span>
+                                </div>
                             </div>
 
                             <div class="flex justify-between items-center gap-4">
-                                <span class="text-slate-400 text-sm font-medium">PPh</span>
-                                <input type="number" name="pph" step="0.01" min="0" x-model.number="pph" @input="calculateTotal()" class="w-32 bg-slate-800 border-none rounded text-right text-sm font-bold text-cyan-400 p-1 focus:ring-1 focus:ring-cyan-500">
+                                <span class="text-slate-400 text-sm font-medium">PPh (%)</span>
+                                <div class="flex items-center gap-1.5">
+                                    <input type="number" name="pph" step="0.01" min="0" max="100" x-model.number="pph" @input="calculateTotal()" class="w-20 bg-slate-800 border-none rounded text-right text-sm font-bold text-cyan-400 p-1 focus:ring-1 focus:ring-cyan-500">
+                                    <span class="text-slate-400 text-sm">%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Visual Calculation Flow Breakdown -->
+                        <div class="mt-4 p-4 bg-slate-800/50 rounded-lg border border-slate-700/50 text-[11px] space-y-2 font-mono text-slate-300">
+                            <p class="text-slate-400 font-bold uppercase tracking-wider mb-2 font-sans">{{ app()->getLocale() == 'en' ? 'Calculation Flow' : 'Alur Perhitungan' }}</p>
+                            <div class="flex justify-between">
+                                <span>Subtotal:</span>
+                                <span class="text-white" x-text="formatCurrency(subtotal)"></span>
+                            </div>
+                            <div class="flex justify-between text-rose-400">
+                                <span>{{ app()->getLocale() == 'en' ? 'Discount' : 'Diskon' }} (<span x-text="discount"></span>%):</span>
+                                <span>- <span x-text="formatCurrency(discountNominal)"></span></span>
+                            </div>
+                            <div class="flex justify-between text-slate-400 font-sans border-t border-slate-700/60 pt-1">
+                                <span>{{ app()->getLocale() == 'en' ? 'Tax Base (DPP)' : 'Dasar Pengenaan Pajak (DPP)' }}:</span>
+                                <span class="text-white font-mono" x-text="formatCurrency(dpp)"></span>
+                            </div>
+                            <div class="flex justify-between text-gold-400">
+                                <span>PPN (<span x-text="ppn"></span>%):</span>
+                                <span>+ <span x-text="formatCurrency(ppnNominal)"></span></span>
+                            </div>
+                            <div class="flex justify-between text-cyan-400">
+                                <span>PPh (<span x-text="pph"></span>%):</span>
+                                <span>+ <span x-text="formatCurrency(pphNominal)"></span></span>
                             </div>
                         </div>
                     </div>
@@ -311,11 +352,16 @@
             return {
                 items: @json($invoice->items->map(fn($item) => ['deskripsi' => $item->deskripsi, 'qty' => (float)$item->qty, 'harga' => (float)$item->harga])),
                 subtotal: 0,
-                discount: {{ (float)$invoice->discount }},
-                ppn: {{ (float)$invoice->ppn }},
-                pph: {{ (float)$invoice->pph }},
+                discount: {{ (float)$invoice->discount_percent }},
+                ppn: {{ (float)$invoice->tax_percent }},
+                pph: {{ (float)$invoice->pph_percent }},
+                discountNominal: 0,
+                dpp: 0,
+                ppnNominal: 0,
+                pphNominal: 0,
                 total: 0,
-                previews: [],
+                files: [],
+                deletedAttachments: [],
                 init() {
                     this.calculateTotal();
                 },
@@ -329,24 +375,54 @@
                 },
                 calculateTotal() {
                     this.subtotal = this.items.reduce((acc, item) => acc + (item.qty * Math.max(0, item.harga)), 0);
-                    let discount = parseFloat(this.discount) || 0;
-                    let ppn = parseFloat(this.ppn) || 0;
-                    let pph = parseFloat(this.pph) || 0;
-                    this.total = (this.subtotal - discount) + ppn - pph;
+                    let discountPercent = parseFloat(this.discount) || 0;
+                    let ppnPercent = parseFloat(this.ppn) || 0;
+                    let pphPercent = parseFloat(this.pph) || 0;
+
+                    this.discountNominal = this.subtotal * (discountPercent / 100);
+                    this.dpp = this.subtotal - this.discountNominal;
+                    this.ppnNominal = this.dpp * (ppnPercent / 100);
+                    this.pphNominal = this.dpp * (pphPercent / 100);
+
+                    this.total = this.dpp + this.ppnNominal + this.pphNominal;
                 },
                 formatCurrency(value) {
                     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value);
                 },
                 handleFiles(event) {
-                    const files = event.target.files;
-                    this.previews = [];
-                    for (let i = 0; i < files.length; i++) {
+                    const fileList = event.target.files;
+                    for (let i = 0; i < fileList.length; i++) {
+                        const file = fileList[i];
                         const reader = new FileReader();
                         reader.onload = (e) => {
-                            this.previews.push(e.target.result);
+                            this.files.push({
+                                file: file,
+                                preview: e.target.result,
+                                name: file.name
+                            });
+                            this.updateFileInput();
+                            this.$nextTick(() => lucide.createIcons());
                         };
-                        reader.readAsDataURL(files[i]);
+                        reader.readAsDataURL(file);
                     }
+                },
+                removeFile(index) {
+                    this.files.splice(index, 1);
+                    this.updateFileInput();
+                },
+                updateFileInput() {
+                    const dt = new DataTransfer();
+                    this.files.forEach(item => {
+                        dt.items.add(item.file);
+                    });
+                    const input = document.querySelector('input[type="file"][name="attachments[]"]');
+                    if (input) {
+                        input.files = dt.files;
+                    }
+                },
+                deleteExistingAttachment(id) {
+                    this.deletedAttachments.push(id);
+                    this.$nextTick(() => lucide.createIcons());
                 }
             }
         }

@@ -133,8 +133,11 @@ class Receipt extends Model
      */
     public function getTaxPercentAttribute()
     {
-        if ($this->invoice && $this->invoice->subtotal > 0) {
-            return round(($this->invoice->ppn / $this->invoice->subtotal) * 100, 2);
+        if ($this->invoice) {
+            $base = $this->invoice->subtotal - $this->invoice->discount;
+            if ($base > 0) {
+                return round(($this->invoice->ppn / $base) * 100, 2);
+            }
         }
         return 0;
     }

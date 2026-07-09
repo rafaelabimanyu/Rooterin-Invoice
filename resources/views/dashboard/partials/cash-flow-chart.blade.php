@@ -58,7 +58,7 @@
                     </div>
                 @empty
                     <div class="flex items-center justify-center w-full h-full text-slate-400 text-xs italic">
-                        {{ app()->getLocale() == 'en' ? 'No financial data available' : 'Tidak ada data keuangan tersedia' }}
+                        {{ __('dashboard.no_financial_data') }}
                     </div>
                 @endforelse
             </div>

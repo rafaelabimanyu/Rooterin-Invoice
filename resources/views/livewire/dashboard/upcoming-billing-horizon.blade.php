@@ -1,8 +1,8 @@
 <div class="glass-card p-10 flex flex-col shadow-2xl shadow-gold-500/5 border-slate-100 page-fade-in stagger-4 w-full min-w-0">
     <div class="flex items-center justify-between mb-10">
         <div>
-            <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg">{{ app()->getLocale() == 'en' ? 'Upcoming Billing Horizon' : 'Cakrawala Penagihan Mendatang' }}</h3>
-            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">{{ app()->getLocale() == 'en' ? 'Next 7 Days Projections' : 'Proyeksi 7 Hari ke Depan' }}</p>
+            <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg">{{ __('dashboard.upcoming_billing_horizon') }}</h3>
+            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">{{ __('dashboard.next_7_days_projections') }}</p>
         </div>
         <div class="w-12 h-12 rounded-2xl bg-gold-50 flex items-center justify-center text-gold-600">
             <i data-lucide="calendar-clock" class="w-6 h-6"></i>
@@ -34,7 +34,7 @@
                         Rp {{ number_format($invoice->total, 0, ',', '.') }}
                     </p>
                     <span class="text-[9px] font-black uppercase tracking-widest block whitespace-nowrap {{ $invoice->due_date->isToday() ? 'text-rose-500' : 'text-slate-400' }}">
-                        {{ $invoice->due_date->isToday() ? (app()->getLocale() == 'en' ? 'Due Today' : 'Jatuh Tempo Hari Ini') : $invoice->due_date->diffForHumans() }}
+                        {{ $invoice->due_date->isToday() ? __('dashboard.due_today') : $invoice->due_date->diffForHumans() }}
                     </span>
                 </div>
             </div>
@@ -43,8 +43,8 @@
                 <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
                     <i data-lucide="sun" class="w-8 h-8 text-slate-200"></i>
                 </div>
-                <p class="text-xs font-bold text-slate-900 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Horizon is Clear' : 'Cakrawala Bersih' }}</p>
-                <p class="text-[11px] text-slate-400 mt-2">{{ app()->getLocale() == 'en' ? 'No invoices are due within the next 7 days.' : 'Tidak ada invoice jatuh tempo dalam 7 hari ke depan.' }}</p>
+                <p class="text-xs font-bold text-slate-900 uppercase tracking-widest">{{ __('dashboard.horizon_is_clear') }}</p>
+                <p class="text-[11px] text-slate-400 mt-2">{{ __('dashboard.no_invoices_due') }}</p>
             </div>
         @endforelse
     </div>
@@ -53,7 +53,7 @@
     <div class="mt-10 pt-10 border-t border-slate-100">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Expected Cash Flow' : 'Estimasi Arus Kas Masuk' }}</p>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{{ __('dashboard.expected_cash_flow') }}</p>
                 <h4 class="text-2xl font-black text-slate-900 font-jakarta tracking-tighter">Rp {{ number_format($totalExpectedCashFlow, 0, ',', '.') }}</h4>
             </div>
             <div class="p-3 bg-emerald-50 rounded-xl">
@@ -62,7 +62,7 @@
         </div>
         <a href="{{ route('chronos.index') }}" class="mt-6 w-full flex items-center justify-center gap-2 px-4 py-3 bg-slate-50 text-slate-600 rounded-xl font-bold text-xs hover:bg-gold-500 hover:text-slate-950 transition-all duration-300 group">
             <i data-lucide="calendar-days" class="w-4 h-4 group-hover:scale-110 transition-transform"></i>
-            {{ app()->getLocale() == 'en' ? 'View Full Calendar' : 'Lihat Kalender Lengkap' }}
+            {{ __('dashboard.view_full_calendar') }}
         </a>
     </div>
     @endif

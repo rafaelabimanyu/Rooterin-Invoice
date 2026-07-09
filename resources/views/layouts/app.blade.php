@@ -32,7 +32,7 @@
                 slideOverLoading: false
             }"
             @open-slide-over.window="slideOverOpen = true; slideOverTitle = $event.detail.title; slideOverContent = $event.detail.content; slideOverLoading = false"
-            @slide-over-loading-start.window="slideOverOpen = true; slideOverTitle = '{{ app()->getLocale() == 'en' ? 'Loading Details...' : 'Memuat Detail...' }}'; slideOverContent = ''; slideOverLoading = true"
+            @slide-over-loading-start.window="slideOverOpen = true; slideOverTitle = '{{ __('ui.loading_details') }}'; slideOverContent = ''; slideOverLoading = true"
         >
             <!-- Sidebar -->
             <x-sidebar />

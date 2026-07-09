@@ -2,10 +2,10 @@
     <div class="flex items-center justify-between mb-6">
         <div>
             <h4 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-xs">
-                {{ app()->getLocale() == 'en' ? 'Top Clients by Revenue' : 'Klien Teratas Berdasarkan Pendapatan' }}
+                {{ __('dashboard.top_clients_revenue') }}
             </h4>
             <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1">
-                {{ app()->getLocale() == 'en' ? 'Highest lifetime value clients' : 'Klien dengan kontribusi pendapatan terbesar' }}
+                {{ __('dashboard.highest_ltv_clients') }}
             </p>
         </div>
         <div class="w-8 h-8 rounded-lg bg-gold-50 flex items-center justify-center text-gold-600">
@@ -32,7 +32,7 @@
             </div>
         @empty
             <div class="text-center py-8 text-slate-400 italic text-xs">
-                {{ app()->getLocale() == 'en' ? 'No revenue records found.' : 'Belum ada data pendapatan.' }}
+                {{ __('dashboard.no_revenue_records') }}
             </div>
         @endforelse
     </div>
@@ -42,10 +42,10 @@
             <div class="flex items-center justify-between mb-6">
                 <div>
                     <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-sm">
-                        {{ app()->getLocale() == 'en' ? 'Top Clients by Revenue' : 'Klien Teratas Berdasarkan Pendapatan' }}
+                        {{ __('dashboard.top_clients_revenue') }}
                     </h3>
                     <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">
-                        {{ app()->getLocale() == 'en' ? 'Highest lifetime value clients' : 'Klien dengan kontribusi pendapatan terbesar' }}
+                        {{ __('dashboard.highest_ltv_clients') }}
                     </p>
                 </div>
                 <div class="w-8 h-8 rounded-lg bg-gold-50 flex items-center justify-center text-gold-600">
@@ -73,7 +73,7 @@
                     </div>
                 @empty
                     <div class="text-center py-8 text-slate-400 italic text-xs">
-                        {{ app()->getLocale() == 'en' ? 'No revenue records found.' : 'Belum ada data pendapatan.' }}
+                        {{ __('dashboard.no_revenue_records') }}
                     </div>
                 @endforelse
             </div>

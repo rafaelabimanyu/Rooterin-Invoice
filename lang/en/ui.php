@@ -134,5 +134,10 @@ return [
     'other_sector' => 'Custom Sector',
     'client_type_label' => 'Client Type',
     'industry_sector_label' => 'Industry Sector',
+    'ai_assistant' => 'AI Assistant',
+    'chronos_calendar' => 'Chronos Calendar',
+    'operational_sop' => 'Operational SOP',
+    'loading_details' => 'Loading Details...',
 ];
+
 

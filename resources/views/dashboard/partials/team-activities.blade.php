@@ -54,7 +54,7 @@
                 </div>
             @empty
                 <div class="py-8 text-center text-slate-400 italic text-xs">
-                    {{ app()->getLocale() == 'en' ? 'No recent security activities.' : 'Tidak ada aktivitas keamanan terbaru.' }}
+                    {{ __('dashboard.no_security_activities') }}
                 </div>
             @endforelse
         </div>

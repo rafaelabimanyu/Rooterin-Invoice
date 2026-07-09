@@ -2,10 +2,10 @@
     <div class="px-10 py-8 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between bg-slate-50/30 gap-4">
         <div>
             <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg">
-                {{ app()->getLocale() == 'en' ? 'Business Unit Performance' : 'Kinerja Unit Bisnis' }}
+                {{ __('dashboard.bu_performance') }}
             </h3>
             <p class="text-[11px] text-slate-400 font-bold uppercase tracking-widest mt-1">
-                {{ app()->getLocale() == 'en' ? 'Summary of orders and total revenue per unit' : 'Ringkasan orderan dan total pendapatan per unit bisnis' }}
+                {{ __('dashboard.bu_performance_subtitle') }}
             </p>
         </div>
         <div class="w-8 h-8 rounded-lg bg-gold-50 flex items-center justify-center text-gold-600">
@@ -18,9 +18,9 @@
         <table class="w-full text-left whitespace-nowrap">
             <thead>
                 <tr class="table-header">
-                    <th class="px-10 py-5">{{ app()->getLocale() == 'en' ? 'Business Unit' : 'Unit Bisnis' }}</th>
-                    <th class="px-10 py-5 text-center">{{ app()->getLocale() == 'en' ? 'Total Orders' : 'Total Orderan' }}</th>
-                    <th class="px-10 py-5 text-right">{{ app()->getLocale() == 'en' ? 'Total Revenue' : 'Total Pendapatan' }}</th>
+                    <th class="px-10 py-5">{{ __('dashboard.business_unit') }}</th>
+                    <th class="px-10 py-5 text-center">{{ __('dashboard.total_orders') }}</th>
+                    <th class="px-10 py-5 text-right">{{ __('dashboard.total_revenue') }}</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-50">
@@ -44,7 +44,7 @@
                 @empty
                     <tr>
                         <td colspan="3" class="px-10 py-8 text-center text-slate-400 italic text-sm">
-                            {{ app()->getLocale() == 'en' ? 'No records found.' : 'Tidak ada data ditemukan.' }}
+                            {{ __('dashboard.no_records_found') }}
                         </td>
                     </tr>
                 @endforelse
@@ -63,7 +63,7 @@
                         </div>
                         <div class="flex flex-col">
                             <span class="text-xs font-black text-slate-900">{{ $summary->name }}</span>
-                            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">{{ $summary->total_orders }} {{ app()->getLocale() == 'en' ? 'Orders' : 'Orderan' }}</span>
+                            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">{{ $summary->total_orders }} {{ __('dashboard.orders') }}</span>
                         </div>
                     </div>
                     <div class="text-right">
@@ -75,7 +75,7 @@
             </div>
         @empty
             <div class="px-6 py-8 text-center text-slate-400 italic text-xs">
-                {{ app()->getLocale() == 'en' ? 'No records found.' : 'Tidak ada data ditemukan.' }}
+                {{ __('dashboard.no_records_found') }}
             </div>
         @endforelse
     </div>

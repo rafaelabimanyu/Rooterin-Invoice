@@ -32,4 +32,83 @@ return [
     'created_invoice' => 'Membuat draf invoice :inv',
     'session_verified' => 'Sesi diverifikasi dengan token :token',
     'failed_admin_login' => 'Percobaan login admin gagal dari IP :ip',
+    
+    // Dashboard UI
+    'main_dashboard' => 'Dasbor Utama',
+    'keep_up_work' => 'Terus tingkatkan kinerja luar biasa Anda,',
+    'new_client' => 'Klien Baru',
+    'draft_invoice' => 'Draf Invoice',
+    'system_time' => 'Waktu Sistem',
+    'daily_target' => 'Target Harian',
+    'todays_invoices' => 'Invoice Hari Ini',
+    'receipts_logged' => 'Kwitansi Tercatat',
+    'daily_output_value' => 'Nilai Output Harian',
+    'top_clients' => 'Klien Teratas',
+    'ar_ageing' => 'Umur Piutang',
+    
+    // Activity feed & System Info
+    'activity_feed' => 'Aliran Aktivitas',
+    'no_activities' => 'Tidak ada aktivitas tercatat',
+    'activities_desc' => 'Aktivitas akan muncul di sini setelah Anda mulai memproses dokumen.',
+    'system_information' => 'Informasi Sistem',
+    'node_identity' => 'Identitas Node',
+    'session_integrity' => 'Integritas Sesi',
+    
+    // Upcoming Billing Horizon
+    'upcoming_billing_horizon' => 'Cakrawala Penagihan Mendatang',
+    'next_7_days_projections' => 'Proyeksi 7 Hari ke Depan',
+    'due_today' => 'Jatuh Tempo Hari Ini',
+    'horizon_is_clear' => 'Cakrawala Bersih',
+    'no_invoices_due' => 'Tidak ada invoice jatuh tempo dalam 7 hari ke depan.',
+    'expected_cash_flow' => 'Estimasi Arus Kas Masuk',
+    'view_full_calendar' => 'Lihat Kalender Lengkap',
+    
+    // Workspace / Lift-off
+    'ready_for_liftoff' => 'Siap Lepas Landas?',
+    'workspace_clean_detailed' => 'Ruang kerja Anda bersih dan siap. Mulai transaksi pertama Anda hari ini untuk melihat log aktivitas di sini.',
+    'workspace_clean_simple' => 'Ruang kerja Anda bersih. Mulai transaksi pertama Anda hari ini.',
+    
+    // Business Unit Summary
+    'bu_performance' => 'Kinerja Unit Bisnis',
+    'bu_performance_subtitle' => 'Ringkasan orderan dan total pendapatan per unit bisnis',
+    'business_unit' => 'Unit Bisnis',
+    'total_orders' => 'Total Orderan',
+    'total_revenue' => 'Total Pendapatan',
+    'no_records_found' => 'Tidak ada data ditemukan.',
+    'orders' => 'Orderan',
+    
+    // Cash Flow Chart
+    'no_financial_data' => 'Tidak ada data keuangan tersedia',
+    
+    // AR Ageing
+    'ar_ageing_title' => 'Umur Piutang (Ageing)',
+    'ar_ageing_subtitle' => 'Rincian piutang berdasarkan keterlambatan jatuh tempo',
+    'current_not_due' => 'Belum Jatuh Tempo',
+    'overdue_1_30' => 'Tunggakan 1 - 30 Hari',
+    'overdue_31_60' => 'Tunggakan 31 - 60 Hari',
+    'overdue_60_plus' => 'Tunggakan 60+ Hari',
+    'total_outstanding' => 'Total Piutang Aktif',
+    
+    // System Analytics
+    'system_analytics' => 'Analitik Sistem',
+    'operational_load' => 'Beban Operasional',
+    'efficient' => 'Optimal',
+    
+    // Team Security Logs / Activities
+    'no_security_activities' => 'Tidak ada aktivitas keamanan terbaru.',
+    
+    // Top Clients
+    'top_clients_revenue' => 'Klien Teratas Berdasarkan Pendapatan',
+    'highest_ltv_clients' => 'Klien dengan kontribusi pendapatan terbesar',
+    'no_revenue_records' => 'Belum ada data pendapatan.',
 ];
+
+
+
+
+
+
+
+
+
+

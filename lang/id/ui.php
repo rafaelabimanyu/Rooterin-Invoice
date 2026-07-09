@@ -134,5 +134,10 @@ return [
     'other_sector' => 'Sektor Kustom',
     'client_type_label' => 'Tipe Klien',
     'industry_sector_label' => 'Sektor Industri',
+    'ai_assistant' => 'Asisten AI',
+    'chronos_calendar' => 'Kalender Chronos',
+    'operational_sop' => 'SOP Operasional',
+    'loading_details' => 'Memuat Detail...',
 ];
+
 

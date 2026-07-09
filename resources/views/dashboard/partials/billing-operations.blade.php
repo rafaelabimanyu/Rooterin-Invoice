@@ -70,8 +70,8 @@
                                 </div>
                                 <h4
                                     class="text-xl font-black text-slate-900 font-jakarta uppercase tracking-tight mb-2">
-                                    {{ app()->getLocale() == 'en' ? 'Ready for Lift-off?' : 'Siap Lepas Landas?' }}</h4>
-                                <p class="text-sm text-slate-500 font-medium leading-relaxed">{{ app()->getLocale() == 'en' ? 'Your workspace is clean and ready. Start your first transaction of the day to see activity logs here.' : 'Ruang kerja Anda bersih dan siap. Mulai transaksi pertama Anda hari ini untuk melihat log aktivitas di sini.' }}</p>
+                                    {{ __('dashboard.ready_for_liftoff') }}</h4>
+                                <p class="text-sm text-slate-500 font-medium leading-relaxed">{{ __('dashboard.workspace_clean_detailed') }}</p>
                             </div>
                         </td>
                     </tr>
@@ -109,10 +109,10 @@
                     <i data-lucide="rocket" class="w-10 h-10 text-slate-200 animate-pulse"></i>
                 </div>
                 <h4 class="text-base font-black text-slate-900 font-jakarta uppercase tracking-tight mb-1">
-                    {{ app()->getLocale() == 'en' ? 'Ready for Lift-off?' : 'Siap Lepas Landas?' }}
+                    {{ __('dashboard.ready_for_liftoff') }}
                 </h4>
                 <p class="text-xs text-slate-500 font-medium max-w-xs mx-auto leading-relaxed">
-                    {{ app()->getLocale() == 'en' ? 'Your workspace is clean. Start your first transaction of the day.' : 'Ruang kerja Anda bersih. Mulai transaksi pertama Anda hari ini.' }}
+                    {{ __('dashboard.workspace_clean_simple') }}
                 </p>
             </div>
         @endforelse

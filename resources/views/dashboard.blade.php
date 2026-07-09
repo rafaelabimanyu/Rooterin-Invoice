@@ -1,4 +1,4 @@
-<x-app-layout :title="app()->getLocale() == 'en' ? 'Main Dashboard' : 'Dashboard Utama'">
+<x-app-layout :title="__('dashboard.main_dashboard')">
     <div class="animate-fade-in-up">
         <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-8 page-fade-in">
         <div>
@@ -51,7 +51,7 @@
                         </div>
 
                         <h2 class="text-3xl md:text-5xl font-black font-jakarta tracking-tight leading-tight">
-                            {{ app()->getLocale() == 'en' ? 'Keep up the great work,' : 'Terus tingkatkan kinerja luar biasa Anda,' }}<br><span class="text-gold-300">{{ auth()->user()->name }}</span>
+                            {{ __('dashboard.keep_up_work') }}<br><span class="text-gold-300">{{ auth()->user()->name }}</span>
                         </h2>
 
                         <div class="flex items-center gap-4 py-4 border-l-2 border-gold-500/30 pl-6">
@@ -68,21 +68,21 @@
                                 <div class="p-1.5 bg-gold-100 rounded-lg group-hover:scale-110 transition-transform">
                                     <i data-lucide="user-plus" class="w-4 h-4 text-gold-600"></i>
                                 </div>
-                                {{ app()->getLocale() == 'en' ? 'New Client' : 'Klien Baru' }}
+                                {{ __('dashboard.new_client') }}
                             </a>
                             <a href="{{ route('invoices.create') }}"
                                 class="group flex items-center gap-3 px-5 py-3 bg-gold-500/50 backdrop-blur-md border border-white/20 text-white rounded-xl font-bold text-xs hover:bg-white/20 transition-all shadow-xl hover:-translate-y-1">
                                 <div class="p-1.5 bg-white/20 rounded-lg group-hover:scale-110 transition-transform">
                                     <i data-lucide="file-edit" class="w-4 h-4"></i>
                                 </div>
-                                {{ app()->getLocale() == 'en' ? 'Draft Invoice' : 'Draf Invoice' }}
+                                {{ __('dashboard.draft_invoice') }}
                             </a>
                             <a href="{{ route('guide.index') }}?type=sop"
                                 class="group flex items-center gap-3 px-5 py-3 bg-slate-800/50 backdrop-blur-md border border-white/10 text-white rounded-xl font-bold text-xs hover:bg-white/10 transition-all shadow-xl hover:-translate-y-1">
                                 <div class="p-1.5 bg-white/10 rounded-lg group-hover:scale-110 transition-transform">
                                     <i data-lucide="book-open" class="w-4 h-4"></i>
                                 </div>
-                                {{ app()->getLocale() == 'en' ? 'Operational SOP' : 'SOP Operasional' }}
+                                {{ __('ui.operational_sop') }}
                             </a>
                         </div>
                     </div>
@@ -91,7 +91,7 @@
                         <!-- Digital Clock -->
                         <div
                             class="p-6 bg-white/5 backdrop-blur-xl rounded-[32px] border border-white/10 text-right min-w-[200px]">
-                            <p class="text-[10px] font-black uppercase tracking-[0.3em] text-gold-300/60 mb-2">{{ app()->getLocale() == 'en' ? 'System Time' : 'Waktu Sistem' }}
+                            <p class="text-[10px] font-black uppercase tracking-[0.3em] text-gold-300/60 mb-2">{{ __('dashboard.system_time') }}
                             </p>
                             <p class="text-4xl md:text-5xl font-black font-mono tracking-tighter" x-text="time"></p>
                             <p class="text-[11px] font-bold text-gold-200 mt-2">{{ date('l, F d, Y') }}</p>
@@ -114,8 +114,8 @@
                                 </div>
                             </div>
                             <div>
-                                <p class="text-[10px] font-black uppercase tracking-widest text-gold-300/60 mb-1">{{ app()->getLocale() == 'en' ? 'Daily Target' : 'Target Harian' }}</p>
-                                <p class="text-sm font-black">{{ $todayInvoicesCount }} / {{ $dailyGoal }} {{ app()->getLocale() == 'en' ? 'Invoices' : 'Invoice' }}</p>
+                                <p class="text-[10px] font-black uppercase tracking-widest text-gold-300/60 mb-1">{{ __('dashboard.daily_target') }}</p>
+                                <p class="text-sm font-black">{{ $todayInvoicesCount }} / {{ $dailyGoal }} {{ __('ui.invoices') }}</p>
                             </div>
                         </div>
                     </div>
@@ -139,9 +139,9 @@
                             <i data-lucide="file-text" class="w-7 h-7 group-hover:animate-bounce"></i>
                         </div>
                         <span
-                            class="text-[9px] font-black bg-gold-50 text-gold-600 px-3 py-1 rounded-full uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Invoices' : 'Invoice' }}</span>
+                            class="text-[9px] font-black bg-gold-50 text-gold-600 px-3 py-1 rounded-full uppercase tracking-widest">{{ __('ui.invoices') }}</span>
                     </div>
-                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">{{ app()->getLocale() == 'en' ? "Today's Invoices" : 'Invoice Hari Ini' }}</p>
+                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">{{ __('dashboard.todays_invoices') }}</p>
                     <h3 class="text-4xl font-black text-slate-900 font-jakarta">{{ $todayInvoicesCount }}</h3>
                 </div>
 
@@ -152,9 +152,9 @@
                             <i data-lucide="clipboard-check" class="w-7 h-7 group-hover:scale-110 transition-transform"></i>
                         </div>
                         <span
-                            class="text-[9px] font-black bg-gold-50 text-gold-600 px-3 py-1 rounded-full uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Receipts' : 'Kuitansi' }}</span>
+                            class="text-[9px] font-black bg-gold-50 text-gold-600 px-3 py-1 rounded-full uppercase tracking-widest">{{ __('ui.receipts') }}</span>
                     </div>
-                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">{{ app()->getLocale() == 'en' ? 'Receipts Logged' : 'Kuitansi Tercatat' }}</p>
+                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">{{ __('dashboard.receipts_logged') }}</p>
                     <h3 class="text-4xl font-black text-slate-900 font-jakarta">{{ $todayReceiptsCount }}</h3>
                 </div>
 
@@ -165,9 +165,9 @@
                             <i data-lucide="zap" class="w-7 h-7 group-hover:rotate-12 transition-transform"></i>
                         </div>
                         <span
-                            class="text-[9px] font-black bg-gold-50 text-gold-600 px-3 py-1 rounded-full uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Revenue' : 'Pendapatan' }}</span>
+                            class="text-[9px] font-black bg-gold-50 text-gold-600 px-3 py-1 rounded-full uppercase tracking-widest">{{ __('dashboard.revenue') }}</span>
                     </div>
-                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">{{ app()->getLocale() == 'en' ? 'Daily Output Value' : 'Nilai Output Harian' }}</p>
+                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">{{ __('dashboard.daily_output_value') }}</p>
                     <h3 class="text-2xl font-black text-slate-900 font-jakarta truncate">Rp
                         {{ number_format($todayRevenue, 0, ',', '.') }}
                     </h3>
@@ -201,14 +201,14 @@
                                 :class="activeTab === 'topClients' ? 'text-gold-600 border-gold-600 font-black' : 'text-slate-400 border-transparent hover:text-slate-600 font-bold'"
                                 class="flex-1 pb-3 text-xs uppercase tracking-wider text-center border-b-2 transition-all focus:outline-none"
                             >
-                                {{ app()->getLocale() == 'en' ? 'Top Clients' : 'Klien Teratas' }}
+                                {{ __('dashboard.top_clients') }}
                             </button>
                             <button 
                                 @click="activeTab = 'ageing'"
                                 :class="activeTab === 'ageing' ? 'text-gold-600 border-gold-600 font-black' : 'text-slate-400 border-transparent hover:text-slate-600 font-bold'"
                                 class="flex-1 pb-3 text-xs uppercase tracking-wider text-center border-b-2 transition-all focus:outline-none"
                             >
-                                {{ app()->getLocale() == 'en' ? 'AR Ageing' : 'Umur Piutang' }}
+                                {{ __('dashboard.ar_ageing') }}
                             </button>
                         </div>
 

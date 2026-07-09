@@ -21,6 +21,9 @@
                     <th class="px-10 py-5">{{ __('dashboard.business_unit') }}</th>
                     <th class="px-10 py-5 text-center">{{ __('dashboard.total_orders') }}</th>
                     <th class="px-10 py-5 text-right">{{ __('dashboard.total_revenue') }}</th>
+                    @if(auth()->user()->role !== 'staff')
+                        <th class="px-10 py-5 text-right">{{ __('ui.actions') }}</th>
+                    @endif
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-50">
@@ -31,7 +34,13 @@
                                 <div class="w-8 h-8 rounded-lg bg-gold-50 flex items-center justify-center text-gold-600 group-hover:bg-gold-500 group-hover:text-slate-950 transition-colors duration-300">
                                     <i data-lucide="briefcase" class="w-4 h-4"></i>
                                 </div>
-                                <span class="text-[14px] font-black text-slate-900">{{ $summary->name }}</span>
+                                @if(auth()->user()->role !== 'staff')
+                                    <a href="{{ route('business-units.show', $summary->id) }}" class="text-[14px] font-black text-slate-900 hover:text-gold-600 transition-colors">
+                                        {{ $summary->name }}
+                                    </a>
+                                @else
+                                    <span class="text-[14px] font-black text-slate-900">{{ $summary->name }}</span>
+                                @endif
                             </div>
                         </td>
                         <td class="px-10 py-6 text-center">
@@ -40,10 +49,17 @@
                         <td class="px-10 py-6 text-right">
                             <span class="text-[15px] font-black text-emerald-600">Rp {{ number_format($summary->total_revenue, 0, ',', '.') }}</span>
                         </td>
+                        @if(auth()->user()->role !== 'staff')
+                            <td class="px-10 py-6 text-right">
+                                <a href="{{ route('business-units.show', $summary->id) }}" class="text-xs font-bold text-gold-650 hover:underline inline-flex items-center gap-1">
+                                    {{ __('ui.view') }} <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                                </a>
+                            </td>
+                        @endif
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="3" class="px-10 py-8 text-center text-slate-400 italic text-sm">
+                        <td colspan="{{ auth()->user()->role !== 'staff' ? 4 : 3 }}" class="px-10 py-8 text-center text-slate-400 italic text-sm">
                             {{ __('dashboard.no_records_found') }}
                         </td>
                     </tr>
@@ -62,14 +78,27 @@
                             <i data-lucide="briefcase" class="w-3.5 h-3.5"></i>
                         </div>
                         <div class="flex flex-col">
-                            <span class="text-xs font-black text-slate-900">{{ $summary->name }}</span>
+                            @if(auth()->user()->role !== 'staff')
+                                <a href="{{ route('business-units.show', $summary->id) }}" class="text-xs font-black text-slate-900 hover:text-gold-600">
+                                    {{ $summary->name }}
+                                </a>
+                            @else
+                                <span class="text-xs font-black text-slate-900">{{ $summary->name }}</span>
+                            @endif
                             <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">{{ $summary->total_orders }} {{ __('dashboard.orders') }}</span>
                         </div>
                     </div>
-                    <div class="text-right">
-                        <span class="text-[14px] font-black text-emerald-600">
-                            Rp {{ number_format($summary->total_revenue, 0, ',', '.') }}
-                        </span>
+                    <div class="flex items-center gap-2">
+                        <div class="text-right">
+                            <span class="text-[14px] font-black text-emerald-600">
+                                Rp {{ number_format($summary->total_revenue, 0, ',', '.') }}
+                            </span>
+                        </div>
+                        @if(auth()->user()->role !== 'staff')
+                            <a href="{{ route('business-units.show', $summary->id) }}" class="text-slate-400 hover:text-gold-600">
+                                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                            </a>
+                        @endif
                     </div>
                 </div>
             </div>

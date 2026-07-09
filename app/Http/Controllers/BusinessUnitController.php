@@ -3,10 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\BusinessUnit;
+use App\Services\BusinessUnitReportingService;
 use Illuminate\Http\Request;
 
 class BusinessUnitController extends Controller
 {
+    protected $reportingService;
+
+    public function __construct(BusinessUnitReportingService $reportingService)
+    {
+        $this->reportingService = $reportingService;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -59,7 +67,19 @@ class BusinessUnitController extends Controller
      */
     public function show(BusinessUnit $businessUnit)
     {
-        return redirect()->route('business-units.index');
+        $filters = ['business_unit_id' => $businessUnit->id];
+        
+        $stats = $this->reportingService->getSummaryStats($filters);
+        $monthlyTrend = $this->reportingService->getMonthlyTrend($filters, 6);
+        $topClients = $this->reportingService->getTopClients($filters, 5);
+
+        // Fetch paginated invoices for this business unit
+        $invoices = $businessUnit->invoices()
+            ->with(['client', 'creator'])
+            ->orderByDesc('created_at')
+            ->paginate(10);
+
+        return view('business-units.show', compact('businessUnit', 'stats', 'monthlyTrend', 'topClients', 'invoices'));
     }
 
     /**

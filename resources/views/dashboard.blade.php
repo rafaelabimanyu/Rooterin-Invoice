@@ -16,6 +16,42 @@
     </div>
 
     @if(!$isStaff)
+        @if(count($insights) > 0)
+            <div class="mb-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in-up stagger-1">
+                @foreach($insights as $insight)
+                    <div class="glass-card relative overflow-hidden p-6 border-slate-200/60 transition-all duration-300 hover:shadow-lg">
+                        @if($insight['type'] === 'danger')
+                            <div class="absolute top-0 left-0 w-1.5 h-full bg-rose-500/80"></div>
+                            @php $iconBg = 'bg-rose-50 text-rose-600'; @endphp
+                        @elseif($insight['type'] === 'warning')
+                            <div class="absolute top-0 left-0 w-1.5 h-full bg-amber-500/80"></div>
+                            @php $iconBg = 'bg-amber-50 text-amber-600'; @endphp
+                        @else
+                            <div class="absolute top-0 left-0 w-1.5 h-full bg-emerald-500/80"></div>
+                            @php $iconBg = 'bg-emerald-50 text-emerald-600'; @endphp
+                        @endif
+
+                        <div class="flex items-start justify-between gap-4 mb-4">
+                            <div>
+                                <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">AI Predictive Recommendation</span>
+                                <h4 class="text-sm font-bold text-slate-900 font-outfit">{{ $insight['title'] }}</h4>
+                            </div>
+                            <div class="w-8 h-8 rounded-xl {{ $iconBg }} flex items-center justify-center shrink-0">
+                                <i data-lucide="{{ $insight['icon'] }}" class="w-4 h-4"></i>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-500 font-medium mb-3 leading-relaxed">
+                            {{ $insight['message'] }}
+                        </p>
+                        <div class="p-3 bg-slate-55 rounded-xl border border-slate-100 text-[11px] text-slate-650 font-medium leading-relaxed">
+                            <span class="font-bold text-slate-800 block mb-1">Rekomendasi Tindakan:</span>
+                            {{ $insight['recommendation'] }}
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+
         <livewire:dashboard.financial-advisory lazy />
 
         @include('dashboard.partials.metric-cards')

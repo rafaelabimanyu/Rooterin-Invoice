@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BusinessUnit;
 use App\Services\BusinessUnitReportingService;
+use App\Services\PdfExportService;
 use Illuminate\Http\Request;
 
 class BusinessUnitController extends Controller
@@ -13,6 +14,15 @@ class BusinessUnitController extends Controller
     public function __construct(BusinessUnitReportingService $reportingService)
     {
         $this->reportingService = $reportingService;
+    }
+
+    /**
+     * Download PDF performance report for a business unit.
+     */
+    public function downloadPdf(BusinessUnit $businessUnit, Request $request, PdfExportService $pdfService)
+    {
+        $filters = $request->only(['start_date', 'end_date', 'client_id']);
+        return $pdfService->exportBusinessUnitReport($businessUnit, $filters);
     }
 
     /**

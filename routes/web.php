@@ -89,6 +89,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('users', UserManagementController::class);
 
         // Business Units Management
+        Route::get('business-units/{businessUnit}/pdf', [BusinessUnitController::class, 'downloadPdf'])->name('business-units.pdf');
         Route::resource('business-units', BusinessUnitController::class);
 
         // Settings

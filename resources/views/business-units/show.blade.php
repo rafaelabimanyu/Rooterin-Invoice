@@ -21,6 +21,10 @@
                 </p>
             </div>
             <div class="flex gap-3">
+                <a href="{{ route('business-units.pdf', $businessUnit) }}" class="btn-secondary py-3 px-5 rounded-2xl text-xs uppercase tracking-wider font-bold inline-flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100/80 text-emerald-700 border-emerald-200/60">
+                    <i data-lucide="printer" class="w-4 h-4"></i>
+                    {{ $isEn ? 'Print PDF' : 'Cetak Laporan' }}
+                </a>
                 <a href="{{ route('business-units.edit', $businessUnit) }}" class="btn-secondary py-3 px-5 rounded-2xl text-xs uppercase tracking-wider font-bold inline-flex items-center gap-2">
                     <i data-lucide="edit-3" class="w-4 h-4"></i>
                     {{ __('ui.edit') }}

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Models\Invoice;
 use App\Services\BusinessUnitReportingService;
+use App\Services\PredictiveInsightService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -17,7 +18,7 @@ class DashboardController extends Controller
         $this->reportingService = $reportingService;
     }
 
-    public function index()
+    public function index(PredictiveInsightService $insightService)
     {
         $totalClients = Client::where('status', 'aktif')->count();
         
@@ -244,6 +245,7 @@ class DashboardController extends Controller
                 }
             }
         }
+        $insights = !$isStaff ? $insightService->generateInsights() : [];
 
         $businessUnitSummary = $this->reportingService->getBusinessUnitsSummary();
         
@@ -270,7 +272,8 @@ class DashboardController extends Controller
             'cashFlowData',
             'topClients',
             'invoiceAgeing',
-            'businessUnitSummary'
+            'businessUnitSummary',
+            'insights'
         ));
     }
 

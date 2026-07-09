@@ -219,12 +219,6 @@
             </tbody>
         </table>
 
-        @if($invoice->technician_names)
-        <div style="margin-top: -15px; margin-bottom: 20px; font-size: 9.5pt; color: #475569;">
-            <strong>{{ app()->getLocale() == 'en' ? 'Technician' : 'Teknisi' }}:</strong> <span style="color: #0f172a; font-weight: bold;">{{ $invoice->technician_names }}</span>
-        </div>
-        @endif
-
         <!-- Bottom Layout Table: Bank Account Info (Left) & Financial Summary + Standalone Signature (Right) -->
         <div class="bottom-section" style="page-break-inside: avoid;">
             <table style="width: 100%; table-layout: fixed; border-collapse: collapse;">
@@ -332,11 +326,11 @@
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
                         <tr>
                             <td style="width: 100%; padding: 4px; vertical-align: top;">
-                                <div style="width: 100%; height: 160px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0; text-align: center; line-height: 160px; overflow: hidden;">
+                                <div style="width: 100%; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0; text-align: center; overflow: hidden;">
                                     @if($attachments[0]->base64_data)
-                                        <img src="{{ $attachments[0]->base64_data }}" style="max-width: 100%; max-height: 100%; vertical-align: middle; display: inline-block;">
+                                        <img src="{{ $attachments[0]->base64_data }}" style="width: 100%; height: auto; display: block; margin: 0 auto;">
                                     @else
-                                        <div style="color: #94a3b8; font-size: 9pt;">{{ app()->getLocale() == 'en' ? 'Image Missing' : 'Gambar Tidak Ditemukan' }}</div>
+                                        <div style="color: #94a3b8; font-size: 9pt; padding: 40px 0;">{{ app()->getLocale() == 'en' ? 'Image Missing' : 'Gambar Tidak Ditemukan' }}</div>
                                     @endif
                                 </div>
                                 @if($attachments[0]->caption)
@@ -351,11 +345,11 @@
                         <tr>
                             @foreach($attachments as $attachment)
                                 <td style="width: 50%; padding: 4px; vertical-align: top;">
-                                    <div style="width: 100%; height: 130px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0; text-align: center; line-height: 130px; overflow: hidden;">
+                                    <div style="width: 100%; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0; text-align: center; overflow: hidden;">
                                         @if($attachment->base64_data)
-                                            <img src="{{ $attachment->base64_data }}" style="max-width: 100%; max-height: 100%; vertical-align: middle; display: inline-block;">
+                                            <img src="{{ $attachment->base64_data }}" style="width: 100%; height: auto; display: block; margin: 0 auto;">
                                         @else
-                                            <div style="color: #94a3b8; font-size: 9pt;">{{ app()->getLocale() == 'en' ? 'Image Missing' : 'Gambar Tidak Ditemukan' }}</div>
+                                            <div style="color: #94a3b8; font-size: 9pt; padding: 30px 0;">{{ app()->getLocale() == 'en' ? 'Image Missing' : 'Gambar Tidak Ditemukan' }}</div>
                                         @endif
                                     </div>
                                     @if($attachment->caption)
@@ -372,9 +366,9 @@
                             <tr>
                                 @foreach($row as $attachment)
                                     <td style="width: 50%; padding: 4px; vertical-align: top;">
-                                        <div style="width: 100%; height: 100px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0; text-align: center; line-height: 100px; overflow: hidden;">
+                                        <div style="width: 100%; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0; text-align: center; overflow: hidden;">
                                             @if($attachment->base64_data)
-                                                <img src="{{ $attachment->base64_data }}" style="max-width: 100%; max-height: 100%; vertical-align: middle; display: inline-block;">
+                                                <img src="{{ $attachment->base64_data }}" style="width: 100%; height: auto; display: block; margin: 0 auto;">
                                             @else
                                                 <div style="color: #94a3b8; font-size: 9pt;">{{ app()->getLocale() == 'en' ? 'Image Missing' : 'Gambar Tidak Ditemukan' }}</div>
                                             @endif
@@ -394,6 +388,16 @@
             @else
                 <div style="padding: 20px; background: #f8fafc; border-radius: 8px; border: 1px dashed #cbd5e1; text-align: center; color: #94a3b8; font-size: 9pt; margin-bottom: 15px;">
                     {{ app()->getLocale() == 'en' ? 'No work documentation photos uploaded' : 'Tidak ada foto dokumentasi pekerjaan yang diunggah' }}
+                </div>
+            @endif
+
+            <!-- Field Technicians Section -->
+            @if($invoice->technician_names)
+                <div style="margin-bottom: 20px;">
+                    <span class="section-label" style="font-size: 10pt; color: #0f172a; border-bottom: 2px solid #c89d3c; padding-bottom: 2px; margin-bottom: 6px;">TEKNISI LAPANGAN</span>
+                    <div style="font-size: 9pt; color: #0f172a; font-weight: bold; background: #f8fafc; padding: 10px 15px; border-radius: 6px; border-left: 3px solid #1FAF5A;">
+                        {{ $invoice->technician_names }}
+                    </div>
                 </div>
             @endif
 

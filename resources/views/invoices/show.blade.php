@@ -19,7 +19,7 @@
                     </button>
                 </div>
             </div>
-            <a href="{{ route('invoices.edit', $invoice) }}" class="hidden md:inline-flex px-6 py-3 bg-amber-500 text-slate-950 rounded-xl text-sm font-bold hover:bg-amber-600 transition-all shadow-lg hover:shadow-amber-500/20 items-center justify-center gap-2 active:scale-95">
+            <a href="{{ route('invoices.edit', $invoice->id) }}" class="hidden md:inline-flex px-6 py-3 bg-amber-500 text-slate-950 rounded-xl text-sm font-bold hover:bg-amber-600 transition-all shadow-lg hover:shadow-amber-500/20 items-center justify-center gap-2 active:scale-95">
                 <i data-lucide="edit-3" class="w-4 h-4"></i>
                 <span class="whitespace-nowrap">{{ __('ui.edit') ?? 'Edit' }}</span>
             </a>
@@ -452,19 +452,21 @@
     </x-modal>
 
     <!-- Sticky Mobile Action Bar (Visible only on screens < 768px) -->
-    <div class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0F2A44] border-t border-slate-800 p-4 flex gap-3 shadow-2xl items-center justify-between">
-        <div class="flex items-center gap-2">
-            <x-badge :status="$invoice->status" class="scale-90" />
-        </div>
-        <div class="flex gap-2">
-            <a href="{{ route('invoices.edit', $invoice) }}" class="px-4 py-2.5 bg-amber-500 text-slate-950 rounded-xl text-xs font-bold transition-all active:scale-95 flex items-center gap-1">
-                <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
-                <span>{{ __('ui.edit') ?? 'Edit' }}</span>
-            </a>
-            <button type="button" @click="$dispatch('download-pdf', { url: '{{ route('invoices.pdf', $invoice) }}', filename: 'Invoice-{{ $invoice->invoice_number }}.pdf' })" class="px-4 py-2.5 bg-white text-[#0F2A44] rounded-xl text-xs font-bold transition-all active:scale-95 flex items-center gap-1">
-                <i data-lucide="download" class="w-3.5 h-3.5 text-[#D4AF37]"></i>
-                <span>PDF</span>
-            </button>
+    <div class="md:hidden fixed bottom-0 left-0 right-0 z-50 pointer-events-none p-4 flex justify-center">
+        <div class="pointer-events-auto w-full bg-[#0F2A44] border border-slate-800 p-4 rounded-2xl flex gap-3 shadow-2xl items-center justify-between">
+            <div class="flex items-center gap-2">
+                <x-badge :status="$invoice->status" class="scale-90" />
+            </div>
+            <div class="flex gap-2">
+                <a href="{{ route('invoices.edit', $invoice->id) }}" class="px-4 py-2.5 bg-amber-500 text-slate-950 rounded-xl text-xs font-bold transition-all active:scale-95 flex items-center gap-1">
+                    <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                    <span>{{ __('ui.edit') ?? 'Edit' }}</span>
+                </a>
+                <button type="button" @click="$dispatch('download-pdf', { url: '{{ route('invoices.pdf', $invoice) }}', filename: 'Invoice-{{ $invoice->invoice_number }}.pdf' })" class="px-4 py-2.5 bg-white text-[#0F2A44] rounded-xl text-xs font-bold transition-all active:scale-95 flex items-center gap-1">
+                    <i data-lucide="download" class="w-3.5 h-3.5 text-[#D4AF37]"></i>
+                    <span>PDF</span>
+                </button>
+            </div>
         </div>
     </div>
     

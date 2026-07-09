@@ -9,12 +9,7 @@ class GuideController extends Controller
     public function show($section = null)
     {
         if (request()->query('type') === 'sop') {
-            $filePath = resource_path('docs/user_guide.md');
-            if (file_exists($filePath)) {
-                $markdown = file_get_contents($filePath);
-                $content = \Illuminate\Support\Str::markdown($markdown);
-                return view('guide.user_guide', compact('content'));
-            }
+            return view('guide.user_guide');
         }
 
         $user = auth()->user();

@@ -289,7 +289,7 @@
                                 <a href="{{ route('invoices.show', $invoice) }}" class="p-1 text-slate-400 hover:text-gold-600 transition-colors" title="{{ __('ui.view') }}">
                                     <i data-lucide="eye" class="w-4 h-4"></i>
                                 </a>
-                                <a href="{{ route('invoices.edit', $invoice) }}" class="p-1 text-slate-400 hover:text-amber-600 transition-colors" title="{{ __('ui.edit') }}">
+                                <a href="{{ route('invoices.edit', $invoice->id) }}" class="p-1 text-slate-400 hover:text-amber-600 transition-colors" title="{{ __('ui.edit') }}">
                                     <i data-lucide="edit-3" class="w-4 h-4"></i>
                                 </a>
                             </div>

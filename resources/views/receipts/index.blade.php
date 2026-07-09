@@ -121,7 +121,7 @@
                             <i data-lucide="download" class="w-4 h-4"></i>
                         </button>
                         @if($receipt->status !== 'invoiced')
-                        <a href="{{ route('receipts.edit', $receipt) }}" class="p-1 text-slate-400 hover:text-amber-600 transition-colors" title="{{ app()->getLocale() == 'en' ? 'Edit' : 'Ubah' }}">
+                        <a href="{{ route('receipts.edit', $receipt->id) }}" class="p-1 text-slate-400 hover:text-amber-600 transition-colors" title="{{ app()->getLocale() == 'en' ? 'Edit' : 'Ubah' }}">
                             <i data-lucide="edit-3" class="w-4 h-4"></i>
                         </a>
                         @endif

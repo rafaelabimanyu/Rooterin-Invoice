@@ -62,9 +62,11 @@ class BusinessUnitController extends Controller
             'name' => 'required|string|max:255|unique:business_units,name',
             'description' => 'nullable|string|max:1000',
             'is_active' => 'sometimes|boolean',
+            'fee_percentage' => 'nullable|numeric|between:0,100',
         ]);
 
         $validated['is_active'] = $request->has('is_active') ? (bool) $request->is_active : false;
+        $validated['fee_percentage'] = $request->filled('fee_percentage') ? (float) $request->fee_percentage : 0.00;
 
         BusinessUnit::create($validated);
 
@@ -109,9 +111,11 @@ class BusinessUnitController extends Controller
             'name' => 'required|string|max:255|unique:business_units,name,' . $businessUnit->id,
             'description' => 'nullable|string|max:1000',
             'is_active' => 'sometimes|boolean',
+            'fee_percentage' => 'nullable|numeric|between:0,100',
         ]);
 
         $validated['is_active'] = $request->has('is_active') ? (bool) $request->is_active : false;
+        $validated['fee_percentage'] = $request->filled('fee_percentage') ? (float) $request->fee_percentage : 0.00;
 
         $businessUnit->update($validated);
 

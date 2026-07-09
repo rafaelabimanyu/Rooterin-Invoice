@@ -176,13 +176,14 @@ class BusinessUnitReportingService
         $startDate = $filters['start_date'] ?? null;
         $endDate = $filters['end_date'] ?? null;
 
-        return BusinessUnit::where('is_active', true)
-            ->withCount(['invoices as total_orders' => function ($q) use ($startDate, $endDate) {
+        // Retrieve all business units to ensure past transaction history is preserved on reports
+        return BusinessUnit::withCount(['invoices as total_orders' => function ($q) use ($startDate, $endDate) {
                 if ($startDate && $endDate) {
                     $q->whereBetween('created_at', [$startDate, $endDate]);
                 }
             }])
             ->withSum(['invoices as total_revenue' => function ($q) use ($startDate, $endDate) {
+                // Gross revenue is based only on paid (lunas) invoices
                 $q->where('status', 'paid');
                 if ($startDate && $endDate) {
                     $q->whereBetween('created_at', [$startDate, $endDate]);
@@ -191,7 +192,25 @@ class BusinessUnitReportingService
             ->orderByDesc('total_revenue')
             ->get()
             ->map(function ($unit) {
-                $unit->total_revenue = (float) ($unit->total_revenue ?? 0);
+                /**
+                 * Business Unit Profit-Sharing Calculation
+                 * ----------------------------------------------------
+                 * 1. Gross Revenue: Total revenue from paid invoices.
+                 * 2. Fee Percentage: Unique fee rate stored on the unit.
+                 * 3. Fee Nominal: Fee share (Gross Revenue * Fee Percentage / 100).
+                 * 4. Net Revenue: Remaining revenue after fee deduction.
+                 */
+                $unit->gross_revenue = (float) ($unit->total_revenue ?? 0.00);
+                
+                // Fallback to 0% for backward compatibility
+                $unit->fee_percentage = (float) ($unit->fee_percentage ?? 0.00);
+                
+                // Calculate fee nominal and round to 2 decimal places for financial precision
+                $unit->fee_nominal = round(($unit->gross_revenue * $unit->fee_percentage) / 100, 2);
+                
+                // Net Revenue calculation
+                $unit->net_revenue = round($unit->gross_revenue - $unit->fee_nominal, 2);
+                
                 return $unit;
             });
     }

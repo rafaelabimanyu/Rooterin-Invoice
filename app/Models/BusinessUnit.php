@@ -15,10 +15,12 @@ class BusinessUnit extends Model
         'slug',
         'description',
         'is_active',
+        'fee_percentage',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'fee_percentage' => 'float',
     ];
 
     protected static function boot()

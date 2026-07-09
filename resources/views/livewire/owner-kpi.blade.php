@@ -412,6 +412,89 @@
                 </div>
             </div>
         </div>
+
+        <!-- Business Unit Profit Sharing Summary Card -->
+        <div class="table-container mb-8 page-fade-in" style="animation-delay: 400ms">
+            <div class="px-8 py-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/30">
+                <div>
+                    <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg">
+                        {{ app()->getLocale() == 'en' ? 'Business Unit Profitability' : 'Profitabilitas Unit Bisnis' }}
+                    </h3>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">
+                        {{ app()->getLocale() == 'en' ? 'Management fee share summary per division' : 'Ringkasan bagi hasil fee manajemen per divisi bisnis' }}
+                    </p>
+                </div>
+                <div class="w-10 h-10 rounded-xl bg-gold-50 flex items-center justify-center text-gold-600 border border-gold-500/10">
+                    <i data-lucide="pie-chart" class="w-5 h-5"></i>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="table-header">
+                            <th class="px-8 py-4 text-[10px]">{{ app()->getLocale() == 'en' ? 'Business Unit Name' : 'Nama Unit Bisnis' }}</th>
+                            <th class="px-8 py-4 text-[10px] text-right">{{ app()->getLocale() == 'en' ? 'Gross Revenue' : 'Omset Kotor (Gross)' }}</th>
+                            <th class="px-8 py-4 text-[10px] text-center">{{ app()->getLocale() == 'en' ? 'Management Fee Rate' : 'Persentase Fee' }}</th>
+                            <th class="px-8 py-4 text-[10px] text-right">{{ app()->getLocale() == 'en' ? 'Fee Nominal' : 'Fee Nominal' }}</th>
+                            <th class="px-8 py-4 text-[10px] text-right">{{ app()->getLocale() == 'en' ? 'Net Revenue' : 'Pendapatan Bersih (Net)' }}</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-50">
+                        @forelse($businessUnitsSummary as $unit)
+                            <tr class="table-row-premium group">
+                                <td class="px-8 py-4">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 border border-slate-200/40 font-black text-[10px] shrink-0">
+                                            BU
+                                        </div>
+                                        <div class="flex flex-col">
+                                            <span class="text-[13px] font-black text-slate-900 tracking-tight transition-colors">{{ $unit->name }}</span>
+                                            <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">{{ $unit->description ?: '-' }}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-8 py-4 text-right">
+                                    <span class="text-[13px] font-black text-slate-950">Rp {{ number_format($unit->gross_revenue, 0, ',', '.') }}</span>
+                                </td>
+                                <td class="px-8 py-4 text-center">
+                                    <span class="px-2.5 py-0.5 rounded-full text-[9px] font-black bg-amber-50 text-amber-700 border border-amber-100 shadow-sm">
+                                        {{ number_format($unit->fee_percentage, 2, ',', '.') }}%
+                                    </span>
+                                </td>
+                                <td class="px-8 py-4 text-right">
+                                    <span class="text-[13px] font-bold text-amber-600">Rp {{ number_format($unit->fee_nominal, 0, ',', '.') }}</span>
+                                </td>
+                                <td class="px-8 py-4 text-right">
+                                    <span class="text-[13px] font-black text-emerald-600">Rp {{ number_format($unit->net_revenue, 0, ',', '.') }}</span>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="px-8 py-12 text-center text-slate-400 italic text-sm">
+                                    {{ app()->getLocale() == 'en' ? 'No business units configured' : 'Tidak ada unit bisnis yang dikonfigurasi' }}
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                    @if($businessUnitsSummary->isNotEmpty())
+                        <tfoot>
+                            @php
+                                $totalGross = $businessUnitsSummary->sum('gross_revenue');
+                                $totalFee = $businessUnitsSummary->sum('fee_nominal');
+                                $totalNet = $businessUnitsSummary->sum('net_revenue');
+                            @endphp
+                            <tr class="bg-slate-50/50 font-black border-t border-slate-100">
+                                <td class="px-8 py-4 text-[10px] uppercase tracking-widest text-slate-900">{{ app()->getLocale() == 'en' ? 'Total Summary' : 'Total Ringkasan' }}</td>
+                                <td class="px-8 py-4 text-right text-[13px] text-slate-950">Rp {{ number_format($totalGross, 0, ',', '.') }}</td>
+                                <td class="px-8 py-4"></td>
+                                <td class="px-8 py-4 text-right text-[13px] text-amber-700">Rp {{ number_format($totalFee, 0, ',', '.') }}</td>
+                                <td class="px-8 py-4 text-right text-[13px] text-emerald-700">Rp {{ number_format($totalNet, 0, ',', '.') }}</td>
+                            </tr>
+                        </tfoot>
+                    @endif
+                </table>
+            </div>
+        </div>
     @endif
 
     <!-- Chart Scripts & Event Listeners -->

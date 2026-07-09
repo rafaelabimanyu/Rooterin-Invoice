@@ -165,11 +165,14 @@ class ReportController extends Controller
 
         $clients = Client::orderBy('nama_client')->get();
 
+        // --- Business Units Summary (Profit Sharing) ---
+        $businessUnitStats = $this->reportingService->getBusinessUnitsSummary($filters);
+
         return view('reports.index', compact(
             'startDate', 'endDate', 'clientId', 'clients',
             'invoiceStats', 'paymentStats', 'totalOutstanding', 'outstandingGrowth', 'recentInvoices',
             'trendMonths', 'trendRevenue', 'trendReceivables',
-            'topClientRevenue', 'topClientOutstanding'
+            'topClientRevenue', 'topClientOutstanding', 'businessUnitStats'
         ));
     }
 

@@ -329,6 +329,8 @@ class OwnerKpi extends Component
                 ->count(),
         ];
 
+        $businessUnitsSummary = $reportingService->getBusinessUnitsSummary();
+
         return view('livewire.owner-kpi', compact(
             'currentMonthRevenue',
             'lastMonthRevenue',
@@ -347,7 +349,8 @@ class OwnerKpi extends Component
             'totalClientsCount',
             'collectionRate',
             'totalInvoicesCount',
-            'paidInvoicesCount'
+            'paidInvoicesCount',
+            'businessUnitsSummary'
         ));
     }
 }

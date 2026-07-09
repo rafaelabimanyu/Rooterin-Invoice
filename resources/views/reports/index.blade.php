@@ -53,6 +53,9 @@
                     <button @click="tab = 'clients'" :class="tab === 'clients' ? 'text-gold-600 border-gold-600' : 'text-slate-400 border-transparent'" class="pb-4 text-xs font-black border-b-2 transition-all uppercase tracking-widest">
                         {{ app()->getLocale() == 'en' ? 'Client Analytics & Trends' : 'Analisis Klien & Tren' }}
                     </button>
+                    <button @click="tab = 'business_units'" :class="tab === 'business_units' ? 'text-gold-600 border-gold-600' : 'text-slate-400 border-transparent'" class="pb-4 text-xs font-black border-b-2 transition-all uppercase tracking-widest">
+                        {{ app()->getLocale() == 'en' ? 'Business Unit Profit-Sharing' : 'Profit-Sharing Unit Bisnis' }}
+                    </button>
                 </div>
 
                 <!-- Invoice Tab -->
@@ -421,6 +424,86 @@
                                     </div>
                                 @endforelse
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Business Unit Profit Sharing Tab -->
+                <div x-show="tab === 'business_units'" x-transition>
+                    <div class="glass-card overflow-hidden">
+                        <div class="px-8 py-6 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between">
+                            <div>
+                                <h4 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-sm">
+                                    {{ app()->getLocale() == 'en' ? 'Business Unit Profit-Sharing Reports' : 'Laporan Profit-Sharing Unit Bisnis' }}
+                                </h4>
+                                <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1">
+                                    {{ app()->getLocale() == 'en' ? 'Automatic management fee breakdown by business division' : 'Rincian fee manajemen otomatis berdasarkan divisi bisnis' }}
+                                </p>
+                            </div>
+                            <div class="w-10 h-10 rounded-xl bg-gold-50 border border-gold-100 flex items-center justify-center text-gold-600">
+                                <i data-lucide="pie-chart" class="w-5 h-5"></i>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left">
+                                <thead>
+                                    <tr class="text-[10px] font-black uppercase tracking-widest text-slate-400 bg-slate-50/30">
+                                        <th class="px-8 py-4">{{ app()->getLocale() == 'en' ? 'Business Unit Name' : 'Nama Unit Bisnis' }}</th>
+                                        <th class="px-8 py-4 text-right">{{ app()->getLocale() == 'en' ? 'Gross Revenue' : 'Omset Kotor (Gross)' }}</th>
+                                        <th class="px-8 py-4 text-center">{{ app()->getLocale() == 'en' ? 'Fee (%)' : 'Fee (%)' }}</th>
+                                        <th class="px-8 py-4 text-right">{{ app()->getLocale() == 'en' ? 'Fee Nominal' : 'Fee Nominal' }}</th>
+                                        <th class="px-8 py-4 text-right">{{ app()->getLocale() == 'en' ? 'Net Revenue' : 'Pendapatan Bersih (Net)' }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-50">
+                                    @forelse($businessUnitStats as $unit)
+                                        <tr class="hover:bg-slate-50/50 transition-colors duration-200">
+                                            <td class="px-8 py-4">
+                                                <div class="flex flex-col">
+                                                    <span class="text-xs font-black text-slate-900">{{ $unit->name }}</span>
+                                                    <span class="text-[9px] text-slate-400 font-semibold uppercase tracking-wider">{{ $unit->description ?: '-' }}</span>
+                                                </div>
+                                            </td>
+                                            <td class="px-8 py-4 text-right">
+                                                <span class="text-xs font-bold text-slate-900">Rp {{ number_format($unit->gross_revenue, 0, ',', '.') }}</span>
+                                            </td>
+                                            <td class="px-8 py-4 text-center">
+                                                <span class="px-2 py-0.5 rounded-full text-[9px] font-black bg-amber-50 text-amber-700 border border-amber-100 shadow-sm">
+                                                    {{ number_format($unit->fee_percentage, 2, ',', '.') }}%
+                                                </span>
+                                            </td>
+                                            <td class="px-8 py-4 text-right">
+                                                <span class="text-xs font-bold text-amber-600">Rp {{ number_format($unit->fee_nominal, 0, ',', '.') }}</span>
+                                            </td>
+                                            <td class="px-8 py-4 text-right">
+                                                <span class="text-xs font-black text-emerald-600">Rp {{ number_format($unit->net_revenue, 0, ',', '.') }}</span>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5" class="px-8 py-12 text-center text-slate-400 italic text-sm">
+                                                {{ app()->getLocale() == 'en' ? 'No transactions or business units' : 'Tidak ada transaksi atau unit bisnis' }}
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                                @if($businessUnitStats->isNotEmpty())
+                                    <tfoot>
+                                        @php
+                                            $totalGross = $businessUnitStats->sum('gross_revenue');
+                                            $totalFee = $businessUnitStats->sum('fee_nominal');
+                                            $totalNet = $businessUnitStats->sum('net_revenue');
+                                        @endphp
+                                        <tr class="bg-slate-50/50 font-black border-t-2 border-slate-100">
+                                            <td class="px-8 py-4 text-[10px] uppercase tracking-widest text-slate-900">{{ app()->getLocale() == 'en' ? 'Total Summary' : 'Total Ringkasan' }}</td>
+                                            <td class="px-8 py-4 text-right text-xs text-slate-900">Rp {{ number_format($totalGross, 0, ',', '.') }}</td>
+                                            <td class="px-8 py-4"></td>
+                                            <td class="px-8 py-4 text-right text-xs text-amber-700">Rp {{ number_format($totalFee, 0, ',', '.') }}</td>
+                                            <td class="px-8 py-4 text-right text-xs text-emerald-700">Rp {{ number_format($totalNet, 0, ',', '.') }}</td>
+                                        </tr>
+                                    </tfoot>
+                                @endif
+                            </table>
                         </div>
                     </div>
                 </div>

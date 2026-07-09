@@ -60,6 +60,30 @@
                             class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all outline-none text-slate-900 font-medium text-sm"
                         >{{ old('description', $businessUnit->description) }}</textarea>
                     </div>
+
+                    <!-- Management Fee Percentage -->
+                    <div class="space-y-1.5 mt-6">
+                        <label for="fee_percentage" class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                            {{ app()->getLocale() == 'en' ? 'Management Fee (%)' : 'Fee Manajemen (%)' }}
+                        </label>
+                        <div class="relative">
+                            <input 
+                                type="number" 
+                                name="fee_percentage" 
+                                id="fee_percentage" 
+                                value="{{ old('fee_percentage', $businessUnit->fee_percentage) }}" 
+                                step="0.01"
+                                min="0"
+                                max="100"
+                                placeholder="e.g. 10.00" 
+                                class="w-full pl-4 pr-12 py-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all outline-none text-slate-900 font-bold text-sm"
+                            >
+                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">%</span>
+                        </div>
+                        <p class="text-[10px] text-slate-400 font-medium leading-normal mt-1">
+                            {{ app()->getLocale() == 'en' ? 'Fee percentage used for profit-sharing calculation.' : 'Persentase fee yang digunakan untuk perhitungan bagi hasil.' }}
+                        </p>
+                    </div>
                 </div>
             </div>
 

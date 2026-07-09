@@ -36,7 +36,12 @@
         </div>
 
         <!-- Stats Grid (Glassmorphism Metric Cards) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        @php
+            $feePercentage = $businessUnit->fee_percentage ?? 0.00;
+            $feeNominal = round(($stats['total_revenue'] * $feePercentage) / 100, 2);
+            $netRevenue = round($stats['total_revenue'] - $feeNominal, 2);
+        @endphp
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-10">
             <!-- 1. Total Billed -->
             <div class="glass-card relative overflow-hidden p-6 border-slate-200/60 transition-all duration-300 hover:shadow-lg">
                 <div class="absolute top-0 left-0 w-1.5 h-full bg-gold-500/80"></div>
@@ -54,11 +59,11 @@
                 </p>
             </div>
 
-            <!-- 2. Realized Revenue -->
+            <!-- 2. Gross Revenue (Realized Revenue) -->
             <div class="glass-card relative overflow-hidden p-6 border-slate-200/60 transition-all duration-300 hover:shadow-lg">
                 <div class="absolute top-0 left-0 w-1.5 h-full bg-emerald-500/80"></div>
                 <div class="flex items-center justify-between mb-4">
-                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ __('ui.total_collected') }}</p>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ $isEn ? 'Gross Revenue' : 'Omset Kotor' }}</p>
                     <div class="w-8 h-8 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-650">
                         <i data-lucide="check-circle" class="w-4 h-4"></i>
                     </div>
@@ -71,12 +76,46 @@
                 </p>
             </div>
 
-            <!-- 3. Outstanding Balance -->
+            <!-- 3. Management Fee -->
             <div class="glass-card relative overflow-hidden p-6 border-slate-200/60 transition-all duration-300 hover:shadow-lg">
                 <div class="absolute top-0 left-0 w-1.5 h-full bg-amber-500/80"></div>
                 <div class="flex items-center justify-between mb-4">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ $isEn ? 'Management Fee' : 'Fee Manajemen' }}</p>
+                    <span class="px-2 py-0.5 rounded-full text-[9px] font-black bg-amber-50 text-amber-700 border border-amber-100 shadow-sm">
+                        {{ number_format($feePercentage, 2, ',', '.') }}%
+                    </span>
+                </div>
+                <h3 class="text-2xl font-black text-slate-900 font-outfit tracking-tight">
+                    Rp {{ number_format($feeNominal, 0, ',', '.') }}
+                </h3>
+                <p class="text-[10px] text-slate-450 font-bold mt-2 uppercase tracking-wide">
+                    {{ $isEn ? 'Fee Share Nominal' : 'Nominal Bagi Hasil Fee' }}
+                </p>
+            </div>
+
+            <!-- 4. Net Revenue -->
+            <div class="glass-card relative overflow-hidden p-6 border-slate-200/60 transition-all duration-300 hover:shadow-lg">
+                <div class="absolute top-0 left-0 w-1.5 h-full bg-blue-500/80"></div>
+                <div class="flex items-center justify-between mb-4">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ $isEn ? 'Net Revenue' : 'Pendapatan Bersih' }}</p>
+                    <div class="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+                        <i data-lucide="wallet" class="w-4 h-4"></i>
+                    </div>
+                </div>
+                <h3 class="text-2xl font-black text-blue-650 font-outfit tracking-tight">
+                    Rp {{ number_format($netRevenue, 0, ',', '.') }}
+                </h3>
+                <p class="text-[10px] text-slate-450 font-bold mt-2 uppercase tracking-wide">
+                    {{ $isEn ? 'Gross minus fee' : 'Pendapatan setelah fee' }}
+                </p>
+            </div>
+
+            <!-- 5. Outstanding Balance -->
+            <div class="glass-card relative overflow-hidden p-6 border-slate-200/60 transition-all duration-300 hover:shadow-lg">
+                <div class="absolute top-0 left-0 w-1.5 h-full bg-rose-500/80"></div>
+                <div class="flex items-center justify-between mb-4">
                     <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ __('ui.outstanding') }}</p>
-                    <div class="w-8 h-8 rounded-xl bg-amber-50 flex items-center justify-center text-amber-650">
+                    <div class="w-8 h-8 rounded-xl bg-rose-50 flex items-center justify-center text-rose-650">
                         <i data-lucide="clock" class="w-4 h-4"></i>
                     </div>
                 </div>
@@ -89,7 +128,7 @@
                 </div>
             </div>
 
-            <!-- 4. Collection Rate -->
+            <!-- 6. Collection Rate -->
             <div class="glass-card relative overflow-hidden p-6 border-slate-200/60 transition-all duration-300 hover:shadow-lg">
                 <div class="absolute top-0 left-0 w-1.5 h-full bg-indigo-500/80"></div>
                 <div class="flex items-center justify-between mb-4">

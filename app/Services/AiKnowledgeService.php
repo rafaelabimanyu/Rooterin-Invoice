@@ -695,16 +695,20 @@ class AiKnowledgeService
                 $listStr = count($clientNames) > 0 ? implode("\n", $clientNames) : ($locale === 'en' ? "- No active clients." : "- Tidak ada klien aktif.");
 
                 return $locale === 'en'
-                    ? "### 📊 J&J GROUP Active Client Portfolio\n\n" .
-                      "Based on direct access to our live client database, we currently partner with **{$count} active clients**:\n\n" .
+                    ? "[Analisis Data]\n" .
+                      "Based on direct database access, J&J GROUP currently has {$count} active clients:\n" .
                       $listStr . "\n\n" .
-                      "From a risk management standpoint, this portfolio is well-diversified to minimize revenue concentration risk. " .
-                      "I advise performing routine credit assessments on these clients to ensure our cash flow stability."
-                    : "### 📊 Analisis Portofolio Klien J&J GROUP\n\n" .
-                      "Berdasarkan akses langsung ke database sistem kita, J&J GROUP saat ini memiliki **{$count} klien aktif**:\n\n" .
+                      "[Dampak Bisnis]\n" .
+                      "This client base represents the core revenue channels. Maintaining high client satisfaction directly impacts retention and billing cycles.\n\n" .
+                      "[Rekomendasi Aksi]\n" .
+                      "Initiate credit evaluations for all active accounts and establish quarterly contract reviews to secure predictable, long-term invoice generation."
+                    : "[Analisis Data]\n" .
+                      "Berdasarkan data sistem terkini, J&J GROUP mengelola {$count} klien aktif:\n" .
                       $listStr . "\n\n" .
-                      "Dari perspektif manajemen risiko keuangan, sebaran portofolio ini cukup baik untuk meminimalkan risiko konsentrasi pendapatan (*concentration risk*). " .
-                      "Rekomendasi saya adalah tetap melakukan pemantauan berkala terhadap status kredit klien untuk memastikan kelancaran arus kas masuk kita.";
+                      "[Dampak Bisnis]\n" .
+                      "Klien aktif merupakan sumber pendapatan utama perusahaan. Kelancaran administrasi klien memengaruhi ketepatan siklus penagihan dan retensi bisnis.\n\n" .
+                      "[Rekomendasi Aksi]\n" .
+                      "Lakukan evaluasi kredit berkala terhadap seluruh akun aktif dan jadwalkan peninjauan kontrak triwulanan untuk mengamankan stabilitas omset.";
 
             case 'overdue':
                 $count = $data['count'];
@@ -712,30 +716,42 @@ class AiKnowledgeService
                 $listItems = [];
                 foreach ($data['invoices'] as $inv) {
                     $clientName = $inv['client']['nama_client'] ?? 'Klien';
-                    $listItems[] = "* **Invoice #{$inv['invoice_number']}** oleh {$clientName} | **Rp " . number_format($inv['total'], 0, ',', '.') . "** (Jatuh tempo: " . Carbon::parse($inv['due_date'])->format('d M Y') . ")";
+                    $listItems[] = "* **Invoice #{$inv['invoice_number']}** oleh {$clientName} | **Rp " . number_format($inv['total'], 0, ',', '.') . "** (Due: " . Carbon::parse($inv['due_date'])->format('d M Y') . ")";
                 }
                 $listStr = count($listItems) > 0 ? implode("\n", $listItems) : ($locale === 'en' ? "- No overdue invoices." : "- Tidak ada invoice menunggak.");
 
                 return $locale === 'en'
-                    ? "### ⚠️ Overdue Receivable Risk Report\n\n" .
-                      "Based on direct database analysis, J&J GROUP has **{$count} overdue invoices** totaling **{$totalStr}** in unpaid receivables:\n\n" .
+                    ? "[Analisis Data]\n" .
+                      "Database records show {$count} overdue invoices totaling {$totalStr} in outstanding receivables:\n" .
                       $listStr . "\n\n" .
-                      "**Senior Advisory:** Having {$totalStr} in overdue receivables hinders our cash conversion cycle. I suggest dispatching urgent payment reminders immediately and pausing current project milestones for highly overdue accounts to safeguard our operating liquidity."
-                    : "### ⚠️ Analisis Risiko Piutang Tertahan (Overdue)\n\n" .
-                      "Berdasarkan data Invoice J&J GROUP terkini, terdapat **{$count} tagihan** yang masih tertunda senilai **{$totalStr}**:\n\n" .
+                      "[Dampak Bisnis]\n" .
+                      "Uncollected receivables of {$totalStr} lock up operational working capital and directly restrict cash conversion efficiency.\n\n" .
+                      "[Rekomendasi Aksi]\n" .
+                      "Dispatch formal payment reminders immediately, prioritize collections on the largest outstanding accounts, and suspend current milestones for accounts with significant aging."
+                    : "[Analisis Data]\n" .
+                      "Data invoice J&J GROUP menunjukkan terdapat {$count} tagihan overdue/menunggak senilai total {$totalStr}:\n" .
                       $listStr . "\n\n" .
-                      "**Saran Konsultan Senior:** Dana piutang sebesar {$totalStr} yang tertahan ini dapat memicu tekanan pada perputaran kas operasional J&J GROUP. Saya menyarankan untuk segera menindaklanjuti klien tersebut dengan mengirimkan surat pengingat resmi, serta mempertimbangkan penangguhan sementara pengerjaan proyek berjalan bagi akun yang menunggak secara signifikan.";
+                      "[Dampak Bisnis]\n" .
+                      "Piutang sebesar {$totalStr} yang tertahan membatasi likuiditas modal kerja operasional dan menghambat perputaran arus kas bersih.\n\n" .
+                      "[Rekomendasi Aksi]\n" .
+                      "Kirimkan surat pengingat resmi secara terarah, prioritaskan penagihan pada nominal penunggak terbesar, serta tangguhkan sementara proyek berjalan untuk klien dengan tunggakan kritis.";
 
             case 'paid':
                 $count = $data['count'];
                 $totalStr = "Rp " . number_format($data['total'], 0, ',', '.');
                 return $locale === 'en'
-                    ? "### 💰 Realized Inflow (Paid Invoices)\n\n" .
-                      "According to J&J GROUP's live transaction records, we have successfully realized **{$totalStr}** in collections across **{$count} paid invoices**.\n\n" .
-                      "**Financial Analysis:** This high collection rate reflects excellent billing efficiency and solid client compliance. I recommend allocating a minimum of 15% of this cash into our operational reserves to secure short-term working capital before committing to new capital expenditures."
-                    : "### 💰 Analisis Realisasi Pendapatan (Lunas)\n\n" .
-                      "Berdasarkan peninjauan data transaksi langsung di database J&J GROUP, kita berhasil merealisasikan penerimaan kas sebesar **{$totalStr}** dari **{$count} invoice** yang telah lunas.\n\n" .
-                      "**Analisis Finansial:** Tingkat pelunasan ini menunjukkan kolektibilitas penagihan yang sangat efektif serta komitmen bayar yang tinggi dari mitra kita Guna menjaga ketahanan likuiditas jangka pendek, saya sangat merekomendasikan menyisihkan minimal 15% dari dana terkumpul ini ke pos cadangan kas sebelum dialokasikan untuk belanja modal baru.";
+                    ? "[Analisis Data]\n" .
+                      "Transaction logs confirm J&J GROUP successfully collected {$totalStr} from {$count} fully settled invoices.\n\n" .
+                      "[Dampak Bisnis]\n" .
+                      "A high invoice settlement rate maximizes liquidity and strengthens J&J GROUP's operational cash buffer.\n\n" .
+                      "[Rekomendasi Aksi]\n" .
+                      "Allocate at least 15% of this realized cash directly to operational reserves before initiating any new capital expenditures."
+                    : "[Analisis Data]\n" .
+                      "Pencatatan transaksi J&J GROUP mengonfirmasi keberhasilan penagihan senilai {$totalStr} dari {$count} invoice yang telah lunas.\n\n" .
+                      "[Dampak Bisnis]\n" .
+                      "Pelunasan tagihan yang tepat waktu mengoptimalkan likuiditas kas operasional J&J GROUP dan meminimalkan ketergantungan pada pembiayaan eksternal.\n\n" .
+                      "[Rekomendasi Aksi]\n" .
+                      "Sisihkan minimal 15% dari dana pelunasan ini ke pos cadangan kas sebelum merencanakan pengeluaran modal (capex) baru.";
 
             case 'tomorrow':
                 $count = $data['count'];
@@ -748,14 +764,20 @@ class AiKnowledgeService
                 $listStr = count($listItems) > 0 ? implode("\n", $listItems) : ($locale === 'en' ? "- No invoices due tomorrow." : "- Tidak ada invoice jatuh tempo besok.");
 
                 return $locale === 'en'
-                    ? "### 📅 Invoices Due Tomorrow Report\n\n" .
-                      "J&J GROUP's live database records show **{$count} invoices** due tomorrow, totaling **{$totalStr}** in receivables:\n\n" .
+                    ? "[Analisis Data]\n" .
+                      "Live system records indicate {$count} invoices totaling {$totalStr} are due tomorrow:\n" .
                       $listStr . "\n\n" .
-                      "**Tactical Action:** I recommend our billing team coordinate a quick, polite courtesy follow-up with these clients today to facilitate prompt realization of these funds tomorrow."
-                    : "### 📅 Laporan Invoice Jatuh Tempo Besok\n\n" .
-                      "Berdasarkan pencatatan data riil J&J GROUP, terdapat **{$count} invoice** yang akan jatuh tempo besok dengan total tagihan sebesar **{$totalStr}**:\n\n" .
+                      "[Dampak Bisnis]\n" .
+                      "Prompt payment on these invoices tomorrow is vital to sustaining J&J GROUP's weekly cash buffer.\n\n" .
+                      "[Rekomendasi Aksi]\n" .
+                      "Instruct the billing team to conduct a polite courtesy follow-up with the respective clients today to ensure swift funds realization."
+                    : "[Analisis Data]\n" .
+                      "Berdasarkan data riil J&J GROUP, terdapat {$count} invoice senilai {$totalStr} yang jatuh tempo besok:\n" .
                       $listStr . "\n\n" .
-                      "**Rekomendasi Taktis:** Saya menyarankan tim penagihan untuk melakukan konfirmasi halus hari ini guna memastikan dana penagihan dapat cair tepat waktu besok.";
+                      "[Dampak Bisnis]\n" .
+                      "Pencairan dana tepat waktu besok sangat krusial untuk menjaga ketersediaan modal kerja mingguan J&J GROUP.\n\n" .
+                      "[Rekomendasi Aksi]\n" .
+                      "Tugaskan tim penagihan untuk melakukan konfirmasi tagihan secara profesional hari ini guna menjamin kelancaran pelunasan besok.";
 
             case 'cash_flow':
                 $revenueStr = "Rp " . number_format($data['revenue'], 0, ',', '.');
@@ -765,22 +787,28 @@ class AiKnowledgeService
                 $rateStr = number_format($data['rate'], 1, ',', '.');
 
                 return $locale === 'en'
-                    ? "### 💵 Cash Flow & Liquidity Advisory\n\n" .
-                      "Here is J&J GROUP's consolidated cash flow status extracted from the live database:\n" .
-                      "* **Realized Inflow (Paid Invoices):** {$revenueStr}\n" .
-                      "* **Total Outstanding Receivables:** {$outstandingStr}\n" .
-                      "  - *Pending / Active:* {$pendingStr}\n" .
-                      "  - *Overdue / Delayed:* {$overdueStr}\n" .
-                      "* **Collection Efficiency Rate:** {$rateStr}%\n\n" .
-                      "**Financial Assessment:** A collection efficiency rate of **{$rateStr}%** indicates strong billing execution. However, the **{$overdueStr}** in overdue receivables must be monitored closely. I advise setting up a strict weekly aging report review to protect our operational liquidity."
-                    : "### 💵 Analisis Arus Kas & Likuiditas Perusahaan\n\n" .
-                      "Berikut adalah posisi arus kas J&J GROUP yang ditarik secara real-time dari database:\n" .
-                      "* **Realisasi Arus Kas Masuk (Lunas):** {$revenueStr}\n" .
-                      "* **Total Piutang Outstanding:** {$outstandingStr}\n" .
-                      "  - *Dalam Termin (Pending):* {$pendingStr}\n" .
-                      "  - *Terlambat / Berisiko (Overdue):* {$overdueStr}\n" .
-                      "* **Rasio Kolektibilitas Tagihan:** {$rateStr}%\n\n" .
-                      "**Rekomendasi Konsultan:** Tingkat kolektibilitas kita yang menyentuh **{$rateStr}%** merepresentasikan sistem penagihan yang berjalan optimal. Namun, piutang overdue sebesar **{$overdueStr}** perlu mendapatkan atensi intensif minggu ini agar tidak mengganggu rasio kecukupan modal kerja operasional.";
+                    ? "[Analisis Data]\n" .
+                      "J&J GROUP's consolidated cash flow status:\n" .
+                      "- Realized Inflow (Paid): {$revenueStr}\n" .
+                      "- Total Outstanding Receivables: {$outstandingStr}\n" .
+                      "  - Pending / Active: {$pendingStr}\n" .
+                      "  - Overdue / Delayed: {$overdueStr}\n" .
+                      "- Collection Efficiency Rate: {$rateStr}%\n\n" .
+                      "[Dampak Bisnis]\n" .
+                      "The collection efficiency rate of {$rateStr}% demonstrates strong operational execution, but the {$overdueStr} in overdue receivables introduces cash constraint risks.\n\n" .
+                      "[Rekomendasi Aksi]\n" .
+                      "Review overdue accounts weekly, implement automated payment reminders, and optimize credit terms for repeat clients."
+                    : "[Analisis Data]\n" .
+                      "Status konsolidasi arus kas J&J GROUP saat ini:\n" .
+                      "- Kas Masuk Terealisasi (Lunas): {$revenueStr}\n" .
+                      "- Total Piutang Belum Dibayar: {$outstandingStr}\n" .
+                      "  - Dalam Termin (Pending): {$pendingStr}\n" .
+                      "  - Terlambat (Overdue): {$overdueStr}\n" .
+                      "- Rasio Kolektibilitas Tagihan: {$rateStr}%\n\n" .
+                      "[Dampak Bisnis]\n" .
+                      "Rasio kolektibilitas sebesar {$rateStr}% menunjukkan performa penagihan yang baik, namun piutang overdue senilai {$overdueStr} berpotensi menekan arus kas jangka pendek.\n\n" .
+                      "[Rekomendasi Aksi]\n" .
+                      "Lakukan evaluasi piutang mingguan secara ketat, aktifkan pengingat tagihan otomatis, serta perketat batas kredit untuk klien baru.";
 
             case 'trend':
                 $currStr = "Rp " . number_format($data['current'], 0, ',', '.');
@@ -793,32 +821,34 @@ class AiKnowledgeService
                 $netStr = "Rp " . number_format($data['net'], 0, ',', '.');
 
                 return $locale === 'en'
-                    ? "### 📈 Month-over-Month (MoM) Growth Analysis\n\n" .
-                      "Our live financial database registers the following MoM trend indicators:\n" .
-                      "* **Previous Month Revenue:** {$prevStr}\n" .
-                      "* **Current Month Revenue:** {$currStr}\n" .
-                      "* **Revenue Growth Rate:** {$growthStr}%\n\n" .
-                      "**Detailed Revenue Breakdown:**\n" .
-                      "* **Gross Revenue (Omset Kotor):** {$grossStr}\n" .
-                      "* **Operational Expenses (Beban Operasional):** {$expensesStr}\n" .
-                      "* **Net Revenue (Omset Bersih):** {$netStr}\n\n" .
-                      "**Advisor Assessment:** {$insight}. Under our current profit-sharing structure, J&J GROUP generated a gross revenue of {$grossStr} this month. However, after accounting for operational expenses and division fee allocations of {$expensesStr}, our net revenue stands at {$netStr}. " .
+                    ? "[Analisis Data]\n" .
+                      "Month-over-Month (MoM) revenue trend indicators:\n" .
+                      "- Previous Month Revenue: {$prevStr}\n" .
+                      "- Current Month Revenue: {$currStr}\n" .
+                      "- Revenue Growth Rate: {$growthStr}%\n" .
+                      "- Omset Kotor (Gross Revenue): {$grossStr}\n" .
+                      "- Beban Operasional (Expenses): {$expensesStr}\n" .
+                      "- Omset Bersih (Net Revenue): {$netStr}\n\n" .
+                      "[Dampak Bisnis]\n" .
+                      "J&J GROUP generated a gross revenue of {$grossStr}. Under our current profit-sharing structure, division fee allocations and expenses of {$expensesStr} leave a net revenue of {$netStr}. {$insight}.\n\n" .
+                      "[Rekomendasi Aksi]\n" .
                       ($data['growth'] > 0
-                          ? "This positive performance signifies rising commercial activity or improved invoicing collection. I suggest reinvesting parts of these gains into growth-driving units."
-                          : "This downward trajectory requires urgent review of client acquisition pipelines and operating costs. We must identify underperforming business units and optimize pricing policies.")
-                    : "### 📈 Analisis Pertumbuhan & Tren Pendapatan MoM\n\n" .
-                      "Berdasarkan agregasi database penjualan J&J GROUP, berikut metrik tren performa keuangan bulan ke bulan:\n" .
-                      "* **Pendapatan Bulan Lalu:** {$prevStr}\n" .
-                      "* **Pendapatan Bulan Ini:** {$currStr}\n" .
-                      "* **Tingkat Pertumbuhan:** {$growthStr}%\n\n" .
-                      "**Rincian Pendapatan Bulan Ini:**\n" .
-                      "* **Omset Kotor (Gross Revenue):** {$grossStr}\n" .
-                      "* **Beban Operasional (Expenses):** {$expensesStr}\n" .
-                      "* **Omset Bersih (Net Revenue):** {$netStr}\n\n" .
-                      "**Analisis Konsultan Keuangan:** {$insight}. Berdasarkan struktur pembagian keuntungan bisnis kita, omset kotor kita bulan ini adalah {$grossStr}, namun setelah dikurangi beban operasional sebesar {$expensesStr}, pendapatan bersih kita adalah {$netStr}. " .
+                          ? "Reinvest a portion of these net gains into our highest-performing business units to sustain growth momentum."
+                          : "Review pricing models and implement cost-control measures across underperforming business units immediately.")
+                    : "[Analisis Data]\n" .
+                      "Indikator tren performa keuangan Month-over-Month (MoM):\n" .
+                      "- Pendapatan Bulan Lalu: {$prevStr}\n" .
+                      "- Pendapatan Bulan Ini: {$currStr}\n" .
+                      "- Tingkat Pertumbuhan: {$growthStr}%\n" .
+                      "- Omset Kotor (Gross Revenue): {$grossStr}\n" .
+                      "- Beban Operasional (Expenses): {$expensesStr}\n" .
+                      "- Omset Bersih (Net Revenue): {$netStr}\n\n" .
+                      "[Dampak Bisnis]\n" .
+                      "J&J GROUP membukukan omset kotor {$grossStr}. Setelah dikurangi beban operasional dan alokasi fee divisi sebesar {$expensesStr}, pendapatan bersih bernilai {$netStr}. {$insight}.\n\n" .
+                      "[Rekomendasi Aksi]\n" .
                       ($data['growth'] > 0
-                          ? "Pertumbuhan positif ini mengindikasikan ekspansi bisnis yang solid. Momentum ini sebaiknya dipertahankan dengan mengoptimalkan penetrasi pasar pada sektor industri klien yang paling menguntungkan."
-                          : "Tren negatif ini mengindikasikan adanya perlambatan aktivitas bisnis. Saya menyarankan peninjauan kembali biaya operasional (cost control) serta merestrukturisasi strategi penawaran harga layanan.");
+                          ? "Alokasikan sebagian keuntungan bersih untuk pengembangan unit bisnis dengan tingkat pengembalian tertinggi guna menjaga momentum pertumbuhan."
+                          : "Lakukan peninjauan struktur biaya operasional dan restrukturisasi penawaran unit bisnis yang kurang produktif secara intensif.");
 
             default:
                 return '';

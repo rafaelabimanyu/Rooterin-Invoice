@@ -1,4 +1,4 @@
-<div class="table-container page-fade-in stagger-6 overflow-hidden mt-8">
+<div class="table-container page-fade-in overflow-hidden h-full">
     <div class="px-10 py-8 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between bg-slate-50/30 gap-4">
         <div>
             <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg">

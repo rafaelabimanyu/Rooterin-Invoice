@@ -491,13 +491,23 @@
             </div>
 
             <!-- Input Area -->
-            <form @submit.prevent="sendMessage()" class="p-3 sm:p-4 lg:p-6 bg-white border-t border-slate-200 flex items-center gap-2 lg:gap-4 shrink-0">
-                <input x-model="input" 
-                    type="text" 
+            <form @submit.prevent="sendMessage(); if($refs.inputChatbox) $refs.inputChatbox.style.height = 'auto';" class="p-3 sm:p-4 lg:p-6 bg-white border-t border-slate-200 flex items-center gap-2 lg:gap-4 shrink-0">
+                <textarea x-model="input"
+                    x-ref="inputChatbox"
+                    rows="1"
+                    x-data="{
+                        resize() {
+                            $el.style.height = 'auto';
+                            $el.style.height = ($el.scrollHeight) + 'px';
+                        }
+                    }"
+                    x-init="resize()"
+                    @input="resize()"
+                    @keydown.enter.prevent="if(!$event.shiftKey) { sendMessage(); $refs.inputChatbox.style.height = 'auto'; }"
                     placeholder="{{ app()->getLocale() == 'en' ? 'Ask financial analysis, overdue bills...' : 'Tanyakan analisis keuangan, tagihan overdue...' }}" 
-                    class="flex-1 min-w-0 px-3.5 lg:px-5 py-3 lg:py-3.5 bg-slate-50 border border-slate-200 rounded-xl lg:rounded-2xl text-[11px] lg:text-xs outline-none focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500/80 transition-all text-slate-800 font-medium" 
+                    class="flex-1 min-w-0 px-3.5 lg:px-5 py-3 lg:py-3.5 bg-slate-50 border border-slate-200 rounded-xl lg:rounded-2xl text-[11px] lg:text-xs outline-none focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500/80 transition-all text-slate-800 font-medium resize-none max-h-32 chat-scroll"
                     :disabled="loading"
-                    autofocus>
+                    autofocus></textarea>
                 
                 <!-- Mic Button -->
                 <button type="button" 
@@ -563,7 +573,7 @@
                 },
                 initChat() {
                     this.messages = [
-                        { sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Hello! I am your Virtual Senior Financial Consultant & Business Analyst. Is there anything I can help you with regarding cash flow analysis, overdue clients, financial forecasts, or system navigation today?" : "Halo! Saya Senior Financial Consultant & Business Analyst Virtual Anda. Ada yang bisa saya bantu terkait analisis arus kas, klien overdue, prediksi keuangan, atau navigasi sistem hari ini?" }}' }
+                        { sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Hello! I am your Executive Business Partner for J&J GROUP. Let\'s analyze our cash flows, overdue clients, revenue projections, or system modules today." : "Halo! Saya Executive Business Partner J&J GROUP Anda. Mari kita analisis arus kas, klien overdue, proyeksi pendapatan, atau modul sistem hari ini." }}' }
                     ];
                     this.initSpeech();
                     
@@ -649,7 +659,7 @@
                 },
                 newChat() {
                     this.messages = [
-                        { sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Hello! I am your Virtual Senior Financial Consultant & Business Analyst. Is there anything I can help you with regarding cash flow analysis, overdue clients, financial forecasts, or system navigation today?" : "Halo! Saya Senior Financial Consultant & Business Analyst Virtual Anda. Ada yang bisa saya bantu terkait analisis arus kas, klien overdue, prediksi keuangan, atau navigasi sistem hari ini?" }}' }
+                        { sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Hello! I am your Executive Business Partner for J&J GROUP. Let\'s analyze our cash flows, overdue clients, revenue projections, or system modules today." : "Halo! Saya Executive Business Partner J&J GROUP Anda. Mari kita analisis arus kas, klien overdue, proyeksi pendapatan, atau modul sistem hari ini." }}' }
                     ];
                     this.currentSessionId = null;
                     this.input = '';
@@ -677,7 +687,7 @@
                             this.loading = false;
                             if (data.success) {
                                 this.messages = data.messages.length > 0 ? data.messages : [
-                                    { sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Hello! I am your Virtual Senior Financial Consultant & Business Analyst. Is there anything I can help you with regarding financial analysis today?" : "Halo! Saya Senior Financial Consultant & Business Analyst Virtual Anda. Ada yang bisa saya bantu terkait analisis keuangan hari ini?" }}' }
+                                    { sender: 'ai', text: '{{ app()->getLocale() == "en" ? "Hello! I am your Executive Business Partner for J&J GROUP. Let\'s analyze our cash flows, overdue clients, revenue projections, or system modules today." : "Halo! Saya Executive Business Partner J&J GROUP Anda. Mari kita analisis arus kas, klien overdue, proyeksi pendapatan, atau modul sistem hari ini." }}' }
                                 ];
                                 this.$nextTick(() => {
                                     this.scrollToBottom();

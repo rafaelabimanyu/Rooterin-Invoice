@@ -16,10 +16,10 @@
                 <h4 class="text-base font-bold text-slate-900 leading-snug font-jakarta">{{ $locale == 'en' ? 'Financial Strategy & Cash Flow' : 'Taktik Keuangan & Arus Kas' }}</h4>
                 <div x-data="{ expanded: false }" class="mt-2">
                     <p 
-                        class="text-sm text-slate-600 leading-relaxed max-w-4xl transition-all duration-300 pr-2"
-                        :class="expanded ? '' : 'line-clamp-2'"
+                        class="text-sm text-slate-600 leading-relaxed max-w-4xl transition-all duration-300 pr-2 whitespace-pre-line"
+                        :class="expanded ? '' : 'line-clamp-6'"
                     >
-                        {{ $aiInsight }}
+                        {!! nl2br(e($aiInsight)) !!}
                     </p>
                     <button 
                         @click="expanded = !expanded" 

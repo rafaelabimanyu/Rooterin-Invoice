@@ -16,47 +16,38 @@
     </div>
 
     @if(!$isStaff)
-        @if(count($insights) > 0)
-            <div class="mb-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in-up stagger-1">
-                @foreach($insights as $insight)
-                    <div class="glass-card relative overflow-hidden p-6 border-slate-200/60 transition-all duration-300 hover:shadow-lg">
-                        @if($insight['type'] === 'danger')
-                            <div class="absolute top-0 left-0 w-1.5 h-full bg-rose-500/80"></div>
-                            @php $iconBg = 'bg-rose-50 text-rose-600'; @endphp
-                        @elseif($insight['type'] === 'warning')
-                            <div class="absolute top-0 left-0 w-1.5 h-full bg-amber-500/80"></div>
-                            @php $iconBg = 'bg-amber-50 text-amber-600'; @endphp
-                        @else
-                            <div class="absolute top-0 left-0 w-1.5 h-full bg-emerald-500/80"></div>
-                            @php $iconBg = 'bg-emerald-50 text-emerald-600'; @endphp
-                        @endif
+        <!-- OWNER EXECUTIVE COMMAND CENTER -->
+        <!-- AI Financial Advisory (Topmost Command Panel) -->
+        <div class="mb-8">
+            <livewire:dashboard.financial-advisory lazy />
+        </div>
 
-                        <div class="flex items-start justify-between gap-4 mb-4">
-                            <div>
-                                <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">AI Predictive Recommendation</span>
-                                <h4 class="text-sm font-bold text-slate-900 font-outfit">{{ $insight['title'] }}</h4>
-                            </div>
-                            <div class="w-8 h-8 rounded-xl {{ $iconBg }} flex items-center justify-center shrink-0">
-                                <i data-lucide="{{ $insight['icon'] }}" class="w-4 h-4"></i>
-                            </div>
-                        </div>
-                        <p class="text-xs text-slate-500 font-medium mb-3 leading-relaxed">
-                            {{ $insight['message'] }}
-                        </p>
-                        <div class="p-3 bg-slate-55 rounded-xl border border-slate-100 text-[11px] text-slate-650 font-medium leading-relaxed">
-                            <span class="font-bold text-slate-800 block mb-1">Rekomendasi Tindakan:</span>
-                            {{ $insight['recommendation'] }}
-                        </div>
-                    </div>
-                @endforeach
+        <!-- TOP BAR: 4 KPI Cards -->
+        <div class="mb-8">
+            <livewire:owner-kpi :minimal="true" />
+        </div>
+
+        <!-- MIDDLE BAR: Urgent Action (3 Klien Overdue teratas & AI Predictive Recommendation) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8 page-fade-in stagger-2">
+            <!-- 3 Klien Overdue Teratas -->
+            <div class="lg:col-span-6 flex flex-col">
+                @include('dashboard.partials.overdue-clients')
             </div>
-        @endif
+            <!-- AI Predictive Recommendation -->
+            <div class="lg:col-span-6 flex flex-col">
+                @include('dashboard.partials.predictive-insights')
+            </div>
+        </div>
 
-        <livewire:dashboard-morning-briefing />
-
-        <livewire:dashboard.financial-advisory lazy />
-
-        @include('dashboard.partials.metric-cards')
+        <!-- BOTTOM BAR: Kinerja Unit Bisnis & Tren Arus Kas (3 bulan terakhir saja) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8 page-fade-in stagger-3">
+            <!-- Kinerja Unit Bisnis -->
+            <div class="lg:col-span-6 flex flex-col">
+                @include('dashboard.partials.business-units-summary')
+            </div>
+            <!-- Tren Arus Kas (3 Months) -->
+            @include('dashboard.partials.cash-flow-chart')
+        </div>
     @else
         <!-- Staff: Premium Interactive Dashboard -->
         <div class="mb-12 page-fade-in" x-data="{ 
@@ -212,70 +203,13 @@
                 </div>
             </div>
         </div>
-    @endif
 
-    <!-- Content Sections -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-6 xl:gap-8 w-full min-w-0">
-        <!-- Main Activity Table -->
-        <div class="lg:col-span-2 xl:col-span-3 flex flex-col min-w-0 w-full">
-            @include('dashboard.partials.billing-operations')
-
-            @if(!$isStaff)
-                @include('dashboard.partials.business-units-summary')
-
-                <!-- Top Clients & Invoice Ageing Widgets (Desktop Version) -->
-                <div class="hidden md:grid md:grid-cols-2 gap-6 mt-8 page-fade-in stagger-6">
-                    @include('dashboard.partials.top-clients')
-                    @include('dashboard.partials.invoice-ageing')
-                </div>
-
-                <!-- Mobile View (Tab Toggle Container) -->
-                <div class="block md:hidden mt-8 page-fade-in stagger-6" x-data="{ activeTab: 'topClients' }">
-                    <div class="glass-card p-6 flex flex-col justify-between hover:shadow-lg transition-all duration-300">
-                        <!-- Tab Header Toggle -->
-                        <div class="flex border-b border-slate-100 pb-4 mb-6">
-                             <button 
-                                @click="activeTab = 'topClients'"
-                                :class="activeTab === 'topClients' ? 'text-gold-600 border-gold-600 font-black' : 'text-slate-400 border-transparent hover:text-slate-600 font-bold'"
-                                class="flex-1 pb-3 text-xs uppercase tracking-wider text-center border-b-2 transition-all focus:outline-none"
-                            >
-                                {{ __('dashboard.top_clients') }}
-                            </button>
-                            <button 
-                                @click="activeTab = 'ageing'"
-                                :class="activeTab === 'ageing' ? 'text-gold-600 border-gold-600 font-black' : 'text-slate-400 border-transparent hover:text-slate-600 font-bold'"
-                                class="flex-1 pb-3 text-xs uppercase tracking-wider text-center border-b-2 transition-all focus:outline-none"
-                            >
-                                {{ __('dashboard.ar_ageing') }}
-                            </button>
-                        </div>
-
-                        <!-- Tab Content 1: Top Clients -->
-                        <div x-show="activeTab === 'topClients'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-1" x-transition:enter-end="opacity-100 translate-y-0">
-                            @include('dashboard.partials.top-clients', ['cardless' => true])
-                        </div>
-
-                        <!-- Tab Content 2: AR Ageing -->
-                        <div x-show="activeTab === 'ageing'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" x-cloak>
-                            @include('dashboard.partials.invoice-ageing', ['cardless' => true])
-                        </div>
-                    </div>
-                </div>
-            @endif
-        </div>
-
-        <!-- Right Side: Activity Timeline (Staff) or Stats (Admin) -->
-        @include('dashboard.partials.upcoming-billing')
-    </div>
-
-    @if(!$isStaff)
-        <!-- Bottom Grid Container -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6 page-fade-in stagger-6">
-            @include('dashboard.partials.cash-flow-chart')
-
-            @include('dashboard.partials.team-activities')
-
-            @include('dashboard.partials.system-analytics')
+        <!-- Content Sections (Staff) -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-6 xl:gap-8 w-full min-w-0">
+            <div class="lg:col-span-2 xl:col-span-3 flex flex-col min-w-0 w-full">
+                @include('dashboard.partials.billing-operations')
+            </div>
+            @include('dashboard.partials.upcoming-billing')
         </div>
     @endif
     </div>

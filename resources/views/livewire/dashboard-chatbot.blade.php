@@ -222,18 +222,28 @@
                     });
                 }
             }"
-            @submit="handleSubmit()"
+            @submit.prevent="handleSubmit(); if ($refs.inputChatbox) $refs.inputChatbox.style.height = 'auto';"
         >
             <div class="relative flex-grow flex items-center">
-                 <input 
+                <textarea 
                     wire:model="input" 
-                    type="text" 
+                    x-ref="inputChatbox"
+                    rows="1"
+                    x-data="{
+                        resize() {
+                            $el.style.height = 'auto';
+                            $el.style.height = ($el.scrollHeight) + 'px';
+                        }
+                    }"
+                    x-init="resize()"
+                    @input="resize()"
+                    @keydown.enter.prevent="if(!$event.shiftKey) { $el.form.requestSubmit(); }"
                     placeholder="{{ app()->getLocale() == 'en' ? 'Ask about unpaid invoices or client list...' : 'Tanyakan invoice belum dibayar atau data klien...' }}" 
-                    class="w-full pl-5 pr-12 py-3 bg-slate-50 border border-slate-200 rounded-full text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-gold-500/40 focus:border-gold-500/80 focus:bg-white transition-all font-medium" 
+                    class="w-full pl-5 pr-12 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-gold-500/40 focus:border-gold-500/80 focus:bg-white transition-all font-medium resize-none max-h-32 chatbot-scrollbar" 
                     wire:loading.attr="disabled"
                     wire:target="sendMessage"
                     required
-                >
+                ></textarea>
                 <button 
                     type="submit" 
                     class="absolute right-1.5 w-9 h-9 bg-gold-500 hover:bg-gold-600 text-slate-950 font-bold rounded-full flex items-center justify-center transition-all active:scale-95 disabled:opacity-50 shadow-md shadow-gold-500/15 focus:outline-none"

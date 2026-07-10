@@ -21,6 +21,7 @@ class DashboardController extends Controller
     public function index(PredictiveInsightService $insightService)
     {
         $totalClients = Client::where('status', 'aktif')->count();
+        $overdueClients = collect();
         
         $globalStats = $this->reportingService->getSummaryStats();
         $totalInvoices = $globalStats['total_invoices_count'];
@@ -197,8 +198,8 @@ class DashboardController extends Controller
                 ];
             });
 
-            // Dynamic Cash Flow Data (Last 6 Months) using BusinessUnitReportingService
-            $monthlyTrend = $this->reportingService->getMonthlyTrend([], 6);
+            // Dynamic Cash Flow Data (Last 3 Months) using BusinessUnitReportingService
+            $monthlyTrend = $this->reportingService->getMonthlyTrend([], 3);
             $maxVal = collect($monthlyTrend)->max(fn($t) => max($t['revenue'], $t['receivables'])) ?: 1;
             if ($maxVal <= 0) {
                 $maxVal = 1;
@@ -244,6 +245,19 @@ class DashboardController extends Controller
                     }
                 }
             }
+
+            // Top 3 Overdue Clients by unpaid overdue amount
+            $overdueClients = Client::whereHas('invoices', function ($q) {
+                $q->whereIn('status', ['sent', 'pending', 'dp', 'overdue'])
+                  ->where('due_date', '<', Carbon::now()->toDateString());
+            })
+            ->withSum(['invoices' => function ($q) {
+                $q->whereIn('status', ['sent', 'pending', 'dp', 'overdue'])
+                  ->where('due_date', '<', Carbon::now()->toDateString());
+            }], 'total')
+            ->orderByDesc('invoices_sum_total')
+            ->take(3)
+            ->get();
         }
         $insights = !$isStaff ? $insightService->generateInsights() : [];
 
@@ -273,7 +287,8 @@ class DashboardController extends Controller
             'topClients',
             'invoiceAgeing',
             'businessUnitSummary',
-            'insights'
+            'insights',
+            'overdueClients'
         ));
     }
 

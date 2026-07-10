@@ -55,22 +55,49 @@ class FinancialAdvisory extends Component
         $locale = $this->locale;
 
         $this->aiInsight = Cache::remember('ai_financial_insights_' . $locale, 3600, function() use ($monthlyRevenue, $overdueRevenue, $trendText, $locale) {
+            $formattedMonthly = "Rp " . number_format($monthlyRevenue, 0, ',', '.');
+            $formattedOverdue = "Rp " . number_format($overdueRevenue, 0, ',', '.');
+            
             if ($locale === 'en') {
-                $prompt = "You are a professional business financial consultant. Analyze the following financial summary smartly and tactfully:
-- Total Invoices Paid This Month: Rp " . number_format($monthlyRevenue, 0, ',', '.') . "
-- Total Overdue Invoices: Rp " . number_format($overdueRevenue, 0, ',', '.') . "
+                $prompt = "You are a strategic Executive Business Partner for J&J GROUP. You provide to-the-point, sharp, analytical financial advisory free of conversational fluff.
+Analyze the following data:
+- Total Invoices Paid This Month: {$formattedMonthly}
+- Total Overdue Invoices: {$formattedOverdue}
 - Sales/Invoice Trend for the Last 3 Months: {$trendText}
 
-Strictly match the user's current application language interface. If the active language is 'en', you MUST construct your entire analysis, greetings, and responses in Professional English. If the active language is 'id', you MUST respond in Professional Indonesian. Never mix the languages.
-Provide 2-3 sentences containing tactical business insights and practical action recommendations to help the business owner maintain smooth cash flow. Do not use any markdown formatting (like bold/italic or lists), return only plain text paragraph.";
+You MUST format your response strictly using this exact structure:
+[Analisis Data]
+(Brief analysis based on real figures)
+
+[Dampak Bisnis]
+(Direct impact/causes on J&J GROUP receivables or cash flow)
+
+[Rekomendasi Aksi]
+(Specific, concrete, and immediately executable action recommendations)
+
+Rules:
+- Use professional, firm, and concise English.
+- Do NOT use other markdown formatting (such as bold/italic asterisks, headers, or bullet lists). Return clean paragraphs separated strictly by the section tags above.";
             } else {
-                $prompt = "Kamu adalah konsultan keuangan bisnis terpercaya. Analisis data ringkasan keuangan berikut secara cerdas dan taktis:
-- Total Invoice Lunas Bulan Ini: Rp " . number_format($monthlyRevenue, 0, ',', '.') . "
-- Total Tagihan Menunggak (Overdue): Rp " . number_format($overdueRevenue, 0, ',', '.') . "
+                $prompt = "Anda adalah Executive Business Partner strategis khusus untuk J&J GROUP. Anda memberikan nasihat finansial yang to-the-point, tajam, analitis, dan bebas dari basa-basi.
+Analisis data berikut:
+- Total Invoice Lunas Bulan Ini: {$formattedMonthly}
+- Total Tagihan Menunggak (Overdue): {$formattedOverdue}
 - Tren Penjualan/Invoice 3 Bulan Terakhir: {$trendText}
 
-Strictly match the user's current application language interface. If the active language is 'en', you MUST construct your entire analysis, greetings, and responses in Professional English. If the active language is 'id', you MUST respond in Professional Indonesian. Never mix the languages.
-Berikan 2-3 kalimat berisi insight bisnis taktis dan rekomendasi tindakan praktis dalam Bahasa Indonesia yang profesional untuk membantu pemilik bisnis menjaga kelancaran cash flow (arus kas). Jangan gunakan format markdown (seperti tebal/miring atau list), kembalikan langsung paragraf teks bersih.";
+Anda wajib menyusun respons Anda dengan format terstruktur persis seperti ini:
+[Analisis Data]
+(Analisis singkat berbasis angka riil)
+
+[Dampak Bisnis]
+(Dampak langsung/penyebab masalah piutang atau arus kas J&J GROUP)
+
+[Rekomendasi Aksi]
+(Rekomendasi tindakan nyata yang spesifik dan langsung dapat dieksekusi)
+
+Aturan:
+- Gunakan bahasa Indonesia profesional yang tegas, ringkas, dan langsung pada sasaran.
+- JANGAN gunakan format markdown lain (seperti tanda bintang tebal/miring, list bulat, dll). Cukup teks bersih berparagraf yang dipisahkan oleh tag baris di atas.";
             }
 
             try {
@@ -106,18 +133,17 @@ Berikan 2-3 kalimat berisi insight bisnis taktis dan rekomendasi tindakan prakti
             } catch (\Throwable $e) {
                 Log::error("DashboardController Gemini Error: " . $e->getMessage(), ['exception' => $e]);
                 $errMsg = " (Advisory Fallback)";
-                $overdueFormatted = "Rp " . number_format($overdueRevenue, 0, ',', '.');
                 if ($locale === 'en') {
                     if ($overdueRevenue > 0) {
-                        return "Your total active arrears are currently at {$overdueFormatted}. We recommend prioritizing collection efforts on major corporate and government entities (e.g., Dinas Kesehatan or Yayasan Pendidikan) using AI Billing Copywriter to stabilize operational cash flow." . $errMsg;
+                        return "[Analisis Data]\nTotal overdue invoices stand at {$formattedOverdue} this month, with current month paid invoices at {$formattedMonthly}.\n\n[Dampak Bisnis]\nThese outstanding receivables delay J&J GROUP's operational cash cycle, locking up vital working capital.\n\n[Rekomendasi Aksi]\nPrioritize immediate collections on major accounts and pause further project milestones for overdue accounts." . $errMsg;
                     } else {
-                        return "Your financial performance this month is stable with a 100% invoice collection rate. Continue to monitor incoming billings closely to sustain this cash flow efficiency." . $errMsg;
+                        return "[Analisis Data]\nAll invoices are settled, achieving a 100% collection efficiency this month.\n\n[Dampak Bisnis]\nStrong collection rates maximize cash buffer availability, enabling smooth short-term working capital.\n\n[Rekomendasi Aksi]\nContinue active monitoring and allocate a portion of realized cash to operational reserves." . $errMsg;
                     }
                 } else {
                     if ($overdueRevenue > 0) {
-                        return "Total tagihan menunggak (piutang aktif) saat ini mencapai {$overdueFormatted}. Direkomendasikan untuk memprioritaskan penagihan aktif pada klien besar seperti Dinas Kesehatan Kota atau Yayasan Pendidikan dengan mengirimkan email pengingat menggunakan AI Billing Copywriter agar arus kas tetap stabil." . $errMsg;
+                        return "[Analisis Data]\nTotal tagihan menunggak (piutang overdue) saat ini mencapai {$formattedOverdue}, sedangkan invoice lunas bulan ini sebesar {$formattedMonthly}.\n\n[Dampak Bisnis]\nPiutang yang menunggak menghambat perputaran kas operasional J&J GROUP dan membebani likuiditas jangka pendek.\n\n[Rekomendasi Aksi]\nSegera kirimkan surat pengingat resmi ke klien bersangkutan dan batasi pengerjaan milestone proyek berjalan." . $errMsg;
                     } else {
-                        return "Performa keuangan Anda bulan ini sangat sehat dengan tingkat kolektibilitas piutang 100%. Tetap pantau penagihan baru secara berkala untuk menjaga efisiensi arus kas operasional." . $errMsg;
+                        return "[Analisis Data]\nSeluruh tagihan bulan ini telah lunas, mencapai efisiensi rasio kolektibilitas 100%.\n\n[Dampak Bisnis]\nKetepatan pelunasan tagihan mengamankan ketersediaan kas untuk pembiayaan operasional harian.\n\n[Rekomendasi Aksi]\nTetap pertahankan penagihan berkala dan alokasikan sebagian keuntungan bersih ke cadangan kas." . $errMsg;
                     }
                 }
             }

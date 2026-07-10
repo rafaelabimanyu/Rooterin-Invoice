@@ -2,7 +2,7 @@
     @if($minimal)
         <!-- Refreshed Dashboard Metrics Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-12 animate-fade-in-up">
-            <!-- Card 1: Pendapatan Kotor -->
+            <!-- Card 1: Total Revenue -->
             <div class="glass-card p-6 group hover:-translate-y-1 hover:shadow-lg hover:border-gold-500/20 transition-all duration-300 ease-out cursor-pointer relative overflow-hidden border border-gold-200/50"
                  @click="$dispatch('slide-over-loading-start')"
                  wire:click="openModal('total-revenue')">
@@ -17,7 +17,7 @@
                 </div>
                 <div class="relative z-10">
                     <p class="text-[10px] md:text-[11px] font-black text-slate-500 uppercase tracking-[0.25em] mb-2">
-                        {{ __('ui.total_billing') }}
+                        {{ app()->getLocale() == 'en' ? 'Total Revenue' : 'Total Pendapatan' }}
                     </p>
                     <h3 class="text-xl sm:text-2xl lg:text-lg xl:text-xl 2xl:text-2xl font-black text-slate-900 font-jakarta tracking-tight group-hover:translate-x-1 transition-transform duration-500 truncate">
                         Rp {{ number_format($totalRevenue, 0, ',', '.') }}
@@ -26,7 +26,7 @@
                 <div class="absolute inset-0 shimmer opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
             </div>
 
-            <!-- Card 2: Invois Tertunggak -->
+            <!-- Card 2: Overdue Invoices -->
             <div class="glass-card p-6 group hover:-translate-y-1 hover:shadow-lg hover:border-gold-500/20 transition-all duration-300 ease-out cursor-pointer relative overflow-hidden border border-gold-200/50"
                  @click="$dispatch('slide-over-loading-start')"
                  wire:click="openModal('risks')">
@@ -36,45 +36,45 @@
                         <i data-lucide="clock" class="w-7 h-7"></i>
                     </div>
                     <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-gold-50 text-gold-600 shadow-sm">
-                        {{ app()->getLocale() == 'en' ? 'Receivable' : 'Piutang' }}
+                        {{ app()->getLocale() == 'en' ? 'Overdue' : 'Terlambat' }}
                     </span>
                 </div>
                 <div class="relative z-10">
                     <p class="text-[10px] md:text-[11px] font-black text-slate-500 uppercase tracking-[0.25em] mb-2">
-                        {{ __('ui.amount_due') }}
+                        {{ app()->getLocale() == 'en' ? 'Overdue Invoices' : 'Tagihan Menunggak' }}
                     </p>
                     <h3 class="text-xl sm:text-2xl lg:text-lg xl:text-xl 2xl:text-2xl font-black text-slate-900 font-jakarta tracking-tight group-hover:translate-x-1 transition-transform duration-500 truncate">
-                        Rp {{ number_format($pendingRevenue, 0, ',', '.') }}
+                        Rp {{ number_format($overdueUnpaid, 0, ',', '.') }}
                     </h3>
                 </div>
                 <div class="absolute inset-0 shimmer opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
             </div>
 
-            <!-- Card 3: Klien -->
+            <!-- Card 3: Pending Invoices -->
             <div class="glass-card p-6 group hover:-translate-y-1 hover:shadow-lg hover:border-gold-500/20 transition-all duration-300 ease-out cursor-pointer relative overflow-hidden border border-gold-200/50"
                  @click="$dispatch('slide-over-loading-start')"
-                 wire:click="openModal('loyalty')">
+                 wire:click="openModal('risks')">
                 <div class="absolute -right-10 -top-10 w-32 h-32 bg-gold-500/5 blur-3xl group-hover:bg-gold-500/15 transition-colors duration-500 rounded-full"></div>
                 <div class="flex items-center justify-between mb-6 relative z-10">
                     <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold-500/10 to-gold-500/5 text-gold-600 flex items-center justify-center border border-gold-500/10 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
-                        <i data-lucide="users" class="w-7 h-7"></i>
+                        <i data-lucide="hourglass" class="w-7 h-7"></i>
                     </div>
                     <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-gold-50 text-gold-600 shadow-sm">
-                        {{ app()->getLocale() == 'en' ? 'Active' : 'Aktif' }}
+                        {{ app()->getLocale() == 'en' ? 'Pending' : 'Berjalan' }}
                     </span>
                 </div>
                 <div class="relative z-10">
                     <p class="text-[10px] md:text-[11px] font-black text-slate-500 uppercase tracking-[0.25em] mb-2">
-                        {{ __('ui.clients') }}
+                        {{ app()->getLocale() == 'en' ? 'Pending Invoices' : 'Tagihan Berjalan' }}
                     </p>
                     <h3 class="text-xl sm:text-2xl lg:text-lg xl:text-xl 2xl:text-2xl font-black text-slate-900 font-jakarta tracking-tight group-hover:translate-x-1 transition-transform duration-500 truncate">
-                        {{ $totalClientsCount }}
+                        Rp {{ number_format($pendingUnpaid, 0, ',', '.') }}
                     </h3>
                 </div>
                 <div class="absolute inset-0 shimmer opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
             </div>
 
-            <!-- Card 4: Rasio Pengumpulan -->
+            <!-- Card 4: Collection Rate -->
             <div class="glass-card p-6 group hover:-translate-y-1 hover:shadow-lg hover:border-gold-500/20 transition-all duration-300 ease-out cursor-pointer relative overflow-hidden border border-gold-200/50"
                  @click="$dispatch('slide-over-loading-start')"
                  wire:click="openModal('collection-rate')">

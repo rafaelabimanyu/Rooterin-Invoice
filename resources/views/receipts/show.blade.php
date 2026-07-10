@@ -91,9 +91,11 @@
                     <h2 class="text-xs font-bold text-slate-400 uppercase tracking-[0.3em] mb-4 md:mb-6">{{ app()->getLocale() == 'en' ? 'Payment Receipt' : 'Kuitansi Pembayaran' }}</h2>
                     <p class="text-2xl font-black text-slate-900 font-outfit">{{ $receipt->receipt_number }}</p>
                     <p class="text-xs font-bold text-slate-500">{{ app()->getLocale() == 'en' ? 'Issued' : 'Diterbitkan' }}: {{ $receipt->tanggal_receipt->format(\App\Models\Setting::get('date_format', 'd M Y')) }}</p>
+                    @if($receipt->expiry_date)
                     <div class="inline-block mt-4 px-3 py-1 bg-rose-50 text-rose-600 border border-rose-100 rounded text-[10px] font-bold uppercase tracking-widest">
                         {{ app()->getLocale() == 'en' ? 'Expiry' : 'Kedaluwarsa' }}: {{ $receipt->expiry_date->format(\App\Models\Setting::get('date_format', 'd M Y')) }}
                     </div>
+                    @endif
                 </div>
             </div>
         </div>

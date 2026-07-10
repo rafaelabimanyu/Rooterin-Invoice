@@ -44,7 +44,7 @@
                         </div>
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Expiry Date' : 'Tanggal Kedaluwarsa' }}</label>
-                            <input type="date" name="expiry_date" value="{{ $receipt->expiry_date->format('Y-m-d') }}" required class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200/60 rounded-lg text-sm text-slate-900 outline-none">
+                            <input type="date" name="expiry_date" value="{{ $receipt->expiry_date ? $receipt->expiry_date->format('Y-m-d') : '' }}" required class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200/60 rounded-lg text-sm text-slate-900 outline-none">
                         </div>
                     </div>
                 </div>

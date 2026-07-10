@@ -292,6 +292,10 @@ Strictly match the user's current application language interface. Since the acti
             'profile.edit' => route('profile.edit'),
             'reports.index' => route('reports.index'),
             'chronos.index' => route('chronos.index'),
+            'business-units.index' => route('business-units.index'),
+            'users.index' => route('users.index'),
+            'owner.kpi' => route('owner.kpi'),
+            'security.center' => route('security.center'),
         ];
     }
 
@@ -310,6 +314,10 @@ Strictly match the user's current application language interface. Since the acti
                 'profile.edit' => "👉 Edit My Profile",
                 'reports.index' => "👉 View Financial Reports",
                 'chronos.index' => "👉 Open Billing Calendar (Chronos)",
+                'business-units.index' => "👉 View Business Units",
+                'users.index' => "👉 Manage Team Users",
+                'owner.kpi' => "👉 Open Owner KPI",
+                'security.center' => "👉 Open Security Center",
             ];
         } else {
             return [
@@ -324,6 +332,10 @@ Strictly match the user's current application language interface. Since the acti
                 'profile.edit' => "👉 Edit Profil Saya",
                 'reports.index' => "👉 Lihat Laporan Keuangan",
                 'chronos.index' => "👉 Buka Kalender Billing (Chronos)",
+                'business-units.index' => "👉 Lihat Unit Bisnis",
+                'users.index' => "👉 Kelola Pengguna Tim",
+                'owner.kpi' => "👉 Buka KPI Owner",
+                'security.center' => "👉 Buka Pusat Keamanan",
             ];
         }
     }

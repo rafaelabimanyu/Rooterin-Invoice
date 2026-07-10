@@ -5,6 +5,62 @@ namespace App\Services;
 class KnowledgeDictionary
 {
     /**
+     * Centralized synonym map: raw user words → canonical form.
+     * Processed BEFORE any fuzzy / alias matching.
+     *
+     * @return array<string, string>
+     */
+    public static function getSynonyms(): array
+    {
+        return [
+            // Revenue / income synonyms
+            'omset'        => 'pendapatan',
+            'omzet'        => 'pendapatan',
+            'penghasilan'  => 'pendapatan',
+            'revenue'      => 'pendapatan',
+            'income'       => 'pendapatan',
+            'pemasukan'    => 'pendapatan',
+
+            // Client synonyms
+            'client'       => 'klien',
+            'clients'      => 'klien',
+            'customer'     => 'klien',
+            'pelanggan'    => 'klien',
+            'mitra'        => 'klien',
+
+            // Business Unit synonyms
+            'unit bisnis'   => 'unit bisnis',
+            'business unit' => 'unit bisnis',
+            'divisi'        => 'unit bisnis',
+            'division'      => 'unit bisnis',
+
+            // Receipt synonyms
+            'kwitansi'     => 'kuitansi',
+            'receipt'      => 'kuitansi',
+            'receipts'     => 'kuitansi',
+
+            // Cash flow synonyms
+            'cash flow'    => 'arus kas',
+            'cashflow'     => 'arus kas',
+            'aliran kas'   => 'arus kas',
+            'keuangan'     => 'laporan',
+
+            // Performance synonyms
+            'analisa'      => 'analisis',
+            'kinerja'      => 'performa',
+
+            // Action synonyms
+            'bikin'        => 'buat',
+            'setting'      => 'pengaturan',
+            'config'       => 'pengaturan',
+            'setup'        => 'pengaturan',
+
+            // Billing / invoice synonyms
+            'tagihan'      => 'invoice',
+        ];
+    }
+
+    /**
      * Get the structured dictionary of knowledge items.
      *
      * @return array
@@ -16,74 +72,86 @@ class KnowledgeDictionary
                 'panduan_sistem' => [
                     'keywords' => ['panduan sistem', 'sop operasional', 'petunjuk penggunaan', 'guidebook', 'tutorial sistem', 'cara pakai aplikasi', 'halaman menu navigasi', 'fitur aplikasi', 'role hak akses'],
                     'priority' => 10,
-                    'response_id' => "Selamat datang di J&J GROUP Command Center. Sebagai asisten bisnis Anda, berikut adalah struktur operasional sistem yang dapat Anda kelola secara langsung melalui menu navigasi di sidebar kiri:\n\n" .
-                                     "1. **Dashboard**: Menampilkan grafik penjualan bulanan, tagihan outstanding, ringkasan aktivitas, serta analisis cashflow secara visual.\n" .
-                                     "2. **AI Assistant**: Hub khusus tempat Anda dapat berinteraksi secara interaktif dengan asisten finansial lokal.\n" .
-                                     "3. **Clients**: Modul manajemen kemitraan untuk pendaftaran dan pencatatan riwayat transaksi klien.\n" .
-                                     "4. **Receipts**: Sistem pencatatan resmi kwitansi penerimaan kas yang sah setelah tagihan dilunasi.\n" .
-                                     "5. **Invoices**: Area penerbitan invoice baru yang dilengkapi dengan asisten AI Copywriter untuk rancangan pesan penagihan.\n" .
-                                     "6. **Chronos Calendar**: Kalender taktis pemantauan tanggal jatuh tempo piutang agar tidak terlewat.\n" .
-                                     "7. **Owner KPI**: Analitik mendalam terkait efektivitas operasional, kecepatan penagihan, dan profit sharing.\n" .
-                                     "8. **Reports**: Halaman pelaporan komprehensif bagi arus kas, profitabilitas unit bisnis, dan data ekspor.\n" .
-                                     "9. **Team Management**: Pusat pembagian otoritas dan pengelolaan hak akses tim (Owner, Admin, Staff).\n" .
-                                     "10. **Settings**: Konfigurasi umum aplikasi, profil perusahaan, dan data rekening bank.\n" .
-                                     "11. **Security Center**: Gerbang pemantauan keamanan enkripsi data, kelola sesi aktif, serta aktivasi Autentikasi Dua Faktor (2FA).\n" .
-                                     "12. **J&J GROUP Guide**: Dokumentasi SOP resmi panduan penggunaan sistem.",
-                    'response_en' => "Welcome to the J&J GROUP Command Center. As your senior business advisor, here is the official menu structure available on your left sidebar panel:\n\n" .
-                                     "1. **Dashboard**: Visualizes monthly revenue trends, outstanding balances, activity logs, and real-time cash flow.\n" .
-                                     "2. **AI Assistant**: A dedicated page for strategic conversations with your virtual financial consultant.\n" .
-                                     "3. **Clients**: Portal to manage client relations, company directories, and transaction histories.\n" .
-                                     "4. **Receipts**: System to record official transaction receipts upon payment confirmation.\n" .
-                                     "5. **Invoices**: Module for drafting bills, calculating taxes, and generating AI-powered billing notifications.\n" .
-                                     "6. **Chronos Calendar**: Interactive scheduling board mapping due dates and collections.\n" .
-                                     "7. **Owner KPI**: Executive metrics tracking staff performance, collection speed, and profit splits.\n" .
-                                     "8. **Reports**: Financial analytics hub detailing cash flow records, business unit shares, and exports.\n" .
-                                     "9. **Team Management**: Access control settings to distribute roles among Owner, Admin, and Staff.\n" .
-                                     "10. **Settings**: Company configuration panel, core metadata, and bank accounts.\n" .
-                                     "11. **Security Center**: Security controls for active sessions, encryption logs, and Two-Factor Authentication (2FA).\n" .
-                                     "12. **J&J GROUP Guide**: Standard Operating Procedures and user manuals.",
+                    'response_id' => "Panduan Sistem adalah modul untuk memandu penggunaan aplikasi, SOP operasional, serta pemetaan modul J&J GROUP. Anda dapat mengaksesnya melalui tombol di bawah.",
+                    'response_en' => "System Guide is a module to guide application usage, operational SOPs, and module mappings of J&J GROUP. You can access it via the button below.",
+                    'navigate' => 'settings.index',
                 ],
                 'buat_invoice' => [
                     'keywords' => ['buat invoice', 'tambah invoice', 'create invoice', 'bikin invoice', 'buat tagihan', 'bikin tagihan'],
                     'priority' => 8,
-                    'response_id' => "Untuk menerbitkan tagihan (invoice) baru, Anda dapat membuka halaman Pembuatan Invoice. Saya sangat menyarankan Anda memeriksa detail termin pembayaran, diskon, dan PPN/PPh dengan teliti guna menghindari perselisihan pembayaran atau kesalahan pelaporan pajak di kemudian hari.",
-                    'response_en' => "To issue a new invoice, please proceed to the Invoice creation page. I highly recommend validating payment terms, discounts, and applicable taxes (PPN/PPh) carefully to avoid future payment disputes or compliance errors.",
+                    'response_id' => "Pembuatan Invoice adalah modul untuk menerbitkan tagihan baru, merancang termin pembayaran, serta menghitung PPN/PPh secara akurat. Anda dapat mengaksesnya melalui tombol di bawah.",
+                    'response_en' => "Invoice Creation is a module to issue new invoices, customize payment terms, and calculate tax details accurately. You can access it via the button below.",
                     'navigate' => 'invoices.create',
                 ],
                 'buat_klien' => [
                     'keywords' => ['tambah klien', 'buat klien', 'create client', 'bikin klien', 'klien baru', 'tambah customer', 'bikin customer'],
                     'priority' => 8,
-                    'response_id' => "Menambahkan klien baru merupakan langkah penting dalam ekspansi kemitraan bisnis. Anda dapat mendaftarkan profil lengkap klien termasuk nomor NPWP dan email utama pada menu Klien Baru agar alur komunikasi penagihan berjalan lancar.",
-                    'response_en' => "Onboarding a new client represents an exciting expansion opportunity. You can register complete client details, tax credentials, and key contact addresses on the Client creation page to ensure clean invoicing operations.",
+                    'response_id' => "Pendaftaran Klien Baru adalah modul untuk mencatat profil lengkap mitra bisnis eksternal, NPWP, dan kontak penagihan utama. Anda dapat mengaksesnya melalui tombol di bawah.",
+                    'response_en' => "Client Onboarding is a module to record external partner profiles, tax credentials, and billing contacts. You can access it via the button below.",
                     'navigate' => 'clients.create',
                 ],
                 'buat_kuitansi' => [
                     'keywords' => ['buat kuitansi', 'tambah kuitansi', 'create receipt', 'bikin kuitansi', 'buat receipt', 'tambah kwitansi'],
                     'priority' => 8,
-                    'response_id' => "Pencatatan kuitansi adalah bukti penerimaan kas yang sah secara hukum. Setelah pembayaran terverifikasi masuk ke rekening perusahaan, segera terbitkan kuitansi resmi melalui menu Kuitansi Baru untuk menjaga keaslian audit keuangan Anda.",
-                    'response_en' => "Generating receipts is the official documentation of cash realization. Once payments are verified, please issue a formal receipt from the Receipts module to maintain a solid corporate audit trail.",
+                    'response_id' => "Penerbitan Kuitansi adalah modul untuk mencatat bukti transaksi pembayaran kas masuk yang sah setelah invoice dilunasi oleh klien. Anda dapat mengaksesnya melalui tombol di bawah.",
+                    'response_en' => "Receipt Issuance is a module to record cash inflows and payment confirmations once invoices are settled. You can access it via the button below.",
                     'navigate' => 'receipts.create',
                 ],
                 'pengaturan' => [
                     'keywords' => ['buka pengaturan', 'setting aplikasi', 'konfigurasi sistem'],
                     'priority' => 5,
-                    'response_id' => "Anda dapat mengonfigurasi profil perusahaan, detail rekening bank operasional, serta parameter sistem di halaman Pengaturan. Menyelaraskan pengaturan ini sangat penting agar invoice yang diterbitkan menampilkan data administrasi yang sah.",
-                    'response_en' => "You can adjust corporate profiles, operating bank details, and system parameters on the Settings page. Keeping these settings updated ensures that all issued invoices contain compliant billing metadata.",
+                    'response_id' => "Pengaturan Sistem adalah modul untuk mengonfigurasi profil perusahaan J&J GROUP, rekening bank operasional, dan parameter aplikasi. Anda dapat mengaksesnya melalui tombol di bawah.",
+                    'response_en' => "System Settings is a module to configure J&J GROUP corporate profile, operational bank details, and system parameters. You can access it via the button below.",
                     'navigate' => 'settings.index',
                 ],
                 'keamanan' => [
                     'keywords' => ['keamanan enkripsi', 'security center', '2fa authentication', 'two factor auth', 'keamanan data'],
                     'priority' => 7,
-                    'response_id' => "Pusat Keamanan (Security Center) J&J GROUP didesain untuk menjamin integritas data Anda. Di sini, Anda dapat mengaktifkan Autentikasi Dua Faktor (2FA), memantau log audit enkripsi data sensitif, serta meninjau riwayat sesi masuk aktif.",
-                    'response_en' => "The Security Center is built to safeguard your financial data. Within this module, you can activate Two-Factor Authentication (2FA), monitor sensitive data encryption logs, and review active user sessions.",
-                    'navigate' => 'settings.index',
+                    'response_id' => "Pusat Keamanan adalah modul untuk mengaktifkan Autentikasi Dua Faktor (2FA), mengaudit log enkripsi data sensitif, dan memantau sesi masuk aktif tim. Anda dapat mengaksesnya melalui tombol di bawah.",
+                    'response_en' => "Security Center is a module to enable Two-Factor Authentication (2FA), audit encryption logs, and monitor active login sessions. You can access it via the button below.",
+                    'navigate' => 'security.center',
                 ],
                 'profil' => [
                     'keywords' => ['profil user', 'akun personal', 'user profile', 'data diri', 'ubah profil', 'edit profile', 'ubah password', 'edit kata sandi'],
                     'priority' => 6,
-                    'response_id' => "Untuk memperbarui detail akun personal Anda, mengubah kata sandi, atau memperbarui foto profil, silakan buka halaman Profil Pengguna.",
-                    'response_en' => "To update your personal account details, change passwords, or renew profile configurations, please visit your User Profile page.",
+                    'response_id' => "Profil Pengguna adalah modul untuk memperbarui detail akun personal Anda, mengubah kata sandi, dan memperbarui foto profil. Anda dapat mengaksesnya melalui tombol di bawah.",
+                    'response_en' => "User Profile is a module to update your personal credentials, change passwords, and renew profile pictures. You can access it via the button below.",
                     'navigate' => 'profile.edit',
+                ],
+                'kalender_chronos' => [
+                    'keywords' => ['kalender chronos', 'chronos calendar', 'kalender billing', 'jadwal jatuh tempo', 'kalender schedule'],
+                    'priority' => 8,
+                    'response_id' => "Kalender Chronos adalah modul untuk memantau timeline invoice, melacak tanggal jatuh tempo penagihan, dan deadline kolektibilitas secara interaktif. Anda dapat mengaksesnya melalui tombol di bawah.",
+                    'response_en' => "Chronos Calendar is a module to interactively monitor invoice timelines, billing due dates, and collection deadlines. You can access it via the button below.",
+                    'navigate' => 'chronos.index',
+                ],
+                'unit_bisnis' => [
+                    'keywords' => ['unit bisnis', 'business units', 'daftar unit bisnis', 'manajemen unit bisnis'],
+                    'priority' => 8,
+                    'response_id' => "Manajemen Unit Bisnis adalah modul untuk mengonfigurasi divisi internal J&J GROUP beserta persentase fee sharing masing-masing unit. Anda dapat mengaksesnya melalui tombol di bawah.",
+                    'response_en' => "Business Units is a module to configure J&J GROUP internal divisions and their respective fee sharing rates. You can access it via the button below.",
+                    'navigate' => 'business-units.index',
+                ],
+                'manajemen_tim' => [
+                    'keywords' => ['manajemen tim', 'kelola tim', 'team management', 'manajemen user', 'daftar pengguna'],
+                    'priority' => 8,
+                    'response_id' => "Manajemen Tim adalah modul untuk mengatur hak akses staf (Owner, Admin, Staff) serta memantau keaktifan akun tim dalam organisasi. Anda dapat mengaksesnya melalui tombol di bawah.",
+                    'response_en' => "Team Management is a module to configure staff access permissions (Owner, Admin, Staff) and monitor account status. You can access it via the button below.",
+                    'navigate' => 'users.index',
+                ],
+                'laporan_keuangan' => [
+                    'keywords' => ['laporan keuangan', 'financial reports', 'ekspor laporan', 'laporan bulanan'],
+                    'priority' => 8,
+                    'response_id' => "Laporan Keuangan adalah modul untuk menganalisis grafik pendapatan bulanan, outstanding piutang, dan mengekspor laporan keuangan. Anda dapat mengaksesnya melalui tombol di bawah.",
+                    'response_en' => "Financial Reports is a module to analyze monthly revenue trends, track outstanding receivables, and export financial datasets. You can access it via the button below.",
+                    'navigate' => 'reports.index',
+                ],
+                'owner_kpi' => [
+                    'keywords' => ['owner kpi', 'kpi owner', 'statistik owner', 'performa kpi'],
+                    'priority' => 8,
+                    'response_id' => "Owner KPI adalah modul untuk memantau keunggulan operasional, menghitung pembagian profit sharing owner secara otomatis, serta kecepatan rata-rata penagihan. Anda dapat mengaksesnya melalui tombol di bawah.",
+                    'response_en' => "Owner KPI is a module to monitor operational efficiency, calculate owner profit sharing splits, and analyze collection velocity. You can access it via the button below.",
+                    'navigate' => 'owner.kpi',
                 ]
             ],
             'dynamic_data_triggers' => [
@@ -162,6 +230,37 @@ class KnowledgeDictionary
                     'priority' => 10,
                     'query_type' => 'invoice_due_tomorrow',
                     'navigate' => 'invoices.index',
+                ],
+                // ─── REVENUE / OMSET TRIGGERS ───────────────────────────────
+                'revenue_trend' => [
+                    'keywords' => [
+                        'pendapatan', 'omset', 'omzet', 'penghasilan', 'pemasukan',
+                        'revenue', 'income',
+                        'total pendapatan', 'total omset', 'total omzet',
+                        'berapa pendapatan', 'berapa omset', 'berapa omzet',
+                        'pendapatan bulan ini', 'omset bulan ini', 'omzet bulan ini',
+                        'tren pendapatan', 'tren omset', 'pertumbuhan pendapatan',
+                        'pertumbuhan omset', 'revenue trend', 'growth revenue',
+                        'omset kotor', 'omset bersih', 'omzet kotor', 'omzet bersih',
+                        'pendapatan kotor', 'pendapatan bersih', 'pendapatan kotor',
+                        'gross revenue', 'net revenue'
+                    ],
+                    'priority' => 9,
+                    'query_type' => 'revenue_trend',
+                    'navigate' => 'reports.index',
+                ],
+                // ─── CLIENT PORTFOLIO TRIGGERS ──────────────────────────────
+                'client_portfolio' => [
+                    'keywords' => [
+                        'klien', 'client', 'clients', 'customer', 'pelanggan',
+                        'mitra',
+                        'portofolio klien', 'daftar klien', 'list klien',
+                        'jumlah klien', 'total klien', 'berapa klien',
+                        'klien aktif', 'client aktif', 'semua klien',
+                    ],
+                    'priority' => 9,
+                    'query_type' => 'total_clients',
+                    'navigate' => 'clients.index',
                 ]
             ]
         ];

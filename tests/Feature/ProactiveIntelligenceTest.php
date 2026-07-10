@@ -255,7 +255,7 @@ class ProactiveIntelligenceTest extends TestCase
 
         // 1. Strict Guardrail Test
         $resGuardrail = $service->getAnswer('bagaimana resep memasak rendang daging sapi', 'id');
-        $this->assertEquals('Maaf, topik tersebut tidak ditemukan dalam basis data operasional saya. Saya hanya asisten keuangan J&J GROUP.', $resGuardrail['text']);
+        $this->assertEquals('Mohon maaf, saya hanya asisten keuangan J&J GROUP. Saya tidak memiliki data untuk topik tersebut.', $resGuardrail['text']);
         $this->assertNull($resGuardrail['routeName']);
 
         // 2. Invoices Due Tomorrow Test (Dynamic Calculation)
@@ -273,8 +273,53 @@ class ProactiveIntelligenceTest extends TestCase
         $this->assertNull($resMath['routeName']);
         $this->assertEquals(10000000.0, session('last_data_query'));
 
-        // 4. Intent Hierarchy Test (Data Query has no Route Name)
+        // 4. Intent Hierarchy Test (Client query returns routeName to display navigation button)
         $resData = $service->getAnswer('berapa total klien aktif', 'id');
-        $this->assertNull($resData['routeName']);
+        $this->assertEquals('clients.index', $resData['routeName']);
+
+        // 5. Small Talk Engine Test
+        $resGreeting = $service->getAnswer('hai, selamat pagi apa kabar', 'id');
+        $this->assertStringContainsString('Senior Financial Consultant', $resGreeting['text']);
+        $this->assertNull($resGreeting['routeName']);
+
+        // 6. Mapped System Pages Test
+        $resChronos = $service->getAnswer('jelaskan tentang kalender chronos', 'id');
+        $this->assertStringContainsString('Kalender Chronos', $resChronos['text']);
+        $this->assertStringContainsString('adalah modul untuk', $resChronos['text']);
+        $this->assertStringContainsString('Anda dapat mengaksesnya melalui tombol di bawah', $resChronos['text']);
+        $this->assertEquals('chronos.index', $resChronos['routeName']);
+
+        // 7. Hybrid Fallback Test (empty paid database fallback)
+        $resPaidFallback = $service->getAnswer('total invoice lunas', 'id');
+        $this->assertStringContainsString('belum ada data tagihan lunas', $resPaidFallback['text']);
+        $this->assertEquals('invoices.index', $resPaidFallback['routeName']);
+
+        // 8. Client vs Business Unit Structural Distinction Test
+        $resBU = $service->getAnswer('tampilkan daftar unit bisnis', 'id');
+        $this->assertStringContainsString('Unit Bisnis Internal J&J GROUP', $resBU['text']);
+        $this->assertStringContainsString('Consulting', $resBU['text']);
+        $this->assertEquals('business-units.index', $resBU['routeName']);
+
+        // 9. Advanced Financial Analysis (Gross vs Net) Test
+        $invoicePaid = Invoice::create([
+            'invoice_number' => 'INV-PAID-CURR',
+            'business_unit_id' => $unit->id,
+            'client_id' => $client->id,
+            'status' => 'paid',
+            'subtotal' => 10000000,
+            'discount' => 0,
+            'ppn' => 0,
+            'pph' => 0,
+            'total' => 10000000,
+            'due_date' => Carbon::now()
+        ]);
+
+        $resTrend = $service->getAnswer('berapa omset bersih', 'id');
+        $this->assertStringContainsString('Omset Kotor (Gross Revenue):', $resTrend['text']);
+        $this->assertStringContainsString('Beban Operasional (Expenses):', $resTrend['text']);
+        $this->assertStringContainsString('Omset Bersih (Net Revenue):', $resTrend['text']);
+        $this->assertStringContainsString('Rp 10.000.000', $resTrend['text']); // Gross
+        $this->assertStringContainsString('Rp 1.000.000', $resTrend['text']);  // Expenses (10% of 10M)
+        $this->assertStringContainsString('Rp 9.000.000', $resTrend['text']);  // Net (10M - 1M)
     }
 }

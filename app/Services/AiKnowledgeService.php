@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 class AiKnowledgeService
 {
     /**
-     * Get the best answer from the knowledge dictionary based on user query.
+     * Get the best answer from the database (Function Caller) or knowledge dictionary based on user query.
      *
      * @param string $userMessage
      * @param string $locale
@@ -30,7 +30,18 @@ class AiKnowledgeService
             ];
         }
 
-        // 1. CONTEXT MEMORY: Accumulation / Addition Query
+        // 1. SMALL TALK ENGINE: Handle Greetings
+        $greetingResponse = $this->handleGreeting($normalizedQuery, $locale);
+        if ($greetingResponse !== null) {
+            return [
+                'text' => $greetingResponse,
+                'routeName' => null,
+                'similarity' => 100.0,
+                'topic' => 'small_talk'
+            ];
+        }
+
+        // 2. CONTEXT MEMORY: Accumulation / Addition Query
         $isAdditionQuery = preg_match('/(tambah|tambahkan|jumlahkan|plus|add)/i', $normalizedQuery);
         if ($isAdditionQuery) {
             $lastDataQuery = session()->get('last_data_query');
@@ -68,13 +79,282 @@ class AiKnowledgeService
             }
         }
 
-        $dictionary = KnowledgeDictionary::getDictionary();
+        // 3. STRICT GUARDRAIL CHECK
+        if (!$this->isRelatedQuery($normalizedQuery)) {
+            return [
+                'text' => $locale === 'en'
+                    ? "I apologize, but I am solely the J&J GROUP financial assistant. I do not have data for that topic."
+                    : "Mohon maaf, saya hanya asisten keuangan J&J GROUP. Saya tidak memiliki data untuk topik tersebut.",
+                'routeName' => null,
+                'similarity' => 0.0,
+                'topic' => 'guardrail_fallback'
+            ];
+        }
 
-        // 2. DIRECT ALIAS: Route unambiguous single financial words instantly,
-        //    bypassing fuzzy matching entirely so the user never has to type a full phrase.
-        $queryWords  = array_values(array_filter(explode(' ', $normalizedQuery)));
+        // 4. INTENT CLASSIFICATION FOR DYNAMIC FINANCIAL DATA QUERIES
+        $isProcedureIntent = preg_match('/(cara|prosedur|navigasi|sop|petunjuk|guide|tutorial|bagaimana cara|langkah|buka|pergi|tampilkan|menu|halaman|go to|open|view|show|navigate|how to|step)/i', $normalizedQuery);
+
+        if (!$isProcedureIntent) {
+            // Tomorrow's Invoices
+            if (preg_match('/(besok|tomorrow)/i', $normalizedQuery)) {
+                try {
+                    $data = $this->getInvoiceList('tomorrow');
+                    if (empty($data) || $data['count'] === 0 || $data['total'] <= 0.0) {
+                        return [
+                            'text' => $locale === 'en'
+                                ? "I apologize, but there are no invoices due tomorrow in our database at the moment. However, you can manage or review all invoices here:"
+                                : "Maaf, saat ini saya tidak mendeteksi adanya data invoice yang jatuh tempo besok di database. Namun, Anda dapat melihat daftar tagihan secara manual melalui menu berikut:",
+                            'routeName' => 'invoices.index',
+                            'similarity' => 100.0,
+                            'topic' => 'invoice_besok_fallback'
+                        ];
+                    }
+                    session()->put('last_data_query', (float) $data['total']);
+                    $narrative = $this->generateNarrative($data, 'tomorrow', $locale);
+                    return [
+                        'text' => $narrative,
+                        'routeName' => null,
+                        'similarity' => 100.0,
+                        'topic' => 'invoice_besok'
+                    ];
+                } catch (\Throwable $e) {
+                    return [
+                        'text' => $locale === 'en'
+                            ? "I apologize, but I cannot retrieve the invoice data directly due to a database limitation. However, you can access the invoices page manually:"
+                            : "Maaf, saya tidak dapat memanggil data tagihan langsung dari database saat ini. Anda dapat memeriksa daftar invoice secara manual di menu berikut:",
+                        'routeName' => 'invoices.index',
+                        'similarity' => 100.0,
+                        'topic' => 'invoice_besok_fallback'
+                    ];
+                }
+            }
+
+            // Overdue Invoices
+            if (preg_match('/(overdue|menunggak|tunggakan|piutang)/i', $normalizedQuery)) {
+                try {
+                    $data = $this->getOverdueList();
+                    if (empty($data) || $data['count'] === 0 || $data['total'] <= 0.0) {
+                        return [
+                            'text' => $locale === 'en'
+                                ? "I apologize, but there are no overdue invoices recorded in our database at the moment. However, you can check the complete invoices list here:"
+                                : "Maaf, saat ini tidak ada data tagihan overdue/menunggak yang terdeteksi di database. Anda dapat meninjau semua status invoice melalui menu berikut:",
+                            'routeName' => 'invoices.index',
+                            'similarity' => 100.0,
+                            'topic' => 'invoice_overdue_fallback'
+                        ];
+                    }
+                    session()->put('last_data_query', (float) $data['total']);
+                    $narrative = $this->generateNarrative($data, 'overdue', $locale);
+                    return [
+                        'text' => $narrative,
+                        'routeName' => null,
+                        'similarity' => 100.0,
+                        'topic' => 'invoice_overdue'
+                    ];
+                } catch (\Throwable $e) {
+                    return [
+                        'text' => $locale === 'en'
+                            ? "I apologize, but I cannot retrieve the overdue invoice records at the moment. You can view the list manually here:"
+                            : "Maaf, saya belum bisa menampilkan data tagihan menunggak secara langsung saat ini. Namun, Anda bisa memantau perkembangannya melalui menu berikut:",
+                        'routeName' => 'invoices.index',
+                        'similarity' => 100.0,
+                        'topic' => 'invoice_overdue_fallback'
+                    ];
+                }
+            }
+
+            // Paid Invoices
+            if (preg_match('/(lunas|paid)/i', $normalizedQuery)) {
+                try {
+                    $data = $this->getInvoiceList('paid');
+                    if (empty($data) || $data['count'] === 0 || $data['total'] <= 0.0) {
+                        return [
+                            'text' => $locale === 'en'
+                                ? "I apologize, but there are no paid invoices recorded in our database at the moment. You can check or record new payments through the invoices page:"
+                                : "Maaf, saat ini belum ada data tagihan lunas yang tercatat di database J&J GROUP. Anda dapat memperbarui status pembayaran di menu berikut:",
+                            'routeName' => 'invoices.index',
+                            'similarity' => 100.0,
+                            'topic' => 'invoice_lunas_fallback'
+                        ];
+                    }
+                    session()->put('last_data_query', (float) $data['total']);
+                    $narrative = $this->generateNarrative($data, 'paid', $locale);
+                    return [
+                        'text' => $narrative,
+                        'routeName' => null,
+                        'similarity' => 100.0,
+                        'topic' => 'invoice_lunas'
+                    ];
+                } catch (\Throwable $e) {
+                    return [
+                        'text' => $locale === 'en'
+                            ? "I apologize, but I cannot retrieve the paid invoice records at the moment. Please navigate to the invoices list to review manually:"
+                            : "Maaf, saya belum bisa menampilkan data invoice lunas secara langsung saat ini. Namun, Anda dapat mengakses informasinya melalui menu berikut:",
+                        'routeName' => 'invoices.index',
+                        'similarity' => 100.0,
+                        'topic' => 'invoice_lunas_fallback'
+                    ];
+                }
+            }
+
+            // Cash Flow
+            if (preg_match('/(arus\s*kas|cash\s*flow|cashflow|likuiditas)/i', $normalizedQuery)) {
+                try {
+                    $data = $this->getRevenueData('cash_flow');
+                    if (empty($data) || ($data['revenue'] <= 0.0 && $data['outstanding'] <= 0.0)) {
+                        return [
+                            'text' => $locale === 'en'
+                                ? "I apologize, but there is insufficient cash flow data to generate an analysis at the moment. Please view our full financial reports here:"
+                                : "Maaf, data arus kas saat ini masih kosong atau belum mencukupi untuk dianalisis. Silakan akses detail pelaporan keuangan melalui menu berikut:",
+                            'routeName' => 'reports.index',
+                            'similarity' => 100.0,
+                            'topic' => 'arus_kas_fallback'
+                        ];
+                    }
+                    session()->put('last_data_query', (float) $data['revenue']);
+                    $narrative = $this->generateNarrative($data, 'cash_flow', $locale);
+                    return [
+                        'text' => $narrative,
+                        'routeName' => null,
+                        'similarity' => 100.0,
+                        'topic' => 'arus_kas'
+                    ];
+                } catch (\Throwable $e) {
+                    return [
+                        'text' => $locale === 'en'
+                            ? "I apologize, but I cannot process the cash flow analysis directly at this time. Please visit the reports page for full details:"
+                            : "Maaf, saya belum bisa memproses analisis arus kas secara langsung saat ini. Silakan kunjungi halaman laporan untuk rincian selengkapnya melalui menu berikut:",
+                        'routeName' => 'reports.index',
+                        'similarity' => 100.0,
+                        'topic' => 'arus_kas_fallback'
+                    ];
+                }
+            }
+
+            // Internal Business Units List (Distinct organizational query)
+            if (preg_match('/(unit\s*bisnis|business\s*unit|divisi|division)/i', $normalizedQuery)) {
+                try {
+                    $units = \App\Models\BusinessUnit::all();
+                    if ($units->isEmpty()) {
+                        return [
+                            'text' => $locale === 'en'
+                                ? "I apologize, but there are no internal business units registered in our system at the moment. You can manage or add business units here:"
+                                : "Maaf, saat ini belum ada unit bisnis internal yang terdaftar di sistem. Anda dapat mengelola unit bisnis melalui menu berikut:",
+                            'routeName' => 'business-units.index',
+                            'similarity' => 100.0,
+                            'topic' => 'unit_bisnis_fallback'
+                        ];
+                    }
+
+                    $unitLines = [];
+                    foreach ($units as $unit) {
+                        $unitLines[] = "* **{$unit->name}** (Fee Sharing: " . number_format($unit->fee_percentage, 1, ',', '.') . "%)";
+                    }
+                    $listStr = implode("\n", $unitLines);
+
+                    $text = $locale === 'en'
+                        ? "### 🏢 J&J GROUP Internal Business Units\n\n" .
+                          "Our organization consists of the following internal business units/divisions:\n\n" .
+                          $listStr . "\n\n" .
+                          "**Structural Advisory:** These internal divisions drive our operations. Each unit carries a specific profit-sharing fee percentage. You can manage their configurations or view detailed revenue breakdown using the link below."
+                        : "### 🏢 Unit Bisnis Internal J&J GROUP\n\n" .
+                          "Organisasi kita terdiri dari divisi/unit bisnis internal berikut:\n\n" .
+                          $listStr . "\n\n" .
+                          "**Penjelasan Struktur:** Unit bisnis di atas merupakan divisi internal J&J GROUP, bukan klien eksternal. Masing-masing unit memiliki persentase pembagian keuntungan (fee sharing) tersendiri. Anda dapat mengelola unit bisnis ini melalui menu di bawah.";
+
+                    return [
+                        'text' => $text,
+                        'routeName' => 'business-units.index',
+                        'similarity' => 100.0,
+                        'topic' => 'unit_bisnis'
+                    ];
+                } catch (\Throwable $e) {
+                    return [
+                        'text' => $locale === 'en'
+                            ? "I apologize, but I cannot retrieve the business units list at the moment. However, you can access them via the following menu:"
+                            : "Maaf, saya belum bisa menampilkan daftar unit bisnis secara langsung saat ini. Namun, Anda bisa mengakses informasinya melalui menu berikut:",
+                        'routeName' => 'business-units.index',
+                        'similarity' => 100.0,
+                        'topic' => 'unit_bisnis_fallback'
+                    ];
+                }
+            }
+
+            // Revenue / Omset / Growth / Trend
+            if (preg_match('/(omset|omzet|pendapatan|penghasilan|pemasukan|revenue|income|performa|pertumbuhan|tren|trend|growth)/i', $normalizedQuery)) {
+                try {
+                    $data = $this->getRevenueData('trend');
+                    if (empty($data) || ($data['current'] <= 0.0 && $data['previous'] <= 0.0)) {
+                        return [
+                            'text' => $locale === 'en'
+                                ? "I apologize, but there is no sufficient monthly revenue history to determine growth trends. Please access the reports module to audit our financial trends:"
+                                : "Maaf, data pertumbuhan omset saat ini masih kosong atau belum tersedia. Anda dapat melihat detail laporan bulanan melalui menu berikut:",
+                            'routeName' => 'reports.index',
+                            'similarity' => 100.0,
+                            'topic' => 'tren_performa_fallback'
+                        ];
+                    }
+                    session()->put('last_data_query', (float) $data['current']);
+                    $narrative = $this->generateNarrative($data, 'trend', $locale);
+                    return [
+                        'text' => $narrative,
+                        'routeName' => null,
+                        'similarity' => 100.0,
+                        'topic' => 'tren_performa'
+                    ];
+                } catch (\Throwable $e) {
+                    return [
+                        'text' => $locale === 'en'
+                            ? "I apologize, but I cannot display the revenue trend directly right now. You can analyze the financial performance charts on the page below:"
+                            : "Maaf, saya belum bisa menampilkan visualisasi tren pendapatan secara langsung saat ini. Anda dapat menganalisis grafik performa keuangan di halaman berikut:",
+                        'routeName' => 'reports.index',
+                        'similarity' => 100.0,
+                        'topic' => 'tren_performa_fallback'
+                    ];
+                }
+            }
+
+            // Clients List
+            if (preg_match('/(klien|client|customer|pelanggan|mitra)/i', $normalizedQuery)) {
+                try {
+                    $data = $this->getClientList();
+                    if (empty($data) || $data['count'] === 0) {
+                        return [
+                            'text' => $locale === 'en'
+                                ? "I apologize, but there are no active clients registered in our database at the moment. You can add or manage clients manually via the following menu:"
+                                : "Maaf, saya tidak menemukan adanya data klien aktif di database saat ini. Namun, Anda dapat menambah atau mengelola klien secara manual melalui menu berikut:",
+                            'routeName' => 'clients.index',
+                            'similarity' => 100.0,
+                            'topic' => 'total_klien_fallback'
+                        ];
+                    }
+                    session()->put('last_data_query', (float) $data['count']);
+                    $narrative = $this->generateNarrative($data, 'client', $locale);
+                    return [
+                        'text' => $narrative,
+                        'routeName' => 'clients.index', // Include navigation route!
+                        'similarity' => 100.0,
+                        'topic' => 'total_klien'
+                    ];
+                } catch (\Throwable $e) {
+                    return [
+                        'text' => $locale === 'en'
+                            ? "I apologize, but I cannot display the client list directly. However, you can access this information via the following menu:"
+                            : "Maaf, saya belum bisa menampilkan daftar klien secara langsung. Namun, Anda bisa mengakses informasinya melalui menu berikut:",
+                        'routeName' => 'clients.index',
+                        'similarity' => 100.0,
+                        'topic' => 'total_klien_fallback'
+                    ];
+                }
+            }
+        }
+
+        // 5. Fallback to dictionary for Procedures & Navigation
+        $dictionary = KnowledgeDictionary::getDictionary();
+        $queryWords = array_values(array_filter(explode(' ', $normalizedQuery)));
         $queryWordCount = count($queryWords);
 
+        // Resolve Direct Alias for other terms
         $directAliasResult = $this->resolveDirectAlias($normalizedQuery, $queryWords, $locale, $dictionary);
         if ($directAliasResult !== null) {
             return $directAliasResult;
@@ -85,20 +365,9 @@ class AiKnowledgeService
         $bestKey   = null;
         $maxScore  = 0.0;
 
-        // Determine Allowed Dictionary Sections Based on Query Intent (Strict separation)
-        $isProcedureIntent = preg_match('/(cara|prosedur|navigasi|sop|petunjuk|guide|tutorial|bagaimana cara|langkah|buka|pergi|tampilkan|menu|halaman|go to|open|view|show|navigate|how to|step)/i', $normalizedQuery);
-        $isDataIntent      = preg_match('/(total|berapa|performa|tren|trend|piutang|jumlah|selisih|hitung|prediksi|analysis|analisis|analisa|kinerja|pertumbuhan|growth|arus kas|cash|besok|tomorrow|outstanding|paid|lunas|menunggak|overdue)/i', $normalizedQuery);
-
-        $allowedTypes = ['static_procedures', 'dynamic_data_triggers'];
-        if ($isProcedureIntent && !$isDataIntent) {
-            $allowedTypes = ['static_procedures'];
-        } elseif ($isDataIntent && !$isProcedureIntent) {
-            $allowedTypes = ['dynamic_data_triggers'];
-        }
-
         foreach ($dictionary as $type => $items) {
-            // STRICT INTENT SEPARATION: Skip dictionary type if it is not in the allowed types
-            if (!in_array($type, $allowedTypes)) {
+            // Strictly check procedures here
+            if ($type !== 'static_procedures') {
                 continue;
             }
 
@@ -127,8 +396,6 @@ class AiKnowledgeService
             }
         }
 
-        // Adaptive threshold: relax for short queries (≤ 2 words) so single-word
-        // financial terms are not rejected due to multi-word keyword mismatch.
         $effectiveThreshold = ($queryWordCount <= 2) ? 60.0 : 75.0;
 
         if ($maxScore >= $effectiveThreshold) {
@@ -136,22 +403,15 @@ class AiKnowledgeService
 
             $text = $this->resolveResponseText($bestMatch, $bestKey, $bestType, $locale, $rawQuery);
 
-            // Auto-Navigation Rule (Strictly restricted to specific location queries)
-            $isSpecificNavigationQuery = preg_match('/(buka|pergi|navigasi|lokasi|go to|open|navigate|location)/i', $normalizedQuery);
-            $routeName = null;
-            if ($isSpecificNavigationQuery && !empty($bestMatch['navigate'])) {
-                $routeName = $bestMatch['navigate'];
-            }
-
             return [
                 'text'       => $text,
-                'routeName'  => $routeName,
+                'routeName'  => $bestMatch['navigate'] ?? null,
                 'similarity' => $maxScore,
                 'topic'      => $bestKey
             ];
         }
 
-        // Fallback checks for Context Memory
+        // Context Memory follow-up fallback
         $lastTopic = session()->get('last_topic');
         $isFollowUp = preg_match('/(detail|tampilkan|lihat|ulang|berapa|siapa|apa|show|view|again|more|how many|who|what)/i', $normalizedQuery);
 
@@ -167,65 +427,407 @@ class AiKnowledgeService
                 }
             }
 
-            if ($matchedItem) {
-                // Verify follow-up matches allowed intent types
-                $isAllowed = true;
-                if ($isProcedureIntent && !$isDataIntent && $matchedType !== 'static_procedures') {
-                    $isAllowed = false;
-                } elseif ($isDataIntent && !$isProcedureIntent && $matchedType !== 'dynamic_data_triggers') {
-                    $isAllowed = false;
-                }
+            if ($matchedItem && $matchedType === 'static_procedures') {
+                $baseText = $this->resolveResponseText($matchedItem, $lastTopic, $matchedType, $locale, $rawQuery);
+                $note = $locale === 'en'
+                    ? "\n\n*(Showing info based on your previous question topic)*"
+                    : "\n\n*(Menampilkan kembali info berdasarkan konteks topik sebelumnya)*";
 
-                if ($isAllowed) {
-                    $baseText = $this->resolveResponseText($matchedItem, $lastTopic, $matchedType, $locale, $rawQuery);
-                    $note = $locale === 'en'
-                        ? "\n\n*(Showing info based on your previous question topic)*"
-                        : "\n\n*(Menampilkan kembali info berdasarkan konteks topik sebelumnya)*";
-
-                    $isSpecificNavigationQuery = preg_match('/(buka|pergi|navigasi|lokasi|go to|open|navigate|location)/i', $normalizedQuery);
-                    $routeName = null;
-                    if ($isSpecificNavigationQuery && !empty($matchedItem['navigate'])) {
-                        $routeName = $matchedItem['navigate'];
-                    }
-
-                    return [
-                        'text' => $baseText . $note,
-                        'routeName' => $routeName,
-                        'similarity' => 100.0,
-                        'topic' => $lastTopic
-                    ];
-                }
+                return [
+                    'text' => $baseText . $note,
+                    'routeName' => $matchedItem['navigate'] ?? null,
+                    'similarity' => 100.0,
+                    'topic' => $lastTopic
+                ];
             }
         }
 
-        // AMBIGUOUS FINANCIAL WORD: offer a helpful clarifying menu instead of
-        // a hard rejection when the user types a known-financial but ambiguous word.
         $ambiguousResult = $this->handleAmbiguousFinancialWord($normalizedQuery, $locale);
         if ($ambiguousResult !== null) {
             return $ambiguousResult;
         }
 
-        // STRICT GUARDRAIL: Out-of-domain query – hard rejection.
+        // Default menu
+        $helpText = $locale === 'en'
+            ? "I'm not sure what you're looking for. Here's what I can help you with:\n\n"
+              . "**📊 Financial Data:**\n"
+              . "* **\"pendapatan bulan ini\"** → Revenue & growth trend\n"
+              . "* **\"arus kas\"** → Cash flow & liquidity analysis\n"
+              . "* **\"invoice menunggak\"** → Overdue receivables list\n"
+              . "* **\"total invoice lunas\"** → Settled payments total\n"
+              . "* **\"total klien\"** → Active client portfolio\n\n"
+              . "**📋 Quick Actions:**\n"
+              . "* **\"buat invoice\"** → Create a new invoice\n"
+              . "* **\"buat klien\"** → Register a new client\n"
+              . "* **\"buat kuitansi\"** → Record a receipt\n"
+              . "* **\"panduan sistem\"** → View full system guide\n\n"
+              . "*Just type any of the above or ask a more specific question!*"
+            : "Saya tidak yakin apa yang Anda cari. Berikut yang dapat saya bantu:\n\n"
+              . "**📊 Data Keuangan:**\n"
+              . "* **\"pendapatan bulan ini\"** → Tren pendapatan & pertumbuhan omset\n"
+              . "* **\"arus kas\"** → Analisis posisi kas & likuiditas\n"
+              . "* **\"invoice menunggak\"** → Daftar piutang overdue\n"
+              . "* **\"total invoice lunas\"** → Total tagihan yang telah dibayar\n"
+              . "* **\"total klien\"** → Portofolio klien aktif\n\n"
+              . "**📋 Aksi Cepat:**\n"
+              . "* **\"buat invoice\"** → Menerbitkan tagihan baru\n"
+              . "* **\"buat klien\"** → Mendaftarkan klien baru\n"
+              . "* **\"buat kuitansi\"** → Mencatat penerimaan kas\n"
+              . "* **\"panduan sistem\"** → Melihat panduan lengkap sistem\n\n"
+              . "*Ketik salah satu perintah di atas atau ajukan pertanyaan yang lebih spesifik!*";
+
         return [
-            'text'       => $locale === 'en'
-                ? "Sorry, that topic was not found in my operational database. I am only the J&J GROUP financial assistant."
-                : "Maaf, topik tersebut tidak ditemukan dalam basis data operasional saya. Saya hanya asisten keuangan J&J GROUP.",
-            'routeName'  => null,
-            'similarity' => $maxScore,
-            'topic'      => null
+            'text'      => $helpText,
+            'routeName' => null,
+            'similarity' => 0.0,
+            'topic'     => 'help_menu',
         ];
     }
 
-    // -------------------------------------------------------------------------
-    // ALIAS & DISAMBIGUATION HELPERS
-    // -------------------------------------------------------------------------
+    /**
+     * Check if query is a greeting and return small talk response.
+     *
+     * @param string $query
+     * @param string $locale
+     * @return string|null
+     */
+    public function handleGreeting(string $query, string $locale): ?string
+    {
+        $greetings = [
+            'halo', 'hallo', 'hai', 'hi', 'hey', 'pagi', 'siang', 'sore', 'malam', 'kabar', 'assalamualaikum',
+            'hello', 'good morning', 'good afternoon', 'good evening', 'how are you'
+        ];
+
+        $isGreeting = false;
+        foreach ($greetings as $greet) {
+            if (preg_match('/\b' . preg_quote($greet, '/') . '\b/i', $query)) {
+                $isGreeting = true;
+                break;
+            }
+        }
+
+        if (!$isGreeting) {
+            return null;
+        }
+
+        if ($locale === 'en') {
+            return "Hello! I am your Senior Financial Consultant & Business Analyst for J&J GROUP. " .
+                   "I am ready to assist you in auditing invoice pipelines, analyzing MoM revenue growth, tracking cash flow, or guiding you through our operational systems. " .
+                   "How can I assist you with your business goals today?";
+        } else {
+            return "Halo! Saya adalah Senior Financial Consultant & Business Analyst Anda di J&J GROUP. " .
+                   "Saya siap membantu Anda memantau alur invoice, menganalisis pertumbuhan omset bulanan, meninjau posisi kas, maupun memandu Anda menavigasi modul sistem operasional kita. " .
+                   "Ada yang bisa saya bantu untuk mendukung keputusan bisnis Anda hari ini?";
+        }
+    }
+
+    /**
+     * Check if the query is related to J&J GROUP financial data, business, or procedures.
+     *
+     * @param string $query
+     * @return bool
+     */
+    protected function isRelatedQuery(string $query): bool
+    {
+        $domainKeywords = [
+            'invoice', 'tagihan', 'piutang', 'overdue', 'tunggakan', 'menunggak', 'lunas', 'paid', 'bayar',
+            'omset', 'omzet', 'pendapatan', 'penghasilan', 'pemasukan', 'revenue', 'income', 'profit',
+            'klien', 'client', 'customer', 'pelanggan', 'mitra',
+            'unit bisnis', 'business unit', 'divisi', 'division',
+            'arus kas', 'cashflow', 'cash flow', 'kas', 'likuiditas',
+            'performa', 'pertumbuhan', 'tren', 'trend', 'growth', 'perkembangan', 'analisis', 'analisa',
+            'kuitansi', 'kwitansi', 'receipt',
+            'laporan', 'report',
+            'kalender', 'chronos', 'calendar',
+            'panduan', 'sop', 'petunjuk', 'guide', 'tutorial', 'menu', 'halaman', 'navigasi', 'buka', 'pergi',
+            'buat', 'tambah', 'bikin', 'create', 'register',
+            'setting', 'pengaturan', 'konfigurasi',
+            'keamanan', 'security', '2fa', 'enkripsi',
+            'profil', 'profile', 'password', 'sandi',
+            'dashboard', 'beranda', 'kpi', 'team', 'tim',
+            'tambah', 'tambahkan', 'jumlah', 'jumlahkan', 'plus', 'add'
+        ];
+
+        foreach ($domainKeywords as $keyword) {
+            if (str_contains($query, $keyword)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Fetch active clients.
+     *
+     * @return array
+     */
+    public function getClientList(): array
+    {
+        $clients = \App\Models\Client::where('status', 'aktif')->get();
+        return [
+            'count' => $clients->count(),
+            'clients' => $clients->toArray(),
+        ];
+    }
+
+    /**
+     * Fetch overdue invoices.
+     *
+     * @return array
+     */
+    public function getOverdueList(): array
+    {
+        $overdueInvoices = \App\Models\Invoice::with('client')
+            ->whereIn('status', ['sent', 'pending', 'dp'])
+            ->where('due_date', '<', Carbon::now())
+            ->get();
+        return [
+            'count' => $overdueInvoices->count(),
+            'total' => (float) $overdueInvoices->sum('total'),
+            'invoices' => $overdueInvoices->toArray(),
+        ];
+    }
+
+    /**
+     * Fetch invoice summary.
+     *
+     * @param string $type
+     * @return array
+     */
+    public function getInvoiceList(string $type = 'all'): array
+    {
+        if ($type === 'paid') {
+            $paidInvoices = \App\Models\Invoice::where('status', 'paid')->get();
+            return [
+                'count' => $paidInvoices->count(),
+                'total' => (float) $paidInvoices->sum('total'),
+                'type' => 'paid',
+            ];
+        } elseif ($type === 'tomorrow') {
+            $tomorrowStart = Carbon::tomorrow()->startOfDay()->toDateTimeString();
+            $tomorrowEnd = Carbon::tomorrow()->endOfDay()->toDateTimeString();
+            $invoices = \App\Models\Invoice::with('client')
+                ->whereIn('status', ['sent', 'pending', 'dp'])
+                ->whereBetween('due_date', [$tomorrowStart, $tomorrowEnd])
+                ->get();
+            return [
+                'count' => $invoices->count(),
+                'total' => (float) $invoices->sum('total'),
+                'invoices' => $invoices->toArray(),
+                'type' => 'tomorrow',
+            ];
+        } else {
+            $totalInvoices = \App\Models\Invoice::count();
+            $totalAmount = (float) \App\Models\Invoice::sum('total');
+            return [
+                'count' => $totalInvoices,
+                'total' => $totalAmount,
+                'type' => 'all',
+            ];
+        }
+    }
+
+    /**
+     * Fetch revenue / growth stats.
+     *
+     * @param string $type
+     * @return array
+     */
+    public function getRevenueData(string $type = 'trend'): array
+    {
+        if ($type === 'cash_flow') {
+            $stats = app(\App\Services\BusinessUnitReportingService::class)->getSummaryStats();
+            return [
+                'revenue' => (float) $stats['total_revenue'],
+                'outstanding' => (float) $stats['total_outstanding'],
+                'pending' => (float) $stats['pending_outstanding'],
+                'overdue' => (float) $stats['overdue_outstanding'],
+                'rate' => (float) $stats['collection_rate'],
+                'type' => 'cash_flow',
+            ];
+        } else {
+            $trend = app(\App\Services\DataAggregatorService::class)->getRevenueTrend();
+
+            // Calculate Gross, Expenses, Net
+            $now = Carbon::now();
+            $startOfCurrMonth = $now->copy()->startOfMonth()->toDateString();
+            $endOfCurrMonth = $now->copy()->endOfMonth()->toDateString();
+            
+            $currSummary = app(\App\Services\BusinessUnitReportingService::class)->getBusinessUnitsSummary([
+                'start_date' => $startOfCurrMonth,
+                'end_date' => $endOfCurrMonth
+            ]);
+            $gross = (float) $currSummary->sum('gross_revenue');
+            $expenses = (float) $currSummary->sum('fee_nominal');
+            $net = (float) $currSummary->sum('net_revenue');
+
+            return [
+                'current' => (float) $trend['current_revenue'],
+                'previous' => (float) $trend['previous_revenue'],
+                'growth' => (float) $trend['growth_percent'],
+                'insight' => $trend['insight'],
+                'gross' => $gross,
+                'expenses' => $expenses,
+                'net' => $net,
+                'type' => 'trend',
+            ];
+        }
+    }
+
+    /**
+     * Generate narrative response as Senior Financial Consultant.
+     *
+     * @param array $data
+     * @param string $type
+     * @param string $locale
+     * @return string
+     */
+    public function generateNarrative(array $data, string $type, string $locale = 'id'): string
+    {
+        switch ($type) {
+            case 'client':
+                $count = $data['count'];
+                $clientNames = [];
+                foreach ($data['clients'] as $client) {
+                    $clientNames[] = "* **{$client['nama_client']}**" . (!empty($client['nama_perusahaan']) ? " ({$client['nama_perusahaan']})" : "");
+                }
+                $listStr = count($clientNames) > 0 ? implode("\n", $clientNames) : ($locale === 'en' ? "- No active clients." : "- Tidak ada klien aktif.");
+
+                return $locale === 'en'
+                    ? "### 📊 J&J GROUP Active Client Portfolio\n\n" .
+                      "Based on direct access to our live client database, we currently partner with **{$count} active clients**:\n\n" .
+                      $listStr . "\n\n" .
+                      "From a risk management standpoint, this portfolio is well-diversified to minimize revenue concentration risk. " .
+                      "I advise performing routine credit assessments on these clients to ensure our cash flow stability."
+                    : "### 📊 Analisis Portofolio Klien J&J GROUP\n\n" .
+                      "Berdasarkan akses langsung ke database sistem kita, J&J GROUP saat ini memiliki **{$count} klien aktif**:\n\n" .
+                      $listStr . "\n\n" .
+                      "Dari perspektif manajemen risiko keuangan, sebaran portofolio ini cukup baik untuk meminimalkan risiko konsentrasi pendapatan (*concentration risk*). " .
+                      "Rekomendasi saya adalah tetap melakukan pemantauan berkala terhadap status kredit klien untuk memastikan kelancaran arus kas masuk kita.";
+
+            case 'overdue':
+                $count = $data['count'];
+                $totalStr = "Rp " . number_format($data['total'], 0, ',', '.');
+                $listItems = [];
+                foreach ($data['invoices'] as $inv) {
+                    $clientName = $inv['client']['nama_client'] ?? 'Klien';
+                    $listItems[] = "* **Invoice #{$inv['invoice_number']}** oleh {$clientName} | **Rp " . number_format($inv['total'], 0, ',', '.') . "** (Jatuh tempo: " . Carbon::parse($inv['due_date'])->format('d M Y') . ")";
+                }
+                $listStr = count($listItems) > 0 ? implode("\n", $listItems) : ($locale === 'en' ? "- No overdue invoices." : "- Tidak ada invoice menunggak.");
+
+                return $locale === 'en'
+                    ? "### ⚠️ Overdue Receivable Risk Report\n\n" .
+                      "Based on direct database analysis, J&J GROUP has **{$count} overdue invoices** totaling **{$totalStr}** in unpaid receivables:\n\n" .
+                      $listStr . "\n\n" .
+                      "**Senior Advisory:** Having {$totalStr} in overdue receivables hinders our cash conversion cycle. I suggest dispatching urgent payment reminders immediately and pausing current project milestones for highly overdue accounts to safeguard our operating liquidity."
+                    : "### ⚠️ Analisis Risiko Piutang Tertahan (Overdue)\n\n" .
+                      "Berdasarkan data Invoice J&J GROUP terkini, terdapat **{$count} tagihan** yang masih tertunda senilai **{$totalStr}**:\n\n" .
+                      $listStr . "\n\n" .
+                      "**Saran Konsultan Senior:** Dana piutang sebesar {$totalStr} yang tertahan ini dapat memicu tekanan pada perputaran kas operasional J&J GROUP. Saya menyarankan untuk segera menindaklanjuti klien tersebut dengan mengirimkan surat pengingat resmi, serta mempertimbangkan penangguhan sementara pengerjaan proyek berjalan bagi akun yang menunggak secara signifikan.";
+
+            case 'paid':
+                $count = $data['count'];
+                $totalStr = "Rp " . number_format($data['total'], 0, ',', '.');
+                return $locale === 'en'
+                    ? "### 💰 Realized Inflow (Paid Invoices)\n\n" .
+                      "According to J&J GROUP's live transaction records, we have successfully realized **{$totalStr}** in collections across **{$count} paid invoices**.\n\n" .
+                      "**Financial Analysis:** This high collection rate reflects excellent billing efficiency and solid client compliance. I recommend allocating a minimum of 15% of this cash into our operational reserves to secure short-term working capital before committing to new capital expenditures."
+                    : "### 💰 Analisis Realisasi Pendapatan (Lunas)\n\n" .
+                      "Berdasarkan peninjauan data transaksi langsung di database J&J GROUP, kita berhasil merealisasikan penerimaan kas sebesar **{$totalStr}** dari **{$count} invoice** yang telah lunas.\n\n" .
+                      "**Analisis Finansial:** Tingkat pelunasan ini menunjukkan kolektibilitas penagihan yang sangat efektif serta komitmen bayar yang tinggi dari mitra kita Guna menjaga ketahanan likuiditas jangka pendek, saya sangat merekomendasikan menyisihkan minimal 15% dari dana terkumpul ini ke pos cadangan kas sebelum dialokasikan untuk belanja modal baru.";
+
+            case 'tomorrow':
+                $count = $data['count'];
+                $totalStr = "Rp " . number_format($data['total'], 0, ',', '.');
+                $listItems = [];
+                foreach ($data['invoices'] as $inv) {
+                    $clientName = $inv['client']['nama_client'] ?? 'Klien';
+                    $listItems[] = "* **Invoice #{$inv['invoice_number']}** oleh {$clientName} - **Rp " . number_format($inv['total'], 0, ',', '.') . "**";
+                }
+                $listStr = count($listItems) > 0 ? implode("\n", $listItems) : ($locale === 'en' ? "- No invoices due tomorrow." : "- Tidak ada invoice jatuh tempo besok.");
+
+                return $locale === 'en'
+                    ? "### 📅 Invoices Due Tomorrow Report\n\n" .
+                      "J&J GROUP's live database records show **{$count} invoices** due tomorrow, totaling **{$totalStr}** in receivables:\n\n" .
+                      $listStr . "\n\n" .
+                      "**Tactical Action:** I recommend our billing team coordinate a quick, polite courtesy follow-up with these clients today to facilitate prompt realization of these funds tomorrow."
+                    : "### 📅 Laporan Invoice Jatuh Tempo Besok\n\n" .
+                      "Berdasarkan pencatatan data riil J&J GROUP, terdapat **{$count} invoice** yang akan jatuh tempo besok dengan total tagihan sebesar **{$totalStr}**:\n\n" .
+                      $listStr . "\n\n" .
+                      "**Rekomendasi Taktis:** Saya menyarankan tim penagihan untuk melakukan konfirmasi halus hari ini guna memastikan dana penagihan dapat cair tepat waktu besok.";
+
+            case 'cash_flow':
+                $revenueStr = "Rp " . number_format($data['revenue'], 0, ',', '.');
+                $outstandingStr = "Rp " . number_format($data['outstanding'], 0, ',', '.');
+                $pendingStr = "Rp " . number_format($data['pending'], 0, ',', '.');
+                $overdueStr = "Rp " . number_format($data['overdue'], 0, ',', '.');
+                $rateStr = number_format($data['rate'], 1, ',', '.');
+
+                return $locale === 'en'
+                    ? "### 💵 Cash Flow & Liquidity Advisory\n\n" .
+                      "Here is J&J GROUP's consolidated cash flow status extracted from the live database:\n" .
+                      "* **Realized Inflow (Paid Invoices):** {$revenueStr}\n" .
+                      "* **Total Outstanding Receivables:** {$outstandingStr}\n" .
+                      "  - *Pending / Active:* {$pendingStr}\n" .
+                      "  - *Overdue / Delayed:* {$overdueStr}\n" .
+                      "* **Collection Efficiency Rate:** {$rateStr}%\n\n" .
+                      "**Financial Assessment:** A collection efficiency rate of **{$rateStr}%** indicates strong billing execution. However, the **{$overdueStr}** in overdue receivables must be monitored closely. I advise setting up a strict weekly aging report review to protect our operational liquidity."
+                    : "### 💵 Analisis Arus Kas & Likuiditas Perusahaan\n\n" .
+                      "Berikut adalah posisi arus kas J&J GROUP yang ditarik secara real-time dari database:\n" .
+                      "* **Realisasi Arus Kas Masuk (Lunas):** {$revenueStr}\n" .
+                      "* **Total Piutang Outstanding:** {$outstandingStr}\n" .
+                      "  - *Dalam Termin (Pending):* {$pendingStr}\n" .
+                      "  - *Terlambat / Berisiko (Overdue):* {$overdueStr}\n" .
+                      "* **Rasio Kolektibilitas Tagihan:** {$rateStr}%\n\n" .
+                      "**Rekomendasi Konsultan:** Tingkat kolektibilitas kita yang menyentuh **{$rateStr}%** merepresentasikan sistem penagihan yang berjalan optimal. Namun, piutang overdue sebesar **{$overdueStr}** perlu mendapatkan atensi intensif minggu ini agar tidak mengganggu rasio kecukupan modal kerja operasional.";
+
+            case 'trend':
+                $currStr = "Rp " . number_format($data['current'], 0, ',', '.');
+                $prevStr = "Rp " . number_format($data['previous'], 0, ',', '.');
+                $growthStr = number_format($data['growth'], 1, ',', '.');
+                $insight = $data['insight'];
+                
+                $grossStr = "Rp " . number_format($data['gross'], 0, ',', '.');
+                $expensesStr = "Rp " . number_format($data['expenses'], 0, ',', '.');
+                $netStr = "Rp " . number_format($data['net'], 0, ',', '.');
+
+                return $locale === 'en'
+                    ? "### 📈 Month-over-Month (MoM) Growth Analysis\n\n" .
+                      "Our live financial database registers the following MoM trend indicators:\n" .
+                      "* **Previous Month Revenue:** {$prevStr}\n" .
+                      "* **Current Month Revenue:** {$currStr}\n" .
+                      "* **Revenue Growth Rate:** {$growthStr}%\n\n" .
+                      "**Detailed Revenue Breakdown:**\n" .
+                      "* **Gross Revenue (Omset Kotor):** {$grossStr}\n" .
+                      "* **Operational Expenses (Beban Operasional):** {$expensesStr}\n" .
+                      "* **Net Revenue (Omset Bersih):** {$netStr}\n\n" .
+                      "**Advisor Assessment:** {$insight}. Under our current profit-sharing structure, J&J GROUP generated a gross revenue of {$grossStr} this month. However, after accounting for operational expenses and division fee allocations of {$expensesStr}, our net revenue stands at {$netStr}. " .
+                      ($data['growth'] > 0
+                          ? "This positive performance signifies rising commercial activity or improved invoicing collection. I suggest reinvesting parts of these gains into growth-driving units."
+                          : "This downward trajectory requires urgent review of client acquisition pipelines and operating costs. We must identify underperforming business units and optimize pricing policies.")
+                    : "### 📈 Analisis Pertumbuhan & Tren Pendapatan MoM\n\n" .
+                      "Berdasarkan agregasi database penjualan J&J GROUP, berikut metrik tren performa keuangan bulan ke bulan:\n" .
+                      "* **Pendapatan Bulan Lalu:** {$prevStr}\n" .
+                      "* **Pendapatan Bulan Ini:** {$currStr}\n" .
+                      "* **Tingkat Pertumbuhan:** {$growthStr}%\n\n" .
+                      "**Rincian Pendapatan Bulan Ini:**\n" .
+                      "* **Omset Kotor (Gross Revenue):** {$grossStr}\n" .
+                      "* **Beban Operasional (Expenses):** {$expensesStr}\n" .
+                      "* **Omset Bersih (Net Revenue):** {$netStr}\n\n" .
+                      "**Analisis Konsultan Keuangan:** {$insight}. Berdasarkan struktur pembagian keuntungan bisnis kita, omset kotor kita bulan ini adalah {$grossStr}, namun setelah dikurangi beban operasional sebesar {$expensesStr}, pendapatan bersih kita adalah {$netStr}. " .
+                      ($data['growth'] > 0
+                          ? "Pertumbuhan positif ini mengindikasikan ekspansi bisnis yang solid. Momentum ini sebaiknya dipertahankan dengan mengoptimalkan penetrasi pasar pada sektor industri klien yang paling menguntungkan."
+                          : "Tren negatif ini mengindikasikan adanya perlambatan aktivitas bisnis. Saya menyarankan peninjauan kembali biaya operasional (cost control) serta merestrukturisasi strategi penawaran harga layanan.");
+
+            default:
+                return '';
+        }
+    }
 
     /**
      * Direct-alias lookup: maps unambiguous single financial words to a specific
      * dictionary topic, completely bypassing fuzzy scoring.
-     *
-     * The alias table only lists words that have ONE clear meaning in this domain.
-     * Ambiguous words (invoice, tagihan) are handled by handleAmbiguousFinancialWord().
      */
     protected function resolveDirectAlias(
         string $normalizedQuery,
@@ -233,7 +835,6 @@ class AiKnowledgeService
         string $locale,
         array  $dictionary
     ): ?array {
-        // Map: alias word => dictionary topic key (unambiguous only)
         $aliases = [
             'piutang'      => 'invoice_overdue',
             'overdue'      => 'invoice_overdue',
@@ -241,9 +842,21 @@ class AiKnowledgeService
             'tunggakan'    => 'invoice_overdue',
             'lunas'        => 'invoice_lunas',
             'paid'         => 'invoice_lunas',
-            'klien'        => 'total_klien',
-            'client'       => 'total_klien',
-            'clients'      => 'total_klien',
+            'klien'        => 'client_portfolio',
+            'client'       => 'client_portfolio',
+            'clients'      => 'client_portfolio',
+            'mitra'        => 'client_portfolio',
+            'customer'     => 'client_portfolio',
+            'pelanggan'    => 'client_portfolio',
+            'unit bisnis'  => 'unit_bisnis',
+            'business unit'=> 'unit_bisnis',
+            'divisi'       => 'unit_bisnis',
+            'division'     => 'unit_bisnis',
+            'pendapatan'   => 'revenue_trend',
+            'omset'        => 'revenue_trend',
+            'omzet'        => 'revenue_trend',
+            'penghasilan'  => 'revenue_trend',
+            'pemasukan'    => 'revenue_trend',
             'kuitansi'     => 'kuitansi_list',
             'kwitansi'     => 'kuitansi_list',
             'receipt'      => 'kuitansi_list',
@@ -259,18 +872,169 @@ class AiKnowledgeService
             'laporan'      => 'laporan_keuangan',
             'report'       => 'laporan_keuangan',
             'reports'      => 'laporan_keuangan',
-            'kalender'     => 'kalender_billing',
-            'chronos'      => 'kalender_billing',
-            'calendar'     => 'kalender_billing',
+            'kalender'     => 'kalender_chronos',
+            'chronos'      => 'kalender_chronos',
+            'calendar'     => 'kalender_chronos',
+            'owner kpi'    => 'owner_kpi',
+            'kpi owner'    => 'owner_kpi',
+            'manajemen tim'=> 'manajemen_tim',
+            'kelola tim'   => 'manajemen_tim',
         ];
 
-        // Check if any word in the query exactly matches an alias
         foreach ($aliases as $alias => $topicKey) {
-            if (!in_array($alias, $queryWords, true) && $normalizedQuery !== $alias) {
+            $hasAlias = false;
+            if ($normalizedQuery === $alias) {
+                $hasAlias = true;
+            } elseif (str_contains($alias, ' ')) {
+                if (str_contains($normalizedQuery, $alias)) {
+                    $hasAlias = true;
+                }
+            } else {
+                if (in_array($alias, $queryWords, true)) {
+                    $hasAlias = true;
+                }
+            }
+
+            if (!$hasAlias) {
                 continue;
             }
 
-            // Locate the item in the dictionary
+            // Direct mapping of data aliases to the actual database functions
+            if (in_array($topicKey, ['invoice_overdue', 'invoice_lunas', 'client_portfolio', 'revenue_trend', 'tren_performa', 'arus_kas', 'unit_bisnis'])) {
+                $routeName = null;
+                if ($topicKey === 'invoice_overdue') {
+                    try {
+                        $data = $this->getOverdueList();
+                        if (empty($data) || $data['count'] === 0 || $data['total'] <= 0.0) {
+                            $text = $locale === 'en'
+                                ? "I apologize, but there are no overdue invoices recorded in our database at the moment. However, you can check the complete invoices list here:"
+                                : "Maaf, saat ini tidak ada data tagihan overdue/menunggak yang terdeteksi di database. Anda dapat meninjau semua status invoice melalui menu berikut:";
+                            $routeName = 'invoices.index';
+                        } else {
+                            session()->put('last_data_query', (float) $data['total']);
+                            $text = $this->generateNarrative($data, 'overdue', $locale);
+                        }
+                    } catch (\Throwable $e) {
+                        $text = $locale === 'en'
+                            ? "I apologize, but I cannot retrieve the overdue invoice records at the moment. You can view the list manually here:"
+                            : "Maaf, saya belum bisa menampilkan data tagihan menunggak secara langsung saat ini. Namun, Anda bisa memantau perkembangannya melalui menu berikut:";
+                        $routeName = 'invoices.index';
+                    }
+                } elseif ($topicKey === 'invoice_lunas') {
+                    try {
+                        $data = $this->getInvoiceList('paid');
+                        if (empty($data) || $data['count'] === 0 || $data['total'] <= 0.0) {
+                            $text = $locale === 'en'
+                                ? "I apologize, but there are no paid invoices recorded in our database at the moment. You can check or record new payments through the invoices page:"
+                                : "Maaf, saat ini belum ada data tagihan lunas yang tercatat di database J&J GROUP. Anda dapat memperbarui status pembayaran di menu berikut:";
+                            $routeName = 'invoices.index';
+                        } else {
+                            session()->put('last_data_query', (float) $data['total']);
+                            $text = $this->generateNarrative($data, 'paid', $locale);
+                        }
+                    } catch (\Throwable $e) {
+                        $text = $locale === 'en'
+                            ? "I apologize, but I cannot retrieve the paid invoice records at the moment. Please navigate to the invoices list to review manually:"
+                            : "Maaf, saya belum bisa menampilkan data invoice lunas secara langsung saat ini. Namun, Anda dapat mengakses informasinya melalui menu berikut:";
+                        $routeName = 'invoices.index';
+                    }
+                } elseif ($topicKey === 'client_portfolio') {
+                    try {
+                        $data = $this->getClientList();
+                        if (empty($data) || $data['count'] === 0) {
+                            $text = $locale === 'en'
+                                ? "I apologize, but there are no active clients registered in our database at the moment. You can add or manage clients manually via the following menu:"
+                                : "Maaf, saya tidak menemukan adanya data klien aktif di database saat ini. Namun, Anda dapat menambah atau mengelola klien secara manual melalui menu berikut:";
+                            $routeName = 'clients.index';
+                        } else {
+                            session()->put('last_data_query', (float) $data['count']);
+                            $text = $this->generateNarrative($data, 'client', $locale);
+                            $routeName = 'clients.index'; // Always include navigation button
+                        }
+                    } catch (\Throwable $e) {
+                        $text = $locale === 'en'
+                            ? "I apologize, but I cannot display the client list directly. However, you can access this information via the following menu:"
+                            : "Maaf, saya belum bisa menampilkan daftar klien secara langsung. Namun, Anda bisa mengakses informasinya melalui menu berikut:";
+                        $routeName = 'clients.index';
+                    }
+                } elseif ($topicKey === 'unit_bisnis') {
+                    try {
+                        $units = \App\Models\BusinessUnit::all();
+                        if ($units->isEmpty()) {
+                            $text = $locale === 'en'
+                                ? "I apologize, but there are no internal business units registered in our system at the moment. You can manage or add business units here:"
+                                : "Maaf, saat ini belum ada unit bisnis internal yang terdaftar di sistem. Anda dapat mengelola unit bisnis melalui menu berikut:";
+                            $routeName = 'business-units.index';
+                        } else {
+                            $unitLines = [];
+                            foreach ($units as $unit) {
+                                $unitLines[] = "* **{$unit->name}** (Fee Sharing: " . number_format($unit->fee_percentage, 1, ',', '.') . "%)";
+                            }
+                            $listStr = implode("\n", $unitLines);
+                            $text = $locale === 'en'
+                                ? "### 🏢 J&J GROUP Internal Business Units\n\n" .
+                                  "Our organization consists of the following internal business units/divisions:\n\n" .
+                                  $listStr . "\n\n" .
+                                  "**Structural Advisory:** These internal divisions drive our operations. Each unit carries a specific profit-sharing fee percentage. You can manage their configurations or view detailed revenue breakdown using the link below."
+                                : "### 🏢 Unit Bisnis Internal J&J GROUP\n\n" .
+                                  "Organisasi kita terdiri dari divisi/unit bisnis internal berikut:\n\n" .
+                                  $listStr . "\n\n" .
+                                  "**Penjelasan Struktur:** Unit bisnis di atas merupakan divisi internal J&J GROUP, bukan klien eksternal. Masing-masing unit memiliki persentase pembagian keuntungan (fee sharing) tersendiri. Anda dapat mengelola unit bisnis ini melalui menu di bawah:";
+                            $routeName = 'business-units.index';
+                        }
+                    } catch (\Throwable $e) {
+                        $text = $locale === 'en'
+                            ? "I apologize, but I cannot retrieve the business units list at the moment. However, you can access them via the following menu:"
+                            : "Maaf, saya belum bisa menampilkan daftar unit bisnis secara langsung saat ini. Namun, Anda bisa mengakses informasinya melalui menu berikut:";
+                        $routeName = 'business-units.index';
+                    }
+                } elseif ($topicKey === 'revenue_trend' || $topicKey === 'tren_performa') {
+                    try {
+                        $data = $this->getRevenueData('trend');
+                        if (empty($data) || ($data['current'] <= 0.0 && $data['previous'] <= 0.0)) {
+                            $text = $locale === 'en'
+                                ? "I apologize, but there is no sufficient monthly revenue history to determine growth trends. Please access the reports module to audit our financial trends:"
+                                : "Maaf, data pertumbuhan omset saat ini masih kosong atau belum tersedia. Anda dapat melihat detail laporan bulanan melalui menu berikut:";
+                            $routeName = 'reports.index';
+                        } else {
+                            session()->put('last_data_query', (float) $data['current']);
+                            $text = $this->generateNarrative($data, 'trend', $locale);
+                        }
+                    } catch (\Throwable $e) {
+                        $text = $locale === 'en'
+                            ? "I apologize, but I cannot display the revenue trend directly right now. You can analyze the financial performance charts on the page below:"
+                            : "Maaf, saya belum bisa menampilkan visualisasi tren pendapatan secara langsung saat ini. Anda dapat menganalisis grafik performa keuangan di halaman berikut:";
+                        $routeName = 'reports.index';
+                    }
+                } elseif ($topicKey === 'arus_kas') {
+                    try {
+                        $data = $this->getRevenueData('cash_flow');
+                        if (empty($data) || ($data['revenue'] <= 0.0 && $data['outstanding'] <= 0.0)) {
+                            $text = $locale === 'en'
+                                ? "I apologize, but there is insufficient cash flow data to generate an analysis at the moment. Please view our full financial reports here:"
+                                : "Maaf, data arus kas saat ini masih kosong atau belum mencukupi untuk dianalisis. Silakan akses detail pelaporan keuangan melalui menu berikut:";
+                            $routeName = 'reports.index';
+                        } else {
+                            session()->put('last_data_query', (float) $data['revenue']);
+                            $text = $this->generateNarrative($data, 'cash_flow', $locale);
+                        }
+                    } catch (\Throwable $e) {
+                        $text = $locale === 'en'
+                            ? "I apologize, but I cannot process the cash flow analysis directly at this time. Please visit the reports page for full details:"
+                            : "Maaf, saya belum bisa memproses analisis arus kas secara langsung saat ini. Silakan kunjungi halaman laporan untuk rincian selengkapnya melalui menu berikut:";
+                        $routeName = 'reports.index';
+                    }
+                }
+
+                return [
+                    'text'       => $text,
+                    'routeName'  => $routeName,
+                    'similarity' => 100.0,
+                    'topic'      => $topicKey
+                ];
+            }
+
+            // Fallback for static procedures / indexes
             foreach ($dictionary as $type => $items) {
                 if (!isset($items[$topicKey])) {
                     continue;
@@ -278,12 +1042,11 @@ class AiKnowledgeService
 
                 $item = $items[$topicKey];
                 session()->put('last_topic', $topicKey);
-
                 $text = $this->resolveResponseText($item, $topicKey, $type, $locale, $normalizedQuery);
 
                 return [
                     'text'       => $text,
-                    'routeName'  => null,
+                    'routeName'  => $item['navigate'] ?? null,
                     'similarity' => 100.0,
                     'topic'      => $topicKey
                 ];
@@ -296,7 +1059,6 @@ class AiKnowledgeService
     /**
      * Ambiguous financial word handler: fires when the user types a recognised
      * financial term that maps to more than one possible action.
-     * Returns a friendly clarifying menu instead of a hard rejection.
      */
     protected function handleAmbiguousFinancialWord(string $query, string $locale): ?array
     {
@@ -326,7 +1088,6 @@ class AiKnowledgeService
         ];
 
         foreach ($menus as $word => $responses) {
-            // Only trigger if the query IS or CONTAINS the ambiguous word as a standalone token
             $queryWords = array_filter(explode(' ', $query));
             if ($query === $word || in_array($word, $queryWords, true)) {
                 return [
@@ -343,36 +1104,15 @@ class AiKnowledgeService
 
     /**
      * Normalize the user query by mapping common synonyms.
-     *
-     * @param string $query
-     * @return string
      */
     protected function normalizeQuery(string $query): string
     {
         $query = strtolower(trim($query));
-        
-        $synonyms = [
-            'tagihan' => 'invoice',
-            'kwitansi' => 'kuitansi',
-            'receipt' => 'kuitansi',
-            'customer' => 'klien',
-            'pelanggan' => 'klien',
-            'mitra' => 'klien',
-            'cash flow' => 'arus kas',
-            'cashflow' => 'arus kas',
-            'aliran kas' => 'arus kas',
-            'keuangan' => 'laporan',
-            'analisa' => 'analisis',
-            'kinerja' => 'performa',
-            'bikin' => 'buat',
-            'tambah' => 'buat',
-            'setting' => 'pengaturan',
-            'config' => 'pengaturan',
-            'setup' => 'pengaturan',
-        ];
+        $synonyms = KnowledgeDictionary::getSynonyms();
+        uksort($synonyms, fn($a, $b) => strlen($b) - strlen($a));
 
         foreach ($synonyms as $search => $replace) {
-            $query = preg_replace('/\b' . preg_quote($search, '/') . '\b/i', $replace, $query);
+            $query = preg_replace('/\b' . preg_quote($search, '/') . '\b/u', $replace, $query);
         }
 
         return $query;
@@ -380,10 +1120,6 @@ class AiKnowledgeService
 
     /**
      * Calculate similarity percentage between query and keyword.
-     *
-     * @param string $query
-     * @param string $keyword
-     * @return float
      */
     protected function calculateSimilarity(string $query, string $keyword): float
     {
@@ -417,7 +1153,6 @@ class AiKnowledgeService
                 
                 $simPercent = $maxLen > 0 ? (1 - ($lev / $maxLen)) * 100.0 : 0.0;
 
-                // Thresholds based on word length to avoid false positives:
                 if ($kLen <= 3 || $qLen <= 3) {
                     if ($lev > 1) {
                         $simPercent = 0.0;
@@ -455,40 +1190,9 @@ class AiKnowledgeService
 
     /**
      * Resolve the response text based on item type and user intent.
-     *
-     * @param array $item
-     * @param string $topic
-     * @param string $type
-     * @param string $locale
-     * @param string $userQuery
-     * @return string
      */
     protected function resolveResponseText(array $item, string $topic, string $type, string $locale, string $userQuery): string
     {
-        $normalizedQuery = strtolower($userQuery);
-
-        $isProcedureIntent = preg_match('/(cara|sop|panduan|petunjuk|langkah|tutorial|bagaimana cara|how to|step|guide|bikin|buat)/i', $normalizedQuery);
-        $isNavigationIntent = preg_match('/(buka|pergi|tampilkan|navigasi|menu|halaman|go to|open|view|show|navigate)/i', $normalizedQuery);
-
-        // FORCE DATA: dynamic_data_triggers ALWAYS attempt a live narrative query first.
-        // This is the primary integration gate — if data exists, it is always shown.
-        if ($type === 'dynamic_data_triggers' && !$isProcedureIntent) {
-            $analysisText = $this->getNarrativeAnalysis($topic, $locale);
-            if ($analysisText) {
-                return $analysisText;
-            }
-            // Fall through to executeDynamicQuery if no narrative case exists for this topic
-            return $this->executeDynamicQuery($item['query_type'], $locale);
-        }
-
-        // Navigation (only for explicit navigation queries on procedure items)
-        if ($isNavigationIntent && !empty($item['navigate'])) {
-            return $locale === 'en'
-                ? "Understood. I will direct you to the requested section. Please select the navigation option below."
-                : "Tentu, saya akan membantu Anda menuju ke menu yang relevan. Silakan pilih tombol navigasi di bawah ini.";
-        }
-
-        // Procedures
         if ($type === 'static_procedures') {
             return $locale === 'en'
                 ? ($item['response_en'] ?? $item['response_id'])
@@ -496,239 +1200,5 @@ class AiKnowledgeService
         }
 
         return '';
-    }
-
-    /**
-     * Retrieve a detailed narrative financial advisory report.
-     *
-     * @param string $topic
-     * @param string $locale
-     * @return string|null
-     */
-    protected function getNarrativeAnalysis(string $topic, string $locale): ?string
-    {
-        try {
-            switch ($topic) {
-                case 'total_klien':
-                    $totalClients = \App\Models\Client::where('status', 'aktif')->count();
-                    session()->put('last_data_query', (float) $totalClients);
-                    return $locale === 'en'
-                        ? "### 📊 Client Portfolio Analysis\n\n" .
-                          "Currently, J&J GROUP is partnering with **{$totalClients} active clients**. From a financial risk perspective, distributing your client base across {$totalClients} distinct accounts reduces concentration risk. I advise conducting regular creditworthiness reviews to safeguard overall receivable quality."
-                        : "### 📊 Analisis Portofolio Klien\n\n" .
-                          "Sebagai Senior Financial Consultant, saya menginformasikan bahwa saat ini J&J GROUP memiliki hubungan kemitraan dengan **{$totalClients} klien aktif**. Dari perspektif manajemen risiko, pembagian portofolio pada {$totalClients} entitas ini meminimalkan risiko konsentrasi pendapatan (*concentration risk*). Rekomendasi saya adalah terus melakukan pemantauan berkala terhadap status keaktifan klien serta kelayakan kredit mereka untuk menghindari piutang macet.";
-
-                case 'invoice_lunas':
-                    $paidCount = \App\Models\Invoice::where('status', 'paid')->count();
-                    $paidTotal = \App\Models\Invoice::where('status', 'paid')->sum('total');
-                    session()->put('last_data_query', (float) $paidTotal);
-                    return $locale === 'en'
-                        ? "### 💰 Realized Inflow (Paid Invoices) Analysis\n\n" .
-                          "Our database records **{$paidCount} paid invoices** amounting to **Rp " . number_format($paidTotal, 0, ',', '.') . "** in realized collections.\n\n" .
-                          "**Financial Review:** This represents a strong billing collection rate and high liquidity inflow. A high collection speed reduces pressure on short-term working capital. I recommend allocating at least 15% of this realized cash directly to operational reserves before planning any capital-heavy expansions."
-                        : "### 💰 Analisis Realisasi Pendapatan (Lunas)\n\n" .
-                          "Berdasarkan peninjauan data keuangan terkini, J&J GROUP berhasil merealisasikan arus kas masuk sebesar **Rp " . number_format($paidTotal, 0, ',', '.') . "** dari total **{$paidCount} invoice** yang telah lunas.\n\n" .
-                          "**Interpretasi Finansial:** Tingkat pelunasan ini menunjukkan efektivitas penagihan yang sangat baik serta kepatuhan bayar yang solid dari klien Anda. Guna memperkuat fondasi keuangan jangka pendek, saya menyarankan untuk menyisihkan sebagian dari pendapatan riil ini ke pos cadangan kas operasional sebelum dialokasikan kembali untuk belanja modal.";
-
-                case 'invoice_overdue':
-                    $overdueInvoices = \App\Models\Invoice::with('client')
-                        ->whereIn('status', ['sent', 'pending', 'dp'])
-                        ->where('due_date', '<', Carbon::now())
-                        ->get();
-                    $overdueAmount = $overdueInvoices->sum('total');
-                    $overdueCount = $overdueInvoices->count();
-                    session()->put('last_data_query', (float) $overdueAmount);
-                    
-                    $replyList = [];
-                    foreach ($overdueInvoices as $inv) {
-                        $replyList[] = "* **Invoice #{$inv->invoice_number}** - {$inv->client->nama_client} | **Rp " . number_format($inv->total, 0, ',', '.') . "** (Jatuh tempo: " . $inv->due_date->format('d M Y') . ")";
-                    }
-                    
-                    $listStr = count($replyList) > 0 ? implode("\n", $replyList) : "- None";
-
-                    return $locale === 'en'
-                        ? "### ⚠️ Overdue Receivable Risk Analysis\n\n" .
-                          "There are currently **{$overdueCount} overdue invoices** representing **Rp " . number_format($overdueAmount, 0, ',', '.') . "** in unpaid receivables:\n\n" .
-                          $listStr . "\n\n" .
-                          "**Advisory & Mitigation:** Having Rp " . number_format($overdueAmount, 0, ',', '.') . " tied up in overdue status presents a liquidity concern. I advise sending automated payment alerts, placing a temporary hold on deliverables for critical overdue accounts, and adjusting future payment terms to require upfront deposits."
-                        : "### ⚠️ Analisis Risiko Piutang Tertahan (Overdue)\n\n" .
-                          "Saya menemukan **{$overdueCount} invoice menunggak** dengan total dana tertahan sebesar **Rp " . number_format($overdueAmount, 0, ',', '.') . "**:\n\n" .
-                          $listStr . "\n\n" .
-                          "**Rekomendasi Taktis Consultant:** Piutang tertahan sebesar **Rp " . number_format($overdueAmount, 0, ',', '.') . "** berpotensi memperlambat rasio perputaran kas operasional J&J GROUP. Tindakan kuratif segera yang saya sarankan meliputi pengiriman surat pengingat resmi secara berkala, penghentian sementara penyerahan proyek berjalan untuk akun-akun kritis tersebut, serta penyesuaian klausul kontrak baru dengan opsi pembayaran bertahap (down payment lebih tinggi).";
-
-                case 'arus_kas':
-                    $stats = app(\App\Services\BusinessUnitReportingService::class)->getSummaryStats();
-                    $revenue = $stats['total_revenue'];
-                    $outstanding = $stats['total_outstanding'];
-                    $pending = $stats['pending_outstanding'];
-                    $overdue = $stats['overdue_outstanding'];
-                    $rate = $stats['collection_rate'];
-                    session()->put('last_data_query', (float) $revenue);
-
-                    return $locale === 'en'
-                        ? "### 💵 Cash Flow & Liquidity Advisory\n\n" .
-                          "Here is the consolidated cash flow overview based on live operational records:\n" .
-                          "* **Realized Inflows (Paid Invoices):** Rp " . number_format($revenue, 0, ',', '.') . "\n" .
-                          "* **Total Receivables (Outstanding):** Rp " . number_format($outstanding, 0, ',', '.') . "\n" .
-                          "  - *Active / Upcoming (Pending):* Rp " . number_format($pending, 0, ',', '.') . "\n" .
-                          "  - *Delayed / Risk (Overdue):* Rp " . number_format($overdue, 0, ',', '.') . "\n" .
-                          "* **Billing Collection Efficiency:** " . number_format($rate, 1) . "%\n\n" .
-                          "**Strategic Financial Assessment:** An efficiency rate of **" . number_format($rate, 1) . "%** reflects a strong operational collection model. However, the Rp " . number_format($overdue, 0, ',', '.') . " in delayed/overdue outstanding needs close monitoring. To optimize cash flow, I advise setting aside a provision for bad debts and reviewing credit lines for high-value clients."
-                        : "### 💵 Analisis Arus Kas & Likuiditas Perusahaan\n\n" .
-                          "Berikut adalah rangkuman posisi arus kas operasional J&J GROUP yang diekstraksi secara real-time:\n" .
-                          "* **Realisasi Arus Kas Masuk (Lunas):** Rp " . number_format($revenue, 0, ',', '.') . "\n" .
-                          "* **Total Piutang Outstanding:** Rp " . number_format($outstanding, 0, ',', '.') . "\n" .
-                          "  - *Dalam Termin (Pending):* Rp " . number_format($pending, 0, ',', '.') . "\n" .
-                          "  - *Terlambat / Berisiko (Overdue):* Rp " . number_format($overdue, 0, ',', '.') . "\n" .
-                          "* **Rasio Kolektibilitas Tagihan:** " . number_format($rate, 1) . "%\n\n" .
-                          "**Analisis Konsultan:** Rasio kolektibilitas Anda saat ini berada di tingkat **" . number_format($rate, 1) . "%**, menandakan efisiensi penagihan yang cukup solid. Meskipun demikian, piutang tertahan sebesar **Rp " . number_format($overdue, 0, ',', '.') . "** harus segera dikelola agar tidak mengganggu modal kerja operasional. Saya menyarankan audit piutang mingguan dan pengetatan syarat kredit termin pembayaran bagi klien baru.";
-
-                case 'tren_performa':
-                    $trend = app(\App\Services\DataAggregatorService::class)->getRevenueTrend($locale);
-                    $curr = $trend['current_revenue'];
-                    $prev = $trend['previous_revenue'];
-                    $growth = $trend['growth_percent'];
-                    $insight = $trend['insight'];
-                    session()->put('last_data_query', (float) $curr);
-
-                    return $locale === 'en'
-                        ? "### 📈 Month-over-Month (MoM) Growth Analysis\n\n" .
-                          "Financial performance trend metrics:\n" .
-                          "* **Previous Month Revenue:** Rp " . number_format($prev, 0, ',', '.') . "\n" .
-                          "* **Current Month Revenue:** Rp " . number_format($curr, 0, ',', '.') . "\n" .
-                          "* **Revenue Growth Rate:** " . number_format($growth, 1) . "%\n\n" .
-                          "**Advisory Note:** {$insight}. " .
-                          ($growth > 0 
-                              ? "This positive performance signifies rising commercial activity or improved invoicing collection. I suggest reinvesting parts of these gains into growth-driving units." 
-                              : "This downward trajectory requires urgent review of client acquisition pipelines and operating costs. We must identify underperforming business units and optimize pricing policies.")
-                        : "### 📈 Analisis Pertumbuhan & Tren Pendapatan MoM\n\n" .
-                          "Metrik performa finansial bulan ke bulan menunjukkan data berikut:\n" .
-                          "* **Pendapatan Bulan Lalu:** Rp " . number_format($prev, 0, ',', '.') . "\n" .
-                          "* **Pendapatan Bulan Ini:** Rp " . number_format($curr, 0, ',', '.') . "\n" .
-                          "* **Tingkat Pertumbuhan:** " . number_format($growth, 1) . "%\n\n" .
-                          "**Rekomendasi Konsultan Keuangan:** {$insight}. " .
-                          ($growth > 0 
-                              ? "Pertumbuhan positif ini mengindikasikan ekspansi bisnis yang solid. Momentum ini sebaiknya dipertahankan dengan mengoptimalkan penetrasi pasar pada sektor industri klien yang paling menguntungkan." 
-                              : "Tren negatif ini mengindikasikan adanya perlambatan aktivitas bisnis. Saya menyarankan peninjauan kembali biaya operasional (cost control) serta merestrukturisasi strategi penawaran harga layanan.");
-                
-                case 'invoice_besok':
-                    $data = app(\App\Services\DataAggregatorService::class)->getInvoicesDueTomorrow($locale);
-                    session()->put('last_data_query', (float) $data['total']);
-                    return $data['text'];
-            }
-        } catch (\Throwable $e) {
-            Log::error("AiKnowledgeService getNarrativeAnalysis Error: " . $e->getMessage());
-        }
-        return null;
-    }
-
-    /**
-     * Execute database queries for dynamic data triggers.
-     *
-     * @param string $queryType
-     * @param string $locale
-     * @return string
-     */
-    protected function executeDynamicQuery(string $queryType, string $locale): string
-    {
-        try {
-            switch ($queryType) {
-                case 'total_clients':
-                    $totalClients = \App\Models\Client::where('status', 'aktif')->count();
-                    session()->put('last_data_query', (float) $totalClients);
-                    return $locale === 'en'
-                        ? "Currently, the system records **{$totalClients} active clients**. You can view and manage client details fully on the Clients page."
-                        : "Saat ini sistem mencatat Anda memiliki **{$totalClients} klien aktif**. Anda dapat melihat dan mengelola detail data klien secara lengkap di halaman Klien.";
-
-                case 'paid_invoices':
-                    $paidCount = \App\Models\Invoice::where('status', 'paid')->count();
-                    $paidTotal = \App\Models\Invoice::where('status', 'paid')->sum('total');
-                    session()->put('last_data_query', (float) $paidTotal);
-                    return $locale === 'en'
-                        ? "The total amount of paid invoices is **Rp " . number_format($paidTotal, 0, ',', '.') . "** from **{$paidCount} invoices**."
-                        : "Total nominal tagihan yang telah lunas (paid) adalah **Rp " . number_format($paidTotal, 0, ',', '.') . "** dari total **{$paidCount} invoice**.";
-
-                case 'overdue_invoices':
-                    $overdueInvoices = \App\Models\Invoice::with('client')
-                        ->whereIn('status', ['sent', 'pending', 'dp'])
-                        ->where('due_date', '<', Carbon::now())
-                        ->get();
-                    $replyList = [];
-                    foreach ($overdueInvoices as $inv) {
-                        $replyList[] = "* **Invoice #{$inv->invoice_number}** oleh {$inv->client->nama_client} - Rp " . number_format($inv->total, 0, ',', '.') . " (Jatuh tempo: " . $inv->due_date->format('d M Y') . ")";
-                    }
-                    $overdueTotal = $overdueInvoices->sum('total');
-                    session()->put('last_data_query', (float) $overdueTotal);
-                    return $locale === 'en'
-                        ? "Here is the list of overdue invoices:\n\n" . (count($replyList) > 0 ? implode("\n", $replyList) : "No overdue invoices at this moment.") . "\n\n**Action Recommendation:** Contact the respective clients immediately or use the AI billing email draft feature to secure payments."
-                        : "Berikut adalah daftar invoice yang saat ini berstatus menunggak (overdue):\n\n" . (count($replyList) > 0 ? implode("\n", $replyList) : "Tidak ada invoice menunggak saat ini.") . "\n\n**Rekomendasi Tindakan:** Hubungi klien bersangkutan segera atau gunakan fitur Draf Email Penagihan AI untuk mengamankan pembayaran.";
-
-                case 'receipts_index':
-                    return $locale === 'en'
-                        ? "You can view the receipt list or create new receipts from the receipts menu."
-                        : "Anda dapat melihat daftar kuitansi atau membuat kuitansi baru melalui menu kuitansi.";
-
-                case 'reports_index':
-                    return $locale === 'en'
-                        ? "The Reports page offers visual analysis on revenue, receivables, and historical business KPIs."
-                        : "Halaman Laporan menyajikan visualisasi data yang mendalam mengenai pendapatan, piutang, dan statistik bisnis bulanan.";
-
-                case 'chronos_index':
-                    return $locale === 'en'
-                        ? "Chronos Calendar lets you manage invoice timelines and collection deadlines interactively."
-                        : "Kalender Chronos mempermudah Anda dalam memantau timeline invoice berdasarkan tanggal jatuh temponya secara interaktif.";
-
-                case 'dashboard':
-                    return $locale === 'en'
-                        ? "On the Dashboard, you can monitor monthly metrics, outstanding dues, and cash flow insights."
-                        : "Di halaman dashboard, Anda dapat memantau grafik penjualan bulanan, total tagihan outstanding, ringkasan aktivitas, serta analisis cashflow secara visual.";
-
-                case 'revenue_trend':
-                    $trend = app(\App\Services\DataAggregatorService::class)->getRevenueTrend($locale);
-                    $curr  = $trend['current_revenue'];
-                    $prev  = $trend['previous_revenue'];
-                    $growth = $trend['growth_percent'];
-                    $insight = $trend['insight'];
-                    session()->put('last_data_query', (float) $curr);
-
-                    return $locale === 'en'
-                        ? "### 📈 Month-over-Month (MoM) Performance Analysis\n\n" .
-                          "Here are J&J GROUP's revenue trend metrics for the current period:\n" .
-                          "* **Previous Month Revenue:** Rp " . number_format($prev, 0, ',', '.') . "\n" .
-                          "* **Current Month Revenue:** Rp " . number_format($curr, 0, ',', '.') . "\n" .
-                          "* **Revenue Growth Rate (MoM):** " . number_format($growth, 1) . "%\n\n" .
-                          "**Advisory Note:** {$insight}. " .
-                          ($growth > 0
-                              ? "This positive trend signals healthy commercial activity. I recommend reinvesting a portion of these gains into top-performing business units."
-                              : "This downward trend warrants an urgent review of client acquisition pipelines and cost structures to prevent further erosion.")
-                        : "### 📈 Analisis Performa & Tren Pendapatan MoM\n\n" .
-                          "Berikut adalah metrik tren performa keuangan J&J GROUP berdasarkan data riil sistem:\n" .
-                          "* **Pendapatan Bulan Lalu:** Rp " . number_format($prev, 0, ',', '.') . "\n" .
-                          "* **Pendapatan Bulan Ini:** Rp " . number_format($curr, 0, ',', '.') . "\n" .
-                          "* **Tingkat Pertumbuhan (MoM):** " . number_format($growth, 1) . "%\n\n" .
-                          "**Rekomendasi Konsultan:** {$insight}. " .
-                          ($growth > 0
-                              ? "Pertumbuhan positif ini menunjukkan ekspansi bisnis yang solid. Pertahankan momentum dengan mengoptimalkan klien pada segmen paling menguntungkan."
-                              : "Tren penurunan ini perlu dievaluasi segera. Saya menyarankan tinjauan cost control menyeluruh dan restrukturisasi strategi penawaran harga.");
-                
-                case 'arus_kas':
-                    $stats = app(\App\Services\BusinessUnitReportingService::class)->getSummaryStats();
-                    session()->put('last_data_query', (float) $stats['total_revenue']);
-                    return $locale === 'en'
-                        ? "J&J GROUP currently has **Rp " . number_format($stats['total_revenue'], 0, ',', '.') . "** in realized revenue, and **Rp " . number_format($stats['total_outstanding'], 0, ',', '.') . "** in outstanding receivables."
-                        : "J&J GROUP saat ini mencatat pendapatan lunas sebesar **Rp " . number_format($stats['total_revenue'], 0, ',', '.') . "**, dengan total piutang outstanding yang belum diselesaikan sebesar **Rp " . number_format($stats['total_outstanding'], 0, ',', '.') . "**.";
-
-                case 'invoice_due_tomorrow':
-                    $data = app(\App\Services\DataAggregatorService::class)->getInvoicesDueTomorrow($locale);
-                    session()->put('last_data_query', (float) $data['total']);
-                    return $data['text'];
-            }
-        } catch (\Throwable $e) {
-            Log::error("AiKnowledgeService Dynamic Query Error: " . $e->getMessage());
-        }
-
-        return $locale === 'en'
-            ? "Sorry, data for that period is not yet available in the system."
-            : "Maaf, data transaksi untuk periode tersebut belum tersedia di sistem.";
     }
 }

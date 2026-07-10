@@ -105,4 +105,44 @@ class DataAggregatorService
             'text' => $text
         ];
     }
+
+    /**
+     * Get financial overview (Revenue, Overdue, Collection Rate, and Trend) for AI Advisory.
+     *
+     * @param string $locale
+     * @return array
+     */
+    public function getFinancialOverview(string $locale = 'id'): array
+    {
+        $reportingService = app(\App\Services\BusinessUnitReportingService::class);
+        
+        // 1. Monthly Revenue (paid invoices in current month)
+        $monthlyStats = $reportingService->getSummaryStats([
+            'start_date' => Carbon::now()->startOfMonth()->toDateString(),
+            'end_date' => Carbon::now()->endOfMonth()->toDateString(),
+        ]);
+        $monthlyRevenue = $monthlyStats['total_revenue'];
+
+        // 2. Overdue Revenue
+        $globalStats = $reportingService->getSummaryStats();
+        $overdueRevenue = $globalStats['overdue_outstanding'];
+
+        // 3. Collection Rate (percentage of paid invoices count over total invoices count)
+        $collectionRate = $globalStats['collection_rate'];
+
+        // 4. Trend Analysis for last 3 months
+        $threeMonthsTrend = $reportingService->getMonthlyTrend([], 3);
+        $trendSummary = [];
+        foreach ($threeMonthsTrend as $t) {
+            $trendSummary[] = $t['month_label'] . ": Rp " . number_format($t['total_billed'], 0, ',', '.');
+        }
+        $trendText = implode(', ', $trendSummary);
+
+        return [
+            'monthly_revenue' => $monthlyRevenue,
+            'overdue_revenue' => $overdueRevenue,
+            'collection_rate' => $collectionRate,
+            'trend_text' => $trendText,
+        ];
+    }
 }

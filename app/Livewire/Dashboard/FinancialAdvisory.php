@@ -22,47 +22,33 @@ class FinancialAdvisory extends Component
 
     public function refreshAnalysis()
     {
-        Cache::forget('ai_financial_insights_' . $this->locale);
-        $this->loadInsight();
+        $this->aiInsight = $this->locale == 'en' ? 'Processing the latest data...' : 'Sedang mengolah data terbaru...';
+        $this->loadInsight(true);
     }
 
-    protected function loadInsight()
+    protected function loadInsight($force = false)
     {
-        $monthlyRevenue = Invoice::where('status', 'paid')
-            ->whereMonth('created_at', Carbon::now()->month)
-            ->whereYear('created_at', Carbon::now()->year)
-            ->sum('total');
+        $aggregator = app(\App\Services\DataAggregatorService::class);
+        $overview = $aggregator->getFinancialOverview($this->locale);
 
-        $overdueRevenue = Invoice::whereIn('status', ['sent', 'pending', 'dp'])
-            ->where('due_date', '<', Carbon::now())
-            ->sum('total');
-
-        // Compile 3 months trend
-        $threeMonthsAgo = Carbon::now()->subMonths(2)->startOfMonth();
-        $recentThreeMonthsInvoices = Invoice::where('created_at', '>=', $threeMonthsAgo)->get();
-
-        $trendSummary = [];
-        for ($i = 2; $i >= 0; $i--) {
-            $monthDate = Carbon::now()->subMonths($i);
-            $monthTotal = $recentThreeMonthsInvoices->filter(function($invoice) use ($monthDate) {
-                return $invoice->created_at && $invoice->created_at->format('Y-m') === $monthDate->format('Y-m');
-            })->sum('total');
-            
-            $trendSummary[] = $monthDate->format('F Y') . ": Rp " . number_format($monthTotal, 0, ',', '.');
-        }
-        $trendText = implode(', ', $trendSummary);
+        $monthlyRevenue = $overview['monthly_revenue'];
+        $overdueRevenue = $overview['overdue_revenue'];
+        $collectionRate = $overview['collection_rate'];
+        $trendText = $overview['trend_text'];
 
         $locale = $this->locale;
 
-        $this->aiInsight = Cache::remember('ai_financial_insights_' . $locale, 3600, function() use ($monthlyRevenue, $overdueRevenue, $trendText, $locale) {
+        $fetchCallback = function() use ($monthlyRevenue, $overdueRevenue, $collectionRate, $trendText, $locale) {
             $formattedMonthly = "Rp " . number_format($monthlyRevenue, 0, ',', '.');
             $formattedOverdue = "Rp " . number_format($overdueRevenue, 0, ',', '.');
+            $formattedCollectionRate = number_format($collectionRate, 1, ',', '.') . "%";
             
             if ($locale === 'en') {
                 $prompt = "You are a strategic Executive Business Partner for J&J GROUP. You provide to-the-point, sharp, analytical financial advisory free of conversational fluff.
 Analyze the following data:
 - Total Invoices Paid This Month: {$formattedMonthly}
 - Total Overdue Invoices: {$formattedOverdue}
+- Invoice Collection Rate: {$formattedCollectionRate}
 - Sales/Invoice Trend for the Last 3 Months: {$trendText}
 
 You MUST format your response strictly using this exact structure:
@@ -83,6 +69,7 @@ Rules:
 Analisis data berikut:
 - Total Invoice Lunas Bulan Ini: {$formattedMonthly}
 - Total Tagihan Menunggak (Overdue): {$formattedOverdue}
+- Rasio Kolektibilitas Invoice (Collection Rate): {$formattedCollectionRate}
 - Tren Penjualan/Invoice 3 Bulan Terakhir: {$trendText}
 
 Anda wajib menyusun respons Anda dengan format terstruktur persis seperti ini:
@@ -135,19 +122,28 @@ Aturan:
                 $errMsg = " (Advisory Fallback)";
                 if ($locale === 'en') {
                     if ($overdueRevenue > 0) {
-                        return "[Analisis Data]\nTotal overdue invoices stand at {$formattedOverdue} this month, with current month paid invoices at {$formattedMonthly}.\n\n[Dampak Bisnis]\nThese outstanding receivables delay J&J GROUP's operational cash cycle, locking up vital working capital.\n\n[Rekomendasi Aksi]\nPrioritize immediate collections on major accounts and pause further project milestones for overdue accounts." . $errMsg;
+                        return "[Analisis Data]\nTotal overdue invoices stand at {$formattedOverdue} this month, with current month paid invoices at {$formattedMonthly}. The collection rate is currently at {$formattedCollectionRate}.\n\n[Dampak Bisnis]\nThese outstanding receivables delay J&J GROUP's operational cash cycle, locking up vital working capital.\n\n[Rekomendasi Aksi]\nPrioritize immediate collections on major accounts and pause further project milestones for overdue accounts." . $errMsg;
                     } else {
-                        return "[Analisis Data]\nAll invoices are settled, achieving a 100% collection efficiency this month.\n\n[Dampak Bisnis]\nStrong collection rates maximize cash buffer availability, enabling smooth short-term working capital.\n\n[Rekomendasi Aksi]\nContinue active monitoring and allocate a portion of realized cash to operational reserves." . $errMsg;
+                        return "[Analisis Data]\nAll invoices are settled, achieving a {$formattedCollectionRate} collection efficiency this month.\n\n[Dampak Bisnis]\nStrong collection rates maximize cash buffer availability, enabling smooth short-term working capital.\n\n[Rekomendasi Aksi]\nContinue active monitoring and allocate a portion of realized cash to operational reserves." . $errMsg;
                     }
                 } else {
                     if ($overdueRevenue > 0) {
-                        return "[Analisis Data]\nTotal tagihan menunggak (piutang overdue) saat ini mencapai {$formattedOverdue}, sedangkan invoice lunas bulan ini sebesar {$formattedMonthly}.\n\n[Dampak Bisnis]\nPiutang yang menunggak menghambat perputaran kas operasional J&J GROUP dan membebani likuiditas jangka pendek.\n\n[Rekomendasi Aksi]\nSegera kirimkan surat pengingat resmi ke klien bersangkutan dan batasi pengerjaan milestone proyek berjalan." . $errMsg;
+                        return "[Analisis Data]\nTotal tagihan menunggak (piutang overdue) saat ini mencapai {$formattedOverdue}, sedangkan invoice lunas bulan ini sebesar {$formattedMonthly}. Rasio kolektibilitas berada di angka {$formattedCollectionRate}.\n\n[Dampak Bisnis]\nPiutang yang menunggak menghambat perputaran kas operasional J&J GROUP dan membebani likuiditas jangka pendek.\n\n[Rekomendasi Aksi]\nSegera kirimkan surat pengingat resmi ke klien bersangkutan dan batasi pengerjaan milestone proyek berjalan." . $errMsg;
                     } else {
-                        return "[Analisis Data]\nSeluruh tagihan bulan ini telah lunas, mencapai efisiensi rasio kolektibilitas 100%.\n\n[Dampak Bisnis]\nKetepatan pelunasan tagihan mengamankan ketersediaan kas untuk pembiayaan operasional harian.\n\n[Rekomendasi Aksi]\nTetap pertahankan penagihan berkala dan alokasikan sebagian keuntungan bersih ke cadangan kas." . $errMsg;
+                        return "[Analisis Data]\nSeluruh tagihan bulan ini telah lunas, mencapai efisiensi rasio kolektibilitas {$formattedCollectionRate}.\n\n[Dampak Bisnis]\nKetepatan pelunasan tagihan mengamankan ketersediaan kas untuk pembiayaan operasional harian.\n\n[Rekomendasi Aksi]\nTetap pertahankan penagihan berkala dan alokasikan sebagian keuntungan bersih ke cadangan kas." . $errMsg;
                     }
                 }
             }
-        });
+        };
+
+        if ($force) {
+            Cache::forget('ai_financial_insights_' . $locale);
+            $insight = $fetchCallback();
+            Cache::put('ai_financial_insights_' . $locale, $insight, 3600);
+            $this->aiInsight = $insight;
+        } else {
+            $this->aiInsight = Cache::remember('ai_financial_insights_' . $locale, 3600, $fetchCallback);
+        }
     }
 
     public function placeholder()

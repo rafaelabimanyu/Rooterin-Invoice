@@ -32,4 +32,16 @@ class DashboardTest extends TestCase
         $response->assertStatus(200);
         $response->assertDontSee('AI Predictive Recommendation');
     }
+
+    public function test_financial_advisory_component_renders_and_can_be_refreshed()
+    {
+        $user = User::factory()->create(['role' => 'owner']);
+        $locale = app()->getLocale();
+        
+        \Livewire\Livewire::actingAs($user)
+            ->test(\App\Livewire\Dashboard\FinancialAdvisory::class)
+            ->assertSet('locale', $locale)
+            ->call('refreshAnalysis')
+            ->assertSet('locale', $locale);
+    }
 }

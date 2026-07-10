@@ -18,9 +18,8 @@
     @if(!$isStaff)
         <!-- OWNER EXECUTIVE COMMAND CENTER -->
         <!-- AI Financial Advisory (Topmost Command Panel) -->
-        <div class="mb-8">
-            <livewire:dashboard.financial-advisory lazy />
-        </div>
+        <livewire:dashboard.financial-advisory lazy />
+
 
         <!-- TOP BAR: 4 KPI Cards -->
         <div class="mb-8">

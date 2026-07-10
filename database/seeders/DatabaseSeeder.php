@@ -14,11 +14,6 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             SettingSeeder::class,
-            BusinessUnitSeeder::class,
-            ClientSeeder::class,
-            InvoiceSeeder::class,
-            ChronosEventSeeder::class,
-            ActivityLogSeeder::class,
         ]);
     }
 }

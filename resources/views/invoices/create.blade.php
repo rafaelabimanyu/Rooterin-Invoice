@@ -417,14 +417,17 @@
                 items: [{ deskripsi: '', qty: 1, harga: 0 }],
                 subtotal: 0,
                 discount: 0,
-                ppn: 0,
-                pph: 0,
+                ppn: {{ (float)\App\Models\Setting::get('ppn_percent', 0) }},
+                pph: {{ (float)\App\Models\Setting::get('pph_percent', 0) }},
                 discountNominal: 0,
                 dpp: 0,
                 ppnNominal: 0,
                 pphNominal: 0,
                 total: 0,
                 files: [],
+                init() {
+                    this.calculateTotal();
+                },
                 addItem() {
                     this.items.push({ deskripsi: '', qty: 1, harga: 0 });
                     this.$nextTick(() => lucide.createIcons());
@@ -447,7 +450,9 @@
                     this.total = Math.round((this.dpp + this.ppnNominal + this.pphNominal) * 100) / 100;
                 },
                 formatCurrency(value) {
-                    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value);
+                    const symbol = '{{ \App\Models\Setting::get('currency_symbol', 'Rp') }}';
+                    const formatted = new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0 }).format(value);
+                    return `${symbol} ${formatted}`;
                 },
                 handleFiles(event) {
                     const fileList = event.target.files;

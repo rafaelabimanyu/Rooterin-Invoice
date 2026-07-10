@@ -192,8 +192,8 @@
                     {{ app()->getLocale() == 'en' ? 'Paid' : 'Lunas' }}
                 </div>
                 <div style="font-size: 9pt; color: #475569; line-height: 1.4;">
-                    {{ app()->getLocale() == 'en' ? 'Receipt Date' : 'Tanggal Kuitansi' }}: <b style="color: #0f172a;">{{ $receipt->tanggal_receipt ? $receipt->tanggal_receipt->format('d M Y') : '-' }}</b><br>
-                    {{ app()->getLocale() == 'en' ? 'Expiry Date' : 'Tanggal Kedaluwarsa' }}: <b style="color: #0f172a;">{{ $receipt->expiry_date ? $receipt->expiry_date->format('d M Y') : '-' }}</b>
+                    {{ app()->getLocale() == 'en' ? 'Receipt Date' : 'Tanggal Kuitansi' }}: <b style="color: #0f172a;">{{ $receipt->tanggal_receipt ? $receipt->tanggal_receipt->format(\App\Models\Setting::get('date_format', 'd M Y')) : '-' }}</b><br>
+                    {{ app()->getLocale() == 'en' ? 'Expiry Date' : 'Tanggal Kedaluwarsa' }}: <b style="color: #0f172a;">{{ $receipt->expiry_date ? $receipt->expiry_date->format(\App\Models\Setting::get('date_format', 'd M Y')) : '-' }}</b>
                 </div>
                 @if($receipt->invoice && $receipt->invoice->warranty)
                 <div style="margin-top: 12px;">
@@ -222,8 +222,8 @@
                         <div class="item-desc-secondary">{{ app()->getLocale() == 'en' ? 'Service quotation fulfillment' : 'Pemenuhan penawaran layanan' }}</div>
                     </td>
                     <td class="text-center">{{ number_format($item->qty, 0) }}</td>
-                    <td class="text-right">Rp {{ number_format($item->harga, 0, ',', '.') }}</td>
-                    <td class="text-right">Rp {{ number_format($item->total, 0, ',', '.') }}</td>
+                    <td class="text-right">{{ \App\Models\Setting::get('currency_symbol', 'Rp') }} {{ number_format($item->harga, 0, ',', '.') }}</td>
+                    <td class="text-right">{{ \App\Models\Setting::get('currency_symbol', 'Rp') }} {{ number_format($item->total, 0, ',', '.') }}</td>
                 </tr>
                 @endforeach
             </tbody>
@@ -254,29 +254,29 @@
                         <table style="width: 100%; border-collapse: collapse;">
                             <tr>
                                 <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 600; font-size: 10pt;">SUBTOTAL</td>
-                                <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 700; color: #0f172a; font-size: 10pt;">Rp {{ number_format($receipt->invoice ? $receipt->invoice->subtotal : $receipt->subtotal, 0, ',', '.') }}</td>
+                                <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 700; color: #0f172a; font-size: 10pt;">{{ \App\Models\Setting::get('currency_symbol', 'Rp') }} {{ number_format($receipt->invoice ? $receipt->invoice->subtotal : $receipt->subtotal, 0, ',', '.') }}</td>
                             </tr>
                             @if($receipt->invoice && $receipt->invoice->discount > 0)
                             <tr>
                                 <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 600; font-size: 10pt;">Discount</td>
-                                <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 700; color: #ef4444; font-size: 10pt;">- Rp {{ number_format($receipt->invoice->discount, 0, ',', '.') }}</td>
+                                <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 700; color: #ef4444; font-size: 10pt;">- {{ \App\Models\Setting::get('currency_symbol', 'Rp') }} {{ number_format($receipt->invoice->discount, 0, ',', '.') }}</td>
                             </tr>
                             @endif
                             @if($receipt->invoice && $receipt->invoice->ppn > 0)
                             <tr>
                                 <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 600; font-size: 10pt;">PPN</td>
-                                <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 700; color: #0f172a; font-size: 10pt;">+ Rp {{ number_format($receipt->invoice->ppn, 0, ',', '.') }}</td>
+                                <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 700; color: #0f172a; font-size: 10pt;">+ {{ \App\Models\Setting::get('currency_symbol', 'Rp') }} {{ number_format($receipt->invoice->ppn, 0, ',', '.') }}</td>
                             </tr>
                             @endif
                             @if($receipt->invoice && $receipt->invoice->pph > 0)
                             <tr>
                                 <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; color: #64748b; font-weight: 600; font-size: 10pt;">PPh</td>
-                                <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 700; color: #0f172a; font-size: 10pt;">+ Rp {{ number_format($receipt->invoice->pph, 0, ',', '.') }}</td>
+                                <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 700; color: #0f172a; font-size: 10pt;">+ {{ \App\Models\Setting::get('currency_symbol', 'Rp') }} {{ number_format($receipt->invoice->pph, 0, ',', '.') }}</td>
                             </tr>
                             @endif
                             <tr>
                                 <td style="padding: 15px; background: #0f172a; border-top-left-radius: 12px; border-bottom-left-radius: 12px; color: rgba(255,255,255,0.8); font-size: 10.5pt; font-weight: 900; text-transform: uppercase;">TOTAL</td>
-                                <td style="padding: 15px; background: #0f172a; border-top-right-radius: 12px; border-bottom-right-radius: 12px; text-align: right; color: #ffffff; font-size: 15pt; font-weight: 900; white-space: nowrap;">Rp {{ number_format($receipt->total, 0, ',', '.') }}</td>
+                                <td style="padding: 15px; background: #0f172a; border-top-right-radius: 12px; border-bottom-right-radius: 12px; text-align: right; color: #ffffff; font-size: 15pt; font-weight: 900; white-space: nowrap;">{{ \App\Models\Setting::get('currency_symbol', 'Rp') }} {{ number_format($receipt->total, 0, ',', '.') }}</td>
                             </tr>
                         </table>
 

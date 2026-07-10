@@ -8,7 +8,6 @@
                     'finance' => app()->getLocale() == 'en' ? 'Finance' : 'Keuangan',
                     'localization' => app()->getLocale() == 'en' ? 'Regional' : 'Regional',
                     'notifications' => app()->getLocale() == 'en' ? 'Communications' : 'Komunikasi',
-                    'appearance' => app()->getLocale() == 'en' ? 'Branding' : 'Branding',
                     'security' => app()->getLocale() == 'en' ? 'Security' : 'Keamanan'
                 ];
             @endphp
@@ -27,7 +26,6 @@
                                 'finance' => 'wallet',
                                 'localization' => 'globe',
                                 'notifications' => 'mail',
-                                'appearance' => 'palette',
                                 'security' => 'shield-check',
                             }
                         }}" class="w-4 h-4"></i>
@@ -50,7 +48,6 @@
                                 'finance' => 'wallet',
                                 'localization' => 'globe',
                                 'notifications' => 'mail',
-                                'appearance' => 'palette',
                                 'security' => 'shield-check',
                             }
                         }}" class="w-5 h-5"></i>
@@ -66,7 +63,13 @@
                 <div class="space-y-4 relative z-10">
                     <div>
                         <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Last Backup' : 'Pencadangan Terakhir' }}</p>
-                        <p class="text-[13px] font-bold text-gold-400">{{ $lastBackup }}</p>
+                        <div class="flex items-center justify-between gap-2">
+                            <p class="text-[13px] font-bold text-gold-400">{{ $lastBackup }}</p>
+                            <button wire:click="runBackup" wire:loading.attr="disabled" class="text-[9px] font-black uppercase tracking-widest px-2.5 py-1 bg-gold-500 text-slate-950 rounded-lg hover:bg-gold-600 transition-all active:scale-95 flex items-center gap-1">
+                                <span wire:loading.remove wire:target="runBackup">{{ app()->getLocale() == 'en' ? 'Backup' : 'Cadangkan' }}</span>
+                                <span wire:loading wire:target="runBackup">{{ app()->getLocale() == 'en' ? 'Backing up...' : 'Mencadangkan...' }}</span>
+                            </button>
+                        </div>
                     </div>
                     <div>
                         <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Server Health' : 'Kesehatan Server' }}</p>
@@ -156,70 +159,26 @@
                                 <input type="text" wire:model.live="settings.currency_symbol" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm">
                             </div>
                             <div class="space-y-3">
-                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Default VAT / PPN (%)' : 'PPN Default (%)' }}</label>
-                                <input type="number" wire:model.live="settings.default_tax_percent" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm">
+                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Invoice Starting Number' : 'Nomor Faktur Mulai' }}</label>
+                                <input type="number" wire:model.live="settings.invoice_start_number" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm">
                             </div>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div class="space-y-3">
-                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Invoice Sequence Prefix' : 'Awalan Nomor Faktur' }}</label>
-                                <input type="text" wire:model.live="settings.invoice_prefix" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm">
+                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">PPN Default (%)</label>
+                                <input type="number" step="0.01" wire:model.live="settings.ppn_percent" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm" placeholder="0">
                             </div>
                             <div class="space-y-3">
-                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Payment Terms (Days)' : 'Syarat Pembayaran (Hari)' }}</label>
-                                <select wire:model.live="settings.payment_terms_days" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm">
-                                    <option value="7">Net 7</option>
-                                    <option value="15">Net 15</option>
-                                    <option value="30">Net 30</option>
-                                </select>
+                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">PPh Default (%)</label>
+                                <input type="number" step="0.01" wire:model.live="settings.pph_percent" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm" placeholder="0">
                             </div>
                         </div>
-                    </div>
-                </div>
-                @endif
-
-                <!-- Appearance Tab -->
-                @if($activeTab === 'appearance')
-                <div x-data x-init="lucide.createIcons()" x-transition:enter="fade-in">
-                    <div class="flex items-center gap-4 mb-10 pb-6 border-b border-slate-100">
-                        <div class="w-12 h-12 rounded-xl bg-rose-50 flex items-center justify-center text-rose-600">
-                            <i data-lucide="palette" class="w-6 h-6"></i>
-                        </div>
-                        <div>
-                            <h2 class="text-xl font-black text-slate-900 uppercase tracking-tight">{{ app()->getLocale() == 'en' ? 'Branding & Visuals' : 'Branding & Visual' }}</h2>
-                            <p class="text-xs text-slate-500 font-medium">{{ app()->getLocale() == 'en' ? 'Customize the look of your documents.' : 'Sesuaikan tampilan dokumen Anda.' }}</p>
-                        </div>
-                    </div>
-
-                    <div class="space-y-10">
-                        <div class="space-y-4">
-                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Invoice PDF Logo' : 'Logo PDF Faktur' }}</label>
-                            <div class="flex items-start gap-8">
-                                <div class="w-32 h-32 rounded-2xl bg-slate-50 border-2 border-dashed border-slate-200 flex items-center justify-center overflow-hidden group relative">
-                                    @if ($companyLogo)
-                                        <img src="{{ $companyLogo->temporaryUrl() }}" class="w-full h-full object-contain">
-                                    @elseif(isset($settings['invoice_logo']))
-                                        <img src="{{ Storage::url($settings['invoice_logo']) }}" class="w-full h-full object-contain">
-                                    @else
-                                        <i data-lucide="image" class="w-8 h-8 text-slate-300"></i>
-                                    @endif
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-3">
+                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Payment Terms' : 'Syarat Pembayaran' }}</label>
+                                <div class="px-5 py-4 bg-slate-100 border-transparent rounded-2xl font-bold text-slate-500 text-sm">
+                                    {{ app()->getLocale() == 'en' ? 'Managed per-invoice level' : 'Dikelola langsung pada masing-masing invoice' }}
                                 </div>
-                                <div class="flex-1 space-y-4">
-                                    <p class="text-xs text-slate-500 leading-relaxed">{{ app()->getLocale() == 'en' ? 'Upload a high-resolution transparent PNG or SVG for your invoices. Recommended size: 400x120px.' : 'Unggah file PNG transparan atau SVG resolusi tinggi untuk faktur Anda. Ukuran yang disarankan: 400x120px.' }}</p>
-                                    <input type="file" wire:model="companyLogo" class="hidden" id="logo-upload">
-                                    <label for="logo-upload" class="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl text-[11px] font-black uppercase tracking-widest cursor-pointer hover:bg-gold-600 hover:text-slate-950 transition-all">
-                                        <i data-lucide="upload" class="w-4 h-4"></i>
-                                        {{ app()->getLocale() == 'en' ? 'Choose File' : 'Pilih File' }}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="pt-8 border-t border-slate-100">
-                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest block mb-4">{{ app()->getLocale() == 'en' ? 'Primary Brand Color' : 'Warna Merek Utama' }}</label>
-                            <div class="flex items-center gap-4">
-                                <input type="color" wire:model.live="settings.primary_color" class="w-16 h-16 rounded-xl border-none p-1 bg-white shadow-sm cursor-pointer">
-                                <input type="text" wire:model.live="settings.primary_color" class="px-5 py-3 bg-slate-50 border-transparent rounded-xl font-mono font-bold text-slate-700">
                             </div>
                         </div>
                     </div>
@@ -283,30 +242,15 @@
                         </div>
                     </div>
 
-                     <div class="space-y-10">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div class="space-y-3">
-                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'SMTP Gateway Host' : 'Host Gateway SMTP' }}</label>
-                                <input type="text" wire:model.live="settings.smtp_host" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm">
-                            </div>
-                            <div class="space-y-3">
-                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'SMTP Port' : 'Port SMTP' }}</label>
-                                <input type="text" wire:model.live="settings.smtp_port" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm">
-                            </div>
+                     <div class="py-12 text-center space-y-6">
+                        <div class="w-20 h-20 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto shadow-inner">
+                            <i data-lucide="shield-alert" class="w-10 h-10"></i>
                         </div>
-                        
-                        <div class="space-y-6 pt-8 border-t border-slate-100">
-                            <h3 class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Automated Intelligence Templates' : 'Templat Kecerdasan Otomatis' }}</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div class="space-y-3">
-                                    <label class="text-[11px] font-black text-slate-500 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Email Opening Salutation' : 'Salam Pembuka Email' }}</label>
-                                    <textarea wire:model.live="settings.email_template_header" rows="3" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm"></textarea>
-                                </div>
-                                <div class="space-y-3">
-                                    <label class="text-[11px] font-black text-slate-500 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Email Closure Signature' : 'Tanda Tangan Penutup Email' }}</label>
-                                    <textarea wire:model.live="settings.email_template_footer" rows="3" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm"></textarea>
-                                </div>
-                            </div>
+                        <div class="max-w-md mx-auto space-y-2">
+                            <h3 class="text-lg font-bold text-slate-900 font-outfit">{{ app()->getLocale() == 'en' ? 'Feature Disabled' : 'Fitur Belum Diaktifkan' }}</h3>
+                            <p class="text-sm text-slate-500 leading-relaxed font-semibold">
+                                {{ app()->getLocale() == 'en' ? 'Communications Hub is currently deactivated.' : 'Fitur Pusat Komunikasi saat ini belum diaktifkan.' }}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -332,24 +276,40 @@
                                 <span class="px-2 py-0.5 bg-emerald-50 text-emerald-600 text-[9px] font-black rounded uppercase">{{ app()->getLocale() == 'en' ? 'Encrypted' : 'Terenkripsi' }}</span>
                             </div>
                             <div class="space-y-4">
+                                @forelse($logs as $log)
+                                @php
+                                    $icon = match($log->action) {
+                                        'login' => 'key',
+                                        'created_invoice', 'updated_invoice', 'deleted_invoice' => 'file-text',
+                                        'updated_settings' => 'settings',
+                                        'system_backup' => 'database',
+                                        default => 'activity'
+                                    };
+                                    $bgClass = match($log->action) {
+                                        'login' => 'bg-gold-50 text-gold-600',
+                                        'created_invoice', 'updated_invoice', 'deleted_invoice' => 'bg-blue-50 text-blue-600',
+                                        'updated_settings' => 'bg-indigo-50 text-indigo-600',
+                                        'system_backup' => 'bg-emerald-50 text-emerald-600',
+                                        default => 'bg-slate-50 text-slate-600'
+                                    };
+                                @endphp
                                 <div class="flex items-center justify-between py-2 border-b border-slate-200/50">
                                     <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 rounded-lg bg-gold-50 flex items-center justify-center text-gold-600">
-                                            <i data-lucide="key" class="w-4 h-4"></i>
+                                        <div class="w-8 h-8 rounded-lg {{ $bgClass }} flex items-center justify-center shrink-0">
+                                            <i data-lucide="{{ $icon }}" class="w-4 h-4"></i>
                                         </div>
-                                        <span class="text-[12px] font-bold text-slate-700">{{ app()->getLocale() == 'en' ? 'Owner Login Detected' : 'Login Owner Terdeteksi' }}</span>
-                                    </div>
-                                    <span class="text-[10px] text-slate-400 font-bold">{{ app()->getLocale() == 'en' ? '12 mins ago' : '12 menit yang lalu' }}</span>
-                                </div>
-                                <div class="flex items-center justify-between py-2 border-b border-slate-200/50">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
-                                            <i data-lucide="database" class="w-4 h-4"></i>
+                                        <div>
+                                            <span class="text-[12px] font-bold text-slate-700 block text-left">{{ $log->description }}</span>
+                                            <span class="text-[9px] text-slate-400 font-medium block text-left">By: {{ optional($log->user)->name ?? 'System' }}</span>
                                         </div>
-                                        <span class="text-[12px] font-bold text-slate-700">{{ app()->getLocale() == 'en' ? 'Automated SQL Backup' : 'Pencadangan SQL Otomatis' }}</span>
                                     </div>
-                                    <span class="text-[10px] text-slate-400 font-bold">{{ app()->getLocale() == 'en' ? '2 hours ago' : '2 jam yang lalu' }}</span>
+                                    <span class="text-[10px] text-slate-400 font-bold shrink-0">{{ $log->created_at->diffForHumans() }}</span>
                                 </div>
+                                @empty
+                                <div class="text-center py-6 text-xs text-slate-400 font-bold">
+                                    {{ app()->getLocale() == 'en' ? 'No recent activities recorded.' : 'Tidak ada aktivitas terbaru yang tercatat.' }}
+                                </div>
+                                @endforelse
                             </div>
                         </div>
                     </div>
@@ -366,7 +326,13 @@
         <div class="space-y-4 relative z-10">
             <div>
                 <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Last Backup' : 'Pencadangan Terakhir' }}</p>
-                <p class="text-[13px] font-bold text-gold-400">{{ $lastBackup }}</p>
+                <div class="flex items-center justify-between gap-2">
+                    <p class="text-[13px] font-bold text-gold-400">{{ $lastBackup }}</p>
+                    <button wire:click="runBackup" wire:loading.attr="disabled" class="text-[9px] font-black uppercase tracking-widest px-2.5 py-1 bg-gold-500 text-slate-950 rounded-lg hover:bg-gold-600 transition-all active:scale-95 flex items-center gap-1">
+                        <span wire:loading.remove wire:target="runBackup">{{ app()->getLocale() == 'en' ? 'Backup' : 'Cadangkan' }}</span>
+                        <span wire:loading wire:target="runBackup">{{ app()->getLocale() == 'en' ? 'Backing up...' : 'Mencadangkan...' }}</span>
+                    </button>
+                </div>
             </div>
             <div>
                 <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Server Health' : 'Kesehatan Server' }}</p>

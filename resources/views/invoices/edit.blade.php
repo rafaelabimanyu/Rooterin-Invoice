@@ -387,7 +387,9 @@
                     this.total = Math.round((this.dpp + this.ppnNominal + this.pphNominal) * 100) / 100;
                 },
                 formatCurrency(value) {
-                    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value);
+                    const symbol = '{{ \App\Models\Setting::get('currency_symbol', 'Rp') }}';
+                    const formatted = new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0 }).format(value);
+                    return `${symbol} ${formatted}`;
                 },
                 handleFiles(event) {
                     const fileList = event.target.files;

@@ -90,9 +90,9 @@
                 <div class="w-full md:w-auto text-left md:text-right space-y-2">
                     <h2 class="text-xs font-bold text-slate-400 uppercase tracking-[0.3em] mb-4 md:mb-6">{{ app()->getLocale() == 'en' ? 'Payment Receipt' : 'Kuitansi Pembayaran' }}</h2>
                     <p class="text-2xl font-black text-slate-900 font-outfit">{{ $receipt->receipt_number }}</p>
-                    <p class="text-xs font-bold text-slate-500">{{ app()->getLocale() == 'en' ? 'Issued' : 'Diterbitkan' }}: {{ $receipt->tanggal_receipt->format('M d, Y') }}</p>
+                    <p class="text-xs font-bold text-slate-500">{{ app()->getLocale() == 'en' ? 'Issued' : 'Diterbitkan' }}: {{ $receipt->tanggal_receipt->format(\App\Models\Setting::get('date_format', 'd M Y')) }}</p>
                     <div class="inline-block mt-4 px-3 py-1 bg-rose-50 text-rose-600 border border-rose-100 rounded text-[10px] font-bold uppercase tracking-widest">
-                        {{ app()->getLocale() == 'en' ? 'Expiry' : 'Kedaluwarsa' }}: {{ $receipt->expiry_date->format('M d, Y') }}
+                        {{ app()->getLocale() == 'en' ? 'Expiry' : 'Kedaluwarsa' }}: {{ $receipt->expiry_date->format(\App\Models\Setting::get('date_format', 'd M Y')) }}
                     </div>
                 </div>
             </div>
@@ -126,7 +126,7 @@
             <div class="w-full md:w-auto text-left md:text-right">
                 <div class="p-6 md:p-8 bg-white rounded-xl border border-slate-200 shadow-sm w-full">
                     <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Amount Paid' : 'Jumlah Dibayar' }}</p>
-                    <p class="text-2xl md:text-3xl font-black text-slate-900 font-outfit">Rp {{ number_format($receipt->total, 0, ',', '.') }}</p>
+                    <p class="text-2xl md:text-3xl font-black text-slate-900 font-outfit">{{ \App\Models\Setting::get('currency_symbol', 'Rp') }} {{ number_format($receipt->total, 0, ',', '.') }}</p>
                 </div>
             </div>
         </div>
@@ -150,8 +150,8 @@
                                 <p class="text-[13px] font-bold text-slate-900">{{ $item->deskripsi }}</p>
                             </td>
                             <td class="py-6 text-center text-[13px] font-medium text-slate-600">{{ number_format($item->qty, 0) }}</td>
-                            <td class="py-6 text-right text-[13px] font-medium text-slate-600">Rp {{ number_format($item->harga, 0, ',', '.') }}</td>
-                            <td class="py-6 text-right px-16 text-[13px] font-black text-slate-900">Rp {{ number_format($item->total, 0, ',', '.') }}</td>
+                            <td class="py-6 text-right text-[13px] font-medium text-slate-600">{{ \App\Models\Setting::get('currency_symbol', 'Rp') }} {{ number_format($item->harga, 0, ',', '.') }}</td>
+                            <td class="py-6 text-right px-16 text-[13px] font-black text-slate-900">{{ \App\Models\Setting::get('currency_symbol', 'Rp') }} {{ number_format($item->total, 0, ',', '.') }}</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -168,12 +168,12 @@
                         <div class="w-full">
                             <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1.5">{{ app()->getLocale() == 'en' ? 'Quantity & Rate' : 'Jumlah & Harga' }}</p>
                             <p class="text-xs font-medium text-slate-600">
-                                {{ number_format($item->qty, 0) }} Unit &times; Rp {{ number_format($item->harga, 0, ',', '.') }}
+                                {{ number_format($item->qty, 0) }} Unit &times; {{ \App\Models\Setting::get('currency_symbol', 'Rp') }} {{ number_format($item->harga, 0, ',', '.') }}
                             </p>
                         </div>
                         <div class="w-full bg-slate-50 p-4 rounded-xl border border-slate-100">
                             <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Subtotal</p>
-                            <p class="text-base font-black text-slate-900">Rp {{ number_format($item->total, 0, ',', '.') }}</p>
+                            <p class="text-base font-black text-slate-900">{{ \App\Models\Setting::get('currency_symbol', 'Rp') }} {{ number_format($item->total, 0, ',', '.') }}</p>
                         </div>
                     </div>
                 @endforeach
@@ -200,29 +200,29 @@
                 <div class="w-full md:w-80 space-y-4">
                     <div class="flex justify-between items-center text-sm">
                         <span class="text-slate-500 font-medium">Subtotal</span>
-                        <span class="font-bold text-slate-900">Rp {{ number_format($receipt->subtotal, 0, ',', '.') }}</span>
+                        <span class="font-bold text-slate-900">{{ \App\Models\Setting::get('currency_symbol', 'Rp') }} {{ number_format($receipt->subtotal, 0, ',', '.') }}</span>
                     </div>
                     @if($receipt->invoice && $receipt->invoice->discount > 0)
                     <div class="flex justify-between items-center text-sm">
                         <span class="text-slate-500 font-medium">{{ app()->getLocale() == 'en' ? 'Discount' : 'Diskon' }} ({{ $receipt->discount_percent }}%)</span>
-                        <span class="font-bold text-rose-500">- Rp {{ number_format($receipt->invoice->discount, 0, ',', '.') }}</span>
+                        <span class="font-bold text-rose-500">- {{ \App\Models\Setting::get('currency_symbol', 'Rp') }} {{ number_format($receipt->invoice->discount, 0, ',', '.') }}</span>
                     </div>
                     @endif
                     @if($receipt->invoice && $receipt->invoice->ppn > 0)
                     <div class="flex justify-between items-center text-sm">
                         <span class="text-slate-500 font-medium">PPN ({{ $receipt->tax_percent }}%)</span>
-                        <span class="font-bold text-slate-900">+ Rp {{ number_format($receipt->invoice->ppn, 0, ',', '.') }}</span>
+                        <span class="font-bold text-slate-900">+ {{ \App\Models\Setting::get('currency_symbol', 'Rp') }} {{ number_format($receipt->invoice->ppn, 0, ',', '.') }}</span>
                     </div>
                     @endif
                     @if($receipt->invoice && $receipt->invoice->pph > 0)
                     <div class="flex justify-between items-center text-sm">
                         <span class="text-slate-500 font-medium">PPh ({{ $receipt->invoice->pph_percent }}%)</span>
-                        <span class="font-bold text-slate-900">+ Rp {{ number_format($receipt->invoice->pph, 0, ',', '.') }}</span>
+                        <span class="font-bold text-slate-900">+ {{ \App\Models\Setting::get('currency_symbol', 'Rp') }} {{ number_format($receipt->invoice->pph, 0, ',', '.') }}</span>
                     </div>
                     @endif
                     <div class="pt-6 border-t border-slate-200 flex justify-between items-center">
                         <span class="text-xs md:text-sm font-black text-slate-900 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Grand Total' : 'Total Keseluruhan' }}</span>
-                        <span class="text-xl md:text-3xl font-black text-gold-600 font-outfit">Rp {{ number_format($receipt->total, 0, ',', '.') }}</span>
+                        <span class="text-xl md:text-3xl font-black text-gold-600 font-outfit">{{ \App\Models\Setting::get('currency_symbol', 'Rp') }} {{ number_format($receipt->total, 0, ',', '.') }}</span>
                     </div>
                 </div>
             </div>

@@ -17,13 +17,16 @@ class InvoiceService
             ->orderBy('id', 'desc')
             ->first();
 
-        $nextNumber = 5003;
+        $startNumber = (int)\App\Models\Setting::get('invoice_start_number', 5000);
+        $nextNumber = $startNumber;
         $currentYear = date('Y');
 
         if ($lastInvoice) {
             if (preg_match('/^INV-(\d+)-(\d+)$/', $lastInvoice->invoice_number, $matches)) {
                 $lastNumber = (int)$matches[1];
-                $nextNumber = $lastNumber + 1;
+                if ($lastNumber >= $startNumber) {
+                    $nextNumber = $lastNumber + 1;
+                }
             }
         }
 
@@ -32,7 +35,7 @@ class InvoiceService
 
     /**
      * Calculate invoice total based on the exact formula:
-     * Total = (Subtotal - Discount) + PPN - PPh
+     * Total = (Subtotal - Discount) + PPN + PPh
      */
     public function calculateTotal(float $subtotal, float $discount, float $ppn, float $pph): float
     {

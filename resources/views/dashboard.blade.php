@@ -52,6 +52,8 @@
             </div>
         @endif
 
+        <livewire:dashboard-morning-briefing />
+
         <livewire:dashboard.financial-advisory lazy />
 
         @include('dashboard.partials.metric-cards')

@@ -232,88 +232,11 @@ Strictly match the user's current application language interface. Since the acti
             \Illuminate\Support\Facades\Log::error("AiChatController Error (switching to local fallback): " . $e->getMessage(), ['exception' => $e]);
             
             $userMessage = $request->input('message');
-            $userMsgLower = strtolower($userMessage ?? '');
-            $reply = "";
-            $navigateTag = "";
-
-            if (str_contains($userMsgLower, 'halaman') || str_contains($userMsgLower, 'menu') || str_contains($userMsgLower, 'navigasi') || str_contains($userMsgLower, 'fitur') || str_contains($userMsgLower, 'role') || str_contains($userMsgLower, 'page')) {
-                if ($locale === 'en') {
-                    $reply = "The J&J GROUP Invoice system provides 12 main pages/menu sections for the Admin and Owner roles:\n" .
-                             "1. **Dashboard** (Main Command Center)\n" .
-                             "2. **AI Assistant** (This dedicated chat assistant)\n" .
-                             "3. **Clients** (Client data management)\n" .
-                             "4. **Receipts** (Receipt records)\n" .
-                             "5. **Invoices** (Invoice management and AI Copywriter)\n" .
-                             "6. **Chronos Calendar** (Operational calendar)\n" .
-                             "7. **Owner KPI** (Operational excellence statistics)\n" .
-                             "8. **Reports** (Financial analytical reports)\n" .
-                             "9. **Team Management** (Team access control configuration)\n" .
-                             "10. **Settings** (System settings)\n" .
-                             "11. **Security Center** (Encryption security hub)\n" .
-                             "12. **J&J GROUP Guide** (System SOP guide)\n\n" .
-                             "You can navigate to any of these features via the sidebar panel.";
-                } else {
-                    $reply = "Sistem J&J GROUP Invoice menyediakan 12 halaman/menu utama untuk role Admin dan Owner:\n" .
-                             "1. **Dashboard** (Command Center utama)\n" .
-                             "2. **AI Assistant** (Halaman khusus chat ini)\n" .
-                             "3. **Clients** (Manajemen data klien)\n" .
-                             "4. **Receipts** (Pencatatan kwitansi)\n" .
-                             "5. **Invoices** (Manajemen tagihan dan AI Copywriter)\n" .
-                             "6. **Chronos Calendar** (Kalender operasional)\n" .
-                             "7. **Owner KPI** (Statistik keunggulan operasional)\n" .
-                             "8. **Reports** (Laporan analitik keuangan)\n" .
-                             "9. **Team Management** (Pengaturan hak akses tim)\n" .
-                             "10. **Settings** (Pengaturan sistem)\n" .
-                             "11. **Security Center** (Pusat keamanan enkripsi)\n" .
-                             "12. **J&J GROUP Guide** (Panduan SOP sistem)\n\n" .
-                             "Anda dapat mengakses seluruh fitur ini langsung melalui menu navigasi di sidebar kiri.";
-                }
-            } elseif (str_contains($userMsgLower, 'klien') || str_contains($userMsgLower, 'client')) {
-                $reply = "Saat ini sistem mencatat Anda memiliki **{$totalClients} klien aktif**. Anda dapat melihat dan mengelola detail data klien secara lengkap di halaman Klien. Sebagai analisis bisnis, menjaga hubungan baik dengan klien aktif sangat penting untuk repeat order.";
-                $navigateTag = " [NAVIGATE: clients.index]";
-            } elseif (str_contains($userMsgLower, 'lunas') || str_contains($userMsgLower, 'paid')) {
-                $reply = "Total nominal tagihan yang telah lunas (paid) adalah **Rp " . number_format($paidTotal, 0, ',', '.') . "** dari total **{$paidCount} invoice**. Selamat! Ini menunjukkan likuiditas yang baik. Tetap pertahankan proses collection yang efisien.";
-                $navigateTag = " [NAVIGATE: invoices.index]";
-            } elseif (str_contains($userMsgLower, 'menunggak') || str_contains($userMsgLower, 'overdue') || str_contains($userMsgLower, 'jatuh tempo') || str_contains($userMsgLower, 'tunggak')) {
-                $replyList = [];
-                foreach ($overdueInvoices as $inv) {
-                    $replyList[] = "* **Invoice #{$inv->invoice_number}** oleh {$inv->client->nama_client} - Rp " . number_format($inv->total, 0, ',', '.') . " (Jatuh tempo: " . $inv->due_date->format('d M Y') . ")";
-                }
-                $reply = "Berikut adalah daftar invoice yang saat ini berstatus menunggak (overdue):\n\n" . (count($replyList) > 0 ? implode("\n", $replyList) : "Tidak ada invoice menunggak saat ini.") . "\n\n**Rekomendasi Tindakan:** Hubungi klien bersangkutan segera atau gunakan fitur Draf Email Penagihan AI dengan nada *tegas* atau *urgent* untuk mengamankan pembayaran hari ini.";
-                $navigateTag = " [NAVIGATE: invoices.index]";
-            } elseif (str_contains($userMsgLower, 'buat invoice') || str_contains($userMsgLower, 'tambah invoice') || str_contains($userMsgLower, 'create invoice')) {
-                $reply = "Untuk membuat invoice baru, Anda dapat langsung mengisi form pembuatan invoice pada halaman yang telah disediakan. Pastikan detail termin pembayaran ditulis dengan jelas.";
-                $navigateTag = " [NAVIGATE: invoices.create]";
-            } elseif (str_contains($userMsgLower, 'tambah klien') || str_contains($userMsgLower, 'buat klien') || str_contains($userMsgLower, 'create client')) {
-                $reply = "Untuk menambahkan klien baru ke dalam sistem, silakan isi form tambah klien pada halaman manajemen klien. Pastikan email dan kontak klien valid untuk kelancaran penagihan.";
-                $navigateTag = " [NAVIGATE: clients.create]";
-            } elseif (str_contains($userMsgLower, 'kuitansi') || str_contains($userMsgLower, 'receipt') || str_contains($userMsgLower, 'tanda terima')) {
-                $reply = "Anda dapat melihat daftar kuitansi atau membuat kuitansi baru melalui menu kuitansi.";
-                if (str_contains($userMsgLower, 'buat') || str_contains($userMsgLower, 'tambah')) {
-                    $navigateTag = " [NAVIGATE: receipts.create]";
-                } else {
-                    $navigateTag = " [NAVIGATE: receipts.index]";
-                }
-            } elseif (str_contains($userMsgLower, 'pengaturan') || str_contains($userMsgLower, 'setting')) {
-                $reply = "Anda dapat mengatur data profil perusahaan, integrasi pihak ketiga, dan pengaturan umum sistem melalui halaman Pengaturan.";
-                $navigateTag = " [NAVIGATE: settings.index]";
-            } elseif (str_contains($userMsgLower, 'profil') || str_contains($userMsgLower, 'akun') || str_contains($userMsgLower, 'profile')) {
-                $reply = "Untuk memperbarui detail akun Anda seperti nama, email, dan password, silakan buka halaman Profil Pengguna.";
-                $navigateTag = " [NAVIGATE: profile.edit]";
-            } elseif (str_contains($userMsgLower, 'dashboard')) {
-                $reply = "Di halaman dashboard, Anda dapat memantau grafik penjualan bulanan, total tagihan outstanding, ringkasan aktivitas, serta analisis cashflow secara visual.";
-                $navigateTag = " [NAVIGATE: dashboard]";
-            } elseif (str_contains($userMsgLower, 'laporan') || str_contains($userMsgLower, 'report')) {
-                $reply = "Halaman Laporan menyajikan visualisasi data yang mendalam mengenai pendapatan, piutang, dan statistik bisnis bulanan untuk mendukung keputusan strategis.";
-                $navigateTag = " [NAVIGATE: reports.index]";
-            } elseif (str_contains($userMsgLower, 'kalender') || str_contains($userMsgLower, 'chronos')) {
-                $reply = "Kalender Chronos mempermudah Anda dalam memantau timeline invoice berdasarkan tanggal jatuh temponya secara interaktif.";
-                $navigateTag = " [NAVIGATE: chronos.index]";
-            } else {
-                $reply = "Halo! Saya adalah Senior Financial Consultant Virtual Anda. Berdasarkan ringkasan terkini:\n* **Klien Aktif:** {$totalClients}\n* **Invoice Lunas:** {$paidCount} (Rp " . number_format($paidTotal, 0, ',', '.') . ")\n* **Invoice Pending:** {$pendingCount} (Rp " . number_format($pendingTotal, 0, ',', '.') . ")\n\nAda hal spesifik mengenai analisis kas atau invoice overdue yang ingin Anda diskusikan?";
+            $result = app(\App\Services\AiKnowledgeService::class)->getAnswer($userMessage, $locale);
+            $reply = $result['text'];
+            if (!empty($result['routeName'])) {
+                $reply .= " [NAVIGATE: " . $result['routeName'] . "]";
             }
-
-            $reply .= $navigateTag;
 
             // Save to database
             \App\Models\AiChatHistory::create([

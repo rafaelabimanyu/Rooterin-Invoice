@@ -9,3 +9,11 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('chronos:check-due-dates')->daily();
+
+Schedule::call(function () {
+    app(\App\Services\AutoReportService::class)->generateDailyReport();
+})->dailyAt('08:00');
+
+Schedule::call(function () {
+    app(\App\Services\AutoReportService::class)->checkUrgentOverdueInvoices();
+})->hourly();

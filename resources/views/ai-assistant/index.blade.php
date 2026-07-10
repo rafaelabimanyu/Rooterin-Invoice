@@ -5,6 +5,14 @@
 
     <!-- Markdown Custom Styling for Chat Bubbles -->
     <style>
+        /* Enable native text selection */
+        .select-text {
+            user-select: text !important;
+            -webkit-user-select: text !important;
+            -moz-user-select: text !important;
+            -ms-user-select: text !important;
+        }
+
         .chat-bubble-content p { margin-bottom: 0.75rem; }
         .chat-bubble-content p:last-child { margin-bottom: 0; }
         .chat-bubble-content ul { list-style-type: disc; margin-left: 1.25rem; margin-bottom: 0.75rem; }
@@ -398,14 +406,19 @@
 
                 <!-- Actual Messages -->
                 <template x-for="(msg, idx) in messages" :key="idx">
-                    <div class="flex flex-col transition-all duration-300" :class="msg.sender === 'user' ? 'items-end' : 'items-start'">
+                    <div class="flex flex-col transition-all duration-300 select-text" :class="msg.sender === 'user' ? 'items-end' : 'items-start'">
+                        <!-- Sender Label -->
+                        <span class="text-[9px] font-bold text-slate-400 mb-1 uppercase tracking-wider select-text"
+                              x-text="msg.sender === 'user' ? '{{ app()->getLocale() == 'en' ? 'You' : 'Anda' }}' : 'Financial Advisor'">
+                        </span>
+
                         <!-- Message Bubble -->
-                        <div class="max-w-[85%] lg:max-w-[75%] px-4 lg:px-5 py-3 lg:py-4 rounded-[1.25rem] lg:rounded-[1.75rem] text-xs lg:text-sm leading-relaxed" 
+                        <div class="max-w-[85%] lg:max-w-[75%] px-4 lg:px-5 py-3 lg:py-4 rounded-[1.25rem] lg:rounded-[1.75rem] text-xs lg:text-sm leading-relaxed select-text" 
                             :class="msg.sender === 'user' 
                                 ? 'bg-gold-500 text-slate-950 rounded-tr-none shadow-md shadow-gold-500/20 font-bold' 
                                 : 'bg-white border border-slate-200 text-slate-800 rounded-tl-none shadow-sm'"
                         >
-                            <div class="chat-bubble-content" x-html="renderMarkdown(msg.text)"></div>
+                            <div class="chat-bubble-content select-text" x-html="renderMarkdown(msg.text)"></div>
                         </div>
 
                          <!-- Copy to Clipboard & Action Bar (AI responses only) -->

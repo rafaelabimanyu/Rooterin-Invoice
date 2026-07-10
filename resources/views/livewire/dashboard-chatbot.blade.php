@@ -1,4 +1,12 @@
 <style>
+    /* Enable native text selection */
+    .select-text {
+        user-select: text !important;
+        -webkit-user-select: text !important;
+        -moz-user-select: text !important;
+        -ms-user-select: text !important;
+    }
+
     /* Pulse effect for the floating chatbot trigger button */
     .chatbot-trigger-btn {
         box-shadow: 0 8px 32px rgba(212, 175, 55, 0.4);
@@ -144,12 +152,17 @@
                         </div>
                     @endif
 
-                    <div class="flex flex-col {{ $msg['sender'] === 'user' ? 'items-end' : 'items-start' }} max-w-[85%] w-fit">
+                    <div class="flex flex-col {{ $msg['sender'] === 'user' ? 'items-end' : 'items-start' }} max-w-[85%] w-fit select-text">
+                        <!-- Sender Label -->
+                        <span class="text-[9px] font-bold text-slate-400 mb-1 uppercase tracking-wider select-text">
+                            {{ $msg['sender'] === 'user' ? (app()->getLocale() == 'en' ? 'You' : 'Anda') : 'Financial Advisor' }}
+                        </span>
+                        
                         <!-- Message Bubble -->
                         <div 
-                            class="px-4 py-3 rounded-2xl text-xs leading-relaxed {{ $msg['sender'] === 'user' ? 'bg-gold-500 text-slate-950 rounded-tr-none shadow-md shadow-gold-500/20 font-bold' : 'bg-white text-slate-800 border border-slate-200 rounded-tl-none shadow-sm font-medium' }}"
+                            class="px-4 py-3 rounded-2xl text-xs leading-relaxed select-text {{ $msg['sender'] === 'user' ? 'bg-gold-500 text-slate-950 rounded-tr-none shadow-md shadow-gold-500/20 font-bold' : 'bg-white text-slate-800 border border-slate-200 rounded-tl-none shadow-sm font-medium' }}"
                         >
-                            <div class="chatbot-content-html">
+                            <div class="chatbot-content-html select-text">
                                 {!! $msg['text'] !!}
                             </div>
                         </div>

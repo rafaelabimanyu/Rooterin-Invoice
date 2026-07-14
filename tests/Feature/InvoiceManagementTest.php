@@ -197,7 +197,7 @@ class InvoiceManagementTest extends TestCase
 
         $response->assertRedirect(route('invoices.index'));
         $response->assertSessionHas('success');
-        $this->assertDatabaseMissing('invoices', ['id' => $invoice->id]);
+        $this->assertSoftDeleted('invoices', ['id' => $invoice->id]);
     }
 
     public function test_cannot_delete_invoice_with_associated_receipt(): void
@@ -238,6 +238,54 @@ class InvoiceManagementTest extends TestCase
         $response->assertRedirect(route('invoices.index'));
         $response->assertSessionHas('error');
         $this->assertDatabaseHas('invoices', ['id' => $invoice->id]);
+    }
+
+    public function test_invoice_and_receipt_show_pages_display_digital_issue_details(): void
+    {
+        $user = User::factory()->create(['name' => 'John Doe Creator']);
+        $businessUnit = BusinessUnit::create([
+            'name' => 'Jaya-Website',
+            'slug' => 'jaya-website',
+        ]);
+        $client = Client::create([
+            'kode_client' => 'CL-999',
+            'nama_client' => 'John Client',
+            'status' => 'aktif',
+        ]);
+
+        $invoice = Invoice::create([
+            'invoice_number' => 'INV-9999-' . date('Y'),
+            'business_unit_id' => $businessUnit->id,
+            'client_id' => $client->id,
+            'status' => 'paid',
+            'subtotal' => 100000,
+            'discount' => 0,
+            'ppn' => 0,
+            'pph' => 0,
+            'total' => 100000,
+            'created_by' => $user->id,
+        ]);
+
+        $receipt = \App\Models\Receipt::create([
+            'receipt_number' => 'KWT-9999-' . date('Y'),
+            'invoice_id' => $invoice->id,
+            'amount_received' => 100000,
+            'payment_date' => now(),
+        ]);
+
+        // 1. Check Invoice Show Page
+        $response = $this->actingAs($user)->get(route('invoices.show', $invoice));
+        $response->assertStatus(200);
+        $response->assertSee('Diterbitkan Secara Digital Oleh');
+        $response->assertSee('John Doe Creator');
+        $response->assertSee($invoice->tanggal_invoice->format(\App\Models\Setting::get('date_format', 'd M Y')));
+
+        // 2. Check Receipt Show Page
+        $response = $this->actingAs($user)->get(route('receipts.show', $receipt));
+        $response->assertStatus(200);
+        $response->assertSee('Diterbitkan Secara Digital Oleh');
+        $response->assertSee('John Doe Creator');
+        $response->assertSee($receipt->tanggal_receipt->format(\App\Models\Setting::get('date_format', 'd M Y')));
     }
 }
 

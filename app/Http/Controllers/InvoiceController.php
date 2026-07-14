@@ -374,31 +374,19 @@ class InvoiceController extends Controller
         }
 
         try {
-            DB::beginTransaction();
-
-            // Clean up physical attachment files from storage
-            foreach ($invoice->attachments as $attachment) {
-                if ($attachment->file_path) {
-                    \Illuminate\Support\Facades\Storage::disk('public')->delete($attachment->file_path);
-                }
-            }
-
             $num = $invoice->invoice_number;
             $invoice->delete();
 
-            DB::commit();
-
             // Log activity for audit trail
-            \App\Models\ActivityLog::log('deleted_invoice', "Deleted invoice #{$num}");
+            \App\Models\ActivityLog::log('deleted_invoice', "Soft deleted invoice #{$num}");
 
             return redirect()->route('invoices.index')->with('success', app()->getLocale() == 'en' 
-                ? 'Invoice deleted successfully.' 
-                : 'Invoice berhasil dihapus.');
+                ? 'Invoice moved to trash successfully.' 
+                : 'Invoice berhasil dipindahkan ke tempat sampah.');
         } catch (\Exception $e) {
-            DB::rollBack();
             return redirect()->route('invoices.index')->with('error', app()->getLocale() == 'en' 
-                ? 'Failed to delete invoice: ' . $e->getMessage() 
-                : 'Gagal menghapus invoice: ' . $e->getMessage());
+                ? 'Failed to move invoice to trash: ' . $e->getMessage() 
+                : 'Gagal memindahkan invoice ke tempat sampah: ' . $e->getMessage());
         }
     }
 

@@ -164,8 +164,14 @@ class ReceiptController extends Controller
 
     public function destroy(Receipt $receipt)
     {
+        $num = $receipt->receipt_number;
         $receipt->delete();
-        return redirect()->route('receipts.index')->with('success', 'Receipt deleted successfully.');
+
+        \App\Models\ActivityLog::log('deleted_receipt', "Soft deleted receipt #{$num}");
+
+        return redirect()->route('receipts.index')->with('success', app()->getLocale() == 'en' 
+            ? 'Receipt moved to trash successfully.' 
+            : 'Kwitansi berhasil dipindahkan ke tempat sampah.');
     }
 
     private function sanitizeFilenameString($string)

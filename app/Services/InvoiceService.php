@@ -52,7 +52,7 @@ class InvoiceService
             throw new \Exception("Kwitansi untuk invoice ini sudah pernah dibuat sebelumnya.");
         }
 
-        return DB::transaction(function () use ($invoice) {
+        $receipt = DB::transaction(function () use ($invoice) {
             // Update status invoice
             $invoice->update(['status' => 'paid']);
 
@@ -67,5 +67,9 @@ class InvoiceService
                 'payment_date' => now(),
             ]);
         });
+
+        \App\Models\ActivityLog::log('created_receipt', "Issued new receipt #{$receipt->receipt_number}", $receipt);
+
+        return $receipt;
     }
 }

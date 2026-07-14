@@ -84,9 +84,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('business-units/{businessUnit}/pdf', [BusinessUnitController::class, 'downloadPdf'])->name('business-units.pdf');
         Route::resource('business-units', BusinessUnitController::class);
 
-        // Settings
         Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
         Route::post('/settings', [SettingController::class, 'update'])->name('settings.update');
+
+        // Trash Management
+        Route::get('/trash', [\App\Http\Controllers\TrashController::class, 'index'])->name('trash.index');
+        Route::post('/trash/invoices/{id}/restore', [\App\Http\Controllers\TrashController::class, 'restoreInvoice'])->name('trash.invoices.restore');
+        Route::delete('/trash/invoices/{id}/purge', [\App\Http\Controllers\TrashController::class, 'forceDeleteInvoice'])->name('trash.invoices.purge');
+        Route::post('/trash/receipts/{id}/restore', [\App\Http\Controllers\TrashController::class, 'restoreReceipt'])->name('trash.receipts.restore');
+        Route::delete('/trash/receipts/{id}/purge', [\App\Http\Controllers\TrashController::class, 'forceDeleteReceipt'])->name('trash.receipts.purge');
 
         // Reports
         Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');

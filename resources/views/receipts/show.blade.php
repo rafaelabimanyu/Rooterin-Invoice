@@ -229,6 +229,23 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Footer -->
+        <div class="px-6 md:px-16 py-10 bg-slate-50 border-t border-slate-100">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8">
+                <div class="text-[11px] text-slate-400 font-medium leading-relaxed max-w-lg text-left w-full md:w-auto">
+                    <p class="font-bold text-slate-500 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Receipt Statement' : 'Pernyataan Kuitansi' }}</p>
+                    <p>{{ app()->getLocale() == 'en' ? 'This is an official digital receipt for payment received. No physical signature required.' : 'Kuitansi ini adalah bukti pembayaran digital resmi yang sah. Tidak memerlukan tanda tangan basah.' }}</p>
+                </div>
+                <div class="text-left md:text-right w-full md:w-auto">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Digitally Issued By' : 'Diterbitkan Secara Digital Oleh' }}</p>
+                    <p class="text-xs font-black text-slate-900 uppercase">
+                        {{ optional(optional($receipt->invoice)->creator)->name ?? 'System' }} 
+                        <span class="text-slate-400 font-medium">({{ $receipt->tanggal_receipt ? $receipt->tanggal_receipt->format(\App\Models\Setting::get('date_format', 'd M Y')) : '-' }})</span>
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Sticky Mobile Action Bar (Visible only on screens < 768px) -->

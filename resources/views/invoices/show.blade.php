@@ -290,7 +290,10 @@
                 </div>
                 <div class="text-left md:text-right w-full md:w-auto">
                     <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Digitally Issued By' : 'Diterbitkan Secara Digital Oleh' }}</p>
-                    <p class="text-xs font-black text-slate-900 uppercase">{{ optional($invoice->creator)->name ?? 'System' }}</p>
+                    <p class="text-xs font-black text-slate-900 uppercase">
+                        {{ optional($invoice->creator)->name ?? 'System' }} 
+                        <span class="text-slate-400 font-medium">({{ $invoice->tanggal_invoice ? $invoice->tanggal_invoice->format(\App\Models\Setting::get('date_format', 'd M Y')) : '-' }})</span>
+                    </p>
                 </div>
             </div>
         </div>

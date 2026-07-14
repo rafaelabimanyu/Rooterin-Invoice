@@ -138,6 +138,7 @@ return [
     'chronos_calendar' => 'Kalender Chronos',
     'operational_sop' => 'SOP Operasional',
     'loading_details' => 'Memuat Detail...',
+    'trash' => 'Tempat Sampah',
 ];
 
 

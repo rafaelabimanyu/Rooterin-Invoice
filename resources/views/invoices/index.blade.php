@@ -182,6 +182,15 @@
                                 <a href="{{ route('invoices.edit', $invoice->id) }}" class="p-1 text-slate-400 hover:text-amber-600 transition-colors duration-300" title="{{ __('ui.edit') }}">
                                     <i data-lucide="edit-3" class="w-4 h-4"></i>
                                 </a>
+                                @can('delete', $invoice)
+                                <form id="delete-form-{{ $invoice->id }}" action="{{ route('invoices.destroy', $invoice) }}" method="POST" class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button" onclick="confirmDeleteInvoice('delete-form-{{ $invoice->id }}')" class="p-1 text-slate-400 hover:text-rose-600 transition-colors duration-300" title="{{ app()->getLocale() == 'en' ? 'Delete' : 'Hapus' }}">
+                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                    </button>
+                                </form>
+                                @endcan
                             </div>
                         </div>
                     </div>
@@ -221,6 +230,45 @@
                         <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'UNIT' : 'UNIT' }}</span>
                         <span class="text-[10px] font-bold text-slate-650 bg-slate-100 px-2 py-0.5 rounded uppercase tracking-wider">{{ $invoice->businessUnit ? $invoice->businessUnit->name : '-' }}</span>
                     </div>
+                    <!-- Fourth Row: Actions -->
+                    <div class="flex items-center justify-end mt-2 pt-2 border-t border-slate-100 gap-2">
+                        <a 
+                            href="{{ route('invoices.show', $invoice) }}"
+                            @click.stop=""
+                            class="px-3 py-1.5 bg-slate-50 hover:bg-gold-50/50 text-slate-500 hover:text-gold-600 rounded-xl transition-all text-xs font-bold flex items-center gap-1.5 duration-300"
+                        >
+                            <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                            <span>{{ app()->getLocale() == 'en' ? 'View' : 'Lihat' }}</span>
+                        </a>
+                        <a 
+                            href="{{ route('invoices.edit', $invoice->id) }}"
+                            @click.stop=""
+                            class="px-3 py-1.5 bg-slate-50 hover:bg-gold-50/50 text-slate-500 hover:text-amber-600 rounded-xl transition-all text-xs font-bold flex items-center gap-1.5 duration-300"
+                        >
+                            <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                            <span>{{ app()->getLocale() == 'en' ? 'Edit' : 'Ubah' }}</span>
+                        </a>
+                        @can('delete', $invoice)
+                        <form 
+                            id="delete-form-mobile-{{ $invoice->id }}"
+                            action="{{ route('invoices.destroy', $invoice) }}" 
+                            method="POST" 
+                            class="inline"
+                            @click.stop=""
+                        >
+                            @csrf
+                            @method('DELETE')
+                            <button 
+                                type="button"
+                                onclick="confirmDeleteInvoice('delete-form-mobile-{{ $invoice->id }}')"
+                                class="px-3 py-1.5 bg-slate-50 hover:bg-rose-50 text-slate-500 hover:text-rose-600 rounded-xl transition-all text-xs font-bold flex items-center gap-1.5 duration-300"
+                            >
+                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                <span>{{ app()->getLocale() == 'en' ? 'Delete' : 'Hapus' }}</span>
+                            </button>
+                        </form>
+                        @endcan
+                    </div>
                 </div>
             @empty
                 <div class="bg-white border border-slate-100 rounded-[24px] p-12 text-center">
@@ -238,5 +286,43 @@
                 </div>
             </div>
         @endif
+
+        @push('scripts')
+        <script>
+            function confirmDeleteInvoice(formId) {
+                const isEnglish = {{ app()->getLocale() == 'en' ? 'true' : 'false' }};
+                const title = isEnglish ? 'Are you sure?' : 'Apakah Anda yakin?';
+                const text = isEnglish 
+                    ? 'This invoice and all its related items/files will be permanently deleted.'
+                    : 'Invoice ini dan semua item/file terkait akan dihapus secara permanen.';
+                const confirmButtonText = isEnglish ? 'Yes, delete it!' : 'Ya, hapus!';
+                const cancelButtonText = isEnglish ? 'Cancel' : 'Batal';
+
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        title: title,
+                        text: text,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: confirmButtonText,
+                        cancelButtonText: cancelButtonText,
+                        customClass: {
+                            confirmButton: 'px-5 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl font-bold text-xs uppercase tracking-wider text-center mr-2 transition-all duration-300',
+                            cancelButton: 'px-5 py-2.5 bg-slate-500 hover:bg-slate-650 text-white rounded-xl font-bold text-xs uppercase tracking-wider text-center transition-all duration-300'
+                        },
+                        buttonsStyling: false
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            document.getElementById(formId).submit();
+                        }
+                    });
+                } else {
+                    if (confirm(text)) {
+                        document.getElementById(formId).submit();
+                    }
+                }
+            }
+        </script>
+        @endpush
     </div>
 </x-app-layout>

@@ -94,4 +94,13 @@ class ChronosCalendarTest extends TestCase
             'id' => $reminder->id,
         ]);
     }
+
+    public function test_staff_user_cannot_access_chronos_page(): void
+    {
+        $user = User::factory()->create(['role' => 'staff']);
+
+        $response = $this->actingAs($user)->get(route('chronos.index'));
+
+        $response->assertStatus(403);
+    }
 }

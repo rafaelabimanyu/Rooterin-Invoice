@@ -167,4 +167,77 @@ class InvoiceManagementTest extends TestCase
             'total' => 101700,
         ]);
     }
+
+    public function test_can_delete_invoice_without_receipt(): void
+    {
+        $user = User::factory()->create(['role' => 'admin']); // admin bypasses policy 24h constraint
+        $businessUnit = BusinessUnit::create([
+            'name' => 'Jaya-Website',
+            'slug' => 'jaya-website',
+        ]);
+        $client = Client::create([
+            'kode_client' => 'CL-001',
+            'nama_client' => 'Test Client',
+            'status' => 'aktif',
+        ]);
+
+        $invoice = Invoice::create([
+            'invoice_number' => 'INV-5003-' . date('Y'),
+            'business_unit_id' => $businessUnit->id,
+            'client_id' => $client->id,
+            'status' => 'draft',
+            'subtotal' => 100000,
+            'discount' => 0,
+            'ppn' => 0,
+            'pph' => 0,
+            'total' => 100000,
+        ]);
+
+        $response = $this->actingAs($user)->delete(route('invoices.destroy', $invoice));
+
+        $response->assertRedirect(route('invoices.index'));
+        $response->assertSessionHas('success');
+        $this->assertDatabaseMissing('invoices', ['id' => $invoice->id]);
+    }
+
+    public function test_cannot_delete_invoice_with_associated_receipt(): void
+    {
+        $user = User::factory()->create(['role' => 'admin']);
+        $businessUnit = BusinessUnit::create([
+            'name' => 'Jaya-Website',
+            'slug' => 'jaya-website',
+        ]);
+        $client = Client::create([
+            'kode_client' => 'CL-001',
+            'nama_client' => 'Test Client',
+            'status' => 'aktif',
+        ]);
+
+        $invoice = Invoice::create([
+            'invoice_number' => 'INV-5003-' . date('Y'),
+            'business_unit_id' => $businessUnit->id,
+            'client_id' => $client->id,
+            'status' => 'paid',
+            'subtotal' => 100000,
+            'discount' => 0,
+            'ppn' => 0,
+            'pph' => 0,
+            'total' => 100000,
+        ]);
+
+        // Create receipt associated with invoice
+        \App\Models\Receipt::create([
+            'receipt_number' => 'KWT-5003-' . date('Y'),
+            'invoice_id' => $invoice->id,
+            'amount_received' => 100000,
+            'payment_date' => now(),
+        ]);
+
+        $response = $this->actingAs($user)->delete(route('invoices.destroy', $invoice));
+
+        $response->assertRedirect(route('invoices.index'));
+        $response->assertSessionHas('error');
+        $this->assertDatabaseHas('invoices', ['id' => $invoice->id]);
+    }
 }
+

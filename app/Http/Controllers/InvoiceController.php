@@ -366,12 +366,40 @@ class InvoiceController extends Controller
     {
         \Illuminate\Support\Facades\Gate::authorize('delete', $invoice);
 
-        $num = $invoice->invoice_number;
-        $invoice->delete();
-        
-        \App\Models\ActivityLog::log('deleted_invoice', "Deleted invoice #{$num}");
-        
-        return redirect()->route('invoices.index')->with('success', 'Invoice deleted successfully.');
+        // Security check: Verify receipt relation before starting deletion
+        if ($invoice->receipt()->exists()) {
+            return redirect()->route('invoices.index')->with('error', app()->getLocale() == 'en' 
+                ? 'This invoice cannot be deleted because it has an active receipt. Please delete the receipt first.'
+                : 'Invoice tidak dapat dihapus karena memiliki kwitansi yang aktif. Silakan hapus kwitansi terlebih dahulu.');
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // Clean up physical attachment files from storage
+            foreach ($invoice->attachments as $attachment) {
+                if ($attachment->file_path) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($attachment->file_path);
+                }
+            }
+
+            $num = $invoice->invoice_number;
+            $invoice->delete();
+
+            DB::commit();
+
+            // Log activity for audit trail
+            \App\Models\ActivityLog::log('deleted_invoice', "Deleted invoice #{$num}");
+
+            return redirect()->route('invoices.index')->with('success', app()->getLocale() == 'en' 
+                ? 'Invoice deleted successfully.' 
+                : 'Invoice berhasil dihapus.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('invoices.index')->with('error', app()->getLocale() == 'en' 
+                ? 'Failed to delete invoice: ' . $e->getMessage() 
+                : 'Gagal menghapus invoice: ' . $e->getMessage());
+        }
     }
 
     private function sanitizeFilenameString($string)

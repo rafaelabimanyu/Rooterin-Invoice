@@ -73,14 +73,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-        // Chronos (Billing Calendar)
-        Route::get('/chronos', [ChronosController::class, 'index'])->name('chronos.index');
-        Route::get('/api/chronos/events', [ChronosController::class, 'events'])->name('chronos.events');
-        Route::post('/api/chronos/update-event', [ChronosController::class, 'updateEventDate'])->name('chronos.update-event');
-
-        // AI Voice Command Intent Router
-        Route::post('ai-assistant/voice-command', [AiChatController::class, 'handleVoiceCommand'])->name('ai-assistant.voice-command');
     });
 
     // Elevated Roles (Owner, Admin)
@@ -115,6 +107,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('ai-assistant/sessions-list', [AiChatController::class, 'getSessionsList'])->name('ai-assistant.sessions-list');
         Route::post('ai-assistant/session/{session_id}/rename', [AiChatController::class, 'renameSession'])->name('ai-assistant.session.rename');
         Route::delete('ai-assistant/session/{session_id}', [AiChatController::class, 'deleteSession'])->name('ai-assistant.session.delete');
+
+        // Chronos (Billing Calendar)
+        Route::get('/chronos', [ChronosController::class, 'index'])->name('chronos.index');
+        Route::get('/api/chronos/events', [ChronosController::class, 'events'])->name('chronos.events');
+        Route::post('/api/chronos/update-event', [ChronosController::class, 'updateEventDate'])->name('chronos.update-event');
+
+        // AI Voice Command Intent Router
+        Route::post('ai-assistant/voice-command', [AiChatController::class, 'handleVoiceCommand'])->name('ai-assistant.voice-command');
     });
 });
 

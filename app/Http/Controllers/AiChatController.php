@@ -304,6 +304,8 @@ Strictly match the user's current application language interface. Since the acti
 
     public function handleVoiceCommand(Request $request)
     {
+        abort_if(!auth()->user()->hasFullAccess(), 403, 'Unauthorized action.');
+
         $request->validate([
             'command' => 'required|string|max:500',
         ]);

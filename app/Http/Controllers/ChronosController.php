@@ -10,6 +10,8 @@ class ChronosController extends Controller
 {
     public function index()
     {
+        abort_if(auth()->user()->hasRole('staff'), 403, 'Unauthorized action.');
+
         $invoiceQuery = Invoice::query();
         $activityQuery = \App\Models\ActivityLog::query();
 
@@ -32,6 +34,8 @@ class ChronosController extends Controller
 
     public function events(Request $request)
     {
+        abort_if(auth()->user()->hasRole('staff'), 403, 'Unauthorized action.');
+
         $start = $request->query('start');
         $end = $request->query('end');
         $clientId = $request->query('client_id');
@@ -172,6 +176,8 @@ class ChronosController extends Controller
 
     public function updateEventDate(Request $request)
     {
+        abort_if(auth()->user()->hasRole('staff'), 403, 'Unauthorized action.');
+
         if (!auth()->check()) {
             return response()->json(['error' => 'Unauthenticated'], 401);
         }

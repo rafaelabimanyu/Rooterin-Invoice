@@ -82,7 +82,7 @@ class VoiceCommandTest extends TestCase
 
     public function test_voice_command_queries_total_arrears(): void
     {
-        $user = User::factory()->create(['role' => 'staff']);
+        $user = User::factory()->create(['role' => 'admin']);
         $businessUnit = BusinessUnit::create([
             'name' => 'Jaya-Website',
             'slug' => 'jaya-website',
@@ -122,5 +122,16 @@ class VoiceCommandTest extends TestCase
             ]);
 
         $this->assertStringContainsString('Rp 83.571.900', $response->json('message'));
+    }
+
+    public function test_staff_user_cannot_use_voice_command(): void
+    {
+        $user = User::factory()->create(['role' => 'staff']);
+
+        $response = $this->actingAs($user)->postJson(route('ai-assistant.voice-command'), [
+            'command' => 'Berapa total tunggakan aktif minggu ini?'
+        ]);
+
+        $response->assertStatus(403);
     }
 }

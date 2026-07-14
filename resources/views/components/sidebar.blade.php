@@ -55,7 +55,9 @@
             <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-400/80">{{ __('ui.terminal') }}</p>
             <nav x-bind:class="collapsed ? 'space-y-4' : 'space-y-1'">
                 <x-sidebar-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')" icon="layout-grid" :label="__('ui.dashboard')" :collapsed="$collapsed" />
+                @if(!auth()->user()->hasRole('staff'))
                 <x-sidebar-link href="{{ route('ai-assistant.index') }}" :active="request()->routeIs('ai-assistant.*')" icon="bot" :label="__('ui.ai_assistant')" :collapsed="$collapsed" />
+                @endif
                 <x-sidebar-link href="{{ route('clients.index') }}" :active="request()->routeIs('clients.*')" icon="users" :label="__('ui.clients')" :collapsed="$collapsed" />
             </nav>
         </div>
@@ -66,7 +68,9 @@
             <nav x-bind:class="collapsed ? 'space-y-4' : 'space-y-1'">
                 <x-sidebar-link href="{{ route('receipts.index') }}" :active="request()->routeIs('receipts.*')" icon="file-spreadsheet" :label="__('ui.receipts')" :collapsed="$collapsed" />
                 <x-sidebar-link href="{{ route('invoices.index') }}" :active="request()->routeIs('invoices.*')" icon="file-text" :label="__('ui.invoices')" :collapsed="$collapsed" />
+                @if(!auth()->user()->hasRole('staff'))
                 <x-sidebar-link href="{{ route('chronos.index') }}" :active="request()->routeIs('chronos.*')" icon="calendar-days" :label="__('ui.chronos_calendar')" :collapsed="$collapsed" />
+                @endif
             </nav>
         </div>
 

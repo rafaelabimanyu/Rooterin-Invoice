@@ -16,6 +16,9 @@
         <!-- Lucide Icons -->
         <script src="https://unpkg.com/lucide@latest"></script>
 
+        <!-- SweetAlert2 -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
         @stack('styles')
@@ -89,10 +92,12 @@
                             <a href="{{ route('lang.switch', 'en') }}" @click="$dispatch('close-chat'); $dispatch('close-chatbot')" class="px-2.5 py-1 text-[10px] font-black rounded-md transition-all {{ App::getLocale() == 'en' ? 'bg-white text-gold-600 shadow-sm' : 'text-slate-400 hover:text-slate-600' }}">EN</a>
                         </div>
 
+                        @if(Auth::user()->role !== 'staff')
                         <!-- Notifications -->
                         <livewire:navbar-notification />
 
                         <div class="h-6 w-px bg-slate-200"></div>
+                        @endif
 
                         <!-- User Profile -->
                         <div class="relative" x-data="{ open: false }">

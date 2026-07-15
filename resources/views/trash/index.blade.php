@@ -71,6 +71,7 @@
                             <tr>
                                 <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Invoice Number' : 'Nomor Invoice' }}</th>
                                 <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">{{ __('ui.company') }}</th>
+                                <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Deleted By & Reason' : 'Dihapus Oleh & Alasan' }}</th>
                                 <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Deleted At' : 'Dihapus Pada' }}</th>
                                 <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest text-right">{{ __('ui.actions') }}</th>
                             </tr>
@@ -85,6 +86,10 @@
                                     <td class="px-6 py-4">
                                         <div class="font-bold text-slate-700 text-sm">{{ $invoice->client->nama_perusahaan ?? '-' }}</div>
                                         <div class="text-xs text-slate-500">{{ $invoice->client->nama_client ?? '-' }}</div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="font-bold text-slate-800 text-sm">{{ $invoice->deleter->name ?? '-' }}</div>
+                                        <div class="text-xs text-slate-500 italic mt-0.5">"{{ $invoice->deletion_reason ?? '-' }}"</div>
                                     </td>
                                     <td class="px-6 py-4 text-xs font-bold text-slate-500">
                                         {{ $invoice->deleted_at->timezone(auth()->user()->timezone ?? 'Asia/Jakarta')->format('d M Y H:i') }}
@@ -139,6 +144,7 @@
                             <tr>
                                 <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Receipt Number' : 'Nomor Kwitansi' }}</th>
                                 <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Linked Invoice' : 'Invoice Terkait' }}</th>
+                                <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Deleted By & Reason' : 'Dihapus Oleh & Alasan' }}</th>
                                 <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Deleted At' : 'Dihapus Pada' }}</th>
                                 <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest text-right">{{ __('ui.actions') }}</th>
                             </tr>
@@ -156,6 +162,10 @@
                                         @else
                                             <span class="text-xs text-slate-400 italic">{{ app()->getLocale() == 'en' ? 'Orphaned Invoice' : 'Invoice Asal Dihapus Permanen' }}</span>
                                         @endif
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="font-bold text-slate-800 text-sm">{{ $receipt->deleter->name ?? '-' }}</div>
+                                        <div class="text-xs text-slate-500 italic mt-0.5">"{{ $receipt->deletion_reason ?? '-' }}"</div>
                                     </td>
                                     <td class="px-6 py-4 text-xs font-bold text-slate-500">
                                         {{ $receipt->deleted_at->timezone(auth()->user()->timezone ?? 'Asia/Jakarta')->format('d M Y H:i') }}

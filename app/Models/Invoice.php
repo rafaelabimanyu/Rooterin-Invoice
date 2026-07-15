@@ -28,6 +28,8 @@ class Invoice extends Model
         'notes',
         'technician_names',
         'created_by',
+        'deleted_by',
+        'deletion_reason',
     ];
 
     protected $casts = [
@@ -163,6 +165,14 @@ class Invoice extends Model
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * Get the user who deleted the invoice.
+     */
+    public function deleter(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
     }
 
     /**

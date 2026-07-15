@@ -162,9 +162,15 @@ class ReceiptController extends Controller
         return $pdf->download($filename);
     }
 
-    public function destroy(Receipt $receipt)
+    public function destroy(Request $request, Receipt $receipt)
     {
         $num = $receipt->receipt_number;
+
+        $receipt->update([
+            'deleted_by' => auth()->id(),
+            'deletion_reason' => $request->input('deletion_reason')
+        ]);
+
         $receipt->delete();
 
         \App\Models\ActivityLog::log('deleted_receipt', "Soft deleted receipt #{$num}");

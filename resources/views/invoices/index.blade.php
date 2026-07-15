@@ -289,12 +289,22 @@
 
         @push('scripts')
         <script>
+            function submitFormWithReason(formId, reason) {
+                const form = document.getElementById(formId);
+                const reasonInput = document.createElement('input');
+                reasonInput.type = 'hidden';
+                reasonInput.name = 'deletion_reason';
+                reasonInput.value = reason;
+                form.appendChild(reasonInput);
+                form.submit();
+            }
+
             function confirmDeleteInvoice(formId) {
                 const isEnglish = {{ app()->getLocale() == 'en' ? 'true' : 'false' }};
-                const title = isEnglish ? 'Are you sure?' : 'Apakah Anda yakin?';
+                const title = isEnglish ? 'Select Deletion Reason' : 'Pilih Alasan Penghapusan';
                 const text = isEnglish 
-                    ? 'This invoice and all its related items/files will be permanently deleted.'
-                    : 'Invoice ini dan semua item/file terkait akan dihapus secara permanen.';
+                    ? 'This invoice will be soft-deleted and moved to trash.'
+                    : 'Invoice ini akan dihapus sementara dan dipindahkan ke tempat sampah.';
                 const confirmButtonText = isEnglish ? 'Yes, delete it!' : 'Ya, hapus!';
                 const cancelButtonText = isEnglish ? 'Cancel' : 'Batal';
 
@@ -303,22 +313,64 @@
                         title: title,
                         text: text,
                         icon: 'warning',
+                        input: 'select',
+                        inputOptions: {
+                            'Salah Input': isEnglish ? 'Wrong Input' : 'Salah Input',
+                            'Dibatalkan Klien': isEnglish ? 'Cancelled by Client' : 'Dibatalkan Klien',
+                            'Duplikat': isEnglish ? 'Duplicate' : 'Duplikat',
+                            'Lainnya': isEnglish ? 'Other' : 'Lainnya'
+                        },
+                        inputPlaceholder: isEnglish ? 'Select reason...' : 'Pilih alasan...',
                         showCancelButton: true,
                         confirmButtonText: confirmButtonText,
                         cancelButtonText: cancelButtonText,
+                        inputValidator: (value) => {
+                            if (!value) {
+                                return isEnglish ? 'You need to select a reason!' : 'Anda harus memilih alasan!';
+                            }
+                        },
                         customClass: {
                             confirmButton: 'px-5 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl font-bold text-xs uppercase tracking-wider text-center mr-2 transition-all duration-300',
-                            cancelButton: 'px-5 py-2.5 bg-slate-500 hover:bg-slate-650 text-white rounded-xl font-bold text-xs uppercase tracking-wider text-center transition-all duration-300'
+                            cancelButton: 'px-5 py-2.5 bg-slate-500 hover:bg-slate-650 text-white rounded-xl font-bold text-xs uppercase tracking-wider text-center transition-all duration-300',
+                            input: 'rounded-xl border-slate-200 text-sm font-medium mt-3 focus:border-gold-500 focus:ring-gold-500'
                         },
                         buttonsStyling: false
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            document.getElementById(formId).submit();
+                            let reason = result.value;
+                            if (reason === 'Lainnya') {
+                                Swal.fire({
+                                    title: isEnglish ? 'Custom Deletion Reason' : 'Alasan Penghapusan Lainnya',
+                                    input: 'text',
+                                    inputPlaceholder: isEnglish ? 'Type reason here...' : 'Tulis alasan di sini...',
+                                    showCancelButton: true,
+                                    confirmButtonText: isEnglish ? 'Confirm Delete' : 'Konfirmasi Hapus',
+                                    cancelButtonText: cancelButtonText,
+                                    inputValidator: (val) => {
+                                        if (!val) {
+                                            return isEnglish ? 'Reason cannot be empty!' : 'Alasan tidak boleh kosong!';
+                                        }
+                                    },
+                                    customClass: {
+                                        confirmButton: 'px-5 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl font-bold text-xs uppercase tracking-wider text-center mr-2 transition-all duration-300',
+                                        cancelButton: 'px-5 py-2.5 bg-slate-500 hover:bg-slate-650 text-white rounded-xl font-bold text-xs uppercase tracking-wider text-center transition-all duration-300',
+                                        input: 'rounded-xl border-slate-200 text-sm font-medium mt-3 focus:border-gold-500 focus:ring-gold-500'
+                                    },
+                                    buttonsStyling: false
+                                }).then((textResult) => {
+                                    if (textResult.isConfirmed) {
+                                        submitFormWithReason(formId, textResult.value);
+                                    }
+                                });
+                            } else {
+                                submitFormWithReason(formId, reason);
+                            }
                         }
                     });
                 } else {
-                    if (confirm(text)) {
-                        document.getElementById(formId).submit();
+                    const reason = prompt(isEnglish ? 'Enter deletion reason:' : 'Masukkan alasan penghapusan:');
+                    if (reason) {
+                        submitFormWithReason(formId, reason);
                     }
                 }
             }

@@ -56,6 +56,20 @@ class InvoiceService
             // Update status invoice
             $invoice->update(['status' => 'paid']);
 
+            // Auto-create payment entry for the remaining balance if any
+            $totalPaid = $invoice->payments()->sum('amount');
+            $remaining = max(0, $invoice->total - $totalPaid);
+            if ($remaining > 0) {
+                \App\Models\Payment::create([
+                    'invoice_id' => $invoice->id,
+                    'payment_date' => now(),
+                    'amount' => $remaining,
+                    'payment_method' => 'Transfer Bank',
+                    'reference_number' => 'AUTO-GENERATED',
+                    'notes' => 'Automatic payment entry on marking as paid',
+                ]);
+            }
+
             // Generate receipt number (KWT-xxxx-yyyy) by replacing INV- with KWT-
             $receiptNumber = str_replace('INV-', 'KWT-', $invoice->invoice_number);
 

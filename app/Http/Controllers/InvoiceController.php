@@ -362,7 +362,7 @@ class InvoiceController extends Controller
         return $pdf->download($filename);
     }
 
-    public function destroy(Invoice $invoice)
+    public function destroy(Request $request, Invoice $invoice)
     {
         \Illuminate\Support\Facades\Gate::authorize('delete', $invoice);
 
@@ -375,6 +375,12 @@ class InvoiceController extends Controller
 
         try {
             $num = $invoice->invoice_number;
+            
+            $invoice->update([
+                'deleted_by' => auth()->id(),
+                'deletion_reason' => $request->input('deletion_reason')
+            ]);
+
             $invoice->delete();
 
             // Log activity for audit trail

@@ -13,8 +13,8 @@ class TrashController extends Controller
     {
         abort_if(auth()->user()->role === 'staff', 403, 'Unauthorized action.');
 
-        $invoices = Invoice::onlyTrashed()->with(['client', 'businessUnit'])->latest()->get();
-        $receipts = Receipt::onlyTrashed()->with(['invoice.client'])->latest()->get();
+        $invoices = Invoice::onlyTrashed()->with(['client', 'businessUnit', 'deleter'])->latest()->get();
+        $receipts = Receipt::onlyTrashed()->with(['invoice.client', 'deleter'])->latest()->get();
 
         return view('trash.index', compact('invoices', 'receipts'));
     }
@@ -25,6 +25,11 @@ class TrashController extends Controller
 
         $invoice = Invoice::onlyTrashed()->findOrFail($id);
         $invoice->restore();
+
+        $invoice->update([
+            'deleted_by' => null,
+            'deletion_reason' => null,
+        ]);
 
         \App\Models\ActivityLog::log('restored_invoice', "Restored invoice #{$invoice->invoice_number}");
 
@@ -49,6 +54,14 @@ class TrashController extends Controller
         // Delete attachments records
         $invoice->attachments()->delete();
 
+        // Force delete linked receipt if it exists (including soft-deleted ones)
+        if ($invoice->receipt()->withTrashed()->exists()) {
+            $invoice->receipt()->withTrashed()->forceDelete();
+        }
+
+        // Delete invoice items explicitly
+        $invoice->items()->delete();
+
         $num = $invoice->invoice_number;
         $invoice->forceDelete();
 
@@ -65,6 +78,11 @@ class TrashController extends Controller
 
         $receipt = Receipt::onlyTrashed()->findOrFail($id);
         $receipt->restore();
+
+        $receipt->update([
+            'deleted_by' => null,
+            'deletion_reason' => null,
+        ]);
 
         \App\Models\ActivityLog::log('restored_receipt', "Restored receipt #{$receipt->receipt_number}");
 

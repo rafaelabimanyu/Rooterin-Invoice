@@ -16,6 +16,8 @@ class Receipt extends Model
         'invoice_id',
         'amount_received',
         'payment_date',
+        'deleted_by',
+        'deletion_reason',
     ];
 
     protected $casts = [
@@ -28,6 +30,14 @@ class Receipt extends Model
     public function invoice(): BelongsTo
     {
         return $this->belongsTo(Invoice::class);
+    }
+
+    /**
+     * Get the user who deleted the receipt.
+     */
+    public function deleter(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
     }
 
     /**

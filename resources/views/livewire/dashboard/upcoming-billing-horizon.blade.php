@@ -1,3 +1,7 @@
+@php
+    $showNominalToStaff = \App\Models\Setting::get('show_nominal_to_staff', 'false') === 'true';
+    $hasVolumeCol = !auth()->user()->hasRole('staff') || $showNominalToStaff;
+@endphp
 <div class="glass-card p-10 flex flex-col shadow-2xl shadow-gold-500/5 border-slate-100 page-fade-in stagger-4 w-full min-w-0">
     <div class="flex items-center justify-between mb-10">
         <div>
@@ -30,9 +34,11 @@
 
                 <!-- Right Section: Amounts -->
                 <div class="shrink-0 text-right">
+                    @if($hasVolumeCol)
                     <p class="text-[13px] font-black text-slate-900">
                         Rp {{ number_format($invoice->total, 0, ',', '.') }}
                     </p>
+                    @endif
                     <span class="text-[9px] font-black uppercase tracking-widest block whitespace-nowrap {{ $invoice->due_date->isToday() ? 'text-rose-500' : 'text-slate-400' }}">
                         {{ $invoice->due_date->isToday() ? __('dashboard.due_today') : $invoice->due_date->diffForHumans() }}
                     </span>

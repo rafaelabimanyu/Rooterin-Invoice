@@ -126,9 +126,11 @@
                                     <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-4 py-2.5 text-[12px] font-bold text-slate-600 hover:bg-slate-50 rounded-xl transition-colors group">
                                         <i data-lucide="user" class="w-4 h-4 group-hover:text-gold-500"></i> {{ __('Profile') }}
                                     </a>
+                                    @if(Auth::user()->role !== 'staff')
                                     <a href="{{ route('security.center') }}" class="flex items-center gap-3 px-4 py-2.5 text-[12px] font-bold text-slate-600 hover:bg-slate-50 rounded-xl transition-colors group">
                                         <i data-lucide="shield" class="w-4 h-4 group-hover:text-gold-500"></i> {{ __('ui.security_center') }}
                                     </a>
+                                    @endif
                                 </div>
                                 <div class="h-px bg-slate-100 my-2 mx-2"></div>
                                 <form method="POST" action="{{ route('logout') }}">

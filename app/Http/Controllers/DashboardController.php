@@ -65,8 +65,9 @@ class DashboardController extends Controller
             'overdue_60_plus' => 0,
         ];
 
-        // AI Insight was refactored into a lazy-loaded Livewire component
-        
+        $showNominalToStaff = \App\Models\Setting::get('show_nominal_to_staff', 'false') === 'true';
+        $draftInvoicesCount = 0;
+
         if ($isStaff) {
             $todayInvoicesCount = Invoice::where('created_by', auth()->id())
                 ->where('created_at', '>=', now()->startOfDay())
@@ -80,6 +81,10 @@ class DashboardController extends Controller
                 ->where('created_at', '>=', now()->startOfDay())
                 ->sum('total');
             
+            $draftInvoicesCount = Invoice::where('created_by', auth()->id())
+                ->where('status', 'draft')
+                ->count();
+
             $recentInvoices = Invoice::with('client')
                 ->where('created_by', auth()->id())
                 ->latest()
@@ -320,7 +325,9 @@ class DashboardController extends Controller
             'paymentMethodsBreakdown',
             'recentPayments',
             'totalPaymentsAmount',
-            'averagePaymentAmount'
+            'averagePaymentAmount',
+            'showNominalToStaff',
+            'draftInvoicesCount'
         ));
     }
 

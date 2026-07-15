@@ -117,12 +117,12 @@
                                 </div>
                                 {{ __('dashboard.draft_invoice') }}
                             </a>
-                            <a href="{{ route('guide.index') }}"
+                            <a href="{{ route('receipts.create') }}"
                                  class="group flex items-center gap-3 px-5 py-3 bg-slate-800/50 backdrop-blur-md border border-white/10 text-white rounded-xl font-bold text-xs hover:bg-white/10 transition-all shadow-xl hover:-translate-y-1">
                                  <div class="p-1.5 bg-white/10 rounded-lg group-hover:scale-110 transition-transform">
-                                     <i data-lucide="book-open" class="w-4 h-4"></i>
+                                     <i data-lucide="receipt" class="w-4 h-4 text-gold-400"></i>
                                  </div>
-                                 {{ __('ui.guide') }}
+                                 {{ app()->getLocale() == 'en' ? 'Create Receipt' : 'Buat Kwitansi' }}
                              </a>
                         </div>
                     </div>
@@ -202,15 +202,13 @@
                     <div class="flex items-center justify-between mb-6">
                         <div
                             class="w-14 h-14 rounded-2xl bg-gold-50 flex items-center justify-center text-gold-600 group-hover:bg-gold-600 group-hover:text-white transition-all duration-500 shadow-sm">
-                            <i data-lucide="zap" class="w-7 h-7 group-hover:rotate-12 transition-transform"></i>
+                            <i data-lucide="file-edit" class="w-7 h-7 group-hover:rotate-12 transition-transform"></i>
                         </div>
                         <span
-                            class="text-[9px] font-black bg-gold-50 text-gold-600 px-3 py-1 rounded-full uppercase tracking-widest">{{ __('dashboard.revenue') }}</span>
+                            class="text-[9px] font-black bg-gold-50 text-gold-600 px-3 py-1 rounded-full uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Drafts' : 'Draft' }}</span>
                     </div>
-                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">{{ __('dashboard.daily_output_value') }}</p>
-                    <h3 class="text-2xl font-black text-slate-900 font-jakarta truncate">Rp
-                        {{ number_format($todayRevenue, 0, ',', '.') }}
-                    </h3>
+                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">{{ app()->getLocale() == 'en' ? 'Pending Draft Invoices' : 'Draft Invoice Menunggu' }}</p>
+                    <h3 class="text-4xl font-black text-slate-900 font-jakarta">{{ $draftInvoicesCount }}</h3>
                 </div>
             </div>
         </div>

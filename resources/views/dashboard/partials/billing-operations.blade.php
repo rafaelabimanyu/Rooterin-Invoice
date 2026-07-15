@@ -1,3 +1,7 @@
+@php
+    $showNominalToStaff = $showNominalToStaff ?? (\App\Models\Setting::get('show_nominal_to_staff', 'false') === 'true');
+    $hasVolumeCol = !auth()->user()->hasRole('staff') || $showNominalToStaff;
+@endphp
 <div class="table-container page-fade-in stagger-5 overflow-hidden">
     <div
         class="px-10 py-8 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between bg-slate-50/30 gap-4">
@@ -19,10 +23,12 @@
         <table class="w-full text-left whitespace-nowrap">
             <thead>
                 <tr class="table-header">
-                    <th class="px-10 py-5">{{ __('ui.reference') }}</th>
-                    <th class="px-10 py-5">{{ __('ui.entity') }}</th>
-                    <th class="px-10 py-5">{{ __('ui.volume') }}</th>
-                    <th class="px-10 py-5">{{ __('ui.status') }}</th>
+                    <th class="px-10 py-5 {{ $hasVolumeCol ? 'w-[25%]' : 'w-[40%]' }}">{{ __('ui.reference') }}</th>
+                    <th class="px-10 py-5 {{ $hasVolumeCol ? 'w-[35%]' : 'w-[40%]' }}">{{ __('ui.entity') }}</th>
+                    @if($hasVolumeCol)
+                        <th class="px-10 py-5 w-[20%]">{{ __('ui.volume') }}</th>
+                    @endif
+                    <th class="px-10 py-5 w-[20%]">{{ __('ui.status') }}</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-50">
@@ -48,17 +54,19 @@
                                     class="text-[11px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">{{ $invoice->client->nama_perusahaan }}</span>
                             </div>
                         </td>
+                        @if($hasVolumeCol)
                         <td class="px-10 py-6">
                             <span class="text-[15px] font-black text-slate-900 tracking-tighter">Rp
                                 {{ number_format($invoice->total, 0, ',', '.') }}</span>
                         </td>
+                        @endif
                         <td class="px-10 py-6">
                             <x-badge :status="$invoice->status" />
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="4" class="px-10 py-32 text-center">
+                        <td colspan="{{ $hasVolumeCol ? 4 : 3 }}" class="px-10 py-32 text-center">
                             <div class="flex flex-col items-center max-w-sm mx-auto">
                                 <div
                                     class="w-32 h-32 bg-slate-50 rounded-full flex items-center justify-center mb-8 relative">
@@ -96,11 +104,13 @@
                             <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider truncate">{{ $invoice->client->nama_perusahaan ?: '-' }}</span>
                         </div>
                     </div>
+                    @if($hasVolumeCol)
                     <div class="shrink-0 text-right">
-                        <span class="text-[15px] font-black text-slate-950 font-jakarta">
+                        <span class="text-[15px] font-black text-slate-955 font-jakarta">
                             Rp {{ number_format($invoice->total, 0, ',', '.') }}
                         </span>
                     </div>
+                    @endif
                 </div>
             </div>
         @empty

@@ -32,6 +32,26 @@ class PdfExportService
         $trend = $this->reportingService->getMonthlyTrend($filters, 6);
         $topClients = $this->reportingService->getTopClients($filters, 5);
 
+        // Fetch filtered invoices for the Ledger Transaksi section
+        $invoiceQuery = $businessUnit->invoices()
+            ->with(['client', 'payments'])
+            ->orderByDesc('created_at');
+
+        if (!empty($filters['start_date']) && !empty($filters['end_date'])) {
+            $invoiceQuery->whereBetween('created_at', [$filters['start_date'], $filters['end_date']]);
+        }
+        if (!empty($filters['client_id'])) {
+            $invoiceQuery->where('client_id', $filters['client_id']);
+        }
+        $invoices = $invoiceQuery->get();
+
+        // Convert logo to Base64
+        $logoPath = public_path('img/logo-jnj.png');
+        $logoBase64 = null;
+        if (file_exists($logoPath)) {
+            $logoBase64 = 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath));
+        }
+
         // Prepare context
         $dateRange = 'Seluruh Waktu';
         if (!empty($filters['start_date']) && !empty($filters['end_date'])) {
@@ -44,8 +64,16 @@ class PdfExportService
             'stats',
             'trend',
             'topClients',
-            'dateRange'
-        ));
+            'invoices',
+            'dateRange',
+            'logoBase64'
+        ))->setPaper('a4')
+          ->setOption([
+              'isRemoteEnabled' => true,
+              'isHtml5ParserEnabled' => true,
+              'defaultFont' => 'sans-serif',
+              'enable_php' => true
+          ]);
 
         // Format name safely
         $filename = 'Laporan_' . str_replace(' ', '_', $businessUnit->name) . '_' . date('Ymd_His') . '.pdf';

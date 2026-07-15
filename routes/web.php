@@ -77,6 +77,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Elevated Roles (Owner, Admin)
     Route::middleware(['role:owner,admin'])->group(function () {
+        Route::get('/sop-guide', [\App\Http\Controllers\GuideController::class, 'showSop'])->name('guide.sop');
+
         // User Management
         Route::resource('users', UserManagementController::class);
 

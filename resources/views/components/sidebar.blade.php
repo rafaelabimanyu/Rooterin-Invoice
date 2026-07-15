@@ -85,22 +85,21 @@
         </div>
         @endif
 
+        @if(Auth::user()->role !== 'staff')
         <!-- Section: Administration -->
         <div>
             <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-400/80">{{ __('ui.control') }}</p>
             <nav class="space-y-1">
-                @if(Auth::user()->role !== 'staff')
-                    <x-sidebar-link href="{{ route('users.index') }}" :active="request()->routeIs('users.*')" icon="shield-check" :label="__('ui.users')" :collapsed="$collapsed" />
-                    <x-sidebar-link href="{{ route('business-units.index') }}" :active="request()->routeIs('business-units.*')" icon="layers" :label="__('ui.business_units')" :collapsed="$collapsed" />
-                    <x-sidebar-link href="{{ route('settings.index') }}" :active="request()->routeIs('settings.*')" icon="sliders" :label="__('ui.settings')" :collapsed="$collapsed" />
-                    <x-sidebar-link href="{{ route('security.center') }}" :active="request()->routeIs('security.*')" icon="fingerprint" :label="__('ui.security_center')" :collapsed="$collapsed" />
-                    <x-sidebar-link href="{{ route('trash.index') }}" :active="request()->routeIs('trash.*')" icon="trash-2" :label="__('ui.trash')" :collapsed="$collapsed" />
-                    <x-sidebar-link href="{{ route('guide.index') }}" :active="request()->routeIs('guide.index')" icon="book-open" :label="__('ui.guide')" :collapsed="$collapsed" />
-                @else
-                    <x-sidebar-link href="{{ route('guide.index') }}?type=sop" :active="request()->routeIs('guide.index')" icon="clipboard-list" :label="__('ui.operational_sop')" :collapsed="$collapsed" />
-                @endif
+                <x-sidebar-link href="{{ route('users.index') }}" :active="request()->routeIs('users.*')" icon="shield-check" :label="__('ui.users')" :collapsed="$collapsed" />
+                <x-sidebar-link href="{{ route('business-units.index') }}" :active="request()->routeIs('business-units.*')" icon="layers" :label="__('ui.business_units')" :collapsed="$collapsed" />
+                <x-sidebar-link href="{{ route('settings.index') }}" :active="request()->routeIs('settings.*')" icon="sliders" :label="__('ui.settings')" :collapsed="$collapsed" />
+                <x-sidebar-link href="{{ route('security.center') }}" :active="request()->routeIs('security.*')" icon="fingerprint" :label="__('ui.security_center')" :collapsed="$collapsed" />
+                <x-sidebar-link href="{{ route('trash.index') }}" :active="request()->routeIs('trash.*')" icon="trash-2" :label="__('ui.trash')" :collapsed="$collapsed" />
+                <x-sidebar-link href="{{ route('guide.index') }}" :active="request()->routeIs('guide.index')" icon="book-open" :label="__('ui.guide')" :collapsed="$collapsed" />
+                <x-sidebar-link href="{{ route('guide.sop') }}" :active="request()->routeIs('guide.sop')" icon="clipboard-list" :label="__('ui.operational_sop')" :collapsed="$collapsed" />
             </nav>
         </div>
+        @endif
     </div>
 
     <!-- Sidebar Footer -->

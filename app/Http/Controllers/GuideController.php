@@ -9,7 +9,8 @@ class GuideController extends Controller
     public function show($section = null)
     {
         if (request()->query('type') === 'sop') {
-            return view('guide.user_guide');
+            abort_if(auth()->user()->role === 'staff', 403, 'Akses ditolak.');
+            return redirect()->route('guide.sop');
         }
 
         $user = auth()->user();
@@ -42,5 +43,11 @@ class GuideController extends Controller
         $activeSectionData = $guideData['navigation'][$activeSectionKey];
 
         return view('guide.index', compact('guideData', 'activeSectionKey', 'activeSectionData', 'role'));
+    }
+
+    public function showSop()
+    {
+        abort_if(auth()->user()->role === 'staff', 403, 'Akses ditolak: Staff tidak memiliki akses ke SOP.');
+        return view('guide.user_guide');
     }
 }

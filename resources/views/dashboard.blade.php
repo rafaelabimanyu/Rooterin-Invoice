@@ -117,13 +117,13 @@
                                 </div>
                                 {{ __('dashboard.draft_invoice') }}
                             </a>
-                            <a href="{{ route('guide.index') }}?type=sop"
-                                class="group flex items-center gap-3 px-5 py-3 bg-slate-800/50 backdrop-blur-md border border-white/10 text-white rounded-xl font-bold text-xs hover:bg-white/10 transition-all shadow-xl hover:-translate-y-1">
-                                <div class="p-1.5 bg-white/10 rounded-lg group-hover:scale-110 transition-transform">
-                                    <i data-lucide="book-open" class="w-4 h-4"></i>
-                                </div>
-                                {{ __('ui.operational_sop') }}
-                            </a>
+                            <a href="{{ route('guide.index') }}"
+                                 class="group flex items-center gap-3 px-5 py-3 bg-slate-800/50 backdrop-blur-md border border-white/10 text-white rounded-xl font-bold text-xs hover:bg-white/10 transition-all shadow-xl hover:-translate-y-1">
+                                 <div class="p-1.5 bg-white/10 rounded-lg group-hover:scale-110 transition-transform">
+                                     <i data-lucide="book-open" class="w-4 h-4"></i>
+                                 </div>
+                                 {{ __('ui.guide') }}
+                             </a>
                         </div>
                     </div>
 

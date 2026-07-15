@@ -22,6 +22,7 @@ return [
     'control' => 'Kontrol',
     'owner_kpi' => 'KPI Pemilik',
     'security_center' => 'Pusat Keamanan',
+    'database_backup' => 'Cadangan Database',
     
     // Business Unit Specifics
     'business_units_management' => 'Manajemen Unit Bisnis',

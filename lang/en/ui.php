@@ -22,6 +22,7 @@ return [
     'control' => 'Control',
     'owner_kpi' => 'Owner KPI',
     'security_center' => 'Security Center',
+    'database_backup' => 'Backup Database',
     
     // Business Unit Specifics
     'business_units_management' => 'Business Unit Management',

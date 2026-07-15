@@ -1,0 +1,136 @@
+<?php
+
+namespace App\Services;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
+use ZipArchive;
+
+class BackupService
+{
+    /**
+     * Generate database SQL dump and wrap it in a zip archive.
+     *
+     * @param bool $isAuto
+     * @return string Path to the generated ZIP file
+     */
+    public function generateBackup(bool $isAuto = false): string
+    {
+        $dbName = config('database.connections.mysql.database');
+        $timestamp = date('Y_m_d_Hi');
+        
+        $sqlFilename = $isAuto 
+            ? "jnj_auto_backup_{$timestamp}.sql"
+            : "jnj_backup_{$timestamp}.sql";
+            
+        $zipFilename = str_replace('.sql', '.zip', $sqlFilename);
+
+        // Ensure directories exist
+        $baseDir = storage_path('app/backups');
+        $subDir = $isAuto ? 'automated' : 'manual';
+        $targetDirectory = "{$baseDir}/{$subDir}";
+        
+        if (!file_exists($targetDirectory)) {
+            mkdir($targetDirectory, 0755, true);
+        }
+
+        $zipPath = "{$targetDirectory}/{$zipFilename}";
+
+        $dbDriver = DB::getDriverName();
+        $isSqlite = $dbDriver === 'sqlite';
+
+        // 1. Generate SQL content
+        $sqlDump = "-- J&J Group Database Dump\n";
+        $sqlDump .= "-- Generated: " . date('Y-m-d H:i:s') . "\n";
+        $sqlDump .= "-- Database Connection: {$dbDriver}\n\n";
+
+        if ($isSqlite) {
+            $sqlDump .= "PRAGMA foreign_keys = OFF;\n\n";
+            $tables = array_map('current', DB::select("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"));
+        } else {
+            $sqlDump .= "SET FOREIGN_KEY_CHECKS=0;\n\n";
+            $tables = array_map('current', DB::select('SHOW TABLES'));
+        }
+
+        foreach ($tables as $table) {
+            // Get structure
+            if ($isSqlite) {
+                $createResult = DB::select("SELECT sql FROM sqlite_master WHERE type='table' AND name = ?", [$table]);
+                $createSql = $createResult[0]->sql ?? null;
+            } else {
+                $createResult = DB::select("SHOW CREATE TABLE `{$table}`");
+                $createSql = $createResult[0]->{'Create Table'} ?? $createResult[0]->{'Create View'} ?? null;
+            }
+
+            if ($createSql) {
+                $sqlDump .= "DROP TABLE IF EXISTS `{$table}`;\n";
+                $sqlDump .= $createSql . ";\n\n";
+            }
+
+            // Get data
+            $rows = DB::table($table)->get();
+            if ($rows->count() > 0) {
+                foreach ($rows as $row) {
+                    $rowArray = (array)$row;
+                    $keys = array_map(fn($key) => "`{$key}`", array_keys($rowArray));
+                    
+                    $values = array_map(function($value) {
+                        if (is_null($value)) {
+                            return 'NULL';
+                        }
+                        return DB::getPdo()->quote($value);
+                    }, array_values($rowArray));
+
+                    $sqlDump .= "INSERT INTO `{$table}` (" . implode(', ', $keys) . ") VALUES (" . implode(', ', $values) . ");\n";
+                }
+                $sqlDump .= "\n";
+            }
+        }
+
+        if ($isSqlite) {
+            $sqlDump .= "PRAGMA foreign_keys = ON;\n";
+        } else {
+            $sqlDump .= "SET FOREIGN_KEY_CHECKS=1;\n";
+        }
+
+        // 2. Compress into ZIP using native ZipArchive
+        $zip = new ZipArchive();
+        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
+            $zip->addFromString($sqlFilename, $sqlDump);
+            $zip->close();
+        } else {
+            throw new \Exception("Failed to create ZIP archive at: {$zipPath}");
+        }
+
+        return $zipPath;
+    }
+
+    /**
+     * Rotate automated backups, keeping only files from the last 7 days.
+     *
+     * @return int Number of deleted backup files
+     */
+    public function rotateBackups(): int
+    {
+        $directory = storage_path('app/backups/automated');
+        if (!file_exists($directory)) {
+            return 0;
+        }
+
+        $files = glob($directory . '/*.zip');
+        $deletedCount = 0;
+        $cutoffTime = Carbon::now()->subDays(7)->timestamp;
+
+        foreach ($files as $file) {
+            if (filemtime($file) < $cutoffTime) {
+                if (unlink($file)) {
+                    $deletedCount++;
+                }
+            }
+        }
+
+        return $deletedCount;
+    }
+}

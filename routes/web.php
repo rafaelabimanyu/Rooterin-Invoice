@@ -13,6 +13,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ChronosController;
 use App\Http\Controllers\AiInvoiceController;
 use App\Http\Controllers\AiChatController;
+use App\Http\Controllers\BackupController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -107,6 +108,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/security-center', function () {
             return view('security.center');
         })->name('security.center');
+
+        // Database Backup Management
+        Route::get('/backup', [BackupController::class, 'index'])->name('backup.index');
+        Route::post('/backup/settings', [BackupController::class, 'updateSettings'])->name('backup.update-settings');
+        Route::post('/backup/export', [BackupController::class, 'export'])->name('backup.export');
 
         // AI Chatbot Assistant & History
         Route::get('ai-assistant', [AiChatController::class, 'index'])->name('ai-assistant.index');

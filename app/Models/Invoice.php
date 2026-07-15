@@ -175,4 +175,12 @@ class Invoice extends Model
         }
         return $this->creator()->first() ?: User::first() ?: new User(['name' => 'System']);
     }
+
+    /**
+     * Get the remaining balance (sisa tagihan) for the invoice.
+     */
+    public function getAmountDueAttribute(): float
+    {
+        return (float) max(0, $this->total - $this->payments()->sum('amount'));
+    }
 }

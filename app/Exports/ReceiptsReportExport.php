@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\Receipt;
+use App\Models\Payment;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -18,23 +18,29 @@ class ReceiptsReportExport implements FromCollection, WithHeadings, ShouldAutoSi
     protected $startDate;
     protected $endDate;
     protected $clientId;
+    protected $paymentMethod;
 
-    public function __construct($startDate, $endDate, $clientId = null)
+    public function __construct($startDate, $endDate, $clientId = null, $paymentMethod = null)
     {
         $this->startDate = $startDate;
         $this->endDate = $endDate;
         $this->clientId = $clientId;
+        $this->paymentMethod = $paymentMethod;
     }
 
     public function collection()
     {
-        $query = Receipt::with(['invoice.client', 'invoice.businessUnit'])
+        $query = Payment::with(['invoice.client', 'invoice.businessUnit'])
             ->whereBetween('payment_date', [$this->startDate, $this->endDate]);
  
         if ($this->clientId) {
             $query->whereHas('invoice', function ($q) {
                 $q->where('client_id', $this->clientId);
             });
+        }
+
+        if ($this->paymentMethod) {
+            $query->where('payment_method', $this->paymentMethod);
         }
  
         $payments = $query->orderBy('payment_date')->get();
@@ -47,7 +53,7 @@ class ReceiptsReportExport implements FromCollection, WithHeadings, ShouldAutoSi
                 $payment->invoice->client->nama_perusahaan ?? '-',
                 $payment->invoice->businessUnit->name ?? '-',
                 $payment->invoice->invoice_number ?? '-',
-                $payment->receipt_number ?? '-',
+                $payment->reference_number ?? '-',
                 $payment->amount,
                 strtoupper($payment->payment_method),
             ]);

@@ -4,7 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Invoice;
-use App\Models\Receipt;
+use App\Models\Payment;
 use App\Models\Client;
 use App\Services\BusinessUnitReportingService;
 use Carbon\Carbon;
@@ -217,7 +217,7 @@ class OwnerKpi extends Component
                 return compact('client', 'index');
 
             case 'payment':
-                $payment = Receipt::with('invoice.client')->find($id);
+                $payment = Payment::with('invoice.client')->find($id);
                 return compact('payment');
         }
 
@@ -315,8 +315,8 @@ class OwnerKpi extends Component
         });
 
         // 6. Recent Large Payments
-        $recentLargePayments = Receipt::with('invoice.client')
-            ->orderByDesc('amount_received')
+        $recentLargePayments = Payment::with('invoice.client')
+            ->orderByDesc('amount')
             ->take(5)
             ->get();
 

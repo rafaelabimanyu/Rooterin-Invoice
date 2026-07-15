@@ -47,6 +47,18 @@
             <!-- Tren Arus Kas (3 Months) -->
             @include('dashboard.partials.cash-flow-chart')
         </div>
+
+        <!-- PAYMENT ANALYTICS ROW: Analisis Metode & Arus Kas Terbaru -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8 page-fade-in stagger-4">
+            <!-- Analisis Metode Pembayaran -->
+            <div class="lg:col-span-6 flex flex-col">
+                @include('dashboard.partials.payment-methods-breakdown')
+            </div>
+            <!-- Arus Masuk Kas Terbaru -->
+            <div class="lg:col-span-6 flex flex-col">
+                @include('dashboard.partials.recent-payments')
+            </div>
+        </div>
     @else
         <!-- Staff: Premium Interactive Dashboard -->
         <div class="mb-12 page-fade-in" x-data="{ 

@@ -301,7 +301,19 @@
 
     <!-- Payment Modal -->
     <x-modal name="record-payment" :show="false">
-        <div class="p-6 md:p-10">
+        <div class="p-6 md:p-10" x-data="{
+            amount: {{ (float) $invoice->amount_due }},
+            maxAmount: {{ (float) $invoice->amount_due }},
+            get remainingBalance() {
+                return Math.max(0, this.maxAmount - this.amount);
+            },
+            get isValid() {
+                return this.amount > 0 && this.amount <= this.maxAmount;
+            },
+            formatCurrency(val) {
+                return '{{ \App\Models\Setting::get('currency_symbol', 'Rp') }} ' + new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(val);
+            }
+        }">
             <h3 class="text-xl font-bold text-slate-900 font-outfit mb-2">{{ app()->getLocale() == 'en' ? 'Record Payment' : 'Catat Pembayaran' }}</h3>
             <p class="text-sm text-slate-500 mb-8">{{ app()->getLocale() == 'en' ? 'Enter the amount received for this invoice.' : 'Masukkan jumlah yang diterima untuk invoice ini.' }}</p>
             
@@ -311,8 +323,18 @@
                 
                 <div class="space-y-2">
                     <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Amount Received (IDR)' : 'Jumlah Diterima (IDR)' }}</label>
-                    <input type="number" name="amount" value="{{ $invoice->amount_due }}" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-lg font-black text-gold-600 outline-none focus:ring-2 focus:ring-gold-500/20 transition-all">
-                    <p class="text-[10px] text-slate-400 font-medium italic">{{ app()->getLocale() == 'en' ? 'Remaining balance' : 'Sisa saldo' }}: {{ \App\Models\Setting::get('currency_symbol', 'Rp') }} {{ number_format($invoice->amount_due, 0, ',', '.') }}</p>
+                    <input type="number" name="amount" x-model.number="amount" :max="maxAmount" min="1" step="any" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-lg font-black text-gold-600 outline-none focus:ring-2 focus:ring-gold-500/20 transition-all">
+                    
+                    <p class="text-[10px] text-slate-400 font-medium italic">
+                        {{ app()->getLocale() == 'en' ? 'Remaining balance' : 'Sisa saldo' }}: 
+                        <span x-text="formatCurrency(remainingBalance)"></span>
+                    </p>
+                    
+                    <template x-if="amount > maxAmount">
+                        <p class="text-[10px] text-rose-500 font-bold mt-1">
+                            {{ app()->getLocale() == 'en' ? 'Amount cannot exceed the remaining balance!' : 'Jumlah tidak boleh melebihi sisa tagihan!' }}
+                        </p>
+                    </template>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -338,7 +360,7 @@
 
                 <div class="pt-6 flex flex-col-reverse sm:flex-row items-center justify-end gap-3">
                     <button type="button" @click="$dispatch('close-modal', 'record-payment')" class="w-full sm:w-auto px-5 py-2.5 text-sm font-bold text-slate-500 hover:text-slate-800">{{ app()->getLocale() == 'en' ? 'Cancel' : 'Batal' }}</button>
-                    <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-gold-500 text-slate-950 rounded-lg text-sm font-black shadow-lg shadow-gold-500/20 active:scale-95">{{ app()->getLocale() == 'en' ? 'Save Payment' : 'Simpan Pembayaran' }}</button>
+                    <button type="submit" :disabled="!isValid" :class="{'opacity-50 cursor-not-allowed': !isValid}" class="w-full sm:w-auto px-8 py-3 bg-gold-500 text-slate-950 rounded-lg text-sm font-black shadow-lg shadow-gold-500/20 active:scale-95 transition-all">{{ app()->getLocale() == 'en' ? 'Save Payment' : 'Simpan Pembayaran' }}</button>
                 </div>
             </form>
         </div>

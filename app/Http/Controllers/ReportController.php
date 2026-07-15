@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\Receipt;
+use App\Models\Payment;
 use App\Services\BusinessUnitReportingService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -27,6 +28,7 @@ class ReportController extends Controller
         $startDate = $request->get('start_date', Carbon::now()->startOfMonth()->toDateString());
         $endDate = $request->get('end_date', Carbon::now()->endOfMonth()->toDateString());
         $clientId = $request->get('client_id');
+        $paymentMethod = $request->get('payment_method');
 
         // --- Calculate Previous Period for Trend Calculations ---
         $start = Carbon::parse($startDate);
@@ -63,28 +65,34 @@ class ReportController extends Controller
                 : 0,
         ];
 
-        // --- Receipt (Payment) Reports ---
-        $paymentQuery = Receipt::whereBetween('payment_date', [$startDate, $endDate]);
+        // --- Payment (Revenue) Reports ---
+        $paymentQuery = Payment::whereBetween('payment_date', [$startDate, $endDate]);
         if ($clientId) {
             $paymentQuery->whereHas('invoice', function($q) use ($clientId) {
                 $q->where('client_id', $clientId);
             });
         }
+        if ($paymentMethod) {
+            $paymentQuery->where('payment_method', $paymentMethod);
+        }
 
         $paymentStats = [
-            'total_collected' => (clone $paymentQuery)->sum('amount_received'),
+            'total_collected' => (clone $paymentQuery)->sum('amount'),
             'method_breakdown' => collect([]),
             'recent_payments' => (clone $paymentQuery)->with(['invoice.client'])->latest('payment_date')->take(10)->get(),
         ];
 
         // --- Previous Payment Stats for Growth ---
-        $prevPaymentQuery = Receipt::whereBetween('payment_date', [$prevStartDate, $prevEndDate]);
+        $prevPaymentQuery = Payment::whereBetween('payment_date', [$prevStartDate, $prevEndDate]);
         if ($clientId) {
             $prevPaymentQuery->whereHas('invoice', function($q) use ($clientId) {
                 $q->where('client_id', $clientId);
             });
         }
-        $prevCollected = $prevPaymentQuery->sum('amount_received');
+        if ($paymentMethod) {
+            $prevPaymentQuery->where('payment_method', $paymentMethod);
+        }
+        $prevCollected = $prevPaymentQuery->sum('amount');
         $paymentStats['collected_growth'] = $prevCollected > 0
             ? (($paymentStats['total_collected'] - $prevCollected) / $prevCollected) * 100
             : 0;
@@ -151,7 +159,7 @@ class ReportController extends Controller
             ->get();
 
         // 2. Highest Outstanding Debts (Payment Delays)
-        $clientOutstandingQuery = Client::select('clients.id', 'clients.nama_client', 'clients.nama_perusahaan', DB::raw("SUM(invoices.total - COALESCE((SELECT SUM(amount_received) FROM receipts WHERE receipts.invoice_id = invoices.id), 0)) as total_outstanding"))
+        $clientOutstandingQuery = Client::select('clients.id', 'clients.nama_client', 'clients.nama_perusahaan', DB::raw("SUM(invoices.total - COALESCE((SELECT SUM(amount) FROM payments WHERE payments.invoice_id = invoices.id), 0)) as total_outstanding"))
             ->join('invoices', 'invoices.client_id', '=', 'clients.id')
             ->whereIn('invoices.status', ['sent', 'dp', 'pending', 'overdue'])
             ->whereBetween('invoices.created_at', [$startDate, $endDate]);
@@ -169,7 +177,7 @@ class ReportController extends Controller
         $businessUnitStats = $this->reportingService->getBusinessUnitsSummary($filters);
 
         return view('reports.index', compact(
-            'startDate', 'endDate', 'clientId', 'clients',
+            'startDate', 'endDate', 'clientId', 'paymentMethod', 'clients',
             'invoiceStats', 'paymentStats', 'totalOutstanding', 'outstandingGrowth', 'recentInvoices',
             'trendMonths', 'trendRevenue', 'trendReceivables',
             'topClientRevenue', 'topClientOutstanding', 'businessUnitStats'
@@ -181,12 +189,13 @@ class ReportController extends Controller
         $startDate = $request->get('start_date', Carbon::now()->startOfMonth()->toDateString());
         $endDate = $request->get('end_date', Carbon::now()->endOfMonth()->toDateString());
         $clientId = $request->get('client_id');
+        $paymentMethod = $request->get('payment_method');
         $tab = $request->get('tab', 'invoices');
 
         switch ($tab) {
             case 'receipts':
-                $export = new ReceiptsReportExport($startDate, $endDate, $clientId);
-                $filename = "Laporan_Kuitansi_Pembayaran_{$startDate}_to_{$endDate}.xlsx";
+                $export = new ReceiptsReportExport($startDate, $endDate, $clientId, $paymentMethod);
+                $filename = "Laporan_Pembayaran_{$startDate}_to_{$endDate}.xlsx";
                 break;
             case 'clients':
                 $export = new ClientsReportExport($startDate, $endDate, $clientId);

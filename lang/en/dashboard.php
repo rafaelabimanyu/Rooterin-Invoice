@@ -24,6 +24,8 @@ return [
     'invoice_updated' => 'Invoice Updated',
     'security_alert' => 'Security Alert',
     'invoice_created' => 'Invoice Created',
+    'payment_recorded' => 'Payment Recorded',
+    'payment_deleted' => 'Payment Deleted',
 
     // Detail Templates
     'logged_in_ip' => 'Logged in from authorized IP: :ip',
@@ -32,6 +34,8 @@ return [
     'created_invoice' => 'Created draft invoice :inv',
     'session_verified' => 'Session verified under token :token',
     'failed_admin_login' => 'Failed admin login attempt from IP :ip',
+    'recorded_payment' => ':msg',
+    'deleted_payment' => ':msg',
     
     // Dashboard UI
     'main_dashboard' => 'Main Dashboard',
@@ -101,6 +105,17 @@ return [
     'top_clients_revenue' => 'Top Clients by Revenue',
     'highest_ltv_clients' => 'Highest lifetime value clients',
     'no_revenue_records' => 'No revenue records found.',
+
+    // Payment Analytics
+    'payment_methods_title' => 'Payment Methods Analysis',
+    'payment_methods_subtitle' => 'Distribution of transactions by payment channel',
+    'recent_payments_title' => 'Recent Capital Inflow',
+    'recent_payments_subtitle' => 'Latest payments received across all business units',
+    'payment_channel' => 'Payment Channel',
+    'transaction_count' => 'Transactions',
+    'total_collected' => 'Total Collected',
+    'avg_payment_size' => 'Avg. Payment Size',
+    'reference_no' => 'Ref. No.',
 ];
 
 

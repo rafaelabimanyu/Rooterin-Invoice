@@ -13,11 +13,11 @@
             <div class="glass-card p-6">
                 <form action="{{ route('reports.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
                     <input type="hidden" name="tab" :value="tab">
-                     <div class="space-y-2 md:col-span-3">
+                    <div class="space-y-2 md:col-span-2">
                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Start Date' : 'Tanggal Mulai' }}</label>
                         <input type="date" name="start_date" value="{{ $startDate }}" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-gold-500 focus:bg-white transition-colors font-medium">
                     </div>
-                    <div class="space-y-2 md:col-span-3">
+                    <div class="space-y-2 md:col-span-2">
                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'End Date' : 'Tanggal Selesai' }}</label>
                         <input type="date" name="end_date" value="{{ $endDate }}" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-gold-500 focus:bg-white transition-colors font-medium">
                     </div>
@@ -28,6 +28,16 @@
                             @foreach($clients as $client)
                                 <option value="{{ $client->id }}" {{ $clientId == $client->id ? 'selected' : '' }}>{{ $client->nama_client }}</option>
                             @endforeach
+                        </select>
+                    </div>
+                    <div class="space-y-2 md:col-span-2">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Payment Method' : 'Metode Pembayaran' }}</label>
+                        <select name="payment_method" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-gold-500 focus:bg-white transition-colors font-medium">
+                            <option value="">{{ app()->getLocale() == 'en' ? 'All Methods' : 'Semua Metode' }}</option>
+                            <option value="Transfer Bank" {{ ($paymentMethod ?? '') == 'Transfer Bank' ? 'selected' : '' }}>{{ app()->getLocale() == 'en' ? 'Bank Transfer' : 'Transfer Bank' }}</option>
+                            <option value="Cash" {{ ($paymentMethod ?? '') == 'Cash' ? 'selected' : '' }}>Cash</option>
+                            <option value="Credit Card" {{ ($paymentMethod ?? '') == 'Credit Card' ? 'selected' : '' }}>{{ app()->getLocale() == 'en' ? 'Credit Card' : 'Kartu Kredit' }}</option>
+                            <option value="E-Wallet" {{ ($paymentMethod ?? '') == 'E-Wallet' ? 'selected' : '' }}>E-Wallet</option>
                         </select>
                     </div>
                     <div class="flex flex-wrap gap-2 md:col-span-3">

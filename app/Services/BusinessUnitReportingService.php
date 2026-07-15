@@ -23,8 +23,22 @@ class BusinessUnitReportingService
         $totalBilled = (clone $invoiceQuery)->sum('total');
         $totalCount = (clone $invoiceQuery)->count();
 
-        // 2. Total revenue (sum of invoice totals where status is 'paid')
-        $totalRevenue = (clone $invoiceQuery)->where('status', 'paid')->sum('total');
+        // 2. Total revenue (sum of actual payments recorded in the given date range)
+        $paymentQuery = \App\Models\Payment::query();
+        if (!empty($filters['start_date']) && !empty($filters['end_date'])) {
+            $paymentQuery->whereBetween('payment_date', [$filters['start_date'], $filters['end_date']]);
+        }
+        if (!empty($filters['client_id'])) {
+            $paymentQuery->whereHas('invoice', function ($q) use ($filters) {
+                $q->where('client_id', $filters['client_id']);
+            });
+        }
+        if (!empty($filters['business_unit_id'])) {
+            $paymentQuery->whereHas('invoice', function ($q) use ($filters) {
+                $q->where('business_unit_id', $filters['business_unit_id']);
+            });
+        }
+        $totalRevenue = $paymentQuery->sum('amount');
         $paidCount = (clone $invoiceQuery)->where('status', 'paid')->count();
 
         // 3. Collection Rate
@@ -182,13 +196,16 @@ class BusinessUnitReportingService
                     $q->whereBetween('created_at', [$startDate, $endDate]);
                 }
             }])
-            ->withSum(['invoices as total_revenue' => function ($q) use ($startDate, $endDate) {
-                // Gross revenue is based only on paid (lunas) invoices
-                $q->where('status', 'paid');
+            ->select('business_units.*')
+            ->selectSub(function ($query) use ($startDate, $endDate) {
+                $query->selectRaw('COALESCE(SUM(payments.amount), 0)')
+                    ->from('payments')
+                    ->join('invoices', 'invoices.id', '=', 'payments.invoice_id')
+                    ->whereColumn('invoices.business_unit_id', 'business_units.id');
                 if ($startDate && $endDate) {
-                    $q->whereBetween('created_at', [$startDate, $endDate]);
+                    $query->whereBetween('payments.payment_date', [$startDate, $endDate]);
                 }
-            }], 'total')
+            }, 'total_revenue')
             ->orderByDesc('total_revenue')
             ->get()
             ->map(function ($unit) {

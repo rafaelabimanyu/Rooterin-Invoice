@@ -22,6 +22,10 @@ class DashboardController extends Controller
     {
         $totalClients = Client::where('status', 'aktif')->count();
         $overdueClients = collect();
+        $paymentMethodsBreakdown = collect();
+        $recentPayments = collect();
+        $totalPaymentsAmount = 0;
+        $averagePaymentAmount = 0;
         
         $globalStats = $this->reportingService->getSummaryStats();
         $totalInvoices = $globalStats['total_invoices_count'];
@@ -120,7 +124,7 @@ class DashboardController extends Controller
                 ->get();
 
             $rawActivityLogs = \App\Models\ActivityLog::with('user')
-                ->whereIn('action', ['login', 'create_invoice', 'update_invoice'])
+                ->whereIn('action', ['login', 'create_invoice', 'update_invoice', 'record_payment', 'delete_payment'])
                 ->latest()
                 ->take(10)
                 ->get();
@@ -165,6 +169,14 @@ class DashboardController extends Controller
                         
                         $details_key = 'created_invoice';
                         $details_params = ['inv' => $invNum];
+                    } elseif ($log->action === 'record_payment') {
+                        $action = 'payment_recorded';
+                        $details_key = 'recorded_payment';
+                        $details_params = ['msg' => $log->description];
+                    } elseif ($log->action === 'delete_payment') {
+                        $action = 'payment_deleted';
+                        $details_key = 'deleted_payment';
+                        $details_params = ['msg' => $log->description];
                     } elseif ($log->action === 'update_invoice' || $log->action === 'updated_invoice') {
                         $action = 'invoice_updated';
                         preg_match('/(INV-\d+-\d+|[A-Z0-9-]+)/i', $log->description, $matches);
@@ -258,6 +270,22 @@ class DashboardController extends Controller
             ->orderByDesc('invoices_sum_total')
             ->take(3)
             ->get();
+
+            // Payment analytics
+            $paymentMethodsBreakdown = \App\Models\Payment::select('payment_method', \DB::raw('count(*) as count'), \DB::raw('sum(amount) as total_amount'))
+                ->groupBy('payment_method')
+                ->orderByDesc('count')
+                ->get();
+            
+            $totalPaymentsAmount = \App\Models\Payment::sum('amount');
+            $totalPaymentsCount = \App\Models\Payment::count();
+            $averagePaymentAmount = $totalPaymentsCount > 0 ? ($totalPaymentsAmount / $totalPaymentsCount) : 0;
+
+            $recentPayments = \App\Models\Payment::with('invoice.client')
+                ->latest('payment_date')
+                ->latest('id')
+                ->take(5)
+                ->get();
         }
         $insights = !$isStaff ? $insightService->generateInsights() : [];
 
@@ -288,7 +316,11 @@ class DashboardController extends Controller
             'invoiceAgeing',
             'businessUnitSummary',
             'insights',
-            'overdueClients'
+            'overdueClients',
+            'paymentMethodsBreakdown',
+            'recentPayments',
+            'totalPaymentsAmount',
+            'averagePaymentAmount'
         ));
     }
 

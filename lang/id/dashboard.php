@@ -24,6 +24,8 @@ return [
     'invoice_updated' => 'Invoice Updated',
     'security_alert' => 'Security Alert',
     'invoice_created' => 'Invoice Created',
+    'payment_recorded' => 'Pembayaran Dicatat',
+    'payment_deleted' => 'Pembayaran Dihapus',
 
     // Detail Templates
     'logged_in_ip' => 'Masuk dari IP resmi: :ip',
@@ -32,6 +34,8 @@ return [
     'created_invoice' => 'Membuat draf invoice :inv',
     'session_verified' => 'Sesi diverifikasi dengan token :token',
     'failed_admin_login' => 'Percobaan login admin gagal dari IP :ip',
+    'recorded_payment' => ':msg',
+    'deleted_payment' => ':msg',
     
     // Dashboard UI
     'main_dashboard' => 'Dasbor Utama',
@@ -101,6 +105,17 @@ return [
     'top_clients_revenue' => 'Klien Teratas Berdasarkan Pendapatan',
     'highest_ltv_clients' => 'Klien dengan kontribusi pendapatan terbesar',
     'no_revenue_records' => 'Belum ada data pendapatan.',
+
+    // Payment Analytics
+    'payment_methods_title' => 'Analisis Metode Pembayaran',
+    'payment_methods_subtitle' => 'Distribusi transaksi berdasarkan kanal pembayaran',
+    'recent_payments_title' => 'Arus Masuk Kas Terbaru',
+    'recent_payments_subtitle' => 'Pembayaran terbaru yang diterima di semua unit bisnis',
+    'payment_channel' => 'Kanal Pembayaran',
+    'transaction_count' => 'Transaksi',
+    'total_collected' => 'Total Diterima',
+    'avg_payment_size' => 'Rata-rata Nominal',
+    'reference_no' => 'No. Referensi',
 ];
 
 

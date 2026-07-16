@@ -69,18 +69,18 @@
                     <div class="space-y-4">
                         <div class="space-y-1">
                             <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Full Identity' : 'Identitas Lengkap' }}</label>
-                            <input type="text" wire:model="editingName" class="w-full px-4 py-2.5 bg-slate-50 border-transparent rounded-xl focus:bg-white focus:ring-4 focus:ring-gold-500/10 focus:border-gold-500 transition-all font-bold text-slate-900 text-xs">
+                            <input type="text" id="editingName" name="editingName" wire:model="editingName" class="w-full px-4 py-2.5 bg-slate-50 border-transparent rounded-xl focus:bg-white focus:ring-4 focus:ring-gold-500/10 focus:border-gold-500 transition-all font-bold text-slate-900 text-xs">
                         </div>
 
                         <div class="space-y-1">
                             <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Email Address' : 'Alamat Email' }}</label>
-                            <input type="email" wire:model="editingEmail" class="w-full px-4 py-2.5 bg-slate-50 border-transparent rounded-xl focus:bg-white focus:ring-4 focus:ring-gold-500/10 focus:border-gold-500 transition-all font-bold text-slate-900 text-xs">
+                            <input type="email" id="editingEmail" name="editingEmail" wire:model="editingEmail" class="w-full px-4 py-2.5 bg-slate-50 border-transparent rounded-xl focus:bg-white focus:ring-4 focus:ring-gold-500/10 focus:border-gold-500 transition-all font-bold text-slate-900 text-xs">
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
                             <div class="space-y-1">
                                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Access Level' : 'Tingkat Akses' }}</label>
-                                <select wire:model="editingRole" class="w-full px-4 py-2.5 bg-slate-50 border-transparent rounded-xl focus:bg-white focus:ring-4 focus:ring-gold-500/10 focus:border-gold-500 transition-all font-bold text-slate-900 uppercase text-xs tracking-widest">
+                                <select id="editingRole" name="editingRole" wire:model="editingRole" class="w-full px-4 py-2.5 bg-slate-50 border-transparent rounded-xl focus:bg-white focus:ring-4 focus:ring-gold-500/10 focus:border-gold-500 transition-all font-bold text-slate-900 uppercase text-xs tracking-widest">
                                     <option value="owner">Owner</option>
                                     <option value="admin">Admin</option>
                                     <option value="staff">Staff</option>
@@ -90,7 +90,7 @@
                                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Account Status' : 'Status Akun' }}</label>
                                 <div class="flex items-center h-full">
                                     <label class="relative inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" wire:model="editingIsActive" class="sr-only peer">
+                                        <input type="checkbox" id="editingIsActive" name="editingIsActive" wire:model="editingIsActive" class="sr-only peer">
                                         <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-gold-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gold-500"></div>
                                         <span class="ms-2 text-[10px] font-black text-slate-500 uppercase tracking-widest">
                                             {{ $editingIsActive ? (app()->getLocale() == 'en' ? 'Active' : 'Aktif') : (app()->getLocale() == 'en' ? 'Suspended' : 'Ditangguhkan') }}
@@ -109,7 +109,7 @@
                             <p class="text-[10px] text-slate-400 font-medium">{{ app()->getLocale() == 'en' ? "Reset this operative's credentials manually." : 'Reset kredensial pelaksana ini secara manual.' }}</p>
                         </div>
                         <div class="relative">
-                            <input :type="$wire.showPassword ? 'text' : 'password'" wire:model="editingPassword" class="w-full bg-white/5 border-white/10 rounded-xl py-2 px-4 text-xs font-mono tracking-wider focus:border-gold-500 focus:ring-0 transition-all text-white" placeholder="{{ app()->getLocale() == 'en' ? 'Enter new password...' : 'Masukkan kata sandi baru...' }}">
+                            <input :type="$wire.showPassword ? 'text' : 'password'" id="editingPassword" name="editingPassword" wire:model="editingPassword" class="w-full bg-white/5 border-white/10 rounded-xl py-2 px-4 text-xs font-mono tracking-wider focus:border-gold-500 focus:ring-0 transition-all text-white" placeholder="{{ app()->getLocale() == 'en' ? 'Enter new password...' : 'Masukkan kata sandi baru...' }}">
                             <button type="button" wire:click="$toggle('showPassword')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white">
                                 @if($showPassword)
                                     <i data-lucide="eye-off" class="w-3.5 h-3.5"></i>

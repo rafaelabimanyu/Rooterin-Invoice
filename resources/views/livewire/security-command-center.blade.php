@@ -17,7 +17,7 @@
                     <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Master Password' : 'Kata Sandi Utama' }}</label>
                     <div class="relative">
                         <i data-lucide="key" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
-                        <input type="password" wire:model="sudoPassword" placeholder="••••••••" class="w-full pl-12 pr-5 py-4 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-slate-900/5 focus:border-slate-900 transition-all font-bold text-slate-900">
+                        <input type="password" id="sudoPassword" name="sudoPassword" wire:model="sudoPassword" placeholder="••••••••" class="w-full pl-12 pr-5 py-4 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-slate-900/5 focus:border-slate-900 transition-all font-bold text-slate-900">
                     </div>
                     @error('sudoPassword') <span class="text-[10px] text-rose-500 font-bold uppercase tracking-wide">{{ $message }}</span> @enderror
                 </div>
@@ -249,7 +249,7 @@
                                             
                                             <div class="space-y-2">
                                                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Verification Pulse' : 'Pulsa Verifikasi' }}</label>
-                                                <input type="text" wire:model="twoFactorCode" placeholder="{{ app()->getLocale() == 'en' ? 'Enter 6-digit code' : 'Masukkan kode 6 digit' }}" class="w-full px-6 py-4 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-gold-500/5 focus:border-gold-500 transition-all font-black text-slate-900 tracking-[0.5em] text-center">
+                                                <input type="text" id="twoFactorCode" name="twoFactorCode" wire:model="twoFactorCode" placeholder="{{ app()->getLocale() == 'en' ? 'Enter 6-digit code' : 'Masukkan kode 6 digit' }}" class="w-full px-6 py-4 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-gold-500/5 focus:border-gold-500 transition-all font-black text-slate-900 tracking-[0.5em] text-center">
                                                 @error('twoFactorCode') <span class="text-[10px] text-rose-500 font-bold uppercase tracking-wide">{{ $message }}</span> @enderror
                                             </div>
                                             <button wire:click="confirm2FA" class="w-full py-4 bg-gold-500 text-slate-950 font-bold rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-gold-600 transition-all shadow-xl shadow-gold-500/20">{{ app()->getLocale() == 'en' ? 'Finalize Encryption' : 'Selesaikan Enkripsi' }}</button>

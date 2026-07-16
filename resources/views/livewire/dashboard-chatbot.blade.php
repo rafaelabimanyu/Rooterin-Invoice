@@ -226,6 +226,8 @@
         >
             <div class="relative flex-grow flex items-center">
                 <textarea 
+                    id="chatbot-message-input"
+                    name="chatbot-message-input"
                     wire:model="input" 
                     x-ref="inputChatbox"
                     rows="1"

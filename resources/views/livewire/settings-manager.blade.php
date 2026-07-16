@@ -104,14 +104,14 @@
                                 <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Enterprise Legal Name' : 'Nama Hukum Perusahaan' }}</label>
                                 <div class="relative">
                                     <i data-lucide="building" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
-                                    <input type="text" wire:model.live="settings.company_name" class="w-full pl-12 pr-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm">
+                                    <input type="text" id="settings-company-name" name="settings-company-name" wire:model.live="settings.company_name" class="w-full pl-12 pr-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm">
                                 </div>
                             </div>
                             <div class="space-y-3">
                                 <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Primary Contact Email' : 'Email Kontak Utama' }}</label>
                                 <div class="relative">
                                     <i data-lucide="mail" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
-                                    <input type="email" wire:model.live="settings.company_email" class="w-full pl-12 pr-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm">
+                                    <input type="email" id="settings-company-email" name="settings-company-email" wire:model.live="settings.company_email" class="w-full pl-12 pr-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm">
                                 </div>
                             </div>
                         </div>
@@ -120,20 +120,20 @@
                                 <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Contact Phone' : 'Nomor Telepon Kontak' }}</label>
                                 <div class="relative">
                                     <i data-lucide="phone" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
-                                    <input type="text" wire:model.live="settings.company_phone" class="w-full pl-12 pr-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm">
+                                    <input type="text" id="settings-company-phone" name="settings-company-phone" wire:model.live="settings.company_phone" class="w-full pl-12 pr-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm">
                                 </div>
                             </div>
                             <div class="space-y-3">
                                 <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Company Website' : 'Website Perusahaan' }}</label>
                                 <div class="relative">
                                     <i data-lucide="globe" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
-                                    <input type="text" wire:model.live="settings.company_website" class="w-full pl-12 pr-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm">
+                                    <input type="text" id="settings-company-website" name="settings-company-website" wire:model.live="settings.company_website" class="w-full pl-12 pr-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm">
                                 </div>
                             </div>
                         </div>
                         <div class="space-y-3">
                             <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Headquarters Address' : 'Alamat Kantor Pusat' }}</label>
-                            <textarea wire:model.live="settings.company_address" rows="4" class="w-full px-6 py-5 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm"></textarea>
+                            <textarea id="settings-company-address" name="settings-company-address" wire:model.live="settings.company_address" rows="4" class="w-full px-6 py-5 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm"></textarea>
                         </div>
                     </div>
                 </div>
@@ -156,21 +156,21 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div class="space-y-3">
                                 <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Currency Symbol' : 'Simbol Mata Uang' }}</label>
-                                <input type="text" wire:model.live="settings.currency_symbol" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm">
+                                <input type="text" id="settings-currency-symbol" name="settings-currency-symbol" wire:model.live="settings.currency_symbol" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm">
                             </div>
                             <div class="space-y-3">
                                 <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Invoice Starting Number' : 'Nomor Faktur Mulai' }}</label>
-                                <input type="number" wire:model.live="settings.invoice_start_number" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm">
+                                <input type="number" id="settings-invoice-start-number" name="settings-invoice-start-number" wire:model.live="settings.invoice_start_number" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm">
                             </div>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div class="space-y-3">
                                 <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">PPN Default (%)</label>
-                                <input type="number" step="0.01" wire:model.live="settings.ppn_percent" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm" placeholder="0">
+                                <input type="number" step="0.01" id="settings-ppn-percent" name="settings-ppn-percent" wire:model.live="settings.ppn_percent" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm" placeholder="0">
                             </div>
                             <div class="space-y-3">
                                 <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">PPh Default (%)</label>
-                                <input type="number" step="0.01" wire:model.live="settings.pph_percent" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm" placeholder="0">
+                                <input type="number" step="0.01" id="settings-pph-percent" name="settings-pph-percent" wire:model.live="settings.pph_percent" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm" placeholder="0">
                             </div>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -202,14 +202,14 @@
                         <div class="space-y-6">
                             <div class="space-y-2">
                                 <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Temporal Zone (Timezone)' : 'Zona Waktu' }}</label>
-                                <select wire:model.live="settings.timezone" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm">
+                                <select id="settings-timezone" name="settings-timezone" wire:model.live="settings.timezone" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm">
                                     <option value="Asia/Jakarta">Jakarta (GMT+7)</option>
                                     <option value="UTC">Universal Coordinated Time (UTC)</option>
                                 </select>
                             </div>
                             <div class="space-y-2">
                                 <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Date Expression Format' : 'Format Tampilan Tanggal' }}</label>
-                                <select wire:model.live="settings.date_format" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm">
+                                <select id="settings-date-format" name="settings-date-format" wire:model.live="settings.date_format" class="w-full px-5 py-4 bg-slate-50/50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm">
                                     <option value="d M Y">12 May 2026</option>
                                     <option value="Y-m-d">2026-05-12</option>
                                     <option value="d/m/Y">12/05/2026</option>

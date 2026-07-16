@@ -303,7 +303,10 @@
                 }
             });
             
-            document.addEventListener('alpine:init', () => {
+            function registerPdfDownloader() {
+                if (window.pdfDownloaderRegistered) return;
+                window.pdfDownloaderRegistered = true;
+
                 Alpine.data('pdfDownloader', () => ({
                     show: false,
                     progress: 0,
@@ -392,7 +395,13 @@
                         }
                     }
                 }));
-            });
+            }
+
+            if (window.Alpine) {
+                registerPdfDownloader();
+            } else {
+                document.addEventListener('alpine:init', registerPdfDownloader);
+            }
         </script>
         @livewireScripts
         @stack('scripts')
@@ -454,6 +463,17 @@
                 toast.querySelector('button').onclick = closeToast;
                 setTimeout(closeToast, 5000);
             });
+        </script>
+        
+        <!-- Service Worker Registration -->
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/sw.js')
+                        .then((reg) => console.log('[Service Worker] Registered successfully:', reg.scope))
+                        .catch((err) => console.error('[Service Worker] Registration failed:', err));
+                });
+            }
         </script>
     </body>
 </html>

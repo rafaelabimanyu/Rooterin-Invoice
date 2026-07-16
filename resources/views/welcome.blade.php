@@ -459,10 +459,16 @@
         // --- Interaction State ---
         let mouseX = 0, mouseY = 0, cursorX = 0, cursorY = 0;
         let isMobile = window.innerWidth <= 768;
-
         const updatePosition = e => {
-            mouseX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
-            mouseY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+            if (e.type.includes('touch')) {
+                if (e.touches && e.touches.length > 0) {
+                    mouseX = e.touches[0].clientX;
+                    mouseY = e.touches[0].clientY;
+                }
+            } else {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            }
         };
         window.addEventListener('mousemove', updatePosition);
         window.addEventListener('touchmove', updatePosition, {passive: true});
@@ -570,6 +576,16 @@
         }, { threshold: 0.1 });
         document.querySelectorAll('.reveal-section, section').forEach(el => observer.observe(el));
     </script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((reg) => console.log('[Service Worker] Registered successfully:', reg.scope))
+                    .catch((err) => console.error('[Service Worker] Registration failed:', err));
+            });
+        }
+    </script>
 </body>
-
 </html>

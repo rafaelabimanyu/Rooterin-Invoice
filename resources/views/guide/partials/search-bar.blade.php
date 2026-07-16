@@ -3,6 +3,8 @@
         <i data-lucide="search" class="w-4 h-4 text-slate-400 group-focus-within:text-gold-500 transition-colors"></i>
     </div>
     <input type="text" 
+           id="guide-search"
+           name="guide-search"
            class="block w-full pl-10 pr-16 py-2.5 border border-slate-200 rounded-xl leading-5 bg-slate-50/50 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 focus:bg-white sm:text-sm transition-all shadow-sm hover:bg-white" 
            placeholder="{{ app()->getLocale() == 'en' ? 'Search in ' . strtolower($guideData['header']['title']) . '...' : 'Cari di ' . strtolower($guideData['header']['title']) . '...' }}">
     <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">

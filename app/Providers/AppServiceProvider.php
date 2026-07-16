@@ -29,5 +29,12 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('viewPulse', function (User $user) {
             return $user->hasFullAccess();
         });
+
+        \Illuminate\Support\Facades\Vite::usePreloadTagAttributes(function ($src) {
+            if (str_ends_with($src, '.css')) {
+                return false;
+            }
+            return [];
+        });
     }
 }

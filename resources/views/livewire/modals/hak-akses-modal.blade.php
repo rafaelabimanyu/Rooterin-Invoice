@@ -55,7 +55,7 @@
             <!-- Access Role Select -->
             <div class="space-y-2">
                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Access Level / Role' : 'Tingkat Akses / Peran' }}</label>
-                <select wire:model="selectedUserRole" class="w-full px-4 py-3 bg-slate-50 border-transparent rounded-xl focus:bg-white focus:ring-4 focus:ring-gold-500/10 focus:border-gold-500 transition-all font-bold text-slate-900 uppercase text-xs tracking-widest">
+                <select id="selectedUserRole" name="selectedUserRole" wire:model="selectedUserRole" class="w-full px-4 py-3 bg-slate-50 border-transparent rounded-xl focus:bg-white focus:ring-4 focus:ring-gold-500/10 focus:border-gold-500 transition-all font-bold text-slate-900 uppercase text-xs tracking-widest">
                     <option value="owner">Owner</option>
                     <option value="admin">Admin</option>
                     <option value="staff">Staff</option>
@@ -68,7 +68,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     @foreach($allPermissions as $perm)
                         <label class="flex items-start gap-3 p-3 bg-slate-50 hover:bg-slate-100 border border-slate-200/60 rounded-xl cursor-pointer transition-all">
-                            <input type="checkbox" wire:model="selectedUserPermissions.{{ $perm }}" class="mt-1 text-gold-600 focus:ring-gold-500 rounded border-slate-300">
+                            <input type="checkbox" id="perm-{{ $perm }}" name="perm-{{ $perm }}" wire:model="selectedUserPermissions.{{ $perm }}" class="mt-1 text-gold-600 focus:ring-gold-500 rounded border-slate-300">
                             <div class="flex flex-col">
                                 <span class="text-xs font-black text-slate-900 font-mono">{{ $perm }}</span>
                                 <span class="text-[10px] text-slate-400 mt-0.5 leading-relaxed">

@@ -1,3 +1,20 @@
+@php
+    $formattedLogs = collect($securityLogs->items())->map(function ($log) {
+        return [
+            'id' => $log->id,
+            'activity' => $log->activity,
+            'date' => $log->created_at->format('M d, Y • H:i:s'),
+            'is_suspicious' => (bool) $log->is_suspicious,
+            'ip_address' => $log->ip_address,
+            'user_agent' => $log->user_agent,
+            'user' => $log->user ? [
+                'name' => $log->user->name,
+                'role' => $log->user->role,
+                'profile_photo_url' => $log->user->profile_photo_url
+            ] : null
+        ];
+    });
+@endphp
 <x-app-layout :title="app()->getLocale() == 'en' ? 'Business Intelligence & Owner KPI' : 'Intelijen Bisnis & KPI Pemilik'">
     <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 page-fade-in">
         <div>
@@ -20,35 +37,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
         <!-- Security Logs (Left) -->
         <div class="lg:col-span-8 space-y-8">
-            <div class="table-container page-fade-in stagger-1" x-data="{
-                activeTab: 'all',
-                logs: [
-                    @foreach($securityLogs as $log)
-                    {
-                        id: {{ $log->id }},
-                        activity: {!! json_encode($log->activity) !!},
-                        date: '{{ $log->created_at->format('M d, Y • H:i:s') }}',
-                        is_suspicious: {{ $log->is_suspicious ? 'true' : 'false' }},
-                        ip_address: '{{ $log->ip_address }}',
-                        user_agent: {!! json_encode($log->user_agent) !!},
-                        user: {!! $log->user ? json_encode([
-                            'name' => $log->user->name,
-                            'role' => $log->user->role,
-                            'profile_photo_url' => $log->user->profile_photo_url
-                        ]) : 'null' !!}
-                    },
-                    @endforeach
-                ],
-                get filteredLogs() {
-                    if (this.activeTab === 'login') {
-                        return this.logs.filter(log => log.activity.toLowerCase().includes('login'));
-                    }
-                    if (this.activeTab === 'high_risk') {
-                        return this.logs.filter(log => log.is_suspicious);
-                    }
-                    return this.logs;
-                }
-            }">
+            <div class="table-container page-fade-in stagger-1" x-data="securityConsole">
                 <div class="px-10 py-8 border-b border-slate-100 bg-slate-50/30 flex items-center justify-between">
                     <div>
                         <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg">Access & Identity Logs</h3>
@@ -214,4 +203,35 @@
             </div>
         </div>
     </div>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('alpine:init', () => {
+            registerSecurityConsole();
+        });
+
+        if (window.Alpine) {
+            registerSecurityConsole();
+        }
+
+        function registerSecurityConsole() {
+            if (window.securityConsoleRegistered) return;
+            window.securityConsoleRegistered = true;
+
+            Alpine.data('securityConsole', () => ({
+                activeTab: 'all',
+                logs: @json($formattedLogs),
+                get filteredLogs() {
+                    if (this.activeTab === 'login') {
+                        return this.logs.filter(log => log.activity.toLowerCase().includes('login'));
+                    }
+                    if (this.activeTab === 'high_risk') {
+                        return this.logs.filter(log => log.is_suspicious);
+                    }
+                    return this.logs;
+                }
+            }));
+        }
+    </script>
+    @endpush
 </x-app-layout>

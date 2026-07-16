@@ -440,6 +440,11 @@
                     <strong>Catatan Tambahan:</strong> {{ $invoice->notes }}
                 </div>
                 @endif
+                @if(!empty($invoice->warranty))
+                <div style="font-size: 9pt; color: #0f172a; font-weight: bold; padding-left: 10px; margin-top: 10px;">
+                    Masa Garansi: <span style="color: #c89d3c;">{{ $invoice->warranty }}</span>
+                </div>
+                @endif
             </div>
 
             <!-- Footer Halaman 2 -->

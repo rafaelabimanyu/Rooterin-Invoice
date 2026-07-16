@@ -438,6 +438,11 @@
                     <strong>Catatan Tambahan:</strong> {{ $receipt->notes }}
                 </div>
                 @endif
+                @if($receipt->invoice && !empty($receipt->invoice->warranty))
+                <div style="font-size: 9pt; color: #0f172a; font-weight: bold; padding-left: 10px; margin-top: 10px;">
+                    Masa Garansi: <span style="color: #c89d3c;">{{ $receipt->invoice->warranty }}</span>
+                </div>
+                @endif
             </div>
 
             <!-- Footer Halaman 2 -->

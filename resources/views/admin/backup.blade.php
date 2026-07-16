@@ -62,6 +62,51 @@
                     </form>
                 </div>
 
+                <!-- Manual Job Documentation Export -->
+                <div class="glass-card p-10 mt-8">
+                    <div class="flex items-start gap-4 mb-8">
+                        <div class="w-14 h-14 bg-gold-50 text-gold-600 rounded-2xl flex items-center justify-center shrink-0 shadow-sm">
+                            <i data-lucide="image" class="w-7 h-7"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-black text-slate-900 uppercase tracking-tight">{{ app()->getLocale() == 'en' ? 'Export Job Documentation' : 'Ekspor Dokumentasi Pekerjaan' }}</h3>
+                            <p class="text-xs text-slate-500 mt-1 leading-relaxed">{{ app()->getLocale() == 'en' ? 'Download a compressed ZIP archive containing all job documentation images uploaded within the selected date range.' : 'Unduh arsip ZIP terkompresi berisi semua foto dokumentasi pekerjaan yang diunggah dalam rentang tanggal yang dipilih.' }}</p>
+                        </div>
+                    </div>
+
+                    <form method="POST" action="{{ route('backup.export-docs') }}" x-data="{ exportingDocs: false }" @submit="exportingDocs = true" class="space-y-6">
+                        @csrf
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Start Date' : 'Tanggal Mulai' }}</label>
+                                <input type="date" name="start_date" required class="w-full px-5 py-4 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-gold-500/5 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'End Date' : 'Tanggal Selesai' }}</label>
+                                <input type="date" name="end_date" required class="w-full px-5 py-4 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-gold-500/5 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm">
+                            </div>
+                        </div>
+
+                        <button type="submit" ::disabled="exportingDocs" class="w-full md:w-auto px-8 py-4 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-400 text-white rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all shadow-xl shadow-slate-900/20 flex items-center justify-center gap-3">
+                            <template x-if="exportingDocs">
+                                <span class="flex items-center gap-2">
+                                    <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    {{ app()->getLocale() == 'en' ? 'Zipping Files...' : 'Mengompres File...' }}
+                                </span>
+                            </template>
+                            <template x-if="!exportingDocs">
+                                <span class="flex items-center gap-2">
+                                    <i data-lucide="download" class="w-4 h-4"></i>
+                                    {{ app()->getLocale() == 'en' ? 'Export & Download ZIP' : 'Ekspor & Unduh ZIP' }}
+                                </span>
+                            </template>
+                        </button>
+                    </form>
+                </div>
+
                 <!-- Database Connection Details -->
                 <div class="glass-card p-10">
                     <div class="flex items-center gap-4 mb-8 pb-6 border-b border-slate-100">
@@ -170,6 +215,90 @@
                         <i data-lucide="info" class="w-4 h-4 text-slate-400 mt-0.5 shrink-0"></i>
                         <p class="text-[10px] text-slate-400 font-medium leading-relaxed">
                             {{ app()->getLocale() == 'en' ? 'Automated backups are saved under storage/app/backups/automated/ and automatically rotated, keeping only the last 7 days of files.' : 'Pencadangan otomatis disimpan di bawah storage/app/backups/automated/ dan dirotasi secara otomatis dengan menyimpan file 7 hari terakhir saja.' }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Document Backup Settings -->
+                <div class="glass-card p-8 mt-8 animate-fade-in">
+                    <div class="flex items-center gap-4 mb-8 pb-6 border-b border-slate-100">
+                        <div class="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+                            <i data-lucide="image" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-base font-black text-slate-900 uppercase tracking-tight">{{ app()->getLocale() == 'en' ? 'Auto Documentation Backup' : 'Pencadangan Foto Otomatis' }}</h2>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Configure Docs Scheduler' : 'Konfigurasi Penjadwal Foto' }}</p>
+                        </div>
+                    </div>
+
+                    <form method="POST" action="{{ route('backup.update-doc-settings') }}" class="space-y-8">
+                        @csrf
+                        
+                        <!-- Toggle Status -->
+                        <div class="space-y-3">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Auto Backup Status' : 'Status Backup Otomatis' }}</label>
+                            <div class="flex items-center gap-3">
+                                <label class="flex-1">
+                                    <input type="radio" name="doc_backup_auto_status" value="on" {{ $docAutoStatus === 'on' ? 'checked' : '' }} class="sr-only peer">
+                                    <div class="py-3.5 rounded-2xl border-2 text-center transition-all font-black uppercase text-[10px] tracking-widest cursor-pointer peer-checked:border-gold-500 peer-checked:bg-gold-50 peer-checked:text-gold-700 border-transparent bg-slate-50 text-slate-400 hover:bg-slate-100">
+                                        {{ app()->getLocale() == 'en' ? 'Active' : 'Aktif' }}
+                                    </div>
+                                </label>
+                                <label class="flex-1">
+                                    <input type="radio" name="doc_backup_auto_status" value="off" {{ $docAutoStatus === 'off' ? 'checked' : '' }} class="sr-only peer">
+                                    <div class="py-3.5 rounded-2xl border-2 text-center transition-all font-black uppercase text-[10px] tracking-widest cursor-pointer peer-checked:border-gold-500 peer-checked:bg-gold-50 peer-checked:text-gold-700 border-transparent bg-slate-50 text-slate-400 hover:bg-slate-100">
+                                        {{ app()->getLocale() == 'en' ? 'Disabled' : 'Nonaktif' }}
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Frequency Options -->
+                        <div class="space-y-3">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Backup Frequency' : 'Frekuensi Pencadangan' }}</label>
+                            <div class="grid grid-cols-3 gap-3">
+                                <label>
+                                    <input type="radio" name="doc_backup_auto_frequency" value="daily" {{ $docAutoFrequency === 'daily' ? 'checked' : '' }} class="sr-only peer">
+                                    <div class="py-3.5 rounded-2xl border-2 text-center transition-all font-black uppercase text-[9px] tracking-widest cursor-pointer peer-checked:border-gold-500 peer-checked:bg-gold-50 peer-checked:text-gold-700 border-transparent bg-slate-50 text-slate-400 hover:bg-slate-100">
+                                        {{ app()->getLocale() == 'en' ? 'Daily' : 'Harian' }}
+                                    </div>
+                                </label>
+                                <label>
+                                    <input type="radio" name="doc_backup_auto_frequency" value="weekly" {{ $docAutoFrequency === 'weekly' ? 'checked' : '' }} class="sr-only peer">
+                                    <div class="py-3.5 rounded-2xl border-2 text-center transition-all font-black uppercase text-[9px] tracking-widest cursor-pointer peer-checked:border-gold-500 peer-checked:bg-gold-50 peer-checked:text-gold-700 border-transparent bg-slate-50 text-slate-400 hover:bg-slate-100">
+                                        {{ app()->getLocale() == 'en' ? 'Weekly' : 'Mingguan' }}
+                                    </div>
+                                </label>
+                                <label>
+                                    <input type="radio" name="doc_backup_auto_frequency" value="monthly" {{ $docAutoFrequency === 'monthly' ? 'checked' : '' }} class="sr-only peer">
+                                    <div class="py-3.5 rounded-2xl border-2 text-center transition-all font-black uppercase text-[9px] tracking-widest cursor-pointer peer-checked:border-gold-500 peer-checked:bg-gold-50 peer-checked:text-gold-700 border-transparent bg-slate-50 text-slate-400 hover:bg-slate-100">
+                                        {{ app()->getLocale() == 'en' ? 'Monthly' : 'Bulanan' }}
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Execution Time -->
+                        <div class="space-y-3">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Execution Time' : 'Waktu Eksekusi' }}</label>
+                            <div class="relative">
+                                <i data-lucide="clock" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                                <input type="time" name="doc_backup_auto_time" value="{{ $docAutoTime }}" class="w-full pl-12 pr-5 py-4 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-gold-500/5 focus:border-gold-500 transition-all font-bold text-slate-900 text-sm">
+                            </div>
+                        </div>
+
+                        <div class="pt-4">
+                            <button type="submit" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all shadow-xl shadow-slate-900/20">
+                                {{ app()->getLocale() == 'en' ? 'Save Schedule' : 'Simpan Jadwal' }}
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Retention Info Panel -->
+                    <div class="mt-8 pt-8 border-t border-slate-100 flex items-start gap-3">
+                        <i data-lucide="info" class="w-4 h-4 text-slate-400 mt-0.5 shrink-0"></i>
+                        <p class="text-[10px] text-slate-400 font-medium leading-relaxed">
+                            {{ app()->getLocale() == 'en' ? 'Automated documentation backups are saved under storage/app/backups/docs/automated/ and rotated weekly.' : 'Pencadangan dokumentasi otomatis disimpan di bawah storage/app/backups/docs/automated/ dan dirotasi mingguan.' }}
                         </p>
                     </div>
                 </div>

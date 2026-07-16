@@ -133,4 +133,110 @@ class BackupService
 
         return $deletedCount;
     }
+
+    /**
+     * Generate a ZIP archive of job documentation attachments.
+     *
+     * @param bool $isAuto
+     * @param string|null $startDate
+     * @param string|null $endDate
+     * @return string Path to the generated ZIP file
+     * @throws \Exception
+     */
+    public function generateDocsBackup(bool $isAuto = false, ?string $startDate = null, ?string $endDate = null): string
+    {
+        $timestamp = date('Y_m_d_Hi');
+        
+        $zipFilename = $isAuto 
+            ? "jnj_auto_docs_backup_{$timestamp}.zip"
+            : "jnj_docs_backup_{$timestamp}.zip";
+
+        // Ensure directories exist
+        $baseDir = storage_path('app/backups/docs');
+        $subDir = $isAuto ? 'automated' : 'manual';
+        $targetDirectory = "{$baseDir}/{$subDir}";
+        
+        if (!file_exists($targetDirectory)) {
+            mkdir($targetDirectory, 0755, true);
+        }
+
+        $zipPath = "{$targetDirectory}/{$zipFilename}";
+
+        // Get attachments
+        $query = \App\Models\InvoiceAttachment::query();
+
+        if ($startDate && $endDate) {
+            $query->whereBetween('created_at', [
+                Carbon::parse($startDate)->startOfDay(),
+                Carbon::parse($endDate)->endOfDay()
+            ]);
+        }
+
+        $attachments = $query->with('invoice')->get();
+
+        if ($attachments->isEmpty() && !$isAuto) {
+            throw new \Exception(app()->getLocale() == 'en' ? "No job documentation attachments found for the specified period." : "Tidak ada foto dokumentasi ditemukan untuk periode tersebut.");
+        }
+
+        $zip = new ZipArchive();
+        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
+            $addedFiles = 0;
+            foreach ($attachments as $attachment) {
+                $filePath = $attachment->file_path;
+                // Look in the 'public' storage directory
+                $fullPath = storage_path('app/public/' . $filePath);
+
+                if (file_exists($fullPath)) {
+                    $invoiceNumber = $attachment->invoice ? $attachment->invoice->invoice_number : 'INV';
+                    // Sanitize invoice number for filename
+                    $safeInvoiceNumber = preg_replace('/[^A-Za-z0-9_\-]/', '_', $invoiceNumber);
+                    $fileNameInZip = $safeInvoiceNumber . '_' . basename($filePath);
+                    
+                    $zip->addFile($fullPath, $fileNameInZip);
+                    $addedFiles++;
+                } else {
+                    Log::warning("Backup job documentation: physical file not found at " . $fullPath);
+                }
+            }
+
+            $zip->close();
+
+            if ($addedFiles === 0 && !$isAuto) {
+                // Cleanup the empty ZIP
+                @unlink($zipPath);
+                throw new \Exception(app()->getLocale() == 'en' ? "None of the physical files found on the storage path." : "Tidak ada file fisik yang ditemukan di path penyimpanan.");
+            }
+        } else {
+            throw new \Exception("Failed to create ZIP archive at: {$zipPath}");
+        }
+
+        return $zipPath;
+    }
+
+    /**
+     * Rotate automated document backups, keeping only files from the last 7 days.
+     *
+     * @return int Number of deleted backup files
+     */
+    public function rotateDocsBackups(): int
+    {
+        $directory = storage_path('app/backups/docs/automated');
+        if (!file_exists($directory)) {
+            return 0;
+        }
+
+        $files = glob($directory . '/*.zip');
+        $deletedCount = 0;
+        $cutoffTime = Carbon::now()->subDays(7)->timestamp;
+
+        foreach ($files as $file) {
+            if (filemtime($file) < $cutoffTime) {
+                if (unlink($file)) {
+                    $deletedCount++;
+                }
+            }
+        }
+
+        return $deletedCount;
+    }
 }

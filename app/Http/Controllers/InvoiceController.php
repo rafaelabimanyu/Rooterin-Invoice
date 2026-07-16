@@ -79,6 +79,8 @@ class InvoiceController extends Controller
             'cause_of_problem' => 'nullable|string',
             'notes' => 'nullable|string',
             'technician_names' => 'nullable|string',
+            'warranty_value' => 'nullable|integer|min:1',
+            'warranty_unit' => 'nullable|string|in:Hari,Bulan,Tahun,Days,Months,Years',
             'attachments' => 'nullable|array',
             'attachments.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
         ]);
@@ -103,6 +105,11 @@ class InvoiceController extends Controller
             $total = round($this->invoiceService->calculateTotal($subtotal, $discountNominal, $ppnNominal, $pphNominal), 2);
             $invoiceNumber = $this->invoiceService->generateInvoiceNumber();
 
+            $warranty = null;
+            if ($request->filled('warranty_value')) {
+                $warranty = $request->warranty_value . ' ' . $request->input('warranty_unit', 'Bulan');
+            }
+
             $invoiceData = [
                 'invoice_number' => $invoiceNumber,
                 'business_unit_id' => $request->business_unit_id,
@@ -117,6 +124,7 @@ class InvoiceController extends Controller
                 'cause_of_problem' => $request->cause_of_problem,
                 'notes' => $request->notes,
                 'technician_names' => $request->technician_names,
+                'warranty' => $warranty,
             ];
 
             if (Schema::hasColumn('invoices', 'created_by')) {
@@ -199,6 +207,8 @@ class InvoiceController extends Controller
             'cause_of_problem' => 'nullable|string',
             'notes' => 'nullable|string',
             'technician_names' => 'nullable|string',
+            'warranty_value' => 'nullable|integer|min:1',
+            'warranty_unit' => 'nullable|string|in:Hari,Bulan,Tahun,Days,Months,Years',
             'attachments' => 'nullable|array',
             'attachments.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
         ]);
@@ -231,6 +241,11 @@ class InvoiceController extends Controller
 
             $total = round($this->invoiceService->calculateTotal($subtotal, $discountNominal, $ppnNominal, $pphNominal), 2);
 
+            $warranty = null;
+            if ($request->filled('warranty_value')) {
+                $warranty = $request->warranty_value . ' ' . $request->input('warranty_unit', 'Bulan');
+            }
+
             $invoice->update([
                 'business_unit_id' => $request->business_unit_id,
                 'client_id' => $request->client_id,
@@ -243,6 +258,7 @@ class InvoiceController extends Controller
                 'cause_of_problem' => $request->cause_of_problem,
                 'notes' => $request->notes,
                 'technician_names' => $request->technician_names,
+                'warranty' => $warranty,
             ]);
 
             $invoice->items()->delete();

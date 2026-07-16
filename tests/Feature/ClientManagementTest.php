@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use App\Models\Client;
+use App\Models\Invoice;
+use App\Models\BusinessUnit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -72,5 +74,41 @@ class ClientManagementTest extends TestCase
             'nama_client' => 'Ahmad Baru',
             'status' => 'nonaktif',
         ]);
+    }
+
+    public function test_authenticated_user_can_view_client_details_page_without_sql_errors(): void
+    {
+        $user = User::factory()->create();
+        $businessUnit = BusinessUnit::create([
+            'name' => 'Jaya-Website',
+            'slug' => 'jaya-website',
+        ]);
+        $client = Client::create([
+            'kode_client' => 'CL-TST-03',
+            'client_type' => 'individual',
+            'industry_sector' => 'general',
+            'nama_client' => 'Dessy',
+            'status' => 'aktif',
+        ]);
+
+        $invoice = Invoice::create([
+            'invoice_number' => 'INV-001',
+            'business_unit_id' => $businessUnit->id,
+            'client_id' => $client->id,
+            'subtotal' => 100000,
+            'total' => 100000,
+            'status' => 'paid',
+        ]);
+
+        $invoice->receipt()->create([
+            'receipt_number' => 'REC-001',
+            'amount_received' => 100000,
+            'payment_date' => now(),
+        ]);
+
+        $response = $this->actingAs($user)->get(route('clients.show', $client));
+
+        $response->assertStatus(200);
+        $response->assertSee('REC-001');
     }
 }

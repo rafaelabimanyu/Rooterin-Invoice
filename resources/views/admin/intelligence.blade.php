@@ -20,7 +20,35 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
         <!-- Security Logs (Left) -->
         <div class="lg:col-span-8 space-y-8">
-            <div class="table-container page-fade-in stagger-1">
+            <div class="table-container page-fade-in stagger-1" x-data="{
+                activeTab: 'all',
+                logs: [
+                    @foreach($securityLogs as $log)
+                    {
+                        id: {{ $log->id }},
+                        activity: {!! json_encode($log->activity) !!},
+                        date: '{{ $log->created_at->format('M d, Y • H:i:s') }}',
+                        is_suspicious: {{ $log->is_suspicious ? 'true' : 'false' }},
+                        ip_address: '{{ $log->ip_address }}',
+                        user_agent: {!! json_encode($log->user_agent) !!},
+                        user: {!! $log->user ? json_encode([
+                            'name' => $log->user->name,
+                            'role' => $log->user->role,
+                            'profile_photo_url' => $log->user->profile_photo_url
+                        ]) : 'null' !!}
+                    },
+                    @endforeach
+                ],
+                get filteredLogs() {
+                    if (this.activeTab === 'login') {
+                        return this.logs.filter(log => log.activity.toLowerCase().includes('login'));
+                    }
+                    if (this.activeTab === 'high_risk') {
+                        return this.logs.filter(log => log.is_suspicious);
+                    }
+                    return this.logs;
+                }
+            }">
                 <div class="px-10 py-8 border-b border-slate-100 bg-slate-50/30 flex items-center justify-between">
                     <div>
                         <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg">Access & Identity Logs</h3>
@@ -29,6 +57,28 @@
                     <div class="p-3 bg-white border border-slate-200 rounded-xl">
                         <i data-lucide="shield-check" class="w-5 h-5 text-gold-600"></i>
                     </div>
+                </div>
+
+                <!-- Tabbed Navigation -->
+                <div class="px-10 py-4 border-b border-slate-100 flex gap-6 text-xs font-bold uppercase tracking-wider bg-slate-50/10">
+                    <button 
+                        @click="activeTab = 'all'" 
+                        class="pb-2 transition-all duration-300 border-b-2" 
+                        :class="activeTab === 'all' ? 'text-gold-600 border-gold-500 font-black' : 'text-slate-400 border-transparent hover:text-slate-600'">
+                        {{ app()->getLocale() == 'en' ? 'All Events' : 'Semua Log' }}
+                    </button>
+                    <button 
+                        @click="activeTab = 'login'" 
+                        class="pb-2 transition-all duration-300 border-b-2" 
+                        :class="activeTab === 'login' ? 'text-gold-600 border-gold-500 font-black' : 'text-slate-400 border-transparent hover:text-slate-600'">
+                        {{ app()->getLocale() == 'en' ? 'Login Attempts' : 'Upaya Login' }}
+                    </button>
+                    <button 
+                        @click="activeTab = 'high_risk'" 
+                        class="pb-2 transition-all duration-300 border-b-2" 
+                        :class="activeTab === 'high_risk' ? 'text-gold-600 border-gold-500 font-black' : 'text-slate-400 border-transparent hover:text-slate-600'">
+                        {{ app()->getLocale() == 'en' ? 'High Risk' : 'Risiko Tinggi' }}
+                    </button>
                 </div>
 
                 <div class="overflow-x-auto">
@@ -42,44 +92,50 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-50">
-                            @forelse($securityLogs as $log)
-                                <tr class="table-row-premium">
+                            <!-- Template for active filtered logs -->
+                            <template x-for="log in filteredLogs" :key="log.id">
+                                <tr class="table-row-premium transition-all duration-300">
                                     <td class="px-10 py-6">
                                         <div class="flex flex-col">
-                                            <span class="text-[13px] font-black text-slate-900 tracking-tight">{{ $log->activity }}</span>
-                                            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">{{ $log->created_at->format('M d, Y • H:i:s') }}</span>
+                                            <span class="text-[13px] font-black text-slate-900 tracking-tight" x-text="log.activity"></span>
+                                            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1" x-text="log.date"></span>
                                         </div>
                                     </td>
                                     <td class="px-10 py-6">
-                                        @if($log->user)
+                                        <template x-if="log.user">
                                             <div class="flex items-center gap-3">
-                                                <img src="{{ $log->user->profile_photo_url }}" class="w-8 h-8 rounded-lg object-cover">
+                                                <img :src="log.user.profile_photo_url" class="w-8 h-8 rounded-lg object-cover">
                                                 <div class="flex flex-col">
-                                                    <span class="text-[12px] font-bold text-slate-900">{{ $log->user->name }}</span>
-                                                    <span class="text-[10px] text-slate-400 font-bold uppercase">{{ $log->user->role }}</span>
+                                                    <span class="text-[12px] font-bold text-slate-900" x-text="log.user.name"></span>
+                                                    <span class="text-[10px] text-slate-400 font-bold uppercase" x-text="log.user.role"></span>
                                                 </div>
                                             </div>
-                                        @else
+                                        </template>
+                                        <template x-if="!log.user">
                                             <span class="text-xs text-slate-400 font-medium italic">Unregistered Operative</span>
-                                        @endif
+                                        </template>
                                     </td>
                                     <td class="px-10 py-6">
                                         <div class="flex flex-col">
-                                            <span class="text-[12px] font-mono font-bold text-slate-700">{{ $log->ip_address }}</span>
-                                            <span class="text-[9px] text-slate-400 truncate max-w-[200px]" title="{{ $log->user_agent }}">{{ $log->user_agent }}</span>
+                                            <span class="text-[12px] font-mono font-bold text-slate-700" x-text="log.ip_address"></span>
+                                            <span class="text-[9px] text-slate-400 truncate max-w-[200px]" :title="log.user_agent" x-text="log.user_agent"></span>
                                         </div>
                                     </td>
                                     <td class="px-10 py-6">
-                                        <span class="inline-flex px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest {{ $log->is_suspicious ? 'bg-rose-50 text-rose-600 border border-rose-100' : 'bg-slate-50 text-slate-500 border border-slate-100' }}">
-                                            {{ $log->is_suspicious ? 'High Risk' : 'Low Risk' }}
+                                        <span class="inline-flex px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest"
+                                              :class="log.is_suspicious ? 'bg-rose-50 text-rose-600 border border-rose-100' : 'bg-slate-50 text-slate-500 border border-slate-100'"
+                                              x-text="log.is_suspicious ? 'High Risk' : 'Low Risk'">
                                         </span>
                                     </td>
                                 </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="4" class="px-10 py-20 text-center text-slate-400 italic">No security events detected in current timeframe.</td>
-                                </tr>
-                            @endforelse
+                            </template>
+
+                            <!-- Empty State -->
+                            <tr x-show="filteredLogs.length === 0" style="display: none;">
+                                <td colspan="4" class="px-10 py-20 text-center text-slate-400 italic">
+                                    {{ app()->getLocale() == 'en' ? 'No security events detected in current timeframe.' : 'Tidak ada log keamanan yang terdeteksi untuk kategori ini.' }}
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

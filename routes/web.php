@@ -113,6 +113,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/backup', [BackupController::class, 'index'])->name('backup.index');
         Route::post('/backup/settings', [BackupController::class, 'updateSettings'])->name('backup.update-settings');
         Route::post('/backup/export', [BackupController::class, 'export'])->name('backup.export');
+        Route::post('/backup/docs/settings', [BackupController::class, 'updateDocSettings'])->name('backup.update-doc-settings');
+        Route::post('/backup/docs/export', [BackupController::class, 'exportDocs'])->name('backup.export-docs');
 
         // AI Chatbot Assistant & History
         Route::get('ai-assistant', [AiChatController::class, 'index'])->name('ai-assistant.index');

@@ -27,6 +27,7 @@ class Invoice extends Model
         'cause_of_problem',
         'notes',
         'technician_names',
+        'warranty',
         'created_by',
         'deleted_by',
         'deletion_reason',

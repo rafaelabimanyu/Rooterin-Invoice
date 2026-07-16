@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Client extends Model
@@ -89,9 +90,9 @@ class Client extends Model
         return $this->hasMany(Invoice::class);
     }
 
-    public function receipts(): HasMany
+    public function receipts(): HasManyThrough
     {
-        return $this->hasMany(Receipt::class);
+        return $this->hasManyThrough(Receipt::class, Invoice::class);
     }
 
     /**

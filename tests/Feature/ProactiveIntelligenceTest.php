@@ -314,6 +314,14 @@ class ProactiveIntelligenceTest extends TestCase
             'due_date' => Carbon::now()
         ]);
 
+        \App\Models\Payment::create([
+            'invoice_id' => $invoicePaid->id,
+            'payment_date' => now(),
+            'amount' => 10000000,
+            'payment_method' => 'Transfer Bank',
+            'reference_number' => 'TEST-PAY-AI',
+        ]);
+
         $resTrend = $service->getAnswer('berapa omset bersih', 'id');
         $this->assertStringContainsString('Omset Kotor (Gross Revenue):', $resTrend['text']);
         $this->assertStringContainsString('Beban Operasional (Expenses):', $resTrend['text']);

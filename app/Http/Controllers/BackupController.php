@@ -33,6 +33,10 @@ class BackupController extends Controller
         $autoFrequency = Setting::get('backup_auto_frequency', 'daily');
         $autoTime = Setting::get('backup_auto_time', '23:00');
 
+        $docAutoStatus = Setting::get('doc_backup_auto_status', 'off');
+        $docAutoFrequency = Setting::get('doc_backup_auto_frequency', 'daily');
+        $docAutoTime = Setting::get('doc_backup_auto_time', '01:00');
+
         return view('admin.backup', compact(
             'dbConnection',
             'dbHost',
@@ -40,7 +44,10 @@ class BackupController extends Controller
             'dbName',
             'autoStatus',
             'autoFrequency',
-            'autoTime'
+            'autoTime',
+            'docAutoStatus',
+            'docAutoFrequency',
+            'docAutoTime'
         ));
     }
 
@@ -84,6 +91,54 @@ class BackupController extends Controller
         } catch (\Exception $e) {
             Log::error("Manual backup failure: " . $e->getMessage());
             return redirect()->route('backup.index')->with('error', app()->getLocale() == 'en' ? 'Backup generation failed: ' . $e->getMessage() : 'Pembuatan backup gagal: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Update job documentation backup schedule settings.
+     */
+    public function updateDocSettings(Request $request)
+    {
+        abort_if(!in_array(auth()->user()->role, ['owner', 'admin']), 403, 'Unauthorized access.');
+
+        $validated = $request->validate([
+            'doc_backup_auto_status' => 'required|in:on,off',
+            'doc_backup_auto_frequency' => 'required|in:daily,weekly,monthly',
+            'doc_backup_auto_time' => 'required|date_format:H:i',
+        ]);
+
+        Setting::set('doc_backup_auto_status', $validated['doc_backup_auto_status']);
+        Setting::set('doc_backup_auto_frequency', $validated['doc_backup_auto_frequency']);
+        Setting::set('doc_backup_auto_time', $validated['doc_backup_auto_time']);
+
+        // Log administrative action
+        Log::info("Job documentation backup settings updated by " . auth()->user()->email, $validated);
+
+        return redirect()->route('backup.index')->with('success', app()->getLocale() == 'en' ? 'Job documentation backup settings updated successfully.' : 'Pengaturan cadangan dokumentasi berhasil diperbarui.');
+    }
+
+    /**
+     * Run manual job documentation export and download ZIP.
+     */
+    public function exportDocs(Request $request)
+    {
+        abort_if(!in_array(auth()->user()->role, ['owner', 'admin']), 403, 'Unauthorized access.');
+
+        $validated = $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
+
+        try {
+            $zipPath = $this->backupService->generateDocsBackup(false, $validated['start_date'], $validated['end_date']);
+
+            // Log administrative action
+            Log::info("Manual job documentation backup generated and downloaded by " . auth()->user()->email . " for period: {$validated['start_date']} to {$validated['end_date']}");
+
+            return response()->download($zipPath)->deleteFileAfterSend(true);
+        } catch (\Exception $e) {
+            Log::error("Manual job documentation backup failure: " . $e->getMessage());
+            return redirect()->route('backup.index')->with('error', $e->getMessage());
         }
     }
 }

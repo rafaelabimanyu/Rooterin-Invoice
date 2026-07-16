@@ -36,6 +36,8 @@ class InvoiceManagementTest extends TestCase
             'discount' => '25000',
             'ppn' => '0',
             'pph' => '0',
+            'warranty_value' => 6,
+            'warranty_unit' => 'Bulan',
             'items' => [
                 [
                     'deskripsi' => 'Standard Rooter Cleaning',
@@ -56,6 +58,7 @@ class InvoiceManagementTest extends TestCase
             'pph' => 0,
             'subtotal' => 500000,
             'total' => 475000, // 500000 - 25000 discount
+            'warranty' => '6 Bulan',
         ]);
     }
 

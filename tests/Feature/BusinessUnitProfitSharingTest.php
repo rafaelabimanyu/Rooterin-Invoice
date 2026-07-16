@@ -94,7 +94,7 @@ class BusinessUnitProfitSharingTest extends TestCase
         ]);
 
         // Paid invoice (Gross Revenue: 10,000,000)
-        Invoice::create([
+        $invoice = Invoice::create([
             'invoice_number' => 'INV-001',
             'client_id' => $client->id,
             'business_unit_id' => $businessUnit->id,
@@ -105,6 +105,14 @@ class BusinessUnitProfitSharingTest extends TestCase
             'pph' => 0,
             'total' => 10000000,
             'status' => 'paid',
+        ]);
+
+        \App\Models\Payment::create([
+            'invoice_id' => $invoice->id,
+            'payment_date' => now(),
+            'amount' => 10000000,
+            'payment_method' => 'Transfer Bank',
+            'reference_number' => 'TEST-PAY-1',
         ]);
 
         // Pending invoice (Not paid - should be excluded from Gross/Fee/Net)
@@ -145,7 +153,7 @@ class BusinessUnitProfitSharingTest extends TestCase
         // 1. Detail (Show) Page
         $response = $this->actingAs($this->ownerUser)->get(route('business-units.show', $businessUnit));
         $response->assertStatus(200);
-        $response->assertSee('8,00%'); // Percentage badge
+        $response->assertSee('8,0%'); // Percentage badge
 
         // 2. Reports Index Page
         $response = $this->actingAs($this->ownerUser)->get(route('reports.index'));

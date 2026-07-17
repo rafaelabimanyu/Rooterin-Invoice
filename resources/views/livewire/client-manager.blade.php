@@ -90,6 +90,29 @@
                         <button wire:click="openEdit({{ $client->id }})" @click="$wire.showEditModal = true" class="p-1.5 text-slate-400 hover:text-gold-600 hover:bg-gold-50/50 transition-colors rounded-lg">
                             <i data-lucide="edit-3" class="w-4 h-4"></i>
                         </button>
+                        @can('delete', $client)
+                        <button type="button" @click="
+                            Swal.fire({
+                                title: '{{ app()->getLocale() == "en" ? "Are you sure?" : "Apakah Anda yakin?" }}',
+                                text: '{{ app()->getLocale() == "en" ? "This client will be soft-deleted." : "Klien ini akan dihapus sementara." }}',
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonText: '{{ app()->getLocale() == "en" ? "Yes, delete!" : "Ya, hapus!" }}',
+                                cancelButtonText: '{{ app()->getLocale() == "en" ? "Cancel" : "Batal" }}',
+                                customClass: {
+                                    confirmButton: 'px-5 py-2.5 bg-rose-500 hover:bg-rose-650 text-white rounded-xl font-bold text-xs uppercase tracking-wider text-center mr-2 transition-all duration-300',
+                                    cancelButton: 'px-5 py-2.5 bg-slate-500 hover:bg-slate-650 text-white rounded-xl font-bold text-xs uppercase tracking-wider text-center transition-all duration-300',
+                                },
+                                buttonsStyling: false
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    $wire.delete({{ $client->id }});
+                                }
+                            })
+                        " class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50/50 transition-colors rounded-lg" title="{{ app()->getLocale() == 'en' ? 'Delete' : 'Hapus' }}">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                        @endcan
                     </div>
                     <div class="flex items-center gap-1.5">
                         @if($client->email)

@@ -115,6 +115,8 @@ class ClientController extends Controller
 
     public function destroy(Client $client)
     {
+        \Illuminate\Support\Facades\Gate::authorize('delete', $client);
+
         $client->delete();
         return redirect()->route('clients.index')->with('success', 'Client deleted successfully.');
     }

@@ -82,11 +82,11 @@ self.addEventListener('fetch', (event) => {
             url.pathname.startsWith('/img/') ||
             url.pathname.match(/\.(png|jpe?g|gif|svg|ico|webp|woff2?|eot|ttf|otf|css|js)$/i)
         )
-    ) || 
-    url.hostname.includes('fonts.googleapis.com') ||
-    url.hostname.includes('fonts.gstatic.com') ||
-    url.hostname.includes('unpkg.com') ||
-    url.hostname.includes('cdn.jsdelivr.net');
+    ) ||
+        url.hostname.includes('fonts.googleapis.com') ||
+        url.hostname.includes('fonts.gstatic.com') ||
+        url.hostname.includes('unpkg.com') ||
+        url.hostname.includes('cdn.jsdelivr.net');
 
     if (isStaticAsset) {
         // --- STRATEGI: Cache First (dengan Fallback Jaringan) ---
@@ -103,7 +103,7 @@ self.addEventListener('fetch', (event) => {
                             }
                         })
                         .catch((err) => console.log('[Service Worker] Stale update failed (offline):', err));
-                    
+
                     return cachedResponse;
                 }
 
@@ -144,7 +144,7 @@ self.addEventListener('fetch', (event) => {
                         if (cachedResponse) {
                             return cachedResponse;
                         }
-                        
+
                         // Jika offline dan tidak ada di cache, kirimkan halaman fallback yang informatif
                         // (Mencegah TypeError: Failed to convert value to 'Response')
                         return new Response(

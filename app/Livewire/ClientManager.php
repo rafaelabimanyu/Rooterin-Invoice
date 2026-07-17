@@ -224,6 +224,8 @@ class ClientManager extends Component
 
     public function delete(Client $client)
     {
+        \Illuminate\Support\Facades\Gate::authorize('delete', $client);
+
         $client->delete();
         $this->dispatch('notify', ['message' => 'Client removed from registry.', 'type' => 'success']);
     }

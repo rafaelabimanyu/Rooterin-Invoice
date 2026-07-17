@@ -59,7 +59,13 @@
                                         <i data-lucide="map-pin" class="w-3.5 h-3.5 text-slate-400"></i>
                                         <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Last Login' : 'Login Terakhir' }}</span>
                                     </div>
-                                    <p class="text-xs font-bold text-slate-900">{{ $user->last_login_at ? $user->last_login_at->diffForHumans() : (app()->getLocale() == 'en' ? 'Never' : 'Belum Pernah') }}</p>
+                                    <p class="text-xs font-bold text-slate-900">
+                                        @if($user->last_login_at)
+                                            {{ $user->last_login_at->timezone('Asia/Jakarta')->translatedFormat('d F Y, H:i') }} WIB
+                                        @else
+                                            {{ app()->getLocale() == 'en' ? 'Never' : 'Belum Pernah' }}
+                                        @endif
+                                    </p>
                                     <p class="text-[10px] text-slate-400 font-medium mt-0.5">{{ $user->last_login_ip ?? '0.0.0.0' }}</p>
                                 </div>
                             </div>

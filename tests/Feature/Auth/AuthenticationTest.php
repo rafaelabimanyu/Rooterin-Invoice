@@ -28,6 +28,10 @@ class AuthenticationTest extends TestCase
 
         $this->assertAuthenticated();
         $response->assertRedirect(route('dashboard', absolute: false));
+
+        $user->refresh();
+        $this->assertNotNull($user->last_login_at);
+        $this->assertEquals('127.0.0.1', $user->last_login_ip);
     }
 
     public function test_users_can_not_authenticate_with_invalid_password(): void

@@ -12,13 +12,18 @@ class ProfileTest extends TestCase
 
     public function test_profile_page_is_displayed(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'last_login_at' => now(),
+            'last_login_ip' => '127.0.0.1',
+        ]);
 
         $response = $this
             ->actingAs($user)
             ->get('/profile');
 
         $response->assertOk();
+        $response->assertSee($user->last_login_at->timezone('Asia/Jakarta')->translatedFormat('d F Y, H:i') . ' WIB');
+        $response->assertSee('127.0.0.1');
     }
 
     public function test_profile_information_can_be_updated(): void

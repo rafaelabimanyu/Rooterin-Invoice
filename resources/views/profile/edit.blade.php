@@ -40,6 +40,7 @@
                     </div>
 
                     <!-- Security Quick Info -->
+                    @if(auth()->user()->role !== 'staff')
                     <div class="mt-10 pt-8 border-t border-slate-50 space-y-6 text-left">
                         <div>
                             <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">{{ app()->getLocale() == 'en' ? 'Security Overview' : 'Ikhtisar Keamanan' }}</p>
@@ -89,6 +90,7 @@
                             </div>
                         </div>
                     </div>
+                    @endif
                 </div>
             </div>
 
@@ -105,6 +107,7 @@
                 </div>
 
                 <!-- Danger Zone -->
+                @if(auth()->user()->role !== 'staff')
                 <div class="p-8 md:p-10 bg-rose-50/30 rounded-[32px] border-2 border-dashed border-rose-100">
                     <div class="flex items-center gap-4 mb-8">
                         <div class="p-3 bg-rose-100 text-rose-600 rounded-2xl">
@@ -117,6 +120,7 @@
                     </div>
                     @include('profile.partials.delete-user-form')
                 </div>
+                @endif
             </div>
         </div>
     </div>

@@ -180,8 +180,9 @@
                                 <input type="text" name="cause_of_problem" placeholder="Contoh: Penyebab Mampet: Pasir dan Batu" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none">
                             </div>
                             <div class="bg-slate-50/50 p-6 rounded-xl border border-slate-200/50 space-y-3 md:col-span-2">
-                                <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ __('Catatan') }}</label>
-                                <textarea name="notes" rows="3" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none">Pekerjaan ini telah diverifikasi langsung di lokasi oleh teknisi kami menggunakan peralatan presisi tinggi, sesuai dengan standar kualitas J&J GROUP.</textarea>
+                                <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ __('ui.additional_notes_label') }}</label>
+                                <p class="text-[11px] text-slate-400">{{ __('ui.additional_notes_hint') }}</p>
+                                <textarea name="notes" rows="3" placeholder="{{ __('ui.additional_notes_placeholder') }}" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none"></textarea>
                             </div>
                             <div class="bg-slate-50/50 p-6 rounded-xl border border-slate-200/50 space-y-3">
                                 <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ app()->getLocale() == 'en' ? 'Bank Account Details' : 'Rincian Rekening Bank' }}</label>

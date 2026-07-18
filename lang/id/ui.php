@@ -140,6 +140,45 @@ return [
     'operational_sop' => 'SOP Operasional',
     'loading_details' => 'Memuat Detail...',
     'trash' => 'Tempat Sampah',
+
+    // Buku Besar Transaksi
+    'ledger' => 'Buku Besar Transaksi',
+    'ledger_desc' => 'Tampilan gabungan semua invoice dan kwitansi. Hanya baca.',
+    'document_type' => 'Tipe',
+    'invoice_doc' => 'Invoice',
+    'receipt_doc' => 'Kwitansi',
+    'view_invoice' => 'Lihat Invoice',
+    'view_receipt' => 'Lihat Kwitansi',
+    'no_linked_receipt' => 'Belum ada kwitansi',
+    'all_types' => 'Semua Tipe',
+    'all_units' => 'Semua Unit',
+    'ledger_title' => 'Buku Besar Transaksi',
+    'ledger_subtitle' => 'Tampilan gabungan invoice dan kwitansi. Hanya untuk referensi.',
+
+    // Field Teknis (Receipt & Invoice)
+    'field_technicians' => 'Teknisi Lapangan',
+    'cause_of_problem' => 'Penyebab Mampet',
+    'warranty_period' => 'Masa Garansi',
+    'technical_info' => 'Informasi Teknis',
+    'technical_info_desc' => 'Data ini akan otomatis tersinkronisasi ke Invoice yang terhubung.',
+    'job_documentation' => 'Dokumentasi Pekerjaan',
+    'job_documentation_desc' => 'Unggah bukti pekerjaan. Foto yang sudah ada ditampilkan di bawah.',
+    'existing_photos' => 'Foto Dokumentasi yang Ada',
+    'add_more_photos' => 'Tambah Foto Baru',
+    'delete_photo' => 'Hapus Foto',
+    'no_photos' => 'Belum ada foto dokumentasi.',
+    'technician_placeholder' => 'cth: Budi, Andi, Rafi',
+    'cause_placeholder' => 'cth: Penumpukan pasir dan kerikil',
+    'warranty_days' => 'Hari',
+    'warranty_months' => 'Bulan',
+    'warranty_years' => 'Tahun',
+    'no_warranty' => 'Tidak Ada Garansi',
+
+    // Catatan Tambahan
+    'additional_notes_label' => 'Catatan Tambahan (Opsional)',
+    'additional_notes_hint' => 'Teks standar kualitas J&J GROUP selalu tercetak di PDF. Field ini hanya untuk catatan ekstra.',
+    'additional_notes_placeholder' => 'cth: Permintaan khusus klien, jadwal tindak lanjut...',
 ];
+
 
 

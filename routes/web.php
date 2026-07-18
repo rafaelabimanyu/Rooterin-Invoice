@@ -14,7 +14,9 @@ use App\Http\Controllers\ChronosController;
 use App\Http\Controllers\AiInvoiceController;
 use App\Http\Controllers\AiChatController;
 use App\Http\Controllers\BackupController;
+use App\Http\Controllers\LedgerController;
 use Illuminate\Support\Facades\Route;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -70,6 +72,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('receipts/{receipt}/convert', [ReceiptController::class, 'convertToInvoice'])->name('receipts.convert');
         Route::resource('receipts', ReceiptController::class);
 
+        // Transaction Ledger (Read-Only Bridge)
+        Route::get('/ledger', [LedgerController::class, 'index'])->name('ledger.index');
 
 
         // Profile

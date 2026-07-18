@@ -26,7 +26,7 @@
         </div>
     @endif
 
-    <form id="receipt-edit-form" action="{{ route('receipts.update', $receipt) }}" method="POST" x-data="receiptForm()" class="pb-24 md:pb-0 px-4 md:px-0">
+    <form id="receipt-edit-form" action="{{ route('receipts.update', $receipt) }}" method="POST" x-data="receiptForm()" enctype="multipart/form-data" class="pb-24 md:pb-0 px-4 md:px-0">
         @csrf
         @method('PUT')
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
@@ -124,16 +124,115 @@
                     </div>
                 </div>
 
-                <!-- Additional Info -->
-                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 md:p-10 space-y-6">
-                    <h4 class="text-xs font-bold text-slate-900 uppercase tracking-widest flex items-center gap-2">
-                        <i data-lucide="file-text" class="w-4 h-4 text-gold-500"></i>
-                        {{ app()->getLocale() == 'en' ? 'Additional Information' : 'Informasi Tambahan' }}
-                    </h4>
-                    
-                    <div class="space-y-3">
-                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ app()->getLocale() == 'en' ? 'Terms & Notes (Synced to Invoice)' : 'Syarat & Catatan (Disinkronkan ke Invoice)' }}</label>
-                        <textarea name="notes" rows="4" class="w-full bg-slate-50/50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none transition-all">{{ $receipt->invoice ? $receipt->invoice->notes : '' }}</textarea>
+                <!-- Technical Information Section -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="px-6 md:px-10 py-5 border-b border-slate-100 bg-slate-50/50">
+                        <h4 class="text-sm font-bold text-slate-900 uppercase tracking-widest flex items-center gap-2">
+                            <i data-lucide="wrench" class="w-4 h-4 text-gold-500"></i>
+                            3. {{ __('ui.technical_info') }}
+                        </h4>
+                        <p class="text-xs text-slate-400 mt-1">{{ __('ui.technical_info_desc') }}</p>
+                    </div>
+                    <div class="p-6 md:p-10 space-y-6">
+
+                        {{-- Teknisi & Penyebab --}}
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ __('ui.field_technicians') }}</label>
+                                <input type="text" name="technician_names" value="{{ $receipt->invoice?->technician_names }}" placeholder="{{ __('ui.technician_placeholder') }}" class="w-full bg-slate-50/50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-700 focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none transition-all">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ __('ui.cause_of_problem') }}</label>
+                                <input type="text" name="cause_of_problem" value="{{ $receipt->invoice?->cause_of_problem }}" placeholder="{{ __('ui.cause_placeholder') }}" class="w-full bg-slate-50/50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-700 focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none transition-all">
+                            </div>
+                        </div>
+
+                        {{-- Masa Garansi --}}
+                        <div class="space-y-2">
+                            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ __('ui.warranty_period') }}</label>
+                            @php
+                                $wVal = ''; $wUnit = 'Bulan';
+                                if ($receipt->invoice?->warranty) {
+                                    $wParts = explode(' ', $receipt->invoice->warranty, 2);
+                                    $wVal = $wParts[0] ?? '';
+                                    $wUnit = $wParts[1] ?? 'Bulan';
+                                }
+                            @endphp
+                            <div class="flex items-center gap-3">
+                                <input type="number" name="warranty_value" value="{{ $wVal }}" placeholder="e.g. 3" min="1" class="w-28 bg-slate-50/50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-700 font-semibold focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none">
+                                <select name="warranty_unit" class="bg-slate-50/50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-700 font-semibold focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none">
+                                    <option value="Hari" {{ $wUnit == 'Hari' ? 'selected' : '' }}>{{ __('ui.warranty_days') }}</option>
+                                    <option value="Bulan" {{ ($wUnit == 'Bulan' || !$wUnit) ? 'selected' : '' }}>{{ __('ui.warranty_months') }}</option>
+                                    <option value="Tahun" {{ $wUnit == 'Tahun' ? 'selected' : '' }}>{{ __('ui.warranty_years') }}</option>
+                                </select>
+                                <span class="text-xs text-slate-400">{{ __('ui.no_warranty') }}</span>
+                            </div>
+                        </div>
+
+                        {{-- Catatan Tambahan --}}
+                        <div class="space-y-2">
+                            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ __('ui.additional_notes_label') }}</label>
+                            <p class="text-[11px] text-slate-400">{{ __('ui.additional_notes_hint') }}</p>
+                            <textarea name="notes" rows="3" placeholder="{{ __('ui.additional_notes_placeholder') }}" class="w-full bg-slate-50/50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none transition-all">{{ $receipt->invoice?->notes }}</textarea>
+                        </div>
+
+                        {{-- Dokumentasi Pekerjaan --}}
+                        <div class="space-y-4" x-data="attachmentManager()">
+                            <div>
+                                <h5 class="text-xs font-bold text-slate-900 uppercase tracking-widest flex items-center gap-2 mb-1">
+                                    <i data-lucide="image" class="w-4 h-4 text-gold-500"></i>
+                                    {{ __('ui.job_documentation') }}
+                                </h5>
+                                <p class="text-xs text-slate-400">{{ __('ui.job_documentation_desc') }}</p>
+                            </div>
+
+                            {{-- Existing Attachments --}}
+                            @if($receipt->invoice && $receipt->invoice->attachments->count() > 0)
+                                <div class="mb-2">
+                                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3">{{ __('ui.existing_photos') }} ({{ $receipt->invoice->attachments->count() }})</p>
+                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                        @foreach($receipt->invoice->attachments as $attachment)
+                                            <div class="relative group aspect-square rounded-xl overflow-hidden border border-slate-200 shadow-sm">
+                                                <img src="{{ Storage::url($attachment->file_path) }}" alt="doc" class="w-full h-full object-cover">
+                                                <div class="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center">
+                                                    <label class="flex items-center gap-1.5 cursor-pointer">
+                                                        <input type="checkbox" name="delete_attachments[]" value="{{ $attachment->id }}" class="w-4 h-4 accent-rose-500">
+                                                        <span class="text-white text-[10px] font-bold uppercase">{{ __('ui.delete_photo') }}</span>
+                                                    </label>
+                                                </div>
+                                                @if($attachment->caption)
+                                                    <div class="absolute inset-x-0 bottom-0 bg-slate-900/70 text-white text-[9px] truncate px-2 py-1 text-center">{{ $attachment->caption }}</div>
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    <p class="text-[10px] text-rose-400 mt-2 font-semibold">{{ app()->getLocale() == 'en' ? 'Check the box on a photo to mark it for deletion on save.' : 'Centang foto untuk menandainya agar dihapus saat disimpan.' }}</p>
+                                </div>
+                            @else
+                                <p class="text-xs text-slate-400 italic">{{ __('ui.no_photos') }}</p>
+                            @endif
+
+                            {{-- Upload New Photos --}}
+                            <div>
+                                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2">{{ __('ui.add_more_photos') }}</p>
+                                <div class="relative group cursor-pointer border-2 border-dashed border-slate-200 rounded-xl p-6 hover:border-gold-500 transition-all flex flex-col items-center justify-center bg-slate-50/50">
+                                    <input type="file" name="attachments[]" multiple @change="handleFiles" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer">
+                                    <i data-lucide="upload-cloud" class="w-7 h-7 text-slate-400 group-hover:text-gold-500 mb-2"></i>
+                                    <p class="text-[11px] font-bold text-slate-400 group-hover:text-gold-500 uppercase tracking-widest">{{ __('Select Images') }}</p>
+                                </div>
+                                <div x-show="newFiles.length > 0" class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4" x-cloak>
+                                    <template x-for="(item, idx) in newFiles" :key="idx">
+                                        <div class="relative aspect-square rounded-xl overflow-hidden border border-slate-200 shadow-sm group">
+                                            <img :src="item.preview" class="w-full h-full object-cover">
+                                            <button type="button" @click="removeNew(idx)" class="absolute top-1.5 right-1.5 bg-rose-500 text-white rounded-full p-1.5 shadow opacity-90 hover:opacity-100 hover:scale-105 z-10 transition-all">
+                                                <i data-lucide="x" class="w-3 h-3"></i>
+                                            </button>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -262,6 +361,28 @@
                 }
             }
         }
+
+        function attachmentManager() {
+            return {
+                newFiles: [],
+                handleFiles(event) {
+                    const fileList = event.target.files;
+                    for (let i = 0; i < fileList.length; i++) {
+                        const file = fileList[i];
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            this.newFiles.push({ preview: e.target.result, name: file.name });
+                            this.$nextTick(() => lucide.createIcons());
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                },
+                removeNew(idx) {
+                    this.newFiles.splice(idx, 1);
+                }
+            }
+        }
+
 
         // SweetAlert2 Pre-Submit Confirmation
         document.getElementById('receipt-edit-form').addEventListener('submit', function(e) {

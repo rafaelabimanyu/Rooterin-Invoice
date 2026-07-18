@@ -7,6 +7,8 @@ use App\Models\Invoice;
 use App\Models\Receipt;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
+
 
 class ReceiptController extends Controller
 {
@@ -112,9 +114,9 @@ class ReceiptController extends Controller
                 'status' => 'paid',
                 'due_date' => now()->toDateString(),
                 'cause_of_problem' => $request->cause_of_problem,
-                'notes' => $request->notes ?: 'Pekerjaan ini telah diverifikasi langsung di lokasi oleh teknisi kami menggunakan peralatan presisi tinggi, sesuai dengan standar kualitas J&J GROUP.',
-                'technician_names' => $request->technician_names ?: 'Umum',
-                'warranty' => $warranty ?: 'Tidak Ada Garansi',
+                'notes' => $request->notes ?: null,
+                'technician_names' => $request->technician_names ?: null,
+                'warranty' => $warranty ?: null,
             ];
 
             if (Schema::hasColumn('invoices', 'created_by')) {
@@ -192,11 +194,12 @@ class ReceiptController extends Controller
 
     public function edit(Receipt $receipt)
     {
-        $receipt->load(['invoice.items', 'invoice.client', 'invoice.businessUnit']);
+        $receipt->load(['invoice.items', 'invoice.client', 'invoice.businessUnit', 'invoice.attachments']);
         $businessUnits = \App\Models\BusinessUnit::orderBy('name')->get();
         $clients = \App\Models\Client::orderBy('nama_client')->get();
         return view('receipts.edit', compact('receipt', 'businessUnits', 'clients'));
     }
+
 
     public function update(Request $request, Receipt $receipt)
     {
@@ -205,6 +208,10 @@ class ReceiptController extends Controller
         $request->validate([
             'payment_date' => 'required|date',
             'notes' => 'nullable|string',
+            'technician_names' => 'nullable|string|max:500',
+            'cause_of_problem' => 'nullable|string|max:1000',
+            'warranty_value' => 'nullable|integer|min:1',
+            'warranty_unit' => 'nullable|string|in:Hari,Bulan,Tahun,Days,Months,Years',
             'items' => 'required|array|min:1',
             'items.*.deskripsi' => 'required|string',
             'items.*.qty' => 'required|numeric|min:0.01',
@@ -212,7 +219,12 @@ class ReceiptController extends Controller
             'discount' => 'nullable|numeric|min:0|max:100',
             'ppn' => 'nullable|numeric|min:0|max:100',
             'pph' => 'nullable|numeric|min:0|max:100',
+            'attachments' => 'nullable|array',
+            'attachments.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
+            'delete_attachments' => 'nullable|array',
+            'delete_attachments.*' => 'nullable|integer',
         ]);
+
 
         $invoice = $receipt->invoice;
         if (!$invoice) {
@@ -232,7 +244,11 @@ class ReceiptController extends Controller
             'pph'      => (float) $invoice->pph,
             'total'    => (float) $invoice->total,
             'notes'    => $invoice->notes,
+            'technician_names' => $invoice->technician_names,
+            'cause_of_problem' => $invoice->cause_of_problem,
+            'warranty' => $invoice->warranty,
         ];
+
 
         try {
             \Illuminate\Support\Facades\DB::beginTransaction();
@@ -255,7 +271,13 @@ class ReceiptController extends Controller
             $invoiceService = new \App\Services\InvoiceService();
             $total = round($invoiceService->calculateTotal($subtotal, $discountNominal, $ppnNominal, $pphNominal), 2);
 
-            // Update Invoice fields
+            // Build warranty string
+            $warranty = null;
+            if ($request->filled('warranty_value')) {
+                $warranty = $request->warranty_value . ' ' . $request->input('warranty_unit', 'Bulan');
+            }
+
+            // Update Invoice fields (financial + technical)
             $invoice->update([
                 'subtotal' => $subtotal,
                 'discount' => $discountNominal,
@@ -263,7 +285,11 @@ class ReceiptController extends Controller
                 'pph' => $pphNominal,
                 'total' => $total,
                 'notes' => $request->notes,
+                'technician_names' => $request->technician_names,
+                'cause_of_problem' => $request->cause_of_problem,
+                'warranty' => $warranty,
             ]);
+
 
             // Sync items (delete old ones and recreate)
             $invoice->items()->delete();
@@ -281,6 +307,30 @@ class ReceiptController extends Controller
                 'amount_received' => $total,
                 'payment_date' => $request->payment_date,
             ]);
+
+            // Handle attachment deletions
+            if ($request->filled('delete_attachments')) {
+                foreach ($request->delete_attachments as $attachmentId) {
+                    $attachment = \App\Models\InvoiceAttachment::where('id', $attachmentId)
+                        ->where('invoice_id', $invoice->id)
+                        ->first();
+                    if ($attachment) {
+                        \Illuminate\Support\Facades\Storage::disk('public')->delete($attachment->file_path);
+                        $attachment->delete();
+                    }
+                }
+            }
+
+            // Handle new attachment uploads
+            if ($request->hasFile('attachments')) {
+                foreach ($request->file('attachments') as $file) {
+                    $path = $file->store('attachments', 'public');
+                    $invoice->attachments()->create([
+                        'file_path' => $path,
+                    ]);
+                }
+            }
+
 
             // Sync Payments (fully paid balance)
             $payment = $invoice->payments()->first();
@@ -316,7 +366,11 @@ class ReceiptController extends Controller
                 'pph'      => (float) $invoice->pph,
                 'total'    => (float) $invoice->total,
                 'notes'    => $invoice->notes,
+                'technician_names' => $invoice->technician_names,
+                'cause_of_problem' => $invoice->cause_of_problem,
+                'warranty' => $invoice->warranty,
             ];
+
 
             // Compare and compile the diff array
             $diffs = [];

@@ -68,9 +68,12 @@
             <nav x-bind:class="collapsed ? 'space-y-4' : 'space-y-1'">
                 <x-sidebar-link href="{{ route('receipts.index') }}" :active="request()->routeIs('receipts.*')" icon="file-spreadsheet" :label="__('ui.receipts')" :collapsed="$collapsed" />
                 <x-sidebar-link href="{{ route('invoices.index') }}" :active="request()->routeIs('invoices.*')" icon="file-text" :label="__('ui.invoices')" :collapsed="$collapsed" />
+                <x-sidebar-link href="{{ route('ledger.index') }}" :active="request()->routeIs('ledger.*')" icon="book-open" :label="__('ui.ledger')" :collapsed="$collapsed" />
+                <x-sidebar-link href="{{ route('reports.index') }}" :active="request()->routeIs('reports.*')" icon="pie-chart" :label="__('ui.reports')" :collapsed="$collapsed" />
                 @if(!auth()->user()->hasRole('staff'))
                 <x-sidebar-link href="{{ route('chronos.index') }}" :active="request()->routeIs('chronos.*')" icon="calendar-days" :label="__('ui.chronos_calendar')" :collapsed="$collapsed" />
                 @endif
+
             </nav>
         </div>
 
@@ -80,7 +83,6 @@
             <p x-show="!collapsed" class="px-4 mb-4 text-[9px] font-black uppercase tracking-[0.25em] text-slate-400/80">{{ __('ui.intelligence') }}</p>
             <nav x-bind:class="collapsed ? 'space-y-4' : 'space-y-1'">
                 <x-sidebar-link href="{{ route('owner.kpi') }}" :active="request()->routeIs('owner.kpi')" icon="trending-up" :label="__('ui.owner_kpi')" :collapsed="$collapsed" />
-                <x-sidebar-link href="{{ route('reports.index') }}" :active="request()->routeIs('reports.*')" icon="pie-chart" :label="__('ui.reports')" :collapsed="$collapsed" />
             </nav>
         </div>
         @endif

@@ -140,6 +140,45 @@ return [
     'operational_sop' => 'Operational SOP',
     'loading_details' => 'Loading Details...',
     'trash' => 'Trash / Bin',
+
+    // Transaction Ledger
+    'ledger' => 'Transaction Ledger',
+    'ledger_desc' => 'Read-only bridge view of all invoices and receipts.',
+    'document_type' => 'Type',
+    'invoice_doc' => 'Invoice',
+    'receipt_doc' => 'Receipt',
+    'view_invoice' => 'View Invoice',
+    'view_receipt' => 'View Receipt',
+    'no_linked_receipt' => 'No receipt',
+    'all_types' => 'All Types',
+    'all_units' => 'All Units',
+    'ledger_title' => 'Transaction Ledger',
+    'ledger_subtitle' => 'Aggregated view of all invoices and receipts. Read-only.',
+
+    // Technical Fields (Receipt & Invoice)
+    'field_technicians' => 'Field Technicians',
+    'cause_of_problem' => 'Cause of Blockage',
+    'warranty_period' => 'Warranty Period',
+    'technical_info' => 'Technical Information',
+    'technical_info_desc' => 'This data will automatically sync to the connected Invoice.',
+    'job_documentation' => 'Job Documentation',
+    'job_documentation_desc' => 'Upload work evidence. Existing photos are shown below.',
+    'existing_photos' => 'Existing Documentation Photos',
+    'add_more_photos' => 'Add More Photos',
+    'delete_photo' => 'Delete Photo',
+    'no_photos' => 'No documentation photos yet.',
+    'technician_placeholder' => 'e.g. Budi, Andi, Rafi',
+    'cause_placeholder' => 'e.g. Sand and gravel buildup',
+    'warranty_days' => 'Days',
+    'warranty_months' => 'Months',
+    'warranty_years' => 'Years',
+    'no_warranty' => 'No Warranty',
+
+    // Additional Notes
+    'additional_notes_label' => 'Additional Notes (Optional)',
+    'additional_notes_hint' => 'J&J GROUP standard quality text is always printed on the PDF. This field is for extra remarks only.',
+    'additional_notes_placeholder' => 'e.g. Special client request, follow-up schedule...',
 ];
+
 
 

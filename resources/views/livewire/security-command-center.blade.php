@@ -287,6 +287,22 @@
                                                     </span>
                                                 @endif
                                             </p>
+                                            @if($log->details && is_array($log->details))
+                                                <div class="mt-3.5 mb-2 text-[10px] font-mono text-slate-600 bg-white border border-slate-200/60 rounded-xl p-4 space-y-2 max-w-lg shadow-sm">
+                                                    <div class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                                                        <i data-lucide="git-commit" class="w-3.5 h-3.5 text-gold-500"></i>
+                                                        <span>{{ app()->getLocale() == 'en' ? 'State Changes' : 'Perubahan Nilai' }}</span>
+                                                    </div>
+                                                    @foreach($log->details as $diff)
+                                                        <div class="flex items-center gap-2 flex-wrap leading-relaxed">
+                                                            <span class="font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded uppercase text-[9px]">{{ str_replace('_', ' ', $diff['field']) }}:</span>
+                                                            <span class="text-rose-600 font-medium line-through bg-rose-50 px-1.5 py-0.5 rounded">{{ is_numeric($diff['before']) && !str_contains($diff['field'], 'date') ? 'Rp ' . number_format($diff['before'], 0, ',', '.') : ($diff['before'] ?: '-') }}</span>
+                                                            <i data-lucide="arrow-right" class="w-3 h-3 text-slate-400"></i>
+                                                            <span class="text-emerald-700 font-bold bg-emerald-50 px-1.5 py-0.5 rounded">{{ is_numeric($diff['after']) && !str_contains($diff['field'], 'date') ? 'Rp ' . number_format($diff['after'], 0, ',', '.') : ($diff['after'] ?: '-') }}</span>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            @endif
                                             <div class="flex items-center gap-2 mt-0.5">
                                                 <div x-data="{ showIP: false }" class="relative">
                                                     <button @click="showIP = !showIP" class="text-[10px] text-gold-600 font-black uppercase tracking-widest hover:underline font-mono">

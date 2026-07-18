@@ -271,4 +271,24 @@
 
     <!-- Bottom Spacer to prevent content overlap with sticky bar -->
     <div class="h-20 md:hidden"></div>
+
+    @push('scripts')
+    @if(session('receipt_updated_sync'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: "{{ app()->getLocale() == 'en' ? 'Saved Successfully!' : 'Berhasil Disimpan!' }}",
+                    text: "{{ app()->getLocale() == 'en' ? 'Receipt data has been saved and the connected Invoice has been updated automatically.' : 'Data Kwitansi telah disimpan dan Invoice terkait telah diperbarui secara otomatis.' }}",
+                    icon: 'success',
+                    customClass: {
+                        confirmButton: 'px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-bold text-xs uppercase tracking-wider text-center transition-all duration-300'
+                    },
+                    buttonsStyling: false
+                });
+            }
+        });
+    </script>
+    @endif
+    @endpush
 </x-app-layout>

@@ -48,7 +48,7 @@ class ReceiptPolicy
      */
     public function update(User $user, Receipt $receipt): bool
     {
-        return false;
+        return true;
     }
 
     /**

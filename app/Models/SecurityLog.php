@@ -14,6 +14,11 @@ class SecurityLog extends Model
         'user_agent',
         'location',
         'is_suspicious',
+        'details',
+    ];
+
+    protected $casts = [
+        'details' => 'array',
     ];
 
     public function user(): BelongsTo

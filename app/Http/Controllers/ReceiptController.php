@@ -56,12 +56,194 @@ class ReceiptController extends Controller
 
     public function edit(Receipt $receipt)
     {
-        return redirect()->route('receipts.index')->with('info', 'Kwitansi otomatis tidak dapat diedit secara manual.');
+        $receipt->load(['invoice.items', 'invoice.client', 'invoice.businessUnit']);
+        $businessUnits = \App\Models\BusinessUnit::orderBy('name')->get();
+        $clients = \App\Models\Client::orderBy('nama_client')->get();
+        return view('receipts.edit', compact('receipt', 'businessUnits', 'clients'));
     }
 
     public function update(Request $request, Receipt $receipt)
     {
-        return redirect()->route('receipts.index');
+        \Illuminate\Support\Facades\Gate::authorize('update', $receipt);
+
+        $request->validate([
+            'payment_date' => 'required|date',
+            'notes' => 'nullable|string',
+            'items' => 'required|array|min:1',
+            'items.*.deskripsi' => 'required|string',
+            'items.*.qty' => 'required|numeric|min:0.01',
+            'items.*.harga' => 'required|numeric|min:0',
+            'discount' => 'nullable|numeric|min:0|max:100',
+            'ppn' => 'nullable|numeric|min:0|max:100',
+            'pph' => 'nullable|numeric|min:0|max:100',
+        ]);
+
+        $invoice = $receipt->invoice;
+        if (!$invoice) {
+            return redirect()->route('receipts.index')->with('error', 'Kwitansi tidak memiliki invoice terkait.');
+        }
+
+        // 1. Capture the initial state before any database changes
+        $oldReceiptState = [
+            'amount_received' => (float) $receipt->amount_received,
+            'payment_date'    => $receipt->payment_date ? $receipt->payment_date->toIso8601String() : null,
+        ];
+
+        $oldInvoiceState = [
+            'subtotal' => (float) $invoice->subtotal,
+            'discount' => (float) $invoice->discount,
+            'ppn'      => (float) $invoice->ppn,
+            'pph'      => (float) $invoice->pph,
+            'total'    => (float) $invoice->total,
+            'notes'    => $invoice->notes,
+        ];
+
+        try {
+            \Illuminate\Support\Facades\DB::beginTransaction();
+
+            // Recalculate Invoice totals
+            $subtotal = 0;
+            foreach ($request->items as $item) {
+                $subtotal += $item['qty'] * $item['harga'];
+            }
+
+            $discountInput = (float) $request->input('discount', 0);
+            $ppnInput = (float) $request->input('ppn', 0);
+            $pphInput = (float) $request->input('pph', 0);
+
+            $discountNominal = round($discountInput > 100 ? $discountInput : ($subtotal * ($discountInput / 100)), 2);
+            $dpp = round($subtotal - $discountNominal, 2);
+            $ppnNominal = round($ppnInput > 100 ? $ppnInput : ($dpp * ($ppnInput / 100)), 2);
+            $pphNominal = round($pphInput > 100 ? $pphInput : ($dpp * ($pphInput / 100)), 2);
+
+            $invoiceService = new \App\Services\InvoiceService();
+            $total = round($invoiceService->calculateTotal($subtotal, $discountNominal, $ppnNominal, $pphNominal), 2);
+
+            // Update Invoice fields
+            $invoice->update([
+                'subtotal' => $subtotal,
+                'discount' => $discountNominal,
+                'ppn' => $ppnNominal,
+                'pph' => $pphNominal,
+                'total' => $total,
+                'notes' => $request->notes,
+            ]);
+
+            // Sync items (delete old ones and recreate)
+            $invoice->items()->delete();
+            foreach ($request->items as $item) {
+                $invoice->items()->create([
+                    'deskripsi' => $item['deskripsi'],
+                    'qty' => $item['qty'],
+                    'harga' => $item['harga'],
+                    'total' => $item['qty'] * $item['harga'],
+                ]);
+            }
+
+            // Sync Receipt
+            $receipt->update([
+                'amount_received' => $total,
+                'payment_date' => $request->payment_date,
+            ]);
+
+            // Sync Payments (fully paid balance)
+            $payment = $invoice->payments()->first();
+            if ($payment) {
+                $payment->update([
+                    'amount' => $total,
+                    'payment_date' => $request->payment_date,
+                ]);
+            } else {
+                \App\Models\Payment::create([
+                    'invoice_id' => $invoice->id,
+                    'payment_date' => $request->payment_date,
+                    'amount' => $total,
+                    'payment_method' => 'Transfer Bank',
+                    'reference_number' => 'AUTO-GENERATED',
+                    'notes' => 'Automatic payment entry on sync',
+                ]);
+            }
+
+            // Reload state from database
+            $receipt->refresh();
+            $invoice->refresh();
+
+            $newReceiptState = [
+                'amount_received' => (float) $receipt->amount_received,
+                'payment_date'    => $receipt->payment_date ? $receipt->payment_date->toIso8601String() : null,
+            ];
+
+            $newInvoiceState = [
+                'subtotal' => (float) $invoice->subtotal,
+                'discount' => (float) $invoice->discount,
+                'ppn'      => (float) $invoice->ppn,
+                'pph'      => (float) $invoice->pph,
+                'total'    => (float) $invoice->total,
+                'notes'    => $invoice->notes,
+            ];
+
+            // Compare and compile the diff array
+            $diffs = [];
+            
+            // Map Receipt values
+            foreach ($oldReceiptState as $field => $oldVal) {
+                $newVal = $newReceiptState[$field];
+                if ($oldVal !== $newVal) {
+                    $diffs[] = [
+                        'field' => 'receipt_' . $field,
+                        'before' => $oldVal,
+                        'after' => $newVal,
+                    ];
+                }
+            }
+
+            // Map Invoice values
+            foreach ($oldInvoiceState as $field => $oldVal) {
+                $newVal = $newInvoiceState[$field];
+                if ($oldVal !== $newVal) {
+                    $diffs[] = [
+                        'field' => 'invoice_' . $field,
+                        'before' => $oldVal,
+                        'after' => $newVal,
+                    ];
+                }
+            }
+
+            // Log change in SecurityLog
+            $roleLabel = auth()->user()->role;
+            $userName = auth()->user()->name;
+            $activityText = ucfirst($roleLabel) . " {$userName} updated receipt #{$receipt->receipt_number} and synchronized connected Invoice #{$invoice->invoice_number}.";
+            
+            \App\Models\SecurityLog::create([
+                'user_id' => auth()->id(),
+                'activity' => $activityText,
+                'details' => $diffs,
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+                'is_suspicious' => false,
+            ]);
+
+            \App\Models\ActivityLog::log('updated_receipt', "Updated receipt #{$receipt->receipt_number} and synchronized with Invoice #{$invoice->invoice_number}");
+
+            \Illuminate\Support\Facades\DB::commit();
+
+            // Send notification to Owner & Admin
+            $usersToNotify = \App\Models\User::whereIn('role', ['owner', 'admin'])->get();
+            foreach ($usersToNotify as $u) {
+                $u->notify(new \App\Notifications\SystemActivityNotification(
+                    'Receipt & Invoice Synced',
+                    "{$userName} ({$roleLabel}) updated receipt #{$receipt->receipt_number}. Invoice values synced automatically.",
+                    'security',
+                    route('receipts.show', $receipt)
+                ));
+            }
+
+            return redirect()->route('receipts.show', $receipt)->with('receipt_updated_sync', true);
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            return redirect()->back()->withInput()->with('error', 'Gagal menyinkronkan data: ' . $e->getMessage());
+        }
     }
 
     public function convertToInvoice(Receipt $receipt)

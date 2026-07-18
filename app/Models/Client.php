@@ -26,6 +26,8 @@ class Client extends Model
         'provinsi',
         'catatan',
         'status',
+        'deleted_by',
+        'deletion_reason',
     ];
 
     /**
@@ -111,5 +113,13 @@ class Client extends Model
         $lastClient = self::withTrashed()->orderBy('id', 'desc')->first();
         $number = $lastClient ? ((int) substr($lastClient->kode_client, 4)) + 1 : 1;
         return 'CLI-' . str_pad($number, 4, '0', STR_PAD_LEFT);
+    }
+
+    /**
+     * Get the user who deleted the client.
+     */
+    public function deleter(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
     }
 }

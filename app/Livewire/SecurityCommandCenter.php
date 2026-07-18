@@ -212,7 +212,7 @@ class SecurityCommandCenter extends Component
 
     public function render()
     {
-        $logs = SecurityLog::where('user_id', auth()->id())->latest()->take(10)->get();
+        $logs = SecurityLog::with('user')->latest()->take(50)->get();
         
         return view('livewire.security-command-center', [
             'auditLogs' => $logs

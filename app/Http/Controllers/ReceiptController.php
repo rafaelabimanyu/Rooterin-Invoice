@@ -163,6 +163,26 @@ class ReceiptController extends Controller
 
         \App\Models\ActivityLog::log('deleted_receipt', "Soft deleted receipt #{$num}");
 
+        if (auth()->user()->role === 'staff') {
+            $reason = $request->input('deletion_reason') ?: '-';
+            \App\Models\SecurityLog::create([
+                'user_id' => auth()->id(),
+                'activity' => "Staff " . auth()->user()->name . " soft-deleted receipt #{$num} (Reason: {$reason})",
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ]);
+
+            $usersToNotify = \App\Models\User::whereIn('role', ['owner', 'admin'])->get();
+            foreach ($usersToNotify as $u) {
+                $u->notify(new \App\Notifications\SystemActivityNotification(
+                    'Receipt Deleted by Staff',
+                    "Staff " . auth()->user()->name . " soft-deleted receipt #{$num}. Reason: {$reason}",
+                    'security',
+                    route('trash.index')
+                ));
+            }
+        }
+
         return redirect()->route('receipts.index')->with('success', app()->getLocale() == 'en' 
             ? 'Receipt moved to trash successfully.' 
             : 'Kwitansi berhasil dipindahkan ke tempat sampah.');

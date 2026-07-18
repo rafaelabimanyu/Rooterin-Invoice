@@ -213,6 +213,25 @@ class ClientManager extends Component
         if ($this->editingClient) {
             $this->editingClient->update($validated);
             $this->dispatch('notify', ['message' => 'Client updated successfully.', 'type' => 'success']);
+
+            if (auth()->user()->role === 'staff') {
+                \App\Models\SecurityLog::create([
+                    'user_id' => auth()->id(),
+                    'activity' => "Staff " . auth()->user()->name . " edited client {$this->editingClient->nama_client}",
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ]);
+
+                $usersToNotify = \App\Models\User::whereIn('role', ['owner', 'admin'])->get();
+                foreach ($usersToNotify as $u) {
+                    $u->notify(new \App\Notifications\SystemActivityNotification(
+                        'Client Edited by Staff',
+                        "Staff " . auth()->user()->name . " edited client {$this->editingClient->nama_client}",
+                        'security',
+                        route('clients.index')
+                    ));
+                }
+            }
         } else {
             Client::create($validated);
             $this->dispatch('notify', ['message' => 'Client registered successfully.', 'type' => 'success']);
@@ -222,12 +241,37 @@ class ClientManager extends Component
         $this->resetFields();
     }
 
-    public function delete(Client $client)
+    public function delete(Client $client, $reason = null)
     {
         \Illuminate\Support\Facades\Gate::authorize('delete', $client);
 
+        $client->update([
+            'deleted_by' => auth()->id(),
+            'deletion_reason' => $reason
+        ]);
+
         $client->delete();
         $this->dispatch('notify', ['message' => 'Client removed from registry.', 'type' => 'success']);
+
+        if (auth()->user()->role === 'staff') {
+            $reasonStr = $reason ?: '-';
+            \App\Models\SecurityLog::create([
+                'user_id' => auth()->id(),
+                'activity' => "Staff " . auth()->user()->name . " soft-deleted client {$client->nama_client} (Reason: {$reasonStr})",
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ]);
+
+            $usersToNotify = \App\Models\User::whereIn('role', ['owner', 'admin'])->get();
+            foreach ($usersToNotify as $u) {
+                $u->notify(new \App\Notifications\SystemActivityNotification(
+                    'Client Deleted by Staff',
+                    "Staff " . auth()->user()->name . " soft-deleted client {$client->nama_client}. Reason: {$reasonStr}",
+                    'security',
+                    route('trash.index')
+                ));
+            }
+        }
     }
 
     private function resetFields()

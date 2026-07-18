@@ -113,11 +113,37 @@ class ClientController extends Controller
 
     }
 
-    public function destroy(Client $client)
+    public function destroy(Request $request, Client $client)
     {
         \Illuminate\Support\Facades\Gate::authorize('delete', $client);
 
+        $client->update([
+            'deleted_by' => auth()->id(),
+            'deletion_reason' => $request->input('deletion_reason')
+        ]);
+
         $client->delete();
+
+        if (auth()->user()->role === 'staff') {
+            $reason = $request->input('deletion_reason') ?: '-';
+            \App\Models\SecurityLog::create([
+                'user_id' => auth()->id(),
+                'activity' => "Staff " . auth()->user()->name . " soft-deleted client {$client->nama_client} (Reason: {$reason})",
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ]);
+
+            $usersToNotify = \App\Models\User::whereIn('role', ['owner', 'admin'])->get();
+            foreach ($usersToNotify as $u) {
+                $u->notify(new \App\Notifications\SystemActivityNotification(
+                    'Client Deleted by Staff',
+                    "Staff " . auth()->user()->name . " soft-deleted client {$client->nama_client}. Reason: {$reason}",
+                    'security',
+                    route('trash.index')
+                ));
+            }
+        }
+
         return redirect()->route('clients.index')->with('success', 'Client deleted successfully.');
     }
 }

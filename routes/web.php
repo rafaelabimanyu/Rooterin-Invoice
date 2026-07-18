@@ -74,6 +74,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+        // Reports (moved here to allow Staff role access)
+        Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+        Route::get('/reports/export', [ReportController::class, 'export'])->name('reports.export');
     });
 
     // Elevated Roles (Owner, Admin)
@@ -96,10 +100,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/trash/invoices/{id}/purge', [\App\Http\Controllers\TrashController::class, 'forceDeleteInvoice'])->name('trash.invoices.purge');
         Route::post('/trash/receipts/{id}/restore', [\App\Http\Controllers\TrashController::class, 'restoreReceipt'])->name('trash.receipts.restore');
         Route::delete('/trash/receipts/{id}/purge', [\App\Http\Controllers\TrashController::class, 'forceDeleteReceipt'])->name('trash.receipts.purge');
-
-        // Reports
-        Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
-        Route::get('/reports/export', [ReportController::class, 'export'])->name('reports.export');
+        Route::post('/trash/clients/{id}/restore', [\App\Http\Controllers\TrashController::class, 'restoreClient'])->name('trash.clients.restore');
+        Route::delete('/trash/clients/{id}/purge', [\App\Http\Controllers\TrashController::class, 'forceDeleteClient'])->name('trash.clients.purge');
 
         // Owner KPI Dashboard
         Route::get('/owner-kpi', [\App\Http\Controllers\OwnerKpiController::class, 'index'])->name('owner.kpi');

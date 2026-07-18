@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Invoice;
 use App\Models\Receipt;
+use App\Models\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -15,8 +16,9 @@ class TrashController extends Controller
 
         $invoices = Invoice::onlyTrashed()->with(['client', 'businessUnit', 'deleter'])->latest()->get();
         $receipts = Receipt::onlyTrashed()->with(['invoice.client', 'deleter'])->latest()->get();
+        $clients = Client::onlyTrashed()->with('deleter')->latest()->get();
 
-        return view('trash.index', compact('invoices', 'receipts'));
+        return view('trash.index', compact('invoices', 'receipts', 'clients'));
     }
 
     public function restoreInvoice($id)
@@ -105,5 +107,46 @@ class TrashController extends Controller
         return redirect()->route('trash.index')->with('success', app()->getLocale() == 'en' 
             ? 'Receipt permanently deleted.' 
             : 'Kwitansi berhasil dihapus secara permanen.');
+    }
+
+    public function restoreClient($id)
+    {
+        abort_if(auth()->user()->role === 'staff', 403, 'Unauthorized action.');
+
+        $client = Client::onlyTrashed()->findOrFail($id);
+        $client->restore();
+
+        $client->update([
+            'deleted_by' => null,
+            'deletion_reason' => null,
+        ]);
+
+        \App\Models\ActivityLog::log('restored_client', "Restored client {$client->nama_client}");
+
+        return redirect()->route('trash.index')->with('success', app()->getLocale() == 'en' 
+            ? 'Client restored successfully.' 
+            : 'Klien berhasil dipulihkan.');
+    }
+
+    public function forceDeleteClient($id)
+    {
+        abort_if(auth()->user()->role === 'staff', 403, 'Unauthorized action.');
+
+        $client = Client::onlyTrashed()->findOrFail($id);
+
+        try {
+            $name = $client->nama_client;
+            $client->forceDelete();
+
+            \App\Models\ActivityLog::log('purged_client', "Permanently deleted client {$name}");
+
+            return redirect()->route('trash.index')->with('success', app()->getLocale() == 'en' 
+                ? 'Client permanently deleted.' 
+                : 'Klien berhasil dihapus secara permanen.');
+        } catch (\Exception $e) {
+            return redirect()->route('trash.index')->with('error', app()->getLocale() == 'en'
+                ? 'Cannot delete client. Client has invoices linked.'
+                : 'Tidak dapat menghapus klien. Klien ini memiliki invoice yang terkait.');
+        }
     }
 }

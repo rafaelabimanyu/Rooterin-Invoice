@@ -63,9 +63,11 @@
                     <button @click="tab = 'clients'" :class="tab === 'clients' ? 'text-gold-600 border-gold-600' : 'text-slate-400 border-transparent'" class="pb-4 text-xs font-black border-b-2 transition-all uppercase tracking-widest">
                         {{ app()->getLocale() == 'en' ? 'Client Analytics & Trends' : 'Analisis Klien & Tren' }}
                     </button>
+                    @if(auth()->user()->role !== 'staff')
                     <button @click="tab = 'business_units'" :class="tab === 'business_units' ? 'text-gold-600 border-gold-600' : 'text-slate-400 border-transparent'" class="pb-4 text-xs font-black border-b-2 transition-all uppercase tracking-widest">
                         {{ app()->getLocale() == 'en' ? 'Business Unit Profit-Sharing' : 'Profit-Sharing Unit Bisnis' }}
                     </button>
+                    @endif
                 </div>
 
                 <!-- Invoice Tab -->
@@ -439,6 +441,7 @@
                 </div>
 
                 <!-- Business Unit Profit Sharing Tab -->
+                @if(auth()->user()->role !== 'staff')
                 <div x-show="tab === 'business_units'" x-transition>
                     <div class="glass-card overflow-hidden">
                         <div class="px-8 py-6 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between">
@@ -517,6 +520,7 @@
                         </div>
                     </div>
                 </div>
+                @endif
             </div>
         </div>
     </div>

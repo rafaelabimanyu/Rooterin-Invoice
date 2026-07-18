@@ -93,20 +93,66 @@
                         @can('delete', $client)
                         <button type="button" @click="
                             Swal.fire({
-                                title: '{{ app()->getLocale() == "en" ? "Are you sure?" : "Apakah Anda yakin?" }}',
-                                text: '{{ app()->getLocale() == "en" ? "This client will be soft-deleted." : "Klien ini akan dihapus sementara." }}',
+                                title: '{{ app()->getLocale() == "en" ? "Select Deletion Reason" : "Pilih Alasan Penghapusan" }}',
+                                text: '{{ app()->getLocale() == "en" ? "This client will be soft-deleted and moved to trash." : "Klien ini akan dihapus sementara dan dipindahkan ke tempat sampah." }}',
                                 icon: 'warning',
+                                input: 'select',
+                                inputOptions: {
+                                    'Perubahan Kontak': '{{ app()->getLocale() == "en" ? "Contact Change" : "Perubahan Kontak" }}',
+                                    'Salah Input': '{{ app()->getLocale() == "en" ? "Wrong Input" : "Salah Input" }}',
+                                    'Klien Nonaktif': '{{ app()->getLocale() == "en" ? "Inactive Client" : "Klien Nonaktif" }}',
+                                    'Duplikat': '{{ app()->getLocale() == "en" ? "Duplicate" : "Duplikat" }}',
+                                    'Lainnya': '{{ app()->getLocale() == "en" ? "Other" : "Lainnya" }}'
+                                },
+                                inputPlaceholder: '{{ app()->getLocale() == "en" ? "Select reason..." : "Pilih alasan..." }}',
                                 showCancelButton: true,
+                                confirmButtonColor: '#e11d48',
+                                cancelButtonColor: '#64748b',
                                 confirmButtonText: '{{ app()->getLocale() == "en" ? "Yes, delete!" : "Ya, hapus!" }}',
                                 cancelButtonText: '{{ app()->getLocale() == "en" ? "Cancel" : "Batal" }}',
+                                inputValidator: (value) => {
+                                    if (!value) {
+                                        return '{{ app()->getLocale() == "en" ? "You need to select a reason!" : "Anda harus memilih alasan!" }}';
+                                    }
+                                },
                                 customClass: {
                                     confirmButton: 'px-5 py-2.5 bg-rose-500 hover:bg-rose-650 text-white rounded-xl font-bold text-xs uppercase tracking-wider text-center mr-2 transition-all duration-300',
                                     cancelButton: 'px-5 py-2.5 bg-slate-500 hover:bg-slate-650 text-white rounded-xl font-bold text-xs uppercase tracking-wider text-center transition-all duration-300',
+                                    input: 'rounded-xl border-slate-200 text-sm font-medium mt-3 focus:border-gold-500 focus:ring-gold-500'
                                 },
                                 buttonsStyling: false
                             }).then((result) => {
                                 if (result.isConfirmed) {
-                                    $wire.delete({{ $client->id }});
+                                    let reason = result.value;
+                                    if (reason === 'Lainnya') {
+                                        Swal.fire({
+                                            title: '{{ app()->getLocale() == "en" ? "Custom Deletion Reason" : "Alasan Penghapusan Lainnya" }}',
+                                            input: 'text',
+                                            inputPlaceholder: '{{ app()->getLocale() == "en" ? "Type reason here..." : "Tulis alasan di sini..." }}',
+                                            showCancelButton: true,
+                                            confirmButtonColor: '#e11d48',
+                                            cancelButtonColor: '#64748b',
+                                            confirmButtonText: '{{ app()->getLocale() == "en" ? "Confirm Delete" : "Konfirmasi Hapus" }}',
+                                            cancelButtonText: '{{ app()->getLocale() == "en" ? "Cancel" : "Batal" }}',
+                                            inputValidator: (val) => {
+                                                if (!val) {
+                                                    return '{{ app()->getLocale() == "en" ? "Reason cannot be empty!" : "Alasan tidak boleh kosong!" }}';
+                                                }
+                                            },
+                                            customClass: {
+                                                confirmButton: 'px-5 py-2.5 bg-rose-500 hover:bg-rose-650 text-white rounded-xl font-bold text-xs uppercase tracking-wider text-center mr-2 transition-all duration-300',
+                                                cancelButton: 'px-5 py-2.5 bg-slate-500 hover:bg-slate-650 text-white rounded-xl font-bold text-xs uppercase tracking-wider text-center transition-all duration-300',
+                                                input: 'rounded-xl border-slate-200 text-sm font-medium mt-3 focus:border-gold-500 focus:ring-gold-500'
+                                            },
+                                            buttonsStyling: false
+                                        }).then((textResult) => {
+                                            if (textResult.isConfirmed) {
+                                                $wire.delete({{ $client->id }}, textResult.value);
+                                            }
+                                        });
+                                    } else {
+                                        $wire.delete({{ $client->id }}, reason);
+                                    }
                                 }
                             })
                         " class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50/50 transition-colors rounded-lg" title="{{ app()->getLocale() == 'en' ? 'Delete' : 'Hapus' }}">

@@ -295,6 +295,25 @@ class InvoiceController extends Controller
 
             \App\Models\ActivityLog::log('updated_invoice', "Updated invoice #{$invoice->invoice_number}", $invoice);
 
+            if (auth()->user()->role === 'staff') {
+                \App\Models\SecurityLog::create([
+                    'user_id' => auth()->id(),
+                    'activity' => "Staff " . auth()->user()->name . " edited invoice #{$invoice->invoice_number}",
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ]);
+
+                $usersToNotify = \App\Models\User::whereIn('role', ['owner', 'admin'])->get();
+                foreach ($usersToNotify as $u) {
+                    $u->notify(new \App\Notifications\SystemActivityNotification(
+                        'Invoice Edited by Staff',
+                        "Staff " . auth()->user()->name . " edited invoice #{$invoice->invoice_number}",
+                        'security',
+                        route('invoices.show', $invoice)
+                    ));
+                }
+            }
+
             return redirect()->route('invoices.index')->with('success', 'Invoice updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -396,6 +415,26 @@ class InvoiceController extends Controller
 
             // Log activity for audit trail
             \App\Models\ActivityLog::log('deleted_invoice', "Soft deleted invoice #{$num}");
+
+            if (auth()->user()->role === 'staff') {
+                $reason = $request->input('deletion_reason') ?: '-';
+                \App\Models\SecurityLog::create([
+                    'user_id' => auth()->id(),
+                    'activity' => "Staff " . auth()->user()->name . " soft-deleted invoice #{$num} (Reason: {$reason})",
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ]);
+
+                $usersToNotify = \App\Models\User::whereIn('role', ['owner', 'admin'])->get();
+                foreach ($usersToNotify as $u) {
+                    $u->notify(new \App\Notifications\SystemActivityNotification(
+                        'Invoice Deleted by Staff',
+                        "Staff " . auth()->user()->name . " soft-deleted invoice #{$num}. Reason: {$reason}",
+                        'security',
+                        route('trash.index')
+                    ));
+                }
+            }
 
             return redirect()->route('invoices.index')->with('success', app()->getLocale() == 'en' 
                 ? 'Invoice moved to trash successfully.' 

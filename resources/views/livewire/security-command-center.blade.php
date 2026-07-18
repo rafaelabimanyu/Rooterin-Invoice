@@ -279,7 +279,14 @@
                                             <i data-lucide="{{ $log->is_suspicious ? 'alert-triangle' : 'shield' }}" class="w-5 h-5"></i>
                                         </div>
                                         <div>
-                                            <p class="text-xs font-black text-slate-900 uppercase tracking-tight">{{ $log->activity }}</p>
+                                            <p class="text-xs font-black text-slate-900 uppercase tracking-tight">
+                                                {{ $log->activity }}
+                                                @if($log->user && $log->user_id !== auth()->id())
+                                                    <span class="ml-2 px-2 py-0.5 rounded bg-slate-250/70 text-[9px] text-slate-600 font-extrabold uppercase tracking-wider">
+                                                        {{ $log->user->name }} ({{ $log->user->role }})
+                                                    </span>
+                                                @endif
+                                            </p>
                                             <div class="flex items-center gap-2 mt-0.5">
                                                 <div x-data="{ showIP: false }" class="relative">
                                                     <button @click="showIP = !showIP" class="text-[10px] text-gold-600 font-black uppercase tracking-widest hover:underline font-mono">

@@ -150,6 +150,8 @@ class ReceiptController extends Controller
 
     public function destroy(Request $request, Receipt $receipt)
     {
+        \Illuminate\Support\Facades\Gate::authorize('delete', $receipt);
+
         $num = $receipt->receipt_number;
 
         $receipt->update([

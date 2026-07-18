@@ -290,5 +290,105 @@ class InvoiceManagementTest extends TestCase
         $response->assertSee('John Doe Creator');
         $response->assertSee($receipt->tanggal_receipt->format(\App\Models\Setting::get('date_format', 'd M Y')));
     }
+
+    public function test_staff_can_create_invoice_and_number_does_not_collide_with_soft_deleted_invoice(): void
+    {
+        $staff = User::factory()->create(['role' => 'staff']);
+        $businessUnit = BusinessUnit::create([
+            'name' => 'Jaya-Website',
+            'slug' => 'jaya-website',
+        ]);
+        $client = Client::create([
+            'kode_client' => 'CL-001',
+            'nama_client' => 'Test Client',
+            'status' => 'aktif',
+        ]);
+
+        // Create an invoice first and soft-delete it
+        $invoice = Invoice::create([
+            'invoice_number' => 'INV-5000-' . date('Y'),
+            'business_unit_id' => $businessUnit->id,
+            'client_id' => $client->id,
+            'status' => 'draft',
+            'subtotal' => 100000,
+            'discount' => 0,
+            'ppn' => 0,
+            'pph' => 0,
+            'total' => 100000,
+        ]);
+        $invoice->delete(); // Soft delete it
+
+        // Now post request as staff to store a new invoice
+        $response = $this->actingAs($staff)->post(route('invoices.store'), [
+            'business_unit_id' => $businessUnit->id,
+            'client_id' => $client->id,
+            'due_date' => now()->addDays(7)->format('Y-m-d'),
+            'items' => [
+                [
+                    'deskripsi' => 'Simulated cleaning service',
+                    'qty' => 1,
+                    'harga' => 150000,
+                ]
+            ],
+            'notes' => 'Test notes',
+        ]);
+
+        $response->assertRedirect(route('invoices.index'));
+        
+        // Assert the new invoice got the NEXT number (INV-5001-YYYY) and not INV-5000-YYYY
+        $expectedNumber = 'INV-5001-' . date('Y');
+        $this->assertDatabaseHas('invoices', [
+            'invoice_number' => $expectedNumber,
+            'client_id' => $client->id,
+        ]);
+    }
+
+    public function test_staff_cannot_delete_receipt(): void
+    {
+        $staff = User::factory()->create(['role' => 'staff']);
+        $admin = User::factory()->create(['role' => 'admin']);
+        $businessUnit = BusinessUnit::create([
+            'name' => 'Jaya-Website',
+            'slug' => 'jaya-website',
+        ]);
+        $client = Client::create([
+            'kode_client' => 'CL-001',
+            'nama_client' => 'Test Client',
+            'status' => 'aktif',
+        ]);
+
+        $invoice = Invoice::create([
+            'invoice_number' => 'INV-5000-' . date('Y'),
+            'business_unit_id' => $businessUnit->id,
+            'client_id' => $client->id,
+            'status' => 'paid',
+            'subtotal' => 100000,
+            'discount' => 0,
+            'ppn' => 0,
+            'pph' => 0,
+            'total' => 100000,
+        ]);
+
+        $receipt = \App\Models\Receipt::create([
+            'receipt_number' => 'KWT-5000-' . date('Y'),
+            'invoice_id' => $invoice->id,
+            'amount_received' => 100000,
+            'payment_date' => now(),
+        ]);
+
+        // Attempt deletion as staff - should get 403 Forbidden
+        $response = $this->actingAs($staff)->delete(route('receipts.destroy', $receipt), [
+            'deletion_reason' => 'Test delete as staff',
+        ]);
+        $response->assertStatus(403);
+        $this->assertDatabaseHas('receipts', ['id' => $receipt->id]);
+
+        // Attempt deletion as admin - should succeed
+        $response = $this->actingAs($admin)->delete(route('receipts.destroy', $receipt), [
+            'deletion_reason' => 'Test delete as admin',
+        ]);
+        $response->assertRedirect(route('receipts.index'));
+        $this->assertSoftDeleted('receipts', ['id' => $receipt->id]);
+    }
 }
 

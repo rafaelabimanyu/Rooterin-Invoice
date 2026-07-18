@@ -2,11 +2,10 @@
 
 namespace App\Policies;
 
-use App\Models\Invoice;
+use App\Models\Receipt;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
-class InvoicePolicy
+class ReceiptPolicy
 {
     /**
      * Perform pre-authorization checks.
@@ -21,9 +20,17 @@ class InvoicePolicy
     }
 
     /**
+     * Determine whether the user can view any models.
+     */
+    public function viewAny(User $user): bool
+    {
+        return true;
+    }
+
+    /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Invoice $invoice): bool
+    public function view(User $user, Receipt $receipt): bool
     {
         return true;
     }
@@ -39,26 +46,16 @@ class InvoicePolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Invoice $invoice): bool
+    public function update(User $user, Receipt $receipt): bool
     {
-        $createdBy = $invoice->created_by ?? null;
-        if (is_null($createdBy)) {
-            return true;
-        }
-        return $user->id === $createdBy 
-            && $invoice->created_at >= now()->subHours(24);
+        return false;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Invoice $invoice): bool
+    public function delete(User $user, Receipt $receipt): bool
     {
-        $createdBy = $invoice->created_by ?? null;
-        if (is_null($createdBy)) {
-            return true;
-        }
-        return $user->id === $createdBy 
-            && $invoice->created_at >= now()->subHours(24);
+        return false;
     }
 }

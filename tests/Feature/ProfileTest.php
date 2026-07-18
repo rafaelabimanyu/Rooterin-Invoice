@@ -12,8 +12,15 @@ class ProfileTest extends TestCase
 
     public function test_profile_page_is_displayed(): void
     {
+        $locale = \App\Models\Setting::get('language', 'id');
+        
+        \Illuminate\Support\Facades\App::setLocale($locale);
+        \Carbon\Carbon::setLocale($locale);
+
+        $loginTime = \Carbon\Carbon::parse('2026-07-18 04:00:00', 'UTC');
         $user = User::factory()->create([
-            'last_login_at' => now(),
+            'role' => 'admin',
+            'last_login_at' => $loginTime,
             'last_login_ip' => '127.0.0.1',
         ]);
 
@@ -22,7 +29,7 @@ class ProfileTest extends TestCase
             ->get('/profile');
 
         $response->assertOk();
-        $response->assertSee($user->last_login_at->timezone('Asia/Jakarta')->translatedFormat('d F Y, H:i') . ' WIB');
+        $response->assertSee($user->fresh()->last_login_at->timezone('Asia/Jakarta')->translatedFormat('d F Y, H:i') . ' WIB');
         $response->assertSee('127.0.0.1');
     }
 

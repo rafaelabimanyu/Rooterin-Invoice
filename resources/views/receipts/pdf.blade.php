@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ app()->getLocale() == 'en' ? 'Receipt' : 'Kuitansi' }} #{{ $receipt->receipt_number }}</title>
+    <title>{{ app()->getLocale() == 'en' ? 'Receipt' : 'Kwitansi' }} #{{ $receipt->receipt_number }}</title>
     <style>
         @page { 
             margin-top: 50px; 
@@ -123,10 +123,10 @@
     </style>
 </head>
 <body>
-    <!-- Halaman Pertama: Detail Kuitansi & Transaksi -->
+    <!-- Halaman Pertama: Detail Kwitansi & Transaksi -->
     <div class="container">
         <!-- Watermark -->
-        <div class="watermark">{{ app()->getLocale() == 'en' ? 'RECEIPT' : 'KUITANSI' }}</div>
+        <div class="watermark">{{ app()->getLocale() == 'en' ? 'RECEIPT' : 'KWITANSI' }}</div>
 
         <!-- Header / Letterhead Table -->
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px;">
@@ -156,7 +156,7 @@
                     @else
                         <div style="font-size: 20px; font-weight: 900; color: #0f172a; margin-bottom: 8px;">J&J GROUP<span style="color: #c89d3c;">.</span></div>
                     @endif
-                    <div style="font-size: 24pt; font-weight: 900; color: #0f172a; text-transform: uppercase; margin-bottom: 2px; letter-spacing: -1px; line-height: 1.1;">{{ app()->getLocale() == 'en' ? 'Receipt' : 'Kuitansi' }}</div>
+                    <div style="font-size: 24pt; font-weight: 900; color: #0f172a; text-transform: uppercase; margin-bottom: 2px; letter-spacing: -1px; line-height: 1.1;">{{ app()->getLocale() == 'en' ? 'Receipt' : 'Kwitansi' }}</div>
                     <div style="font-size: 13pt; font-weight: 700; color: #c89d3c; margin-bottom: 5px;">#{{ $receipt->receipt_number }}</div>
                 </td>
             </tr>
@@ -187,12 +187,12 @@
                 </div>
             </div>
             <div class="status-box">
-                <span class="section-label">{{ app()->getLocale() == 'en' ? 'RECEIPT STATUS' : 'STATUS KUITANSI' }}</span>
+                <span class="section-label">{{ app()->getLocale() == 'en' ? 'RECEIPT STATUS' : 'STATUS KWITANSI' }}</span>
                 <div class="badge badge-paid" style="margin-bottom: 12px;">
                     {{ app()->getLocale() == 'en' ? 'Paid' : 'Lunas' }}
                 </div>
                 <div style="font-size: 9pt; color: #475569; line-height: 1.4;">
-                    {{ app()->getLocale() == 'en' ? 'Receipt Date' : 'Tanggal Kuitansi' }}: <b style="color: #0f172a;">{{ $receipt->tanggal_receipt ? $receipt->tanggal_receipt->format(\App\Models\Setting::get('date_format', 'd M Y')) : '-' }}</b><br>
+                    {{ app()->getLocale() == 'en' ? 'Receipt Date' : 'Tanggal Kwitansi' }}: <b style="color: #0f172a;">{{ $receipt->tanggal_receipt ? $receipt->tanggal_receipt->format(\App\Models\Setting::get('date_format', 'd M Y')) : '-' }}</b><br>
                     {{ app()->getLocale() == 'en' ? 'Expiry Date' : 'Tanggal Kedaluwarsa' }}: <b style="color: #0f172a;">{{ $receipt->expiry_date ? $receipt->expiry_date->format(\App\Models\Setting::get('date_format', 'd M Y')) : '-' }}</b>
                 </div>
                 @if($receipt->invoice && $receipt->invoice->warranty)

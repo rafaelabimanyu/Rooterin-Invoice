@@ -179,6 +179,9 @@
                                 <a href="{{ route('invoices.show', $invoice) }}" class="p-1 text-slate-400 hover:text-gold-600 transition-colors duration-300" title="{{ __('ui.view') }}">
                                     <i data-lucide="eye" class="w-4 h-4"></i>
                                 </a>
+                                <button type="button" @click.prevent="$dispatch('download-pdf', { url: '{{ route('invoices.pdf', $invoice) }}', filename: 'Invoice-{{ $invoice->invoice_number }}.pdf' })" class="p-1 text-slate-400 hover:text-gold-600 transition-colors duration-300 focus:outline-none" title="{{ app()->getLocale() == 'en' ? 'Download PDF' : 'Unduh PDF' }}">
+                                    <i data-lucide="download" class="w-4 h-4"></i>
+                                </button>
                                 <a href="{{ route('invoices.edit', $invoice->id) }}" class="p-1 text-slate-400 hover:text-amber-600 transition-colors duration-300" title="{{ __('ui.edit') }}">
                                     <i data-lucide="edit-3" class="w-4 h-4"></i>
                                 </a>
@@ -240,6 +243,14 @@
                             <i data-lucide="eye" class="w-3.5 h-3.5"></i>
                             <span>{{ app()->getLocale() == 'en' ? 'View' : 'Lihat' }}</span>
                         </a>
+                        <button 
+                            type="button"
+                            @click.stop="$dispatch('download-pdf', { url: '{{ route('invoices.pdf', $invoice) }}', filename: 'Invoice-{{ $invoice->invoice_number }}.pdf' })"
+                            class="px-3 py-1.5 bg-slate-50 hover:bg-gold-50/50 text-slate-500 hover:text-gold-600 rounded-xl transition-all text-xs font-bold flex items-center gap-1.5 duration-300"
+                        >
+                            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                            <span>PDF</span>
+                        </button>
                         <a 
                             href="{{ route('invoices.edit', $invoice->id) }}"
                             @click.stop=""

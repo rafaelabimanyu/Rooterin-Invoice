@@ -69,24 +69,13 @@ class DashboardController extends Controller
         $draftInvoicesCount = 0;
 
         if ($isStaff) {
-            $todayInvoicesCount = Invoice::where('created_by', auth()->id())
-                ->where('created_at', '>=', now()->startOfDay())
-                ->count();
-            $todayReceiptsCount = \App\Models\Receipt::whereHas('invoice', function ($q) {
-                $q->where('created_by', auth()->id());
-            })
-                ->where('created_at', '>=', now()->startOfDay())
-                ->count();
-            $todayRevenue = Invoice::where('created_by', auth()->id())
-                ->where('created_at', '>=', now()->startOfDay())
-                ->sum('total');
+            $todayInvoicesCount = Invoice::where('created_at', '>=', now()->startOfDay())->count();
+            $todayReceiptsCount = \App\Models\Receipt::where('created_at', '>=', now()->startOfDay())->count();
+            $todayRevenue = Invoice::where('created_at', '>=', now()->startOfDay())->sum('total');
             
-            $draftInvoicesCount = Invoice::where('created_by', auth()->id())
-                ->where('status', 'draft')
-                ->count();
+            $draftInvoicesCount = Invoice::where('status', 'draft')->count();
 
             $recentInvoices = Invoice::with('client')
-                ->where('created_by', auth()->id())
                 ->latest()
                 ->take(5)
                 ->get();

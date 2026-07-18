@@ -2,12 +2,12 @@
     <div class="mb-8 md:mb-12 flex flex-col lg:flex-row lg:items-end justify-between gap-6 px-4 md:px-0">
         <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2 text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 overflow-hidden">
-                <a href="{{ route('receipts.index') }}" class="hover:text-gold-600 transition-colors shrink-0">{{ app()->getLocale() == 'en' ? 'Receipts' : 'Kuitansi' }}</a>
+                <a href="{{ route('receipts.index') }}" class="hover:text-gold-600 transition-colors shrink-0">{{ app()->getLocale() == 'en' ? 'Receipts' : 'Kwitansi' }}</a>
                 <i data-lucide="chevron-right" class="w-3 h-3 shrink-0"></i>
                 <span class="text-slate-900 truncate">{{ $receipt->receipt_number }}</span>
             </div>
-            <h1 class="text-2xl md:text-3xl font-bold text-slate-900 font-outfit leading-tight truncate">{{ app()->getLocale() == 'en' ? 'Receipt Details' : 'Detail Kuitansi' }}</h1>
-            <p class="text-sm text-slate-500 mt-1 truncate">{{ app()->getLocale() == 'en' ? 'Review payment receipt for ' : 'Tinjau kuitansi pembayaran untuk ' }}{{ $receipt->client->nama_client }}.</p>
+            <h1 class="text-2xl md:text-3xl font-bold text-slate-900 font-outfit leading-tight truncate">{{ app()->getLocale() == 'en' ? 'Receipt Details' : 'Detail Kwitansi' }}</h1>
+            <p class="text-sm text-slate-500 mt-1 truncate">{{ app()->getLocale() == 'en' ? 'Review payment receipt for ' : 'Tinjau kwitansi pembayaran untuk ' }}{{ $receipt->client->nama_client }}.</p>
         </div>
         <div class="flex flex-col sm:flex-row flex-wrap sm:flex-nowrap items-stretch sm:items-center gap-3 md:gap-4 w-full sm:w-auto">
             <div class="flex items-center justify-between sm:justify-start gap-4">
@@ -88,7 +88,7 @@
                 </div>
                 
                 <div class="w-full md:w-auto text-left md:text-right space-y-2">
-                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-[0.3em] mb-4 md:mb-6">{{ app()->getLocale() == 'en' ? 'Payment Receipt' : 'Kuitansi Pembayaran' }}</h2>
+                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-[0.3em] mb-4 md:mb-6">{{ app()->getLocale() == 'en' ? 'Payment Receipt' : 'Kwitansi Pembayaran' }}</h2>
                     <p class="text-2xl font-black text-slate-900 font-outfit">{{ $receipt->receipt_number }}</p>
                     <p class="text-xs font-bold text-slate-500">{{ app()->getLocale() == 'en' ? 'Issued' : 'Diterbitkan' }}: {{ $receipt->tanggal_receipt->format(\App\Models\Setting::get('date_format', 'd M Y')) }}</p>
                     @if($receipt->expiry_date)
@@ -234,8 +234,8 @@
         <div class="px-6 md:px-16 py-10 bg-slate-50 border-t border-slate-100">
             <div class="flex flex-col md:flex-row justify-between items-center gap-8">
                 <div class="text-[11px] text-slate-400 font-medium leading-relaxed max-w-lg text-left w-full md:w-auto">
-                    <p class="font-bold text-slate-500 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Receipt Statement' : 'Pernyataan Kuitansi' }}</p>
-                    <p>{{ app()->getLocale() == 'en' ? 'This is an official digital receipt for payment received. No physical signature required.' : 'Kuitansi ini adalah bukti pembayaran digital resmi yang sah. Tidak memerlukan tanda tangan basah.' }}</p>
+                    <p class="font-bold text-slate-500 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Receipt Statement' : 'Pernyataan Kwitansi' }}</p>
+                    <p>{{ app()->getLocale() == 'en' ? 'This is an official digital receipt for payment received. No physical signature required.' : 'Kwitansi ini adalah bukti pembayaran digital resmi yang sah. Tidak memerlukan tanda tangan basah.' }}</p>
                 </div>
                 <div class="text-left md:text-right w-full md:w-auto">
                     <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">{{ app()->getLocale() == 'en' ? 'Digitally Issued By' : 'Diterbitkan Secara Digital Oleh' }}</p>

@@ -17,17 +17,9 @@ class UpcomingBillingHorizon extends Component
             ->whereBetween('due_date', [now(), $horizonDate])
             ->orderBy('due_date');
 
-        // RBAC: Staff only see assigned
-        if (auth()->user()->hasRole('staff')) {
-            $query->where('created_by', auth()->id());
-        }
-
         $upcomingInvoices = $query->get();
 
-        $totalExpectedCashFlow = 0;
-        if (!auth()->user()->hasRole('staff')) {
-            $totalExpectedCashFlow = $upcomingInvoices->sum('total');
-        }
+        $totalExpectedCashFlow = $upcomingInvoices->sum('total');
 
         return view('livewire.dashboard.upcoming-billing-horizon', [
             'upcomingInvoices' => $upcomingInvoices,

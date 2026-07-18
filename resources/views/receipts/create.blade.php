@@ -2,12 +2,12 @@
     <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
             <div class="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">
-                <a href="{{ route('receipts.index') }}" class="hover:text-gold-600 transition-colors">{{ app()->getLocale() == 'en' ? 'Receipts' : 'Kuitansi' }}</a>
+                <a href="{{ route('receipts.index') }}" class="hover:text-gold-600 transition-colors">{{ app()->getLocale() == 'en' ? 'Receipts' : 'Kwitansi' }}</a>
                 <i data-lucide="chevron-right" class="w-3 h-3"></i>
-                <span class="text-slate-900">{{ app()->getLocale() == 'en' ? 'New Receipt' : 'Kuitansi Baru' }}</span>
+                <span class="text-slate-900">{{ app()->getLocale() == 'en' ? 'New Receipt' : 'Kwitansi Baru' }}</span>
             </div>
-            <h1 class="text-2xl font-bold text-slate-900 font-outfit">{{ app()->getLocale() == 'en' ? 'Create Receipt' : 'Buat Kuitansi' }}</h1>
-            <p class="text-sm text-slate-500">{{ app()->getLocale() == 'en' ? 'Generate a professional payment receipt for your client.' : 'Buat kuitansi pembayaran profesional untuk klien Anda.' }}</p>
+            <h1 class="text-2xl font-bold text-slate-900 font-outfit">{{ app()->getLocale() == 'en' ? 'Create Receipt' : 'Buat Kwitansi' }}</h1>
+            <p class="text-sm text-slate-500">{{ app()->getLocale() == 'en' ? 'Generate a professional payment receipt for your client.' : 'Buat kwitansi pembayaran profesional untuk klien Anda.' }}</p>
         </div>
     </div>
 
@@ -30,14 +30,14 @@
                             </select>
                         </div>
                         <div class="space-y-2">
-                            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Receipt Number' : 'Nomor Kuitansi' }}</label>
+                            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Receipt Number' : 'Nomor Kwitansi' }}</label>
                             <input type="text" name="receipt_number" value="{{ $receipt_number }}" readonly class="w-full px-4 py-2.5 bg-slate-100 border border-slate-200/60 rounded-lg text-sm text-slate-500 font-mono cursor-not-allowed">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mt-4 md:mt-8">
                         <div class="space-y-2">
-                            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Receipt Date' : 'Tanggal Kuitansi' }}</label>
+                            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Receipt Date' : 'Tanggal Kwitansi' }}</label>
                             <input type="date" name="tanggal_receipt" value="{{ date('Y-m-d') }}" required class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200/60 rounded-lg text-sm text-slate-900 outline-none">
                         </div>
                         <div class="space-y-2">
@@ -87,7 +87,7 @@
             <!-- Right Side (Calculations) -->
             <div class="lg:col-span-4 space-y-4 md:space-y-6">
                 <div class="bg-[#1e293b] text-white p-4 md:p-8 rounded-xl shadow-2xl space-y-6 md:space-y-8 sticky top-24">
-                    <h3 class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">{{ app()->getLocale() == 'en' ? 'Receipt Summary' : 'Ringkasan Kuitansi' }}</h3>
+                    <h3 class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">{{ app()->getLocale() == 'en' ? 'Receipt Summary' : 'Ringkasan Kwitansi' }}</h3>
                     
                     <div class="space-y-6">
                         <div class="flex justify-between items-center text-sm">
@@ -109,7 +109,7 @@
                     </div>
 
                     <button type="submit" class="w-full py-4 bg-gold-500 hover:bg-gold-600 text-slate-950 rounded-lg font-black text-[13px] transition-all shadow-lg shadow-gold-500/20 uppercase tracking-widest">
-                        {{ app()->getLocale() == 'en' ? 'Save Receipt' : 'Simpan Kuitansi' }}
+                        {{ app()->getLocale() == 'en' ? 'Save Receipt' : 'Simpan Kwitansi' }}
                     </button>
                 </div>
             </div>

@@ -187,8 +187,8 @@ Jika pengguna menanyakan letak, lokasi, atau cara menuju ke suatu halaman, atau 
 - `invoices.create` -> Buat Invoice Baru
 - `clients.index` -> Daftar Klien
 - `clients.create` -> Tambah Klien Baru
-- `receipts.index` -> Daftar Kuitansi / Tanda Terima
-- `receipts.create` -> Buat Kuitansi / Tanda Terima Baru
+- `receipts.index` -> Daftar Kwitansi / Tanda Terima
+- `receipts.create` -> Buat Kwitansi / Tanda Terima Baru
 - `settings.index` -> Pengaturan Aplikasi
 - `profile.edit` -> Profil Pengguna
 - `reports.index` -> Halaman Laporan (reports)
@@ -344,8 +344,8 @@ Strictly match the user's current application language interface. Since the acti
                 'invoices.create' => "👉 Buat Invoice Baru",
                 'clients.index' => "👉 Lihat Daftar Klien",
                 'clients.create' => "👉 Tambah Klien Baru",
-                'receipts.index' => "👉 Lihat Daftar Kuitansi",
-                'receipts.create' => "👉 Buat Kuitansi Baru",
+                'receipts.index' => "👉 Lihat Daftar Kwitansi",
+                'receipts.create' => "👉 Buat Kwitansi Baru",
                 'settings.index' => "👉 Buka Pengaturan",
                 'profile.edit' => "👉 Edit Profil Saya",
                 'reports.index' => "👉 Lihat Laporan Keuangan",

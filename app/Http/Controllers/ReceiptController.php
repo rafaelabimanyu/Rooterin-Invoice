@@ -29,13 +29,7 @@ class ReceiptController extends Controller
             });
         }
 
-        if (auth()->user()->role === 'staff') {
-            $query->whereHas('invoice', function($q) {
-                if (Schema::hasColumn('invoices', 'created_by')) {
-                    $q->where('created_by', auth()->id());
-                }
-            })->where('created_at', '>=', now()->subHours(24));
-        }
+
 
         $receipts = $query->latest()->paginate(10);
         $businessUnits = \App\Models\BusinessUnit::orderBy('name')->get();
@@ -45,7 +39,7 @@ class ReceiptController extends Controller
 
     public function create()
     {
-        return redirect()->route('invoices.index')->with('info', 'Kuitansi otomatis dibuat saat status invoice diubah menjadi Paid.');
+        return redirect()->route('invoices.index')->with('info', 'Kwitansi otomatis dibuat saat status invoice diubah menjadi Paid.');
     }
 
     public function store(Request $request)
@@ -55,22 +49,14 @@ class ReceiptController extends Controller
 
     public function show(Receipt $receipt)
     {
-        if (auth()->user()->role === 'staff') {
-            $hasCreatedBy = false;
-            $invoice = $receipt->invoice;
-            if ($invoice && Schema::hasColumn('invoices', 'created_by')) {
-                if ($invoice->created_by !== auth()->id() || $receipt->created_at < now()->subHours(24)) {
-                    abort(403, 'Access restricted.');
-                }
-            }
-        }
+
         $receipt->load(['invoice.client', 'invoice.items']);
         return view('receipts.show', compact('receipt'));
     }
 
     public function edit(Receipt $receipt)
     {
-        return redirect()->route('receipts.index')->with('info', 'Kuitansi otomatis tidak dapat diedit secara manual.');
+        return redirect()->route('receipts.index')->with('info', 'Kwitansi otomatis tidak dapat diedit secara manual.');
     }
 
     public function update(Request $request, Receipt $receipt)

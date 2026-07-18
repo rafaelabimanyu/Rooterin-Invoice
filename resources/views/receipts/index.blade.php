@@ -6,15 +6,15 @@
                 <div class="flex items-center gap-2 text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-3">
                     <span>Enterprise</span>
                     <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
-                    <span class="text-gold-600">{{ app()->getLocale() == 'en' ? 'Receipts' : 'Kuitansi' }}</span>
+                    <span class="text-gold-600">{{ app()->getLocale() == 'en' ? 'Receipts' : 'Kwitansi' }}</span>
                 </div>
-                <h1 class="text-5xl font-extrabold text-slate-900 tracking-tight mb-2 font-outfit">{{ app()->getLocale() == 'en' ? 'Receipts' : 'Kuitansi' }}</h1>
-                <p class="text-[15px] text-slate-400 font-medium">{{ app()->getLocale() == 'en' ? 'Manage payment receipts for your clients' : 'Kelola kuitansi pembayaran untuk klien Anda' }}</p>
+                <h1 class="text-5xl font-extrabold text-slate-900 tracking-tight mb-2 font-outfit">{{ app()->getLocale() == 'en' ? 'Receipts' : 'Kwitansi' }}</h1>
+                <p class="text-[15px] text-slate-400 font-medium">{{ app()->getLocale() == 'en' ? 'Manage payment receipts for your clients' : 'Kelola kwitansi pembayaran untuk klien Anda' }}</p>
             </div>
             <div class="flex items-center">
                 <a href="{{ route('receipts.create') }}" class="btn-premium-glass group transition-all duration-300">
                     <i data-lucide="plus" class="w-5 h-5"></i>
-                    <span>{{ app()->getLocale() == 'en' ? 'New Receipt' : 'Kuitansi Baru' }}</span>
+                    <span>{{ app()->getLocale() == 'en' ? 'New Receipt' : 'Kwitansi Baru' }}</span>
                 </a>
             </div>
         </div>
@@ -24,9 +24,9 @@
             <form action="{{ route('receipts.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6 items-end">
                 <!-- Search Text -->
                 <div class="space-y-2 md:col-span-2 lg:col-span-6">
-                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Search Receipt' : 'Cari Kuitansi' }}</label>
+                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Search Receipt' : 'Cari Kwitansi' }}</label>
                     <div class="relative">
-                        <input type="text" name="search" value="{{ request('search') }}" placeholder="{{ app()->getLocale() == 'en' ? 'Receipt number, client name...' : 'Nomor kuitansi, nama klien...' }}" class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-gold-500 focus:bg-white transition-colors font-medium">
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="{{ app()->getLocale() == 'en' ? 'Receipt number, client name...' : 'Nomor kwitansi, nama klien...' }}" class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-gold-500 focus:bg-white transition-colors font-medium">
                         <div class="absolute left-3.5 top-2.5 text-slate-400">
                             <i data-lucide="search" class="w-4 h-4"></i>
                         </div>
@@ -59,7 +59,7 @@
             <div class="min-w-[1000px] space-y-4 pr-4">
                 <!-- List Header -->
                 <div class="grid grid-cols-12 gap-6 px-10 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 bg-slate-50/50 rounded-2xl mb-2">
-                    <div class="col-span-2">{{ app()->getLocale() == 'en' ? 'Rec Number' : 'No. Kuitansi' }}</div>
+                    <div class="col-span-2">{{ app()->getLocale() == 'en' ? 'Rec Number' : 'No. Kwitansi' }}</div>
                     <div class="col-span-3">{{ app()->getLocale() == 'en' ? 'Client Account' : 'Akun Klien' }}</div>
                     <div class="col-span-2">{{ app()->getLocale() == 'en' ? 'Business Unit' : 'Unit Bisnis' }}</div>
                     <div class="col-span-2">{{ app()->getLocale() == 'en' ? 'Amount' : 'Jumlah' }}</div>
@@ -141,8 +141,8 @@
                             <div class="w-20 h-20 bg-slate-50 rounded-[24px] flex items-center justify-center mb-6">
                                 <i data-lucide="file-text" class="w-10 h-10 text-slate-300"></i>
                             </div>
-                            <h4 class="text-xl font-bold text-slate-900 mb-2">{{ app()->getLocale() == 'en' ? 'No Receipts Found' : 'Kuitansi Tidak Ditemukan' }}</h4>
-                            <p class="text-[14px] text-slate-400 font-medium">{{ app()->getLocale() == 'en' ? 'Start by creating a payment receipt for your business clients to track transactions.' : 'Mulai dengan membuat kuitansi pembayaran untuk klien bisnis Anda guna melacak transaksi.' }}</p>
+                            <h4 class="text-xl font-bold text-slate-900 mb-2">{{ app()->getLocale() == 'en' ? 'No Receipts Found' : 'Kwitansi Tidak Ditemukan' }}</h4>
+                            <p class="text-[14px] text-slate-400 font-medium">{{ app()->getLocale() == 'en' ? 'Start by creating a payment receipt for your business clients to track transactions.' : 'Mulai dengan membuat kwitansi pembayaran untuk klien bisnis Anda guna melacak transaksi.' }}</p>
                         </div>
                     </div>
                 @endforelse
@@ -212,7 +212,7 @@
             const title = isEnglish ? 'Select Deletion Reason' : 'Pilih Alasan Penghapusan';
             const text = isEnglish 
                 ? 'This receipt will be soft-deleted and moved to trash.'
-                : 'Kuitansi ini akan dihapus sementara dan dipindahkan ke tempat sampah.';
+                : 'Kwitansi ini akan dihapus sementara dan dipindahkan ke tempat sampah.';
             const confirmButtonText = isEnglish ? 'Yes, delete it!' : 'Ya, hapus!';
             const cancelButtonText = isEnglish ? 'Cancel' : 'Batal';
 

@@ -41,12 +41,7 @@ class InvoiceController extends Controller
             $query->where('business_unit_id', $request->business_unit_id);
         }
 
-        if (auth()->user()->role === 'staff') {
-            if (Schema::hasColumn('invoices', 'created_by')) {
-                $query->where('created_by', auth()->id())
-                      ->where('created_at', '>=', now()->subHours(24));
-            }
-        }
+
 
         $invoices = $query->latest()->paginate(10);
         $businessUnits = BusinessUnit::orderBy('name')->get();

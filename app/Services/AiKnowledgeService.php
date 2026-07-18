@@ -459,7 +459,7 @@ class AiKnowledgeService
               . "**📋 Quick Actions:**\n"
               . "* **\"buat invoice\"** → Create a new invoice\n"
               . "* **\"buat klien\"** → Register a new client\n"
-              . "* **\"buat kuitansi\"** → Record a receipt\n"
+              . "* **\"buat kwitansi\"** → Record a receipt\n"
               . "* **\"panduan sistem\"** → View full system guide\n\n"
               . "*Just type any of the above or ask a more specific question!*"
             : "Saya tidak yakin apa yang Anda cari. Berikut yang dapat saya bantu:\n\n"
@@ -472,7 +472,7 @@ class AiKnowledgeService
               . "**📋 Aksi Cepat:**\n"
               . "* **\"buat invoice\"** → Menerbitkan tagihan baru\n"
               . "* **\"buat klien\"** → Mendaftarkan klien baru\n"
-              . "* **\"buat kuitansi\"** → Mencatat penerimaan kas\n"
+              . "* **\"buat kwitansi\"** → Mencatat penerimaan kas\n"
               . "* **\"panduan sistem\"** → Melihat panduan lengkap sistem\n\n"
               . "*Ketik salah satu perintah di atas atau ajukan pertanyaan yang lebih spesifik!*";
 
@@ -887,10 +887,10 @@ class AiKnowledgeService
             'omzet'        => 'revenue_trend',
             'penghasilan'  => 'revenue_trend',
             'pemasukan'    => 'revenue_trend',
-            'kuitansi'     => 'kuitansi_list',
-            'kwitansi'     => 'kuitansi_list',
-            'receipt'      => 'kuitansi_list',
-            'receipts'     => 'kuitansi_list',
+            'kuitansi'     => 'kwitansi_list',
+            'kwitansi'     => 'kwitansi_list',
+            'receipt'      => 'kwitansi_list',
+            'receipts'     => 'kwitansi_list',
             'performa'     => 'tren_performa',
             'pertumbuhan'  => 'tren_performa',
             'tren'         => 'tren_performa',

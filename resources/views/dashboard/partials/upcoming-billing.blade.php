@@ -1,6 +1,6 @@
 <div class="lg:col-span-1 xl:col-span-1 flex flex-col gap-6 xl:gap-8 min-w-0 w-full">
     @livewire('dashboard.upcoming-billing-horizon')
-    @if(auth()->user()->role !== 'staff')
+    @if(auth()->user()->role === 'staff')
         <div class="glass-card p-10 flex flex-col w-full min-w-0">
             <div class="flex items-center justify-between mb-10">
                 <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-lg">{{ __('dashboard.activity_feed') }}</h3>

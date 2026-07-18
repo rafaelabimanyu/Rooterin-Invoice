@@ -25,12 +25,7 @@ class InvoicePolicy
      */
     public function view(User $user, Invoice $invoice): bool
     {
-        $createdBy = $invoice->created_by ?? null;
-        if (is_null($createdBy)) {
-            return true;
-        }
-        return $user->id === $createdBy 
-            && $invoice->created_at >= now()->subHours(24);
+        return true;
     }
 
     /**

@@ -35,9 +35,10 @@ class KnowledgeDictionary
             'division'      => 'unit bisnis',
 
             // Receipt synonyms
-            'kwitansi'     => 'kuitansi',
-            'receipt'      => 'kuitansi',
-            'receipts'     => 'kuitansi',
+            'kuitansi'     => 'kwitansi',
+            'kwitansi'     => 'kwitansi',
+            'receipt'      => 'kwitansi',
+            'receipts'     => 'kwitansi',
 
             // Cash flow synonyms
             'cash flow'    => 'arus kas',
@@ -90,10 +91,10 @@ class KnowledgeDictionary
                     'response_en' => "Client Onboarding is a module to record external partner profiles, tax credentials, and billing contacts. You can access it via the button below.",
                     'navigate' => 'clients.create',
                 ],
-                'buat_kuitansi' => [
-                    'keywords' => ['buat kuitansi', 'tambah kuitansi', 'create receipt', 'bikin kuitansi', 'buat receipt', 'tambah kwitansi'],
+                'buat_kwitansi' => [
+                    'keywords' => ['buat kwitansi', 'tambah kwitansi', 'create receipt', 'bikin kwitansi', 'buat receipt', 'buat kuitansi', 'tambah kuitansi', 'bikin kuitansi'],
                     'priority' => 8,
-                    'response_id' => "Penerbitan Kuitansi adalah modul untuk mencatat bukti transaksi pembayaran kas masuk yang sah setelah invoice dilunasi oleh klien. Anda dapat mengaksesnya melalui tombol di bawah.",
+                    'response_id' => "Penerbitan Kwitansi adalah modul untuk mencatat bukti transaksi pembayaran kas masuk yang sah setelah invoice dilunasi oleh klien. Anda dapat mengaksesnya melalui tombol di bawah.",
                     'response_en' => "Receipt Issuance is a module to record cash inflows and payment confirmations once invoices are settled. You can access it via the button below.",
                     'navigate' => 'receipts.create',
                 ],
@@ -173,8 +174,8 @@ class KnowledgeDictionary
                     'query_type' => 'overdue_invoices',
                     'navigate' => 'invoices.index',
                 ],
-                'kuitansi_list' => [
-                    'keywords' => ['daftar kuitansi sistem', 'riwayat kwitansi pembayaran', 'receipts list'],
+                'kwitansi_list' => [
+                    'keywords' => ['daftar kwitansi sistem', 'riwayat kwitansi pembayaran', 'receipts list', 'daftar kuitansi sistem', 'riwayat kuitansi pembayaran'],
                     'priority' => 7,
                     'query_type' => 'receipts_index',
                     'navigate' => 'receipts.index',

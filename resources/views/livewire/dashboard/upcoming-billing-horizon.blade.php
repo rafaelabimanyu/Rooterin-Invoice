@@ -55,7 +55,7 @@
         @endforelse
     </div>
 
-    @if(!auth()->user()->hasRole('staff'))
+    @if(!auth()->user()->hasRole('staff') || $showNominalToStaff)
     <div class="mt-10 pt-10 border-t border-slate-100">
         <div class="flex items-center justify-between">
             <div>
@@ -66,10 +66,12 @@
                 <i data-lucide="trending-up" class="w-5 h-5 text-emerald-600"></i>
             </div>
         </div>
+        @if(!auth()->user()->hasRole('staff'))
         <a href="{{ route('chronos.index') }}" class="mt-6 w-full flex items-center justify-center gap-2 px-4 py-3 bg-slate-50 text-slate-600 rounded-xl font-bold text-xs hover:bg-gold-500 hover:text-slate-950 transition-all duration-300 group">
             <i data-lucide="calendar-days" class="w-4 h-4 group-hover:scale-110 transition-transform"></i>
             {{ __('dashboard.view_full_calendar') }}
         </a>
+        @endif
     </div>
     @endif
 </div>

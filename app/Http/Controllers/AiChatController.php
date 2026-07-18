@@ -184,8 +184,8 @@ Jika pengguna menanyakan letak, lokasi, atau cara menuju ke suatu halaman, atau 
 - `invoices.create` -> Buat Invoice Baru
 - `clients.index` -> Daftar Klien
 - `clients.create` -> Tambah Klien Baru
-- `receipts.index` -> Daftar Kuitansi / Tanda Terima
-- `receipts.create` -> Buat Kuitansi / Tanda Terima Baru
+- `receipts.index` -> Daftar Kwitansi / Tanda Terima
+- `receipts.create` -> Buat Kwitansi / Tanda Terima Baru
 - `settings.index` -> Pengaturan Aplikasi
 - `profile.edit` -> Profil Pengguna
 - `reports.index` -> Halaman Laporan (reports)
@@ -346,11 +346,11 @@ Strictly match the user's current application language interface. Since the acti
             ]);
         }
 
-        if (str_contains($commandLower, 'buka halaman kuitansi') || str_contains($commandLower, 'buka kuitansi') || str_contains($commandLower, 'daftar kuitansi') || str_contains($commandLower, 'receipt')) {
+        if (str_contains($commandLower, 'buka halaman kuitansi') || str_contains($commandLower, 'buka kuitansi') || str_contains($commandLower, 'daftar kuitansi') || str_contains($commandLower, 'buka halaman kwitansi') || str_contains($commandLower, 'buka kwitansi') || str_contains($commandLower, 'daftar kwitansi') || str_contains($commandLower, 'receipt')) {
             return response()->json([
                 'success' => true,
                 'redirect' => route('receipts.index'),
-                'message' => 'Mengalihkan ke Daftar Kuitansi...'
+                'message' => 'Mengalihkan ke Daftar Kwitansi...'
             ]);
         }
 

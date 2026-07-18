@@ -26,7 +26,7 @@ class ChronosEventSeeder extends Seeder
 
         ChronosEvent::create([
             'title' => 'Meeting Bersama Tim Finansial Klien',
-            'description' => 'Diskusi outstanding receivables dan workflow kuitansi.',
+            'description' => 'Diskusi outstanding receivables dan workflow kwitansi.',
             'start_date' => Carbon::create(2026, 5, 30),
             'end_date' => Carbon::create(2026, 5, 30),
             'color' => 'emerald',

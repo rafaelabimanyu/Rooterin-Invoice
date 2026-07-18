@@ -58,7 +58,7 @@
                         {{ app()->getLocale() == 'en' ? 'Invoice Performance' : 'Kinerja Faktur' }}
                     </button>
                     <button @click="tab = 'receipts'" :class="tab === 'receipts' ? 'text-gold-600 border-gold-600' : 'text-slate-400 border-transparent'" class="pb-4 text-xs font-black border-b-2 transition-all uppercase tracking-widest">
-                        {{ app()->getLocale() == 'en' ? 'Receipts & Payments' : 'Kuitansi & Pembayaran' }}
+                        {{ app()->getLocale() == 'en' ? 'Receipts & Payments' : 'Kwitansi & Pembayaran' }}
                     </button>
                     <button @click="tab = 'clients'" :class="tab === 'clients' ? 'text-gold-600 border-gold-600' : 'text-slate-400 border-transparent'" class="pb-4 text-xs font-black border-b-2 transition-all uppercase tracking-widest">
                         {{ app()->getLocale() == 'en' ? 'Client Analytics & Trends' : 'Analisis Klien & Tren' }}

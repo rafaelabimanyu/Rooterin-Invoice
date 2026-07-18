@@ -64,6 +64,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
         // Receipts
+        Route::get('receipts/instant', [ReceiptController::class, 'createInstant'])->name('receipts.create_instant');
+        Route::post('receipts/instant', [ReceiptController::class, 'storeInstant'])->name('receipts.store_instant');
         Route::get('receipts/{receipt}/pdf', [ReceiptController::class, 'downloadPdf'])->name('receipts.pdf');
         Route::post('receipts/{receipt}/convert', [ReceiptController::class, 'convertToInvoice'])->name('receipts.convert');
         Route::resource('receipts', ReceiptController::class);

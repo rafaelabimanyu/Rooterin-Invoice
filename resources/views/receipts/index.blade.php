@@ -11,7 +11,11 @@
                 <h1 class="text-5xl font-extrabold text-slate-900 tracking-tight mb-2 font-outfit">{{ app()->getLocale() == 'en' ? 'Receipts' : 'Kwitansi' }}</h1>
                 <p class="text-[15px] text-slate-400 font-medium">{{ app()->getLocale() == 'en' ? 'Manage payment receipts for your clients' : 'Kelola kwitansi pembayaran untuk klien Anda' }}</p>
             </div>
-            <div class="flex items-center">
+            <div class="flex items-center gap-3">
+                <a href="{{ route('receipts.create_instant') }}" class="btn-premium group transition-all duration-300 flex items-center gap-2">
+                    <i data-lucide="zap" class="w-5 h-5"></i>
+                    <span>{{ app()->getLocale() == 'en' ? 'Instant Receipt' : 'Kwitansi Instan' }}</span>
+                </a>
                 <a href="{{ route('receipts.create') }}" class="btn-premium-glass group transition-all duration-300">
                     <i data-lucide="plus" class="w-5 h-5"></i>
                     <span>{{ app()->getLocale() == 'en' ? 'New Receipt' : 'Kwitansi Baru' }}</span>

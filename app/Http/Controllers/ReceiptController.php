@@ -42,6 +42,142 @@ class ReceiptController extends Controller
         return redirect()->route('invoices.index')->with('info', 'Kwitansi otomatis dibuat saat status invoice diubah menjadi Paid.');
     }
 
+    public function createInstant()
+    {
+        $clients = Client::where('status', 'aktif')->orderBy('nama_client')->get();
+        $businessUnits = \App\Models\BusinessUnit::where('is_active', true)->orderBy('name')->get();
+        
+        $invoiceService = new \App\Services\InvoiceService();
+        $invoice_number = $invoiceService->generateInvoiceNumber();
+
+        return view('receipts.create_instant_receipt', compact('invoice_number', 'clients', 'businessUnits'));
+    }
+
+    public function storeInstant(Request $request)
+    {
+        $request->validate([
+            'business_unit_id' => 'required|exists:business_units,id',
+            'client_id' => 'required|exists:clients,id',
+            'items' => 'required|array|min:1',
+            'items.*.deskripsi' => 'required|string',
+            'items.*.qty' => 'required|numeric|min:0.01',
+            'items.*.harga' => 'required|numeric|min:0',
+            'discount' => 'nullable|numeric|min:0',
+            'ppn' => 'nullable|numeric|min:0',
+            'pph' => 'nullable|numeric|min:0',
+            'cause_of_problem' => 'nullable|string',
+            'notes' => 'nullable|string',
+            'technician_names' => 'nullable|string',
+            'warranty_value' => 'nullable|integer|min:1',
+            'warranty_unit' => 'nullable|string|in:Hari,Bulan,Tahun,Days,Months,Years',
+            'attachments' => 'nullable|array',
+            'attachments.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
+        ]);
+
+        try {
+            \Illuminate\Support\Facades\DB::beginTransaction();
+
+            $subtotal = 0;
+            foreach ($request->items as $item) {
+                $subtotal += $item['qty'] * $item['harga'];
+            }
+
+            $discountInput = (float) $request->input('discount', 0);
+            $ppnInput = (float) $request->input('ppn', 0);
+            $pphInput = (float) $request->input('pph', 0);
+
+            $discountNominal = round($discountInput > 100 ? $discountInput : ($subtotal * ($discountInput / 100)), 2);
+            $dpp = round($subtotal - $discountNominal, 2);
+            $ppnNominal = round($ppnInput > 100 ? $ppnInput : ($dpp * ($ppnInput / 100)), 2);
+            $pphNominal = round($pphInput > 100 ? $pphInput : ($dpp * ($pphInput / 100)), 2);
+
+            $invoiceService = new \App\Services\InvoiceService();
+            $total = round($invoiceService->calculateTotal($subtotal, $discountNominal, $ppnNominal, $pphNominal), 2);
+            $invoiceNumber = $invoiceService->generateInvoiceNumber();
+
+            $warranty = null;
+            if ($request->filled('warranty_value')) {
+                $warranty = $request->warranty_value . ' ' . $request->input('warranty_unit', 'Bulan');
+            }
+
+            $invoiceData = [
+                'invoice_number' => $invoiceNumber,
+                'business_unit_id' => $request->business_unit_id,
+                'client_id' => $request->client_id,
+                'subtotal' => $subtotal,
+                'discount' => $discountNominal,
+                'ppn' => $ppnNominal,
+                'pph' => $pphNominal,
+                'total' => $total,
+                'status' => 'paid',
+                'due_date' => now()->toDateString(),
+                'cause_of_problem' => $request->cause_of_problem,
+                'notes' => $request->notes ?: 'Pekerjaan ini telah diverifikasi langsung di lokasi oleh teknisi kami menggunakan peralatan presisi tinggi, sesuai dengan standar kualitas J&J GROUP.',
+                'technician_names' => $request->technician_names ?: 'Umum',
+                'warranty' => $warranty ?: 'Tidak Ada Garansi',
+            ];
+
+            if (Schema::hasColumn('invoices', 'created_by')) {
+                $invoiceData['created_by'] = auth()->id();
+            }
+
+            $invoice = Invoice::create($invoiceData);
+
+            foreach ($request->items as $item) {
+                $invoice->items()->create([
+                    'deskripsi' => $item['deskripsi'],
+                    'qty' => $item['qty'],
+                    'harga' => $item['harga'],
+                    'total' => $item['qty'] * $item['harga'],
+                ]);
+            }
+
+            if ($request->hasFile('attachments')) {
+                foreach ($request->file('attachments') as $file) {
+                    $path = $file->store('attachments', 'public');
+                    $invoice->attachments()->create([
+                        'file_path' => $path,
+                    ]);
+                }
+            }
+
+            $receipt = $invoiceService->markAsPaid($invoice);
+
+            \Illuminate\Support\Facades\DB::commit();
+
+            \App\Models\ActivityLog::log('created_invoice', "Issued new invoice #{$invoice->invoice_number} (Instant Receipt)", $invoice);
+
+            $roleLabel = auth()->user()->role;
+            $userName = auth()->user()->name;
+            $activityText = ucfirst($roleLabel) . " {$userName} generated instant receipt #{$receipt->receipt_number} and invoice #{$invoice->invoice_number}.";
+            
+            \App\Models\SecurityLog::create([
+                'user_id' => auth()->id(),
+                'activity' => $activityText,
+                'details' => [],
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+                'is_suspicious' => false,
+            ]);
+
+            $usersToNotify = \App\Models\User::whereIn('role', ['owner', 'admin'])->get();
+            foreach ($usersToNotify as $u) {
+                $u->notify(new \App\Notifications\SystemActivityNotification(
+                    'Instant Receipt Generated',
+                    "{$userName} ({$roleLabel}) generated instant receipt #{$receipt->receipt_number}.",
+                    'security',
+                    route('receipts.show', $receipt)
+                ));
+            }
+
+            return $this->downloadPdf($request, $receipt);
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            return back()->withInput()->with('error', 'Something went wrong: ' . $e->getMessage());
+        }
+    }
+
     public function store(Request $request)
     {
         return redirect()->route('receipts.index');

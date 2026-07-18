@@ -3,6 +3,7 @@
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ReportController;
@@ -62,6 +63,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('payments', [PaymentController::class, 'store'])->name('payments.store');
         Route::delete('payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy');
 
+
+        // Adaptive Transactions
+        Route::get('transactions/{transaction}/pdf', [TransactionController::class, 'downloadPdf'])->name('transactions.pdf');
+        Route::resource('transactions', TransactionController::class);
 
         // Receipts
         Route::get('receipts/{receipt}/pdf', [ReceiptController::class, 'downloadPdf'])->name('receipts.pdf');

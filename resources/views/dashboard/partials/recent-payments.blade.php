@@ -37,6 +37,12 @@
                                 <div class="flex flex-col">
                                     <span class="text-[14px] font-black text-slate-900">{{ $payment->invoice?->client?->nama_client ?? 'N/A' }}</span>
                                     <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">{{ $payment->invoice?->client?->nama_perusahaan ?? '-' }}</span>
+                                    @if($payment->invoice?->kategori_invoice === 'kemitraan')
+                                        <span class="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-50 text-amber-700 border border-amber-100 shadow-sm w-fit">
+                                            <i data-lucide="handshake" class="w-2.5 h-2.5"></i>
+                                            Kemitraan ({{ $payment->invoice->periode_kontrak }})
+                                        </span>
+                                    @endif
                                 </div>
                             </td>
                             <td class="px-10 py-6">
@@ -50,7 +56,12 @@
                             </td>
                             <td class="px-10 py-6 text-right">
                                 @if($payment->invoice)
-                                    <a href="{{ route('invoices.show', $payment->invoice_id) }}" class="text-xs font-bold text-gold-650 hover:underline inline-flex items-center gap-1">
+                                    @php
+                                        $showRoute = $payment->invoice->kategori_invoice === 'kemitraan' 
+                                            ? route('contract-invoices.show', $payment->invoice_id) 
+                                            : route('invoices.show', $payment->invoice_id);
+                                    @endphp
+                                    <a href="{{ $showRoute }}" class="text-xs font-bold text-gold-650 hover:underline inline-flex items-center gap-1">
                                         {{ __('ui.view') }} <i data-lucide="chevron-right" class="w-3 h-3"></i>
                                     </a>
                                 @else
@@ -83,6 +94,12 @@
                                 <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">
                                     {{ $payment->payment_date ? $payment->payment_date->format('d M Y') : 'N/A' }} • {{ $payment->payment_method }}
                                 </span>
+                                @if($payment->invoice?->kategori_invoice === 'kemitraan')
+                                    <span class="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-50 text-amber-700 border border-amber-100 shadow-sm w-fit">
+                                        <i data-lucide="handshake" class="w-2.5 h-2.5"></i>
+                                        Kemitraan ({{ $payment->invoice->periode_kontrak }})
+                                    </span>
+                                @endif
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
@@ -92,7 +109,12 @@
                                 </span>
                             </div>
                             @if($payment->invoice)
-                                <a href="{{ route('invoices.show', $payment->invoice_id) }}" class="text-slate-400 hover:text-gold-600">
+                                @php
+                                    $showRoute = $payment->invoice->kategori_invoice === 'kemitraan' 
+                                        ? route('contract-invoices.show', $payment->invoice_id) 
+                                        : route('invoices.show', $payment->invoice_id);
+                                @endphp
+                                <a href="{{ $showRoute }}" class="text-slate-400 hover:text-gold-600">
                                     <i data-lucide="chevron-right" class="w-4 h-4"></i>
                                 </a>
                             @endif

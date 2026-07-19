@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class InvoiceController extends Controller
+class ContractInvoiceController extends Controller
 {
     protected $invoiceService;
 
@@ -22,18 +22,17 @@ class InvoiceController extends Controller
 
     public function index(Request $request)
     {
-        $query = Invoice::where(function($q) {
-            $q->whereNull('kategori_invoice')
-              ->orWhere('kategori_invoice', '!=', 'kemitraan');
-        })->with(['client', 'businessUnit']);
+        $query = Invoice::where('kategori_invoice', 'kemitraan')->with(['client', 'businessUnit']);
 
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where('invoice_number', 'like', "%{$search}%")
-                  ->orWhereHas('client', function($q) use ($search) {
-                      $q->where('nama_client', 'like', "%{$search}%")
+            $query->where(function ($q) use ($search) {
+                $q->where('invoice_number', 'like', "%{$search}%")
+                  ->orWhereHas('client', function ($cq) use ($search) {
+                      $cq->where('nama_client', 'like', "%{$search}%")
                         ->orWhere('nama_perusahaan', 'like', "%{$search}%");
                   });
+            });
         }
 
         if ($request->filled('status')) {
@@ -44,12 +43,10 @@ class InvoiceController extends Controller
             $query->where('business_unit_id', $request->business_unit_id);
         }
 
-
-
         $invoices = $query->latest()->paginate(10);
         $businessUnits = BusinessUnit::orderBy('name')->get();
 
-        return view('invoices.index', compact('invoices', 'businessUnits'));
+        return view('contract_invoices.index', compact('invoices', 'businessUnits'));
     }
 
     public function create()
@@ -57,7 +54,7 @@ class InvoiceController extends Controller
         $invoice_number = $this->invoiceService->generateInvoiceNumber();
         $clients = Client::where('status', 'aktif')->orderBy('nama_client')->get();
         $businessUnits = BusinessUnit::where('is_active', true)->orderBy('name')->get();
-        return view('invoices.create', compact('invoice_number', 'clients', 'businessUnits'));
+        return view('contract_invoices.create', compact('invoice_number', 'clients', 'businessUnits'));
     }
 
     public function store(Request $request)
@@ -79,6 +76,7 @@ class InvoiceController extends Controller
             'technician_names' => 'nullable|string',
             'warranty_value' => 'nullable|integer|min:1',
             'warranty_unit' => 'nullable|string|in:Hari,Bulan,Tahun,Days,Months,Years',
+            'periode_kontrak' => 'nullable|string|max:255',
             'attachments' => 'nullable|array',
             'attachments.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
         ]);
@@ -118,6 +116,8 @@ class InvoiceController extends Controller
                 'pph' => $pphNominal,
                 'total' => $total,
                 'status' => $request->input('status', 'draft'),
+                'kategori_invoice' => 'kemitraan',
+                'periode_kontrak' => $request->periode_kontrak,
                 'due_date' => $request->due_date,
                 'cause_of_problem' => $request->cause_of_problem,
                 'notes' => $request->notes,
@@ -156,9 +156,9 @@ class InvoiceController extends Controller
 
             DB::commit();
 
-            \App\Models\ActivityLog::log('created_invoice', "Issued new invoice #{$invoice->invoice_number}", $invoice);
+            \App\Models\ActivityLog::log('created_invoice', "Issued new partnership invoice #{$invoice->invoice_number}", $invoice);
 
-            return redirect()->route('invoices.index')->with('success', 'Invoice created successfully.');
+            return redirect()->route('contract-invoices.index')->with('success', 'Partnership Invoice created successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Something went wrong: ' . $e->getMessage());
@@ -167,19 +167,20 @@ class InvoiceController extends Controller
 
     public function show(Invoice $invoice)
     {
-        if ($invoice->kategori_invoice === 'kemitraan') {
+        // Check if this belongs to partnership category
+        if ($invoice->kategori_invoice !== 'kemitraan') {
             abort(404);
         }
 
         \Illuminate\Support\Facades\Gate::authorize('view', $invoice);
 
         $invoice->load(['client', 'items', 'receipt']);
-        return view('invoices.show', compact('invoice'));
+        return view('contract_invoices.show', compact('invoice'));
     }
 
     public function edit(Invoice $invoice)
     {
-        if ($invoice->kategori_invoice === 'kemitraan') {
+        if ($invoice->kategori_invoice !== 'kemitraan') {
             abort(404);
         }
 
@@ -191,12 +192,12 @@ class InvoiceController extends Controller
             ->orWhere('id', $invoice->business_unit_id)
             ->orderBy('name')
             ->get();
-        return view('invoices.edit', compact('invoice', 'clients', 'businessUnits'));
+        return view('contract_invoices.edit', compact('invoice', 'clients', 'businessUnits'));
     }
 
     public function update(Request $request, Invoice $invoice)
     {
-        if ($invoice->kategori_invoice === 'kemitraan') {
+        if ($invoice->kategori_invoice !== 'kemitraan') {
             abort(404);
         }
 
@@ -219,11 +220,11 @@ class InvoiceController extends Controller
             'technician_names' => 'nullable|string',
             'warranty_value' => 'nullable|integer|min:1',
             'warranty_unit' => 'nullable|string|in:Hari,Bulan,Tahun,Days,Months,Years',
+            'periode_kontrak' => 'nullable|string|max:255',
             'attachments' => 'nullable|array',
             'attachments.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
         ]);
 
-        // Security check: status 'paid' requires vital fields to be completed
         if ($request->status === 'paid') {
             $request->validate([
                 'due_date' => 'required|date',
@@ -264,6 +265,7 @@ class InvoiceController extends Controller
                 'ppn' => $ppnNominal,
                 'pph' => $pphNominal,
                 'total' => $total,
+                'periode_kontrak' => $request->periode_kontrak,
                 'due_date' => $request->due_date,
                 'cause_of_problem' => $request->cause_of_problem,
                 'notes' => $request->notes,
@@ -298,22 +300,20 @@ class InvoiceController extends Controller
                 }
             }
 
-            // Logika pelunasan otomatis kwitansi
             if ($request->status === 'paid' && $invoice->getOriginal('status') !== 'paid') {
                 $this->invoiceService->markAsPaid($invoice);
             } else {
-                // Update status normally if it is not a new paid transition
                 $invoice->update(['status' => $request->status]);
             }
 
             DB::commit();
 
-            \App\Models\ActivityLog::log('updated_invoice', "Updated invoice #{$invoice->invoice_number}", $invoice);
+            \App\Models\ActivityLog::log('updated_invoice', "Updated partnership invoice #{$invoice->invoice_number}", $invoice);
 
             if (auth()->user()->role === 'staff') {
                 \App\Models\SecurityLog::create([
                     'user_id' => auth()->id(),
-                    'activity' => "Staff " . auth()->user()->name . " edited invoice #{$invoice->invoice_number}",
+                    'activity' => "Staff " . auth()->user()->name . " edited partnership invoice #{$invoice->invoice_number}",
                     'ip_address' => request()->ip(),
                     'user_agent' => request()->userAgent(),
                 ]);
@@ -321,15 +321,15 @@ class InvoiceController extends Controller
                 $usersToNotify = \App\Models\User::whereIn('role', ['owner', 'admin'])->get();
                 foreach ($usersToNotify as $u) {
                     $u->notify(new \App\Notifications\SystemActivityNotification(
-                        'Invoice Edited by Staff',
-                        "Staff " . auth()->user()->name . " edited invoice #{$invoice->invoice_number}",
+                        'Partnership Invoice Edited by Staff',
+                        "Staff " . auth()->user()->name . " edited partnership invoice #{$invoice->invoice_number}",
                         'security',
-                        route('invoices.show', $invoice)
+                        route('contract-invoices.show', $invoice)
                     ));
                 }
             }
 
-            return redirect()->route('invoices.index')->with('success', 'Invoice updated successfully.');
+            return redirect()->route('contract-invoices.index')->with('success', 'Partnership Invoice updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Something went wrong: ' . $e->getMessage());
@@ -338,7 +338,7 @@ class InvoiceController extends Controller
 
     public function downloadPdf(Request $request, Invoice $invoice)
     {
-        if ($invoice->kategori_invoice === 'kemitraan') {
+        if ($invoice->kategori_invoice !== 'kemitraan') {
             abort(404);
         }
 
@@ -347,11 +347,9 @@ class InvoiceController extends Controller
             \Illuminate\Support\Facades\App::setLocale($locale);
         }
 
-        \Illuminate\Support\Facades\Log::info("DEBUG INVOICE PDF: Invoice ID={$invoice->id}, Number={$invoice->invoice_number}");
-        \Illuminate\Support\Facades\Log::info("DEBUG INVOICE PDF: Total attachments in DB: " . $invoice->attachments()->count());
-
         $invoice->load(['client', 'items', 'receipt']);
-        $attachments = $invoice->attachments()->take(4)->get();
+        // For partnership, retrieve up to 12 attachments for a complete Appendix section
+        $attachments = $invoice->attachments()->take(12)->get();
         $invoice->setRelation('attachments', $attachments);
 
         // Convert attachments to Base64
@@ -370,11 +368,6 @@ class InvoiceController extends Controller
             }
         }
 
-        \Illuminate\Support\Facades\Log::info("DEBUG INVOICE PDF: Loaded attachments count: " . $attachments->count());
-        foreach ($attachments as $index => $att) {
-            \Illuminate\Support\Facades\Log::info("DEBUG INVOICE PDF: Attachment #{$index} ID={$att->id}, path={$att->file_path}, base64 length=" . ($att->base64_data ? strlen($att->base64_data) : 'NULL'));
-        }
-
         // Convert logo to Base64
         $logoPath = public_path('img/logo-jnj.png');
         $logoBase64 = null;
@@ -389,17 +382,18 @@ class InvoiceController extends Controller
             $ttdBase64 = 'data:image/png;base64,' . base64_encode(file_get_contents($ttdPath));
         }
 
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('invoices.pdf', compact('invoice', 'attachments', 'logoBase64', 'ttdBase64'))
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('contract_invoices.pdf', compact('invoice', 'attachments', 'logoBase64', 'ttdBase64'))
             ->setPaper('a4')
             ->setOption([
-                'isRemoteEnabled' => true, 
+                'isRemoteEnabled' => true,
                 'isHtml5ParserEnabled' => true,
                 'defaultFont' => 'sans-serif',
                 'enable_php' => true
             ]);
+
         $numberSegments = explode('-', $invoice->invoice_number);
-        $nomorPart = count($numberSegments) >= 2 
-            ? $numberSegments[0] . '-' . $numberSegments[1] 
+        $nomorPart = count($numberSegments) >= 2
+            ? $numberSegments[0] . '-' . $numberSegments[1]
             : $invoice->invoice_number;
 
         $clientName = $invoice->client ? $invoice->client->nama_client : 'General';
@@ -407,28 +401,27 @@ class InvoiceController extends Controller
 
         $dateStr = ($invoice->tanggal_invoice ?: ($invoice->created_at ?: now()))->format('d-m-Y');
 
-        $filename = "Invoice-JNJ-{$nomorPart}-{$cleanedClientName}-{$dateStr}.pdf";
+        $filename = "Invoice-Kemitraan-JNJ-{$nomorPart}-{$cleanedClientName}-{$dateStr}.pdf";
         return $pdf->download($filename);
     }
 
     public function destroy(Request $request, Invoice $invoice)
     {
-        if ($invoice->kategori_invoice === 'kemitraan') {
+        if ($invoice->kategori_invoice !== 'kemitraan') {
             abort(404);
         }
 
         \Illuminate\Support\Facades\Gate::authorize('delete', $invoice);
 
-        // Security check: Verify receipt relation before starting deletion
         if ($invoice->receipt()->exists()) {
-            return redirect()->route('invoices.index')->with('error', app()->getLocale() == 'en' 
+            return redirect()->route('contract-invoices.index')->with('error', app()->getLocale() == 'en'
                 ? 'This invoice cannot be deleted because it has an active receipt. Please delete the receipt first.'
                 : 'Invoice tidak dapat dihapus karena memiliki kwitansi yang aktif. Silakan hapus kwitansi terlebih dahulu.');
         }
 
         try {
             $num = $invoice->invoice_number;
-            
+
             $invoice->update([
                 'deleted_by' => auth()->id(),
                 'deletion_reason' => $request->input('deletion_reason')
@@ -436,14 +429,13 @@ class InvoiceController extends Controller
 
             $invoice->delete();
 
-            // Log activity for audit trail
-            \App\Models\ActivityLog::log('deleted_invoice', "Soft deleted invoice #{$num}");
+            \App\Models\ActivityLog::log('deleted_invoice', "Soft deleted partnership invoice #{$num}");
 
             if (auth()->user()->role === 'staff') {
                 $reason = $request->input('deletion_reason') ?: '-';
                 \App\Models\SecurityLog::create([
                     'user_id' => auth()->id(),
-                    'activity' => "Staff " . auth()->user()->name . " soft-deleted invoice #{$num} (Reason: {$reason})",
+                    'activity' => "Staff " . auth()->user()->name . " soft-deleted partnership invoice #{$num} (Reason: {$reason})",
                     'ip_address' => request()->ip(),
                     'user_agent' => request()->userAgent(),
                 ]);
@@ -451,20 +443,20 @@ class InvoiceController extends Controller
                 $usersToNotify = \App\Models\User::whereIn('role', ['owner', 'admin'])->get();
                 foreach ($usersToNotify as $u) {
                     $u->notify(new \App\Notifications\SystemActivityNotification(
-                        'Invoice Deleted by Staff',
-                        "Staff " . auth()->user()->name . " soft-deleted invoice #{$num}. Reason: {$reason}",
+                        'Partnership Invoice Deleted by Staff',
+                        "Staff " . auth()->user()->name . " soft-deleted partnership invoice #{$num}. Reason: {$reason}",
                         'security',
                         route('trash.index')
                     ));
                 }
             }
 
-            return redirect()->route('invoices.index')->with('success', app()->getLocale() == 'en' 
-                ? 'Invoice moved to trash successfully.' 
-                : 'Invoice berhasil dipindahkan ke tempat sampah.');
+            return redirect()->route('contract-invoices.index')->with('success', app()->getLocale() == 'en'
+                ? 'Partnership Invoice moved to trash successfully.'
+                : 'Invoice kemitraan berhasil dipindahkan ke tempat sampah.');
         } catch (\Exception $e) {
-            return redirect()->route('invoices.index')->with('error', app()->getLocale() == 'en' 
-                ? 'Failed to move invoice to trash: ' . $e->getMessage() 
+            return redirect()->route('contract-invoices.index')->with('error', app()->getLocale() == 'en'
+                ? 'Failed to move invoice to trash: ' . $e->getMessage()
                 : 'Gagal memindahkan invoice ke tempat sampah: ' . $e->getMessage());
         }
     }

@@ -168,6 +168,46 @@
                         </div>
                     </div>
 
+                    <!-- PORTFOLIO SHARE CARD -->
+                    <div class="glass-card p-8 mb-10 relative overflow-hidden group hover:shadow-md transition-all duration-300">
+                        <div class="absolute -right-6 -top-6 w-24 h-24 bg-gold-500/5 blur-xl group-hover:bg-gold-500/10 transition-colors duration-500 rounded-full"></div>
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                            <div>
+                                <h4 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-sm flex items-center gap-2">
+                                    <i data-lucide="layers" class="w-4 h-4 text-gold-600"></i>
+                                    {{ app()->getLocale() == 'en' ? 'Billing Category Breakdown' : 'Rincian Kategori Tagihan' }}
+                                </h4>
+                                <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1">
+                                    {{ app()->getLocale() == 'en' ? 'Proportion of standard vs. partnership billing value' : 'Proporsi nilai tagihan standar vs. kemitraan' }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden flex mb-4 shadow-inner">
+                            @if($totalBilledCombined > 0)
+                                <div class="bg-slate-900 h-full" style="width: {{ $regulerBilledPercentage }}%" title="Reguler: {{ $regulerBilledPercentage }}%"></div>
+                                <div class="bg-gold-500 h-full" style="width: {{ $kemitraanBilledPercentage }}%" title="Kemitraan: {{ $kemitraanBilledPercentage }}%"></div>
+                            @else
+                                <div class="bg-slate-200 h-full w-full"></div>
+                            @endif
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="flex items-center justify-between p-3 bg-slate-50/50 rounded-xl border border-slate-100">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-slate-900"></span>
+                                    <span class="text-xs font-bold text-slate-700">{{ app()->getLocale() == 'en' ? 'Regular Invoices' : 'Invoice Reguler' }}</span>
+                                </div>
+                                <span class="text-xs font-black text-slate-900">Rp {{ number_format($regulerBilled, 0, ',', '.') }} ({{ $regulerBilledPercentage }}%)</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-slate-50/50 rounded-xl border border-slate-100">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-gold-500"></span>
+                                    <span class="text-xs font-bold text-slate-700">{{ app()->getLocale() == 'en' ? 'Partnership Contracts' : 'Kontrak Kemitraan' }}</span>
+                                </div>
+                                <span class="text-xs font-black text-slate-900">Rp {{ number_format($kemitraanBilled, 0, ',', '.') }} ({{ $kemitraanBilledPercentage }}%)</span>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
                         <!-- Status Breakdown Card (Left) -->
                         <div class="glass-card overflow-hidden flex flex-col justify-between">
@@ -311,6 +351,46 @@
                             </h3>
                             <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-4 shadow-inner">
                                 <div class="bg-gold-500 h-full" style="width: {{ $invoiceStats['total_value'] > 0 ? ($paymentStats['total_collected'] / $invoiceStats['total_value']) * 100 : 0 }}%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PAYMENT PORTFOLIO BREAKDOWN CARD -->
+                    <div class="glass-card p-8 mb-10 relative overflow-hidden group hover:shadow-md transition-all duration-300">
+                        <div class="absolute -right-6 -top-6 w-24 h-24 bg-gold-500/5 blur-xl group-hover:bg-gold-500/10 transition-colors duration-500 rounded-full"></div>
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                            <div>
+                                <h4 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-sm flex items-center gap-2">
+                                    <i data-lucide="layers" class="w-4 h-4 text-gold-600"></i>
+                                    {{ app()->getLocale() == 'en' ? 'Payment Category Breakdown' : 'Rincian Kategori Pembayaran' }}
+                                </h4>
+                                <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1">
+                                    {{ app()->getLocale() == 'en' ? 'Proportion of standard vs. partnership revenue collected' : 'Proporsi pendapatan terkumpul standar vs. kemitraan' }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden flex mb-4 shadow-inner">
+                            @if($totalCollectedCombined > 0)
+                                <div class="bg-slate-900 h-full" style="width: {{ $regulerCollectedPercentage }}%" title="Reguler: {{ $regulerCollectedPercentage }}%"></div>
+                                <div class="bg-gold-500 h-full" style="width: {{ $kemitraanCollectedPercentage }}%" title="Kemitraan: {{ $kemitraanCollectedPercentage }}%"></div>
+                            @else
+                                <div class="bg-slate-200 h-full w-full"></div>
+                            @endif
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="flex items-center justify-between p-3 bg-slate-50/50 rounded-xl border border-slate-100">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-slate-900"></span>
+                                    <span class="text-xs font-bold text-slate-700">{{ app()->getLocale() == 'en' ? 'Regular Revenue' : 'Pendapatan Reguler' }}</span>
+                                </div>
+                                <span class="text-xs font-black text-slate-900">Rp {{ number_format($regulerCollected, 0, ',', '.') }} ({{ $regulerCollectedPercentage }}%)</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-slate-50/50 rounded-xl border border-slate-100">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-gold-500"></span>
+                                    <span class="text-xs font-bold text-slate-700">{{ app()->getLocale() == 'en' ? 'Partnership Revenue' : 'Pendapatan Kemitraan' }}</span>
+                                </div>
+                                <span class="text-xs font-black text-slate-900">Rp {{ number_format($kemitraanCollected, 0, ',', '.') }} ({{ $kemitraanCollectedPercentage }}%)</span>
                             </div>
                         </div>
                     </div>

@@ -26,6 +26,60 @@
             <livewire:owner-kpi :minimal="true" />
         </div>
 
+        <!-- REVENUE PORTFOLIO ANALYSIS WIDGET -->
+        <div class="mb-8 glass-card p-8 page-fade-in stagger-2 relative overflow-hidden group hover:shadow-lg transition-all duration-300">
+            <div class="absolute -right-6 -top-6 w-24 h-24 bg-gold-500/5 blur-xl group-hover:bg-gold-500/10 transition-colors duration-500 rounded-full"></div>
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                <div>
+                    <h3 class="font-black text-slate-900 font-jakarta uppercase tracking-tight text-md flex items-center gap-2">
+                        <i data-lucide="pie-chart" class="w-5 h-5 text-gold-600"></i>
+                        {{ app()->getLocale() == 'en' ? 'Revenue Portfolio Analysis' : 'Analisis Portofolio Pendapatan' }}
+                    </h3>
+                    <p class="text-[11px] text-slate-400 font-bold uppercase tracking-widest mt-1">
+                        {{ app()->getLocale() == 'en' ? 'Lifetime revenue split between regular and partnership contracts' : 'Pembagian pendapatan seumur hidup antara reguler dan kontrak kemitraan' }}
+                    </p>
+                </div>
+                <div class="text-right">
+                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Combined Net' : 'Total Bersih Terkumpul' }}</span>
+                    <h4 class="text-xl font-black text-slate-900 font-jakarta mt-0.5">Rp {{ number_format($regulerRevenue + $kemitraanRevenue, 0, ',', '.') }}</h4>
+                </div>
+            </div>
+
+            <!-- Stacked Progress Bar -->
+            <div class="w-full bg-slate-100 h-4 rounded-full overflow-hidden flex mb-4 shadow-inner">
+                @if(($regulerRevenue + $kemitraanRevenue) > 0)
+                    <div class="bg-slate-900 h-full transition-all duration-500" style="width: {{ $regulerPercentage }}%" title="Reguler: {{ $regulerPercentage }}%"></div>
+                    <div class="bg-gold-500 h-full transition-all duration-500" style="width: {{ $kemitraanPercentage }}%" title="Kemitraan: {{ $kemitraanPercentage }}%"></div>
+                @else
+                    <div class="bg-slate-200 h-full w-full"></div>
+                @endif
+            </div>
+
+            <!-- Legend and Details -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
+                <div class="flex items-center justify-between p-3.5 bg-slate-50/50 border border-slate-100 rounded-xl">
+                    <div class="flex items-center gap-3">
+                        <span class="w-3.5 h-3.5 rounded-md bg-slate-900 shadow-sm"></span>
+                        <div class="flex flex-col">
+                            <span class="text-xs font-black text-slate-900">{{ app()->getLocale() == 'en' ? 'Regular Invoices' : 'Invoice Reguler' }}</span>
+                            <span class="text-[10px] text-slate-400 font-bold uppercase mt-0.5">{{ $regulerPercentage }}% {{ app()->getLocale() == 'en' ? 'Share' : 'Pangsa' }}</span>
+                        </div>
+                    </div>
+                    <span class="text-xs font-black text-slate-900">Rp {{ number_format($regulerRevenue, 0, ',', '.') }}</span>
+                </div>
+                <div class="flex items-center justify-between p-3.5 bg-slate-50/50 border border-slate-100 rounded-xl">
+                    <div class="flex items-center gap-3">
+                        <span class="w-3.5 h-3.5 rounded-md bg-gold-500 shadow-sm"></span>
+                        <div class="flex flex-col">
+                            <span class="text-xs font-black text-slate-900">{{ app()->getLocale() == 'en' ? 'Partnership Contracts' : 'Kontrak Kemitraan' }}</span>
+                            <span class="text-[10px] text-gold-600 font-bold uppercase mt-0.5">{{ $kemitraanPercentage }}% {{ app()->getLocale() == 'en' ? 'Share' : 'Pangsa' }}</span>
+                        </div>
+                    </div>
+                    <span class="text-xs font-black text-slate-900">Rp {{ number_format($kemitraanRevenue, 0, ',', '.') }}</span>
+                </div>
+            </div>
+        </div>
+
         <!-- MIDDLE BAR: Urgent Action (3 Klien Overdue teratas & AI Predictive Recommendation) -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8 page-fade-in stagger-2">
             <!-- 3 Klien Overdue Teratas -->

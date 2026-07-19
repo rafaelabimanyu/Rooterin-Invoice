@@ -68,6 +68,7 @@
             <nav x-bind:class="collapsed ? 'space-y-4' : 'space-y-1'">
                 <x-sidebar-link href="{{ route('receipts.index') }}" :active="request()->routeIs('receipts.*')" icon="file-spreadsheet" :label="__('ui.receipts')" :collapsed="$collapsed" />
                 <x-sidebar-link href="{{ route('invoices.index') }}" :active="request()->routeIs('invoices.*')" icon="file-text" :label="__('ui.invoices')" :collapsed="$collapsed" />
+                <x-sidebar-link href="{{ route('contract-invoices.index') }}" :active="request()->routeIs('contract-invoices.*')" icon="briefcase" :label="__('ui.contract_invoices')" :collapsed="$collapsed" />
                 <x-sidebar-link href="{{ route('ledger.index') }}" :active="request()->routeIs('ledger.*')" icon="book-open" :label="__('ui.ledger')" :collapsed="$collapsed" />
                 <x-sidebar-link href="{{ route('reports.index') }}" :active="request()->routeIs('reports.*')" icon="pie-chart" :label="__('ui.reports')" :collapsed="$collapsed" />
                 @if(!auth()->user()->hasRole('staff'))

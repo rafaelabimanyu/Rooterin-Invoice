@@ -5,6 +5,8 @@ return [
     'dashboard' => 'Dashboard',
     'clients' => 'Clients',
     'invoices' => 'Invoices',
+    'contract_invoices' => 'Partnership Invoices',
+    'contract_period' => 'Contract Period',
     'receipts' => 'Receipts',
     'payments' => 'Payments',
     'reports' => 'Reports',

@@ -171,6 +171,49 @@ class ReportController extends Controller
             ->take(5)
             ->get();
 
+        // --- Billed and Collected Portfolio Breakdown (Regular vs Kemitraan) ---
+        $billedQuery = Invoice::whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
+            ->where('status', '!=', 'draft');
+        if ($clientId) {
+            $billedQuery->where('client_id', $clientId);
+        }
+
+        $regulerBilled = (clone $billedQuery)->where(function($q) {
+            $q->whereNull('kategori_invoice')
+              ->orWhere('kategori_invoice', '!=', 'kemitraan');
+        })->sum('total');
+
+        $kemitraanBilled = (clone $billedQuery)->where('kategori_invoice', 'kemitraan')->sum('total');
+
+        $totalBilledCombined = $regulerBilled + $kemitraanBilled;
+        $regulerBilledPercentage = $totalBilledCombined > 0 ? round(($regulerBilled / $totalBilledCombined) * 100) : 0;
+        $kemitraanBilledPercentage = $totalBilledCombined > 0 ? round(($kemitraanBilled / $totalBilledCombined) * 100) : 0;
+
+        $collectedQuery = Payment::whereBetween('payment_date', [$startDate, $endDate]);
+        if ($clientId) {
+            $collectedQuery->whereHas('invoice', function($q) use ($clientId) {
+                $q->where('client_id', $clientId);
+            });
+        }
+        if ($paymentMethod) {
+            $collectedQuery->where('payment_method', $paymentMethod);
+        }
+
+        $regulerCollected = (clone $collectedQuery)->whereHas('invoice', function($q) {
+            $q->where(function($sq) {
+                $sq->whereNull('kategori_invoice')
+                  ->orWhere('kategori_invoice', '!=', 'kemitraan');
+            });
+        })->sum('amount');
+
+        $kemitraanCollected = (clone $collectedQuery)->whereHas('invoice', function($q) {
+            $q->where('kategori_invoice', 'kemitraan');
+        })->sum('amount');
+
+        $totalCollectedCombined = $regulerCollected + $kemitraanCollected;
+        $regulerCollectedPercentage = $totalCollectedCombined > 0 ? round(($regulerCollected / $totalCollectedCombined) * 100) : 0;
+        $kemitraanCollectedPercentage = $totalCollectedCombined > 0 ? round(($kemitraanCollected / $totalCollectedCombined) * 100) : 0;
+
         $clients = Client::orderBy('nama_client')->get();
 
         // --- Business Units Summary (Profit Sharing) ---
@@ -180,7 +223,10 @@ class ReportController extends Controller
             'startDate', 'endDate', 'clientId', 'paymentMethod', 'clients',
             'invoiceStats', 'paymentStats', 'totalOutstanding', 'outstandingGrowth', 'recentInvoices',
             'trendMonths', 'trendRevenue', 'trendReceivables',
-            'topClientRevenue', 'topClientOutstanding', 'businessUnitStats'
+            'topClientRevenue', 'topClientOutstanding', 'businessUnitStats',
+            'regulerBilled', 'kemitraanBilled', 'regulerBilledPercentage', 'kemitraanBilledPercentage',
+            'regulerCollected', 'kemitraanCollected', 'regulerCollectedPercentage', 'kemitraanCollectedPercentage',
+            'totalBilledCombined', 'totalCollectedCombined'
         ));
     }
 

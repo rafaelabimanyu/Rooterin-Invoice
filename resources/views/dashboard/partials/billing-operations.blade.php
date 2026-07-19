@@ -33,8 +33,13 @@
             </thead>
             <tbody class="divide-y divide-slate-50">
                 @forelse($recentInvoices as $invoice)
+                    @php
+                        $showRoute = $invoice->kategori_invoice === 'kemitraan' 
+                            ? route('contract-invoices.show', $invoice) 
+                            : route('invoices.show', $invoice);
+                    @endphp
                     <tr class="table-row-premium cursor-pointer group"
-                        onclick="window.location='{{ route('invoices.show', $invoice) }}'">
+                        onclick="window.location='{{ $showRoute }}'">
                         <td class="px-10 py-6">
                             <div class="flex items-center gap-3">
                                 <div
@@ -52,6 +57,12 @@
                                     class="text-[14px] font-bold text-slate-900 group-hover:text-gold-600 transition-colors">{{ $invoice->client->nama_client }}</span>
                                 <span
                                     class="text-[11px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">{{ $invoice->client->nama_perusahaan }}</span>
+                                @if($invoice->kategori_invoice === 'kemitraan')
+                                    <span class="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-50 text-amber-700 border border-amber-100 shadow-sm w-fit">
+                                        <i data-lucide="handshake" class="w-2.5 h-2.5"></i>
+                                        Kemitraan ({{ $invoice->periode_kontrak }})
+                                    </span>
+                                @endif
                             </div>
                         </td>
                         @if($hasVolumeCol)
@@ -91,17 +102,33 @@
     <!-- Mobile card list view -->
     <div class="block md:hidden divide-y divide-slate-100/70">
         @forelse($recentInvoices as $invoice)
+            @php
+                $showRoute = $invoice->kategori_invoice === 'kemitraan' 
+                    ? route('contract-invoices.show', $invoice) 
+                    : route('invoices.show', $invoice);
+            @endphp
             <div class="p-6 hover:bg-slate-50 transition-colors duration-200 cursor-pointer"
-                 onclick="window.location='{{ route('invoices.show', $invoice) }}'">
+                 onclick="window.location='{{ $showRoute }}'">
                 <div class="flex items-center justify-between gap-4">
                     <div class="space-y-1.5 flex-grow min-w-0">
                         <div class="flex items-center gap-2 flex-wrap">
                             <span class="text-xs font-black text-slate-900 tracking-tight">{{ $invoice->invoice_number }}</span>
                             <x-badge :status="$invoice->status" />
+                            @if($invoice->kategori_invoice === 'kemitraan')
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-50 text-amber-700 border border-amber-100 shadow-sm w-fit">
+                                    <i data-lucide="handshake" class="w-2.5 h-2.5"></i>
+                                    Kemitraan
+                                </span>
+                            @endif
                         </div>
                         <div class="flex flex-col">
                             <span class="text-xs font-bold text-slate-800 truncate">{{ $invoice->client->nama_client }}</span>
                             <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider truncate">{{ $invoice->client->nama_perusahaan ?: '-' }}</span>
+                            @if($invoice->kategori_invoice === 'kemitraan')
+                                <span class="text-[9px] text-amber-600 font-medium truncate mt-0.5">
+                                    {{ $invoice->periode_kontrak }}
+                                </span>
+                            @endif
                         </div>
                     </div>
                     @if($hasVolumeCol)

@@ -5,6 +5,8 @@ return [
     'dashboard' => 'Dasbor',
     'clients' => 'Klien',
     'invoices' => 'Invoice',
+    'contract_invoices' => 'Invoice Kemitraan',
+    'contract_period' => 'Periode Kontrak',
     'receipts' => 'Kwitansi',
     'payments' => 'Pembayaran',
     'reports' => 'Laporan',

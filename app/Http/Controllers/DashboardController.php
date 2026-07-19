@@ -98,6 +98,11 @@ class DashboardController extends Controller
                 ->latest()
                 ->take(5)
                 ->get();
+
+            $regulerRevenue = 0;
+            $kemitraanRevenue = 0;
+            $regulerPercentage = 0;
+            $kemitraanPercentage = 0;
         } else {
             $recentInvoices = Invoice::with('client')->latest()->take(5)->get();
             $todayInvoicesCount = Invoice::where('created_at', '>=', now()->startOfDay())->count();
@@ -280,6 +285,23 @@ class DashboardController extends Controller
                 ->latest('id')
                 ->take(5)
                 ->get();
+
+            // Calculate Regular vs Partnership Revenue breakdown
+            $regulerRevenue = \App\Models\Payment::whereHas('invoice', function ($q) {
+                $q->where(function($sq) {
+                    $sq->whereNull('kategori_invoice')
+                      ->orWhere('kategori_invoice', '!=', 'kemitraan');
+                });
+            })->sum('amount');
+
+            $kemitraanRevenue = \App\Models\Payment::whereHas('invoice', function ($q) {
+                $q->where('kategori_invoice', 'kemitraan');
+            })->sum('amount');
+
+            $totalRevenueCombined = $regulerRevenue + $kemitraanRevenue;
+
+            $regulerPercentage = $totalRevenueCombined > 0 ? round(($regulerRevenue / $totalRevenueCombined) * 100) : 0;
+            $kemitraanPercentage = $totalRevenueCombined > 0 ? round(($kemitraanRevenue / $totalRevenueCombined) * 100) : 0;
         }
         $insights = !$isStaff ? $insightService->generateInsights() : [];
 
@@ -316,7 +338,11 @@ class DashboardController extends Controller
             'totalPaymentsAmount',
             'averagePaymentAmount',
             'showNominalToStaff',
-            'draftInvoicesCount'
+            'draftInvoicesCount',
+            'regulerRevenue',
+            'kemitraanRevenue',
+            'regulerPercentage',
+            'kemitraanPercentage'
         ));
     }
 

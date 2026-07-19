@@ -3,6 +3,7 @@
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\ContractInvoiceController;
 use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ReportController;
@@ -57,6 +58,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('invoices/{invoice}/pdf', [InvoiceController::class, 'downloadPdf'])->name('invoices.pdf');
         Route::post('invoices/{invoice}/ai-email-draft', [AiInvoiceController::class, 'generateEmailDraft'])->name('invoices.ai-email-draft');
         Route::resource('invoices', InvoiceController::class);
+
+        // Contract Invoices
+        Route::get('contract-invoices/{invoice}/pdf', [ContractInvoiceController::class, 'downloadPdf'])->name('contract-invoices.pdf');
+        Route::resource('contract-invoices', ContractInvoiceController::class)->parameters([
+            'contract-invoices' => 'invoice'
+        ]);
 
         // Security Intelligence
         Route::get('/intelligence', [\App\Http\Controllers\Admin\IntelligenceController::class, 'index'])->name('intelligence.index');

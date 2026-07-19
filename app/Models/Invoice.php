@@ -23,6 +23,8 @@ class Invoice extends Model
         'pph',
         'total',
         'status',
+        'kategori_invoice',
+        'periode_kontrak',
         'due_date',
         'cause_of_problem',
         'notes',

@@ -7,12 +7,9 @@ use App\Models\User;
 
 class ReceiptPolicy
 {
-    /**
-     * Perform pre-authorization checks.
-     */
     public function before(User $user, string $ability): bool|null
     {
-        if ($user->role === 'owner' || $user->role === 'admin' || $user->role === 'staff') {
+        if ($user->role === 'owner' || $user->role === 'admin') {
             return true;
         }
 

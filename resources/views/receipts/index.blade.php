@@ -25,9 +25,9 @@
 
         <!-- Filters -->
         <div class="glass-card p-6 mb-10">
-            <form action="{{ route('receipts.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6 items-end">
+            <form action="{{ route('receipts.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-12 gap-4 lg:gap-6 items-end">
                 <!-- Search Text -->
-                <div class="space-y-2 md:col-span-2 lg:col-span-6">
+                <div class="space-y-2 col-span-1 md:col-span-4 lg:col-span-5">
                     <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Search Receipt' : 'Cari Kwitansi' }}</label>
                     <div class="relative">
                         <input type="text" name="search" value="{{ request('search') }}" placeholder="{{ app()->getLocale() == 'en' ? 'Receipt number, client name...' : 'Nomor kwitansi, nama klien...' }}" class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-gold-500 focus:bg-white transition-colors font-medium">
@@ -38,7 +38,7 @@
                 </div>
                 
                 <!-- Business Unit Filter -->
-                <div class="space-y-2 md:col-span-1 lg:col-span-4">
+                <div class="space-y-2 col-span-1 md:col-span-2 lg:col-span-4">
                     <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Business Unit' : 'Unit Bisnis' }}</label>
                     <select name="business_unit_id" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-gold-500 focus:bg-white transition-colors font-medium">
                         <option value="">{{ app()->getLocale() == 'en' ? 'All Units' : 'Semua Unit' }}</option>
@@ -49,7 +49,7 @@
                 </div>
                 
                 <!-- Buttons -->
-                <div class="flex gap-2 md:col-span-1 lg:col-span-2 w-full">
+                <div class="flex gap-2 col-span-1 md:col-span-2 lg:col-span-3 w-full">
                     <button type="submit" class="flex-1 btn-premium py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider text-center transition-all duration-300 font-medium">
                         Filter
                     </button>
@@ -64,12 +64,12 @@
                 <!-- List Header -->
                 <div class="grid grid-cols-12 gap-6 px-10 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 bg-slate-50/50 rounded-2xl mb-2">
                     <div class="col-span-2">{{ app()->getLocale() == 'en' ? 'Rec Number' : 'No. Kwitansi' }}</div>
-                    <div class="col-span-3">{{ app()->getLocale() == 'en' ? 'Client Account' : 'Akun Klien' }}</div>
+                    <div class="col-span-2">{{ app()->getLocale() == 'en' ? 'Client Account' : 'Akun Klien' }}</div>
                     <div class="col-span-2">{{ app()->getLocale() == 'en' ? 'Business Unit' : 'Unit Bisnis' }}</div>
                     <div class="col-span-2">{{ app()->getLocale() == 'en' ? 'Amount' : 'Jumlah' }}</div>
                     <div class="col-span-1 text-center">{{ app()->getLocale() == 'en' ? 'Date' : 'Tanggal' }}</div>
                     <div class="col-span-1 text-center">Status</div>
-                    <div class="col-span-1 text-right">{{ app()->getLocale() == 'en' ? 'Actions' : 'Aksi' }}</div>
+                    <div class="col-span-2 text-right pr-4">{{ app()->getLocale() == 'en' ? 'Actions' : 'Aksi' }}</div>
                 </div>
 
                 @forelse($receipts as $receipt)
@@ -82,7 +82,7 @@
                         </div>
 
                         <!-- CLIENT ACCOUNT -->
-                        <div class="col-span-3 min-w-0">
+                        <div class="col-span-2 min-w-0">
                             <div class="flex flex-col min-w-0">
                                 <span class="text-[14px] font-bold text-slate-800 truncate" title="{{ optional($receipt->client)->nama_client ?? 'Klien Tidak Ditemukan' }}">{{ optional($receipt->client)->nama_client ?? 'Klien Tidak Ditemukan' }}</span>
                                 <span class="text-[12px] text-slate-400 font-medium truncate" title="{{ optional($receipt->client)->nama_perusahaan ?? '-' }}">{{ optional($receipt->client)->nama_perusahaan ?? '-' }}</span>
@@ -107,13 +107,13 @@
                         </div>
 
                         <!-- STATUS -->
-                        <div class="col-span-1 flex justify-center">
+                        <div class="col-span-1 flex justify-center whitespace-nowrap">
                             <x-badge :status="$receipt->status" />
                         </div>
 
                         <!-- ACTIONS -->
-                        <div class="col-span-1">
-                            <div class="flex items-center justify-end gap-3 opacity-40 group-hover:opacity-100 transition-all duration-300">
+                        <div class="col-span-2">
+                            <div class="flex items-center justify-end gap-3.5 opacity-40 group-hover:opacity-100 transition-all duration-300 pr-2">
                                 <a href="{{ route('receipts.show', $receipt) }}" class="p-1 text-slate-400 hover:text-gold-600 transition-colors duration-300" title="{{ app()->getLocale() == 'en' ? 'View Detail' : 'Lihat Detail' }}">
                                     <i data-lucide="eye" class="w-4 h-4"></i>
                                 </a>
@@ -197,6 +197,15 @@
                 </div>
             @endforelse
         </div>
+
+        <!-- Pagination -->
+        @if($receipts->hasPages())
+            <div class="mt-12 flex justify-end">
+                <div class="bg-white/50 backdrop-blur-sm p-2 rounded-2xl border border-slate-200/50 shadow-sm">
+                    {{ $receipts->links() }}
+                </div>
+            </div>
+        @endif
     </div>
 
     @push('scripts')

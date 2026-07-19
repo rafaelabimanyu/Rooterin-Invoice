@@ -21,22 +21,22 @@
 
         <!-- Filters -->
         <div class="glass-card p-6 mb-10">
-            <form action="{{ route('invoices.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6 items-end">
+            <form action="{{ route('invoices.index') }}" method="GET" class="flex flex-col md:flex-row md:flex-wrap items-end gap-4 w-full">
                 <!-- Search Text -->
-                <div class="space-y-2 md:col-span-2 lg:col-span-4">
+                <div class="space-y-2 flex-1 min-w-[280px] w-full">
                     <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Search Invoice' : 'Cari Invoice' }}</label>
                     <div class="relative">
-                        <input type="text" name="search" value="{{ request('search') }}" placeholder="{{ app()->getLocale() == 'en' ? 'Invoice number, client name...' : 'Nomor invoice, nama klien...' }}" class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-gold-500 focus:bg-white transition-colors font-medium">
-                        <div class="absolute left-3.5 top-2.5 text-slate-400">
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="{{ app()->getLocale() == 'en' ? 'Invoice number, client name...' : 'Nomor invoice, nama klien...' }}" class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-gold-500 focus:bg-white transition-colors font-medium">
+                        <div class="absolute left-3.5 top-3 text-slate-400">
                             <i data-lucide="search" class="w-4 h-4"></i>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Status Filter -->
-                <div class="space-y-2 md:col-span-1 lg:col-span-3">
+                <div class="space-y-2 min-w-[180px] w-full md:w-auto">
                     <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Status</label>
-                    <select name="status" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-gold-500 focus:bg-white transition-colors font-medium">
+                    <select name="status" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-gold-500 focus:bg-white transition-colors font-medium">
                         <option value="">{{ app()->getLocale() == 'en' ? 'All Status' : 'Semua Status' }}</option>
                         @foreach(['draft', 'sent', 'pending', 'paid', 'overdue', 'cancelled'] as $status)
                             <option value="{{ $status }}" {{ request('status') == $status ? 'selected' : '' }}>{{ strtoupper($status) }}</option>
@@ -45,9 +45,9 @@
                 </div>
                 
                 <!-- Business Unit Filter -->
-                <div class="space-y-2 md:col-span-1 lg:col-span-3">
+                <div class="space-y-2 min-w-[200px] w-full md:w-auto">
                     <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Business Unit' : 'Unit Bisnis' }}</label>
-                    <select name="business_unit_id" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-gold-500 focus:bg-white transition-colors font-medium">
+                    <select name="business_unit_id" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-gold-500 focus:bg-white transition-colors font-medium">
                         <option value="">{{ app()->getLocale() == 'en' ? 'All Units' : 'Semua Unit' }}</option>
                         @foreach($businessUnits as $unit)
                             <option value="{{ $unit->id }}" {{ request('business_unit_id') == $unit->id ? 'selected' : '' }}>{{ $unit->name }}</option>
@@ -56,7 +56,7 @@
                 </div>
                 
                 <!-- Buttons -->
-                <div class="flex gap-2 md:col-span-2 lg:col-span-2 w-full">
+                <div class="flex gap-2 w-full md:w-auto min-w-[180px] shrink-0">
                     <button type="submit" class="flex-1 btn-premium py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider text-center transition-all duration-300">
                         Filter
                     </button>
@@ -67,42 +67,54 @@
 
         @if(auth()->user()->role !== 'staff')
         <!-- Summary Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <!-- Card 1 -->
             <div class="card-premium group w-full transition-all duration-300">
                 <div class="absolute top-0 left-0 w-1.5 h-full bg-gold-500/80"></div>
                 <div class="flex items-center justify-between mb-4">
                     <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Total Issued' : 'Total Diterbitkan' }}</p>
-                    <i data-lucide="file-text" class="w-4 h-4 text-slate-300 group-hover:text-gold-500 transition-colors duration-300"></i>
+                    <div class="w-8 h-8 rounded-lg bg-gold-50 flex items-center justify-center text-gold-600 group-hover:bg-gold-500 group-hover:text-white transition-all duration-300 shadow-sm animate-fade-in">
+                        <i data-lucide="file-text" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                    </div>
                 </div>
                 <h3 class="text-3xl font-bold text-slate-900 font-outfit">{{ $invoices->total() }}</h3>
                 <p class="text-[10px] text-slate-400 font-bold mt-2 uppercase tracking-tighter">{{ app()->getLocale() == 'en' ? 'Registered in system' : 'Terdaftar dalam sistem' }}</p>
             </div>
             
+            <!-- Card 2 -->
             <div class="card-premium group w-full transition-all duration-300">
                 <div class="absolute top-0 left-0 w-1.5 h-full bg-emerald-500/80"></div>
                 <div class="flex items-center justify-between mb-4">
                     <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ __('ui.total_collected') }}</p>
-                    <i data-lucide="check-circle" class="w-4 h-4 text-slate-300 group-hover:text-emerald-500 transition-colors duration-300"></i>
+                    <div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-300 shadow-sm animate-fade-in">
+                        <i data-lucide="check-circle" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                    </div>
                 </div>
                 <h3 class="text-3xl font-bold text-emerald-600 font-outfit">Rp {{ number_format(\App\Models\Payment::sum('amount'), 0, ',', '.') }}</h3>
                 <p class="text-[10px] text-slate-400 font-bold mt-2 uppercase tracking-tighter">{{ app()->getLocale() == 'en' ? 'Verified transactions' : 'Transaksi terverifikasi' }}</p>
             </div>
 
+            <!-- Card 3 -->
             <div class="card-premium group w-full transition-all duration-300">
                 <div class="absolute top-0 left-0 w-1.5 h-full bg-amber-500/80"></div>
                 <div class="flex items-center justify-between mb-4">
                     <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ __('ui.amount_due') }}</p>
-                    <i data-lucide="clock" class="w-4 h-4 text-slate-300 group-hover:text-amber-500 transition-colors duration-300"></i>
+                    <div class="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600 group-hover:bg-amber-500 group-hover:text-white transition-all duration-300 shadow-sm animate-fade-in">
+                        <i data-lucide="clock" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                    </div>
                 </div>
                 <h3 class="text-3xl font-bold text-slate-900 font-outfit">Rp {{ number_format(\App\Models\Invoice::whereIn('status', ['sent', 'dp', 'pending', 'overdue'])->sum('total'), 0, ',', '.') }}</h3>
                 <p class="text-[10px] text-slate-400 font-bold mt-2 uppercase tracking-tighter">{{ app()->getLocale() == 'en' ? 'Outstanding receivables' : 'Piutang belum tertagih' }}</p>
             </div>
 
+            <!-- Card 4 -->
             <div class="card-premium group w-full transition-all duration-300">
                 <div class="absolute top-0 left-0 w-1.5 h-full bg-rose-500/80"></div>
                 <div class="flex items-center justify-between mb-4">
                     <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ app()->getLocale() == 'en' ? 'Overdue Count' : 'Jumlah Menunggak' }}</p>
-                    <i data-lucide="alert-circle" class="w-4 h-4 text-slate-300 group-hover:text-rose-500 transition-colors duration-300"></i>
+                    <div class="w-8 h-8 rounded-lg bg-rose-50 flex items-center justify-center text-rose-600 group-hover:bg-rose-500 group-hover:text-white transition-all duration-300 shadow-sm animate-fade-in">
+                        <i data-lucide="alert-circle" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
+                    </div>
                 </div>
                 <h3 class="text-3xl font-bold text-rose-600 font-outfit">{{ \App\Models\Invoice::where('status', 'overdue')->count() }}</h3>
                 <p class="text-[10px] text-slate-400 font-bold mt-2 uppercase tracking-tighter">{{ app()->getLocale() == 'en' ? 'Action required immediately' : 'Tindakan segera diperlukan' }}</p>
@@ -112,20 +124,20 @@
 
         <!-- Desktop List View (Floating Rows) -->
         <div class="hidden md:block overflow-x-auto pb-4">
-            <div class="min-w-[1000px] space-y-4 pr-4">
+            <div class="min-w-[1100px] space-y-4 pr-4">
                 <!-- List Header -->
-                <div class="grid grid-cols-12 gap-8 px-10 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 bg-slate-50/50 rounded-2xl mb-2">
+                <div class="grid grid-cols-12 gap-6 px-10 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 bg-slate-50/50 rounded-2xl mb-2">
                     <div class="col-span-2">{{ app()->getLocale() == 'en' ? 'Invoice Number' : 'Nomor Invoice' }}</div>
-                    <div class="col-span-3">{{ app()->getLocale() == 'en' ? 'Customer Details' : 'Rincian Pelanggan' }}</div>
+                    <div class="col-span-2">{{ app()->getLocale() == 'en' ? 'Customer Details' : 'Rincian Pelanggan' }}</div>
                     <div class="col-span-2">{{ app()->getLocale() == 'en' ? 'Business Unit' : 'Unit Bisnis' }}</div>
                     <div class="col-span-2">{{ app()->getLocale() == 'en' ? 'Net Amount' : 'Nominal Bersih' }}</div>
-                    <div class="col-span-1">{{ app()->getLocale() == 'en' ? 'Due Date' : 'Jatuh Tempo' }}</div>
+                    <div class="col-span-1 text-center">{{ app()->getLocale() == 'en' ? 'Due Date' : 'Jatuh Tempo' }}</div>
                     <div class="col-span-1 text-center">Status</div>
-                    <div class="col-span-1 text-right">{{ app()->getLocale() == 'en' ? 'Actions' : 'Aksi' }}</div>
+                    <div class="col-span-2 text-right pr-4">{{ app()->getLocale() == 'en' ? 'Actions' : 'Aksi' }}</div>
                 </div>
 
                 @forelse($invoices as $invoice)
-                    <div class="row-floating grid grid-cols-12 gap-8 items-center px-10 py-6 group transition-all duration-300">
+                    <div class="row-floating grid grid-cols-12 gap-6 items-center px-10 py-6 group transition-all duration-300">
                         <!-- INVOICE NUMBER -->
                         <div class="col-span-2 min-w-0">
                             <a href="{{ route('invoices.show', $invoice) }}" class="text-[14px] font-bold text-slate-900 hover:text-gold-600 transition-colors duration-300 tracking-tight block truncate" title="{{ $invoice->invoice_number }}">
@@ -134,7 +146,7 @@
                         </div>
 
                         <!-- CUSTOMER DETAILS -->
-                        <div class="col-span-3 min-w-0">
+                        <div class="col-span-2 min-w-0">
                             <div class="flex flex-col min-w-0">
                                 <span class="text-[14px] font-bold text-slate-800 truncate" title="{{ $invoice->client->nama_client }}">{{ $invoice->client->nama_client }}</span>
                                 <span class="text-[12px] text-slate-400 font-medium truncate" title="{{ $invoice->client->nama_perusahaan }}">{{ $invoice->client->nama_perusahaan }}</span>
@@ -154,8 +166,8 @@
                         </div>
 
                         <!-- DUE DATE -->
-                        <div class="col-span-1 min-w-0">
-                            <div class="flex flex-col min-w-0">
+                        <div class="col-span-1 text-center min-w-0">
+                            <div class="flex flex-col items-center min-w-0">
                                 @php
                                     $isOverdue = $invoice->due_date && $invoice->due_date->isPast() && $invoice->status !== 'paid';
                                 @endphp
@@ -169,13 +181,13 @@
                         </div>
 
                         <!-- STATUS -->
-                        <div class="col-span-1 flex justify-center">
+                        <div class="col-span-1 flex justify-center whitespace-nowrap">
                             <x-badge :status="$invoice->status" />
                         </div>
 
                         <!-- ACTIONS -->
-                        <div class="col-span-1">
-                            <div class="flex items-center justify-end gap-3 opacity-40 group-hover:opacity-100 transition-all duration-300">
+                        <div class="col-span-2">
+                            <div class="flex items-center justify-end gap-3.5 opacity-40 group-hover:opacity-100 transition-all duration-300 pr-2">
                                 <a href="{{ route('invoices.show', $invoice) }}" class="p-1 text-slate-400 hover:text-gold-600 transition-colors duration-300" title="{{ __('ui.view') }}">
                                     <i data-lucide="eye" class="w-4 h-4"></i>
                                 </a>
@@ -291,7 +303,7 @@
 
         <!-- Pagination -->
         @if($invoices->hasPages())
-            <div class="mt-12 flex justify-center">
+            <div class="mt-12 flex justify-end">
                 <div class="bg-white/50 backdrop-blur-sm p-2 rounded-2xl border border-slate-200/50 shadow-sm">
                     {{ $invoices->links() }}
                 </div>

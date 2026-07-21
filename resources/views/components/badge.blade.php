@@ -15,7 +15,7 @@
             'dot' => 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.4)]',
             'border' => 'border-blue-200/50'
         ],
-        'nonaktif', 'cancelled', 'overdue', 'rejected' => [
+        'nonaktif', 'cancelled', 'overdue', 'rejected', 'unpaid' => [
             'bg' => 'bg-rose-100/50',
             'text' => 'text-rose-800',
             'dot' => 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.4)]',

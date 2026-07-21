@@ -125,7 +125,7 @@
 
         <div class="flex items-center gap-4 pt-4">
             <button type="submit" class="btn-premium px-8 py-3">
-                <i data-lucide="shield-lock" class="w-4 h-4 mr-2"></i>
+                <i data-lucide="shield-check" class="w-4 h-4 mr-2"></i>
                 {{ app()->getLocale() == 'en' ? 'Update Security' : 'Perbarui Keamanan' }}
             </button>
 

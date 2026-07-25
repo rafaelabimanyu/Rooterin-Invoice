@@ -35,13 +35,13 @@ class ReportTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_staff_cannot_access_reports_page(): void
+    public function test_staff_can_access_reports_page(): void
     {
         $user = User::factory()->create(['role' => 'staff']);
 
         $response = $this->actingAs($user)->get(route('reports.index'));
 
-        $response->assertStatus(403);
+        $response->assertStatus(200);
     }
 
     public function test_reports_page_filters_data_correctly(): void

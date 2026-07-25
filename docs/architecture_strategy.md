@@ -1,7 +1,7 @@
-# Architecture Strategy - Rooterin Invoice
+# Architecture Strategy - J&J Group Invoice
 
 ## 1. System Overview
-Rooterin Invoice adalah sistem manajemen penagihan berbasis web yang dibangun menggunakan **Laravel 11** dan **Livewire**. Sistem ini dirancang untuk menangani alur kerja dari penawaran (Receipt/Quotation) hingga penagihan (Invoice) dengan sistem otorisasi berbasis peran (RBAC).
+J&J Group Invoice adalah sistem manajemen penagihan berbasis web yang dibangun menggunakan **Laravel 11** dan **Livewire**. Sistem ini dirancang untuk menangani alur kerja dari penawaran (Receipt/Quotation) hingga penagihan (Invoice) dengan sistem otorisasi berbasis peran (RBAC).
 
 ## 2. Design Patterns & Principles
 

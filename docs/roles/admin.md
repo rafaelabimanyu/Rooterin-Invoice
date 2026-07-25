@@ -1,6 +1,6 @@
 # 🛡️ Panduan Operasional: System Admin
 
-Sebagai System Admin, peran Anda adalah memastikan kelancaran operasional harian, memelihara integritas data master, dan memverifikasi validitas transaksi yang masuk.
+Sebagai System Admin, peran Anda adalah memastikan kelancaran operasional harian, memelihara integritas data master, dan memverifikasi validitas transaksi yang masuk ke dalam sistem **J&J Group Invoice**.
 
 ## 📋 Tanggung Jawab Utama
 1. **Manajemen Klien**: Memasukkan dan memperbarui data master pelanggan (`Clients`).

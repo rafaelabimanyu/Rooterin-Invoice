@@ -1,18 +1,18 @@
-# Rooterin Invoice — Modern Enterprise Billing Ecosystem
+# J&J Group Invoice — Modern Enterprise Billing Ecosystem
 
 <p align="center">
-  <img src="public/assets/img/rooterin-banner2.png" alt="Rooterin Banner" width="800">
+  <img src="public/img/logo-rooterin-long2.png" alt="J&J Group Invoice Logo" width="400">
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/PHP-8.3-777BB4?style=for-the-badge&logo=php" alt="PHP">
-  <img src="https://img.shields.io/badge/Laravel-13.x-FF2D20?style=for-the-badge&logo=laravel" alt="Laravel">
-  <img src="https://img.shields.io/badge/Livewire-4.x-FB70A9?style=for-the-badge&logo=livewire" alt="Livewire">
+  <img src="https://img.shields.io/badge/Laravel-11.x-FF2D20?style=for-the-badge&logo=laravel" alt="Laravel">
+  <img src="https://img.shields.io/badge/Livewire-3.x-FB70A9?style=for-the-badge&logo=livewire" alt="Livewire">
   <img src="https://img.shields.io/badge/Tailwind_CSS-3.x-38B2AC?style=for-the-badge&logo=tailwind-css" alt="Tailwind">
 </p>
 
 > [!IMPORTANT]
-> **Executive Summary**: Rooterin is a high-fidelity SaaS-level billing solution designed for enterprises that demand precision, security, and world-class aesthetics. It bridges the gap between complex financial operations and seamless user experience through real-time state management and high-level cryptographic protections.
+> **Executive Summary**: J&J Group Invoice is a high-fidelity SaaS-level billing solution designed for enterprises that demand precision, security, and world-class aesthetics. It bridges the gap between complex financial operations and seamless user experience through real-time state management and high-level cryptographic protections.
 
 ---
 
@@ -23,7 +23,7 @@
 4. [📡 System Workflows](#-system-workflows)
 5. [🗄️ Database Schema Insights](#️-database-schema-insights)
 6. [⚙️ Installation & Deployment](#️-installation--deployment)
-7. [🗺️ Development Roadmap](#️-development-roadmap)
+7. [🗺️ Central Documentation Structure](#️-central-documentation-structure)
 
 ---
 
@@ -38,7 +38,7 @@ The system's "Black Box" that manages high-level security protocols.
 
 ### 📄 Intelligent Invoicing Engine
 Precision billing with a focus on automation.
-*   **Auto-Calc Math Engine**: Real-time calculation of sub-totals, PPN (VAT), and final settlements as the user types.
+*   **Auto-Calc Math Engine**: Real-time calculation of sub-totals, PPN/PPh, and final settlements as the user types.
 *   **Multi-Stage Collections**: Advanced tracking of deposits (DP), partial payments, and liquidations.
 *   **Pro PDF Generation**: Server-side rendering of enterprise-grade PDF documents for official distribution.
 
@@ -60,10 +60,10 @@ Orkestrasi modul kecerdasan buatan tingkat lanjut yang didukung oleh model bahas
 ### 🛠️ The Power Stack
 | Layer | Technology | Rationale |
 | :--- | :--- | :--- |
-| **Backend** | Laravel 13.x | Enterprise-grade routing, ORM, and dependency injection. |
-| **Frontend** | Livewire 4.x (Class-based) | Reactive state management without the complexity of a separate SPA. |
-| **Logic** | Alpine.js 3.15 | Lightweight client-side reactivity for UI micro-interactions. |
-| **Styling** | Tailwind CSS 3.4 | Utility-first design for pixel-perfect, maintainable layouts. |
+| **Backend** | Laravel 11.x | Enterprise-grade routing, ORM, and dependency injection. |
+| **Frontend** | Livewire 3.x (Class-based) | Reactive state management without the complexity of a separate SPA. |
+| **Logic** | Alpine.js 3.x | Lightweight client-side reactivity for UI micro-interactions. |
+| **Styling** | Vanilla CSS & Tailwind CSS | Utility-first design for pixel-perfect, maintainable layouts. |
 
 ### 🔒 Hardened Security Layers
 *   **Encryption**: AES-256-CBC encryption for sensitive 2FA secrets and recovery codes.
@@ -75,7 +75,7 @@ Orkestrasi modul kecerdasan buatan tingkat lanjut yang didukung oleh model bahas
 
 ## 🎨 UI/UX Philosophy & Design System
 
-Rooterin follows the **Elite Intelligence** design language:
+J&J Group Invoice follows the **Elite Intelligence** design language:
 *   **Glassmorphism Engine**: Utilizing backdrop-blur and translucent cards to create depth and hierarchy.
 *   **Bento-Grid Layouts**: Organizing feature intelligence into compact, modular cards for rapid scanning.
 *   **Micro-animations**: Subtle hover effects, scale transitions, and pulse animations for interactive feedback.
@@ -114,7 +114,7 @@ graph LR
 The data architecture is designed for high relational integrity:
 *   **Users**: The primary identity layer, storing encrypted security secrets and profile metadata.
 *   **Clients**: The secondary entity layer, linked to multiple receipts and invoices.
-*   **Receipts (Invoices)**: The core transaction layer, featuring relational line-items and payment tracking.
+*   **Invoices (Receipts)**: The core transaction layer, featuring relational line-items and payment tracking.
 *   **Security Logs**: The forensic layer, storing IP, User-Agent, and activity telemetry.
 *   **Sessions**: The database-driven session layer for real-time device management.
 
@@ -123,9 +123,9 @@ The data architecture is designed for high relational integrity:
 ## ⚙️ Installation & Deployment
 
 ### 📋 Prerequisites
-*   **PHP**: 8.3 or higher (required for latest Laravel features)
-*   **Web Server**: Nginx, Apache, or Laravel Octane
-*   **Database**: SQLite (default), MySQL, or PostgreSQL
+*   **PHP**: 8.2 or higher
+*   **Web Server**: Apache (Laragon), Nginx, or Laravel Octane
+*   **Database**: MySQL / MariaDB (production) or SQLite (testing)
 *   **Node.js**: 20+ (for asset compilation)
 
 ### 🚀 Quick Deployment
@@ -151,25 +151,39 @@ The data architecture is designed for high relational integrity:
     ```
 5.  **Compile & Run**:
     ```bash
-    npm run build
+    npm run dev
     php artisan serve
     ```
 
 ---
 
-## 🗺️ Development Roadmap
+## 🗺️ Central Documentation Structure
 
-- [ ] **AI-Powered Analytics**: Predictive revenue forecasting based on historical data.
-- [ ] **Multi-Currency Support**: Automated exchange rate integration for global billing.
-- [ ] **API Gateway**: RESTful endpoints for third-party ERP integrations.
-- [ ] **Client Portal**: Dedicated secure area for clients to view and pay invoices.
+Semua detail sistem didokumentasikan secara terstruktur di folder [/docs](file:///c:/laragon/www/Rooterin-Invoice/docs):
+
+1.  **Arsitektur & Skema**:
+    *   [Architecture Strategy](file:///c:/laragon/www/Rooterin-Invoice/docs/architecture_strategy.md) — Filosofi desain sistem dan alur kerja utama.
+    *   [Technical Schema](file:///c:/laragon/www/Rooterin-Invoice/docs/technical_schema.md) — Kamus data dan ERD Logic database.
+2.  **Panduan Peran (Roles)**:
+    *   [System Owner Guide](file:///c:/laragon/www/Rooterin-Invoice/docs/roles/owner.md) — Otoritas KPI, keamanan, dan user.
+    *   [System Admin Guide](file:///c:/laragon/www/Rooterin-Invoice/docs/roles/admin.md) — Kontrol operasional dan data klien.
+    *   [Staff Operational Guide](file:///c:/laragon/www/Rooterin-Invoice/docs/roles/staff.md) — Pembuatan tagihan dan kwitansi.
+3.  **Modul & Halaman**:
+    *   [Transaction Ledger](file:///c:/laragon/www/Rooterin-Invoice/docs/halaman/ledger.md) — Penjelasan jembatan jurnal transaksi read-only.
+    *   [Chronos Calendar](file:///c:/laragon/www/Rooterin-Invoice/docs/halaman/chronos_calendar.md) — Penjadwalan interaktif jatuh tempo tagihan.
+    *   [Trash Management](file:///c:/laragon/www/Rooterin-Invoice/docs/halaman/trash_management.md) — Mekanisme soft delete, restore, dan purge data.
+4.  **Fitur Cerdas & Teknis**:
+    *   [AI Chatbot Assistant](file:///c:/laragon/www/Rooterin-Invoice/docs/fitur/ai_assistant.md) — Riwayat sesi asisten finansial Gemini.
+    *   [AI Voice Commands](file:///c:/laragon/www/Rooterin-Invoice/docs/fitur/ai_voice_commands.md) — Penjelajahan berbasis suara dan perutean aksi.
+    *   [Backup System](file:///c:/laragon/www/Rooterin-Invoice/docs/fitur/backup_system.md) — Pengarsipan berkala database & attachment.
+5.  **Aturan Bisnis & Keamanan**:
+    *   [Financial Calculations](file:///c:/laragon/www/Rooterin-Invoice/docs/kalkulasi/financial_calculations.md) — Rumus pembagian keuntungan (profit sharing) dan total tagihan.
+    *   [Security Protocols](file:///c:/laragon/www/Rooterin-Invoice/docs/keamanan/security_protocols.md) — Penjelasan TOTP 2FA, Sudo Mode, dan telemetri sesi.
+6.  **SOP & Panduan Pengguna**:
+    *   [User & SOP Guide](file:///c:/laragon/www/Rooterin-Invoice/docs/user_guide.md) — SOP penerbitan invoice & alur kwitansi.
 
 ---
-
-**Rooterin Enterprise Billing System**
+**J&J Group Enterprise Billing System**
 *   **Support**: [Jayarooter@gmail.com](mailto:Jayarooter@gmail.com)
 *   **Project Lead**: Rafael Abimanyu / Antigravity AI
 *   **GitHub**: [rafaelabimanyu/Rooterin-Invoice](https://github.com/rafaelabimanyu/Rooterin-Invoice)
-
----
-*Created with the precision of advanced agentic coding for modern business operations.*

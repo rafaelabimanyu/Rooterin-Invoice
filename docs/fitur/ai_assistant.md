@@ -1,19 +1,19 @@
-# Dokumentasi Modul Rooterin AI 2.0
+# J&J Group AI Assistant
 
-Rooterin AI 2.0 adalah subsistem kecerdasan buatan tingkat lanjut yang diintegrasikan langsung ke dalam ekosistem **Rooterin Invoice**. Modul ini didesain khusus untuk membantu administrator dalam menganalisis data keuangan, menyusun draf komunikasi dengan klien, dan berinteraksi secara real-time mengenai ringkasan operasional billing.
+J&J Group AI Assistant adalah subsistem kecerdasan buatan tingkat lanjut yang diintegrasikan langsung ke dalam ekosistem **J&J Group Invoice**. Modul ini didesain khusus untuk membantu administrator dan owner dalam menganalisis data keuangan, menyusun draf komunikasi dengan klien, dan berinteraksi secara real-time mengenai ringkasan operasional billing.
 
 ---
 
 ## 🏗️ 1. Arsitektur AI & Alur Kerja
 
-Integrasi AI di Rooterin mengabaikan penggunaan SDK wrapper pihak ketiga demi menjaga efisiensi memori, kontrol timeout yang presisi, dan portabilitas. Sistem berkomunikasi langsung dengan Google Gemini API menggunakan **Laravel HTTP Client (`Illuminate\Support\Facades\Http`)**.
+Integrasi AI di J&J Group mengabaikan penggunaan SDK wrapper pihak ketiga demi menjaga efisiensi memori, kontrol timeout yang presisi, dan portabilitas. Sistem berkomunikasi langsung dengan Google Gemini API menggunakan **Laravel HTTP Client (`Illuminate\Support\Facades\Http`)**.
 
 ### Alur Integrasi HTTP Direct Call
 ```mermaid
 sequenceDiagram
     participant User as Pengguna (Owner/Admin)
     participant Route as Routes & Controller
-    participant DB as SQLite Database
+    participant DB as Database (MySQL/SQLite)
     participant Gemini as Google Gemini API
     
     User->>Route: Mengirim Pesan / Request AI
@@ -87,41 +87,6 @@ Sistem menggunakan model terbaru **`gemini-2.5-flash`** melalui REST API resmi.
   ```http
   Content-Type: application/json
   ```
-
-### Contoh Kode Pemanggilan HTTP Client di Laravel
-Berikut adalah implementasi asli dari `AiChatController` yang memperlihatkan konstruksi muatan payload JSON ke API Gemini:
-
-```php
-$apiKey = env('GEMINI_API_KEY') ?: config('gemini.api_key');
-if (empty($apiKey)) {
-    throw new \Exception("GEMINI_API_KEY tidak dikonfigurasi di file .env");
-}
-
-$response = \Illuminate\Support\Facades\Http::withHeaders([
-    'Content-Type' => 'application/json',
-])->post('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' . $apiKey, [
-    'contents' => [
-        [
-            'parts' => [
-                ['text' => $prompt]
-            ]
-        ]
-    ],
-    'generationConfig' => [
-        'temperature' => 0.7,
-        'topK' => 40,
-        'topP' => 0.95,
-        'maxOutputTokens' => 2048,
-    ]
-]);
-
-if ($response->successful()) {
-    $result = $response->json();
-    $reply = $result['candidates'][0]['content']['parts'][0]['text'] ?? 'Maaf, gagal memproses respons.';
-} else {
-    throw new \Exception("Gagal menghubungi server AI: " . $response->body());
-}
-```
 
 ---
 

@@ -1,6 +1,6 @@
 # 📝 Panduan Operasional: Operational Staff
 
-Selamat bekerja! Sebagai garda depan operasional, fokus utama Anda adalah melayani pelanggan melalui pembuatan Invoice dan Receipt secara cepat dan akurat.
+Selamat bekerja! Sebagai garda depan operasional **J&J Group Invoice**, fokus utama Anda adalah melayani pelanggan melalui pembuatan Invoice dan Receipt secara cepat dan akurat.
 
 ## ✍️ Tanggung Jawab Utama
 1. **Penerbitan Dokumen**: Membuat penawaran (Receipt) dan menagih pembayaran (Invoice).

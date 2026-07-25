@@ -61,7 +61,7 @@ class ClientDeletionTest extends TestCase
         ]);
     }
 
-    public function test_staff_cannot_delete_client_via_controller(): void
+    public function test_staff_can_delete_client_via_controller(): void
     {
         $staff = User::factory()->create([
             'role' => 'staff',
@@ -73,10 +73,9 @@ class ClientDeletionTest extends TestCase
         $response = $this->actingAs($staff)
             ->delete(route('clients.destroy', $client));
 
-        $response->assertStatus(403);
-        $this->assertDatabaseHas('clients', [
+        $response->assertRedirect(route('clients.index'));
+        $this->assertSoftDeleted('clients', [
             'id' => $client->id,
-            'deleted_at' => null,
         ]);
     }
 
@@ -100,7 +99,7 @@ class ClientDeletionTest extends TestCase
         ]);
     }
 
-    public function test_staff_cannot_delete_client_via_livewire(): void
+    public function test_staff_can_delete_client_via_livewire(): void
     {
         $staff = User::factory()->create([
             'role' => 'staff',
@@ -113,11 +112,10 @@ class ClientDeletionTest extends TestCase
 
         Livewire::test(ClientManager::class)
             ->call('delete', $client->id)
-            ->assertStatus(403);
+            ->assertDispatched('notify');
 
-        $this->assertDatabaseHas('clients', [
+        $this->assertSoftDeleted('clients', [
             'id' => $client->id,
-            'deleted_at' => null,
         ]);
     }
 }

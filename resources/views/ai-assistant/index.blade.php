@@ -418,7 +418,14 @@
                                 ? 'bg-gold-500 text-slate-950 rounded-tr-none shadow-md shadow-gold-500/20 font-bold' 
                                 : 'bg-white border border-slate-200 text-slate-800 rounded-tl-none shadow-sm'"
                         >
-                            <div class="chat-bubble-content select-text" x-html="renderMarkdown(msg.text)"></div>
+                            <div class="chat-bubble-content select-text">
+                                <template x-if="msg.sender === 'user'">
+                                    <span x-text="msg.text" class="whitespace-pre-wrap select-text"></span>
+                                </template>
+                                <template x-if="msg.sender === 'ai'">
+                                    <div x-html="renderMarkdown(msg.text)" class="select-text"></div>
+                                </template>
+                            </div>
                         </div>
 
                          <!-- Copy to Clipboard & Action Bar (AI responses only) -->
@@ -648,10 +655,13 @@
                     }
                 },
                 renderMarkdown(text) {
+                    let escaped = String(text).replace(/[&<>"']/g, function (s) {
+                        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[s];
+                    });
                     if (typeof marked !== 'undefined') {
-                        return marked.parse(text);
+                        return marked.parse(escaped);
                     }
-                    return text.replace(/\n/g, '<br>');
+                    return escaped.replace(/\n/g, '<br>');
                 },
                 sendSuggestion(suggestionText) {
                     this.input = suggestionText;

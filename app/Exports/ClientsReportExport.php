@@ -37,32 +37,32 @@ class ClientsReportExport implements FromCollection, WithHeadings, ShouldAutoSiz
 
         $query->select('clients.nama_client', 'clients.nama_perusahaan');
 
-        // Add subqueries for client intelligence in the date range
-        $query->addSelect(DB::raw("
+        // Add subqueries for client intelligence in the date range using safe parameterized queries
+        $query->selectRaw("
             (SELECT COUNT(*) FROM invoices 
              WHERE invoices.client_id = clients.id 
-             AND invoices.created_at BETWEEN '" . $this->startDate . "' AND '" . $this->endDate . "') as total_invoices_count
-        "));
+             AND invoices.created_at BETWEEN ? AND ?) as total_invoices_count
+        ", [$this->startDate, $this->endDate]);
 
-        $query->addSelect(DB::raw("
+        $query->selectRaw("
             (SELECT COALESCE(SUM(total), 0) FROM invoices 
              WHERE invoices.client_id = clients.id 
-             AND invoices.created_at BETWEEN '" . $this->startDate . "' AND '" . $this->endDate . "') as total_invoice_value
-        "));
+             AND invoices.created_at BETWEEN ? AND ?) as total_invoice_value
+        ", [$this->startDate, $this->endDate]);
 
-        $query->addSelect(DB::raw("
+        $query->selectRaw("
             (SELECT COALESCE(SUM(total), 0) FROM invoices 
              WHERE invoices.client_id = clients.id 
              AND invoices.status = 'paid' 
-             AND invoices.created_at BETWEEN '" . $this->startDate . "' AND '" . $this->endDate . "') as total_revenue
-        "));
+             AND invoices.created_at BETWEEN ? AND ?) as total_revenue
+        ", [$this->startDate, $this->endDate]);
 
-        $query->addSelect(DB::raw("
+        $query->selectRaw("
             (SELECT COALESCE(SUM(total - COALESCE((SELECT SUM(amount_received) FROM receipts WHERE receipts.invoice_id = invoices.id), 0)), 0) FROM invoices 
              WHERE invoices.client_id = clients.id 
              AND invoices.status IN ('sent', 'dp', 'pending', 'overdue') 
-             AND invoices.created_at BETWEEN '" . $this->startDate . "' AND '" . $this->endDate . "') as total_outstanding
-        "));
+             AND invoices.created_at BETWEEN ? AND ?) as total_outstanding
+        ", [$this->startDate, $this->endDate]);
 
         $clients = $query->orderBy('clients.nama_client')->get();
         $data = collect();

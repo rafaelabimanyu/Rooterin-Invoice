@@ -32,7 +32,8 @@ Route::get('/lang/{locale}', function ($locale) {
     return redirect()->back();
 })->name('lang.switch');
 
-Route::post('/help/password-reset', \App\Http\Controllers\Auth\PasswordResetHelpController::class)->name('password.help');
+Route::post('/help/password-reset', \App\Http\Controllers\Auth\PasswordResetHelpController::class)->name('password.help')->middleware('throttle:5,1');
+Route::redirect('/help/password-reset', '/forgot-password');
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
@@ -81,13 +82,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-        // Reports (moved here to allow Staff role access)
-        Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
-        Route::get('/reports/export', [ReportController::class, 'export'])->name('reports.export');
     });
 
     // Elevated Roles (Owner, Admin)
     Route::middleware(['role:owner,admin'])->group(function () {
+        // Reports (restricted to Owner and Admin only)
+        Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+        Route::get('/reports/export', [ReportController::class, 'export'])->name('reports.export');
         Route::get('/sop-guide', [\App\Http\Controllers\GuideController::class, 'showSop'])->name('guide.sop');
 
         // User Management
@@ -126,7 +127,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // AI Chatbot Assistant & History
         Route::get('ai-assistant', [AiChatController::class, 'index'])->name('ai-assistant.index');
-        Route::post('ai-assistant/chat', [AiChatController::class, 'handleChat'])->name('ai-assistant.chat');
+        Route::post('ai-assistant/chat', [AiChatController::class, 'handleChat'])->name('ai-assistant.chat')->middleware('throttle:15,1');
         Route::get('ai-assistant/session/{session_id}', [AiChatController::class, 'getSessionChat'])->name('ai-assistant.session');
         Route::get('ai-assistant/sessions-list', [AiChatController::class, 'getSessionsList'])->name('ai-assistant.sessions-list');
         Route::post('ai-assistant/session/{session_id}/rename', [AiChatController::class, 'renameSession'])->name('ai-assistant.session.rename');
@@ -138,7 +139,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/api/chronos/update-event', [ChronosController::class, 'updateEventDate'])->name('chronos.update-event');
 
         // AI Voice Command Intent Router
-        Route::post('ai-assistant/voice-command', [AiChatController::class, 'handleVoiceCommand'])->name('ai-assistant.voice-command');
+        Route::post('ai-assistant/voice-command', [AiChatController::class, 'handleVoiceCommand'])->name('ai-assistant.voice-command')->middleware('throttle:15,1');
     });
 });
 

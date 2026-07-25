@@ -8,6 +8,23 @@
         </div>
 
         <div class="w-full max-w-xl relative z-10 page-fade-in">
+            <!-- Session Status -->
+            @if(session('status') || session('success'))
+            <div class="p-6 bg-emerald-500/10 border border-emerald-500/20 rounded-[30px] mb-8">
+                <div class="flex gap-4">
+                    <div class="w-10 h-10 bg-emerald-500 text-slate-950 rounded-full flex items-center justify-center shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-black text-emerald-400 uppercase tracking-tight">Request Sent</h4>
+                        <p class="text-xs text-emerald-500/80 font-medium mt-1">
+                            {{ session('status') ?? session('success') }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            @endif
+
             <div class="bg-white/5 border border-white/10 backdrop-blur-2xl rounded-[40px] p-10 md:p-16 shadow-2xl space-y-12">
                 <!-- Header -->
                 <div class="space-y-6 text-center">
@@ -26,16 +43,29 @@
                             {{ __('SECURITY PROTOCOL: Automated password recovery is disabled. To maintain node integrity, all identity restorations must be performed manually.') }}
                         </p>
                     </div>
+
+                    <!-- Manual Verification Request Form -->
+                    <form method="POST" action="{{ route('password.help') }}" class="space-y-6">
+                        @csrf
+                        <div class="space-y-3">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Operative Identity (Email)</label>
+                            <div class="relative group rounded-[24px]">
+                                <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus class="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-[24px] text-sm text-white font-bold outline-none focus:border-gold-500 focus:ring-0 placeholder-white/30" placeholder="name@enterprise.com">
+                            </div>
+                            <x-input-error :messages="$errors->get('email')" class="mt-2 text-red-500 text-xs" />
+                        </div>
+
+                        <button type="submit" class="w-full py-5 bg-gold-500 text-slate-950 rounded-[24px] font-black text-xs uppercase tracking-[0.2em] shadow-lg shadow-gold-500/20 hover:bg-gold-600 transition-all duration-300">
+                            Request Manual Verification
+                        </button>
+                    </form>
                     
                     <div class="pt-8 border-t border-white/5 space-y-6 text-center">
                         <p class="text-white text-base font-bold">
-                            {{ __('To regain access to your node, please contact the System Administrator for manual identity verification at:') }}
+                            {{ __('Or contact the System Administrator directly for manual identity verification at:') }}
                         </p>
                         
                         <div class="inline-flex flex-col items-center gap-4">
-                            <div class="px-6 py-3 bg-gold-500 text-slate-950 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-lg shadow-gold-500/20">
-                                Contact Admin
-                            </div>
                             <p class="text-gold-400 text-sm font-black tracking-widest uppercase">admin@jnjgroup.com</p>
                             <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1">+62 8xx-xxxx-xxxx (WhatsApp)</p>
                         </div>

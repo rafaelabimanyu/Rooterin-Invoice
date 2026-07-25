@@ -20,6 +20,11 @@ class PaymentController extends Controller
     public function store(Request $request)
     {
         $invoice = Invoice::findOrFail($request->invoice_id);
+
+        if (auth()->user()->role === 'staff') {
+            \Illuminate\Support\Facades\Gate::authorize('update', $invoice);
+        }
+
         $remaining = $invoice->amount_due;
 
         $request->validate([
@@ -65,6 +70,8 @@ class PaymentController extends Controller
 
     public function destroy(Payment $payment)
     {
+        abort_if(!in_array(auth()->user()->role, ['owner', 'admin']), 403, 'Unauthorized action.');
+
         try {
             DB::beginTransaction();
 

@@ -163,7 +163,11 @@
                             class="px-4 py-3 rounded-2xl text-xs leading-relaxed select-text {{ $msg['sender'] === 'user' ? 'bg-gold-500 text-slate-950 rounded-tr-none shadow-md shadow-gold-500/20 font-bold' : 'bg-white text-slate-800 border border-slate-200 rounded-tl-none shadow-sm font-medium' }}"
                         >
                             <div class="chatbot-content-html select-text">
-                                {!! $msg['text'] !!}
+                                @if($msg['sender'] === 'user')
+                                    {{ $msg['text'] }}
+                                @else
+                                    {!! nl2br(preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', e($msg['text']))) !!}
+                                @endif
                             </div>
                         </div>
 

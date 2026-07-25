@@ -31,6 +31,10 @@ class UserManagementController extends Controller
             'peran_akses' => 'required|in:owner,admin,staff',
         ]);
 
+        if ($request->peran_akses === 'owner' && auth()->user()->role !== 'owner') {
+            return back()->with('error', 'Hanya Owner yang dapat menunjuk Owner baru.');
+        }
+
         $user = User::create([
             'name' => $request->nama_lengkap,
             'email' => $request->email,
@@ -49,17 +53,28 @@ class UserManagementController extends Controller
 
     public function edit(User $user)
     {
+        if ($user->role === 'owner' && auth()->user()->role !== 'owner') {
+            abort(403, 'Hanya Owner yang dapat memodifikasi akun Owner.');
+        }
         return view('users.edit', compact('user'));
     }
 
     public function update(Request $request, User $user)
     {
+        if ($user->role === 'owner' && auth()->user()->role !== 'owner') {
+            abort(403, 'Hanya Owner yang dapat memodifikasi akun Owner.');
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'role' => 'required|in:owner,admin,staff',
             'is_active' => 'boolean',
         ]);
+
+        if ($request->role === 'owner' && auth()->user()->role !== 'owner') {
+            return back()->with('error', 'Hanya Owner yang dapat meningkatkan peran pengguna menjadi Owner.');
+        }
 
         $user->update([
             'name' => $request->name,
@@ -82,6 +97,9 @@ class UserManagementController extends Controller
 
     public function destroy(User $user)
     {
+        if ($user->role === 'owner' && auth()->user()->role !== 'owner') {
+            abort(403, 'Hanya Owner yang dapat menghapus akun Owner.');
+        }
         if ($user->id === auth()->id()) {
             return back()->with('error', 'You cannot delete yourself.');
         }

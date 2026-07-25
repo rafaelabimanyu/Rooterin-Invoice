@@ -12,7 +12,11 @@ class PasswordResetHelpController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $email = $request->email ?? 'unknown_operative';
+        $request->validate([
+            'email' => 'required|email|max:255',
+        ]);
+
+        $email = $request->email;
         $ip = $request->ip();
 
         // Create security log
@@ -32,6 +36,10 @@ class PasswordResetHelpController extends Controller
             ));
         }
 
-        return response()->json(['message' => 'Help request deployed.']);
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json(['message' => 'Help request deployed.']);
+        }
+
+        return redirect()->route('password.request')->with('status', 'Manual identity verification request has been logged. Please contact your administrator.');
     }
 }

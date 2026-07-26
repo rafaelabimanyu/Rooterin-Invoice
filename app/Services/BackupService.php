@@ -145,11 +145,11 @@ class BackupService
      */
     public function generateDocsBackup(bool $isAuto = false, ?string $startDate = null, ?string $endDate = null): string
     {
-        $timestamp = date('Y_m_d_Hi');
+        $timestamp = $isAuto ? date('Y_m_d_Hi') : date('d-m-Y_H-i');
         
         $zipFilename = $isAuto 
             ? "jnj_auto_docs_backup_{$timestamp}.zip"
-            : "jnj_docs_backup_{$timestamp}.zip";
+            : "Dokumentasi_Pekerjaan_{$timestamp}.zip";
 
         // Ensure directories exist
         $baseDir = storage_path('app/backups/docs');

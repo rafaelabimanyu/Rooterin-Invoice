@@ -205,9 +205,9 @@
                             <i data-lucide="file-edit" class="w-7 h-7 group-hover:rotate-12 transition-transform"></i>
                         </div>
                         <span
-                            class="text-[9px] font-black bg-gold-50 text-gold-600 px-3 py-1 rounded-full uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Drafts' : 'Draft' }}</span>
+                            class="text-[9px] font-black bg-gold-50 text-gold-600 px-3 py-1 rounded-full uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Unpaid' : 'Belum Lunas' }}</span>
                     </div>
-                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">{{ app()->getLocale() == 'en' ? 'Pending Draft Invoices' : 'Draft Invoice Menunggu' }}</p>
+                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">{{ app()->getLocale() == 'en' ? 'Pending Unpaid Invoices' : 'Invoice Belum Lunas Menunggu' }}</p>
                     <h3 class="text-4xl font-black text-slate-900 font-jakarta">{{ $draftInvoicesCount }}</h3>
                 </div>
             </div>

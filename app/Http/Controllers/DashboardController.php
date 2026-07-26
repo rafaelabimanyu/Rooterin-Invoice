@@ -73,7 +73,7 @@ class DashboardController extends Controller
             $todayReceiptsCount = \App\Models\Receipt::where('created_at', '>=', now()->startOfDay())->count();
             $todayRevenue = Invoice::where('created_at', '>=', now()->startOfDay())->sum('total');
             
-            $draftInvoicesCount = Invoice::where('status', 'draft')->count();
+            $draftInvoicesCount = Invoice::where('status', 'unpaid')->count();
 
             $recentInvoices = Invoice::with('client')
                 ->latest()
@@ -227,7 +227,7 @@ class DashboardController extends Controller
             $topClients = $this->reportingService->getTopClients([], 5);
  
             // B. INVOICE AGEING SUMMARY
-            $unpaidInvoices = Invoice::whereIn('status', ['sent', 'pending', 'dp', 'overdue'])
+            $unpaidInvoices = Invoice::where('status', 'unpaid')
                 ->get();
  
             $today = Carbon::today();
@@ -254,11 +254,11 @@ class DashboardController extends Controller
 
             // Top 3 Overdue Clients by unpaid overdue amount
             $overdueClients = Client::whereHas('invoices', function ($q) {
-                $q->whereIn('status', ['sent', 'pending', 'dp', 'overdue'])
+                $q->where('status', 'unpaid')
                   ->where('due_date', '<', Carbon::now()->toDateString());
             })
             ->withSum(['invoices' => function ($q) {
-                $q->whereIn('status', ['sent', 'pending', 'dp', 'overdue'])
+                $q->where('status', 'unpaid')
                   ->where('due_date', '<', Carbon::now()->toDateString());
             }], 'total')
             ->orderByDesc('invoices_sum_total')

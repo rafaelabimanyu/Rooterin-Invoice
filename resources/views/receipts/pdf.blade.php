@@ -192,8 +192,7 @@
                     {{ app()->getLocale() == 'en' ? 'Paid' : 'Lunas' }}
                 </div>
                 <div style="font-size: 9pt; color: #475569; line-height: 1.4;">
-                    {{ app()->getLocale() == 'en' ? 'Receipt Date' : 'Tanggal Kwitansi' }}: <b style="color: #0f172a;">{{ $receipt->tanggal_receipt ? $receipt->tanggal_receipt->format(\App\Models\Setting::get('date_format', 'd M Y')) : '-' }}</b><br>
-                    {{ app()->getLocale() == 'en' ? 'Expiry Date' : 'Tanggal Kedaluwarsa' }}: <b style="color: #0f172a;">{{ $receipt->expiry_date ? $receipt->expiry_date->format(\App\Models\Setting::get('date_format', 'd M Y')) : '-' }}</b>
+                    {{ app()->getLocale() == 'en' ? 'Receipt Date' : 'Tanggal Kwitansi' }}: <b style="color: #0f172a;">{{ $receipt->tanggal_receipt ? $receipt->tanggal_receipt->format(\App\Models\Setting::get('date_format', 'd M Y')) : '-' }}</b>
                 </div>
                 @if($receipt->invoice && $receipt->invoice->warranty)
                 <div style="margin-top: 12px;">

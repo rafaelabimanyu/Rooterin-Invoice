@@ -20,7 +20,7 @@ class ChronosController extends Controller
             $activityQuery->where('user_id', auth()->id());
         }
 
-        $activeArrears = (clone $invoiceQuery)->where('status', 'overdue')->sum('total');
+        $activeArrears = (clone $invoiceQuery)->where('status', 'unpaid')->where('due_date', '<', Carbon::now()->toDateString())->sum('total');
         
         $dueThisWeek = (clone $invoiceQuery)
             ->whereBetween('due_date', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
@@ -112,15 +112,22 @@ class ChronosController extends Controller
 
         // Map invoices
         foreach ($invoices as $invoice) {
-            $color = '#94a3b8'; // Slate
-            if ($invoice->status === 'paid') $color = '#10b981'; // Emerald
-            elseif ($invoice->status === 'overdue') $color = '#f43f5e'; // Rose
-            elseif ($invoice->status === 'draft') $color = '#f59e0b'; // Amber
-            elseif ($invoice->status === 'sent') $color = '#3b82f6'; // Blue
+            $color = '#3b82f6'; // Blue (default unpaid)
+            $statusLabel = 'unpaid';
+            if ($invoice->status === 'paid') {
+                $color = '#10b981'; // Emerald
+                $statusLabel = 'paid';
+            } else {
+                $isOverdue = $invoice->due_date && $invoice->due_date->isPast();
+                if ($isOverdue) {
+                    $color = '#f43f5e'; // Rose
+                    $statusLabel = 'overdue';
+                }
+            }
 
             $events[] = [
                 'id' => 'invoice_' . $invoice->id,
-                'title' => '[' . strtoupper($invoice->status) . '] ' . $invoice->invoice_number,
+                'title' => '[' . strtoupper($statusLabel) . '] ' . $invoice->invoice_number,
                 'start' => $invoice->due_date->toDateString(),
                 'allDay' => true,
                 'color' => $color,
@@ -129,7 +136,7 @@ class ChronosController extends Controller
                 'extendedProps' => [
                     'type' => 'invoice',
                     'dbId' => $invoice->id,
-                    'status' => $invoice->status,
+                    'status' => $statusLabel,
                     'total' => 'Rp ' . number_format($invoice->total, 0, ',', '.'),
                     'client' => $invoice->client?->nama_client ?? 'N/A',
                     'responsible_staff' => $invoice->creator?->name ?? 'N/A',

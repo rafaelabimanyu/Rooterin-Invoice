@@ -49,14 +49,57 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="space-y-2">
-                            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ __('Client Account') }}</label>
-                            <select name="client_id" id="client_select" required class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200/60 rounded-lg text-sm text-slate-900 outline-none focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 transition-all">
-                                <option value="">{{ __('Choose a client...') }}</option>
+                        <div class="space-y-2" x-data="{
+                            open: false,
+                            search: '',
+                            selectedId: '{{ old('client_id') }}',
+                            selectedLabel: '',
+                            options: [
                                 @foreach($clients as $client)
-                                    <option value="{{ $client->id }}">{{ $client->nama_client }} ({{ $client->nama_perusahaan }})</option>
+                                    { id: '{{ $client->id }}', name: '{{ addslashes($client->nama_client) }}', company: '{{ addslashes($client->nama_perusahaan) }}' },
                                 @endforeach
-                            </select>
+                            ],
+                            get filteredOptions() {
+                                if (!this.search) return this.options;
+                                return this.options.filter(o => 
+                                    o.name.toLowerCase().includes(this.search.toLowerCase()) || 
+                                    (o.company && o.company.toLowerCase().includes(this.search.toLowerCase()))
+                                );
+                            },
+                            select(option) {
+                                this.selectedId = option.id;
+                                this.selectedLabel = option.name + (option.company ? ' (' + option.company + ')' : '');
+                                this.open = false;
+                                this.search = '';
+                            }
+                        }" @client-added.window="options.push({ id: $event.detail.id, name: $event.detail.nama_client, company: $event.detail.nama_perusahaan }); select({ id: $event.detail.id, name: $event.detail.nama_client, company: $event.detail.nama_perusahaan })">
+                            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ __('Client Account') }}</label>
+                            <input type="hidden" name="client_id" id="client_select" :value="selectedId" required>
+                            
+                            <div class="relative">
+                                <button type="button" @click="open = !open" @click.away="open = false" class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200/60 rounded-lg text-sm text-slate-900 text-left outline-none focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 flex justify-between items-center transition-all">
+                                    <span x-text="selectedLabel || '{{ __('Choose a client...') }}'" :class="selectedLabel ? 'text-slate-900 font-semibold' : 'text-slate-400'"></span>
+                                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400"></i>
+                                </button>
+                                
+                                <div x-show="open" class="absolute z-50 w-full mt-2 bg-white border border-slate-200 rounded-lg shadow-xl max-h-60 overflow-y-auto" x-cloak>
+                                    <div class="p-2 border-b border-slate-100 sticky top-0 bg-white z-10">
+                                        <input type="text" x-model="search" placeholder="{{ app()->getLocale() == 'en' ? 'Type to search...' : 'Ketik untuk mencari...' }}" class="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-md text-xs outline-none focus:border-gold-500 focus:bg-white transition-colors">
+                                    </div>
+                                    
+                                    <div class="p-1">
+                                        <template x-for="option in filteredOptions" :key="option.id">
+                                            <button type="button" @click="select(option)" class="w-full text-left px-3 py-2 rounded-md text-xs font-medium hover:bg-gold-50 hover:text-gold-700 transition-colors flex flex-col" :class="selectedId == option.id ? 'bg-gold-50 text-gold-700 font-bold' : 'text-slate-700'">
+                                                <span x-text="option.name" class="font-semibold text-slate-900"></span>
+                                                <span x-show="option.company" class="text-slate-400 text-[10px]" x-text="option.company"></span>
+                                            </button>
+                                        </template>
+                                        <div x-show="filteredOptions.length === 0" class="p-3 text-center text-xs text-slate-400 font-medium">
+                                            {{ app()->getLocale() == 'en' ? 'No results found' : 'Tidak ada hasil ditemukan' }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ app()->getLocale() == 'en' ? 'Receipt Identifier' : 'Nomor Kwitansi' }}</label>
@@ -391,9 +434,13 @@
                         });
                         const data = await response.json();
                         if (data.success) {
-                            const select = document.getElementById('client_select');
-                            const option = new Option(`${data.client.nama_client} (${data.client.nama_perusahaan || 'Individual'})`, data.client.id, true, true);
-                            select.add(option);
+                            window.dispatchEvent(new CustomEvent('client-added', {
+                                detail: {
+                                    id: data.client.id,
+                                    nama_client: data.client.nama_client,
+                                    nama_perusahaan: data.client.nama_perusahaan || 'Individual'
+                                }
+                            }));
                             this.$dispatch('close-modal', 'quick-client');
                             this.form = { nama_client: '', nama_perusahaan: '', email: '', no_hp: '', alamat: '', status: 'aktif' };
                         }

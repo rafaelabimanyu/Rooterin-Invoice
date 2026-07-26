@@ -38,8 +38,8 @@
                     <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Status</label>
                     <select name="status" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-gold-500 focus:bg-white transition-colors font-medium">
                         <option value="">{{ app()->getLocale() == 'en' ? 'All Status' : 'Semua Status' }}</option>
-                        @foreach(['draft', 'sent', 'pending', 'paid', 'overdue', 'cancelled'] as $status)
-                            <option value="{{ $status }}" {{ request('status') == $status ? 'selected' : '' }}>{{ strtoupper($status) }}</option>
+                        @foreach(['paid', 'unpaid'] as $status)
+                            <option value="{{ $status }}" {{ request('status') == $status ? 'selected' : '' }}>{{ strtoupper(__('ui.' . $status)) }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -103,7 +103,7 @@
                         <i data-lucide="clock" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                     </div>
                 </div>
-                <h3 class="text-3xl font-bold text-slate-900 font-outfit">Rp {{ number_format(\App\Models\Invoice::whereIn('status', ['sent', 'dp', 'pending', 'overdue'])->sum('total'), 0, ',', '.') }}</h3>
+                <h3 class="text-3xl font-bold text-slate-900 font-outfit">Rp {{ number_format(\App\Models\Invoice::where('status', 'unpaid')->sum('total'), 0, ',', '.') }}</h3>
                 <p class="text-[10px] text-slate-400 font-bold mt-2 uppercase tracking-tighter">{{ app()->getLocale() == 'en' ? 'Outstanding receivables' : 'Piutang belum tertagih' }}</p>
             </div>
 
@@ -116,7 +116,7 @@
                         <i data-lucide="alert-circle" class="w-4 h-4 transition-transform duration-300 group-hover:scale-110"></i>
                     </div>
                 </div>
-                <h3 class="text-3xl font-bold text-rose-600 font-outfit">{{ \App\Models\Invoice::where('status', 'overdue')->count() }}</h3>
+                <h3 class="text-3xl font-bold text-rose-600 font-outfit">{{ \App\Models\Invoice::where('status', 'unpaid')->where('due_date', '<', \Carbon\Carbon::now()->toDateString())->count() }}</h3>
                 <p class="text-[10px] text-slate-400 font-bold mt-2 uppercase tracking-tighter">{{ app()->getLocale() == 'en' ? 'Action required immediately' : 'Tindakan segera diperlukan' }}</p>
             </div>
         </div>

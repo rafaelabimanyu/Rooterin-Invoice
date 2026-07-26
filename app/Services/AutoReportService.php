@@ -23,13 +23,18 @@ class AutoReportService
             // 1. Total revenue (sum of paid invoices)
             $totalRevenue = Invoice::where('status', 'paid')->sum('total');
 
+            $today = Carbon::today()->toDateString();
             // 2. Overdue invoices
-            $overdueCount = Invoice::where('status', 'overdue')->count();
-            $overdueAmount = Invoice::where('status', 'overdue')->sum('total');
+            $overdueCount = Invoice::where('status', 'unpaid')->where('due_date', '<', $today)->count();
+            $overdueAmount = Invoice::where('status', 'unpaid')->where('due_date', '<', $today)->sum('total');
 
             // 3. Pending/Sent invoices
-            $pendingCount = Invoice::whereIn('status', ['sent', 'pending', 'dp'])->count();
-            $pendingAmount = Invoice::whereIn('status', ['sent', 'pending', 'dp'])->sum('total');
+            $pendingCount = Invoice::where('status', 'unpaid')->where(function($q) use ($today) {
+                $q->where('due_date', '>=', $today)->orWhereNull('due_date');
+            })->count();
+            $pendingAmount = Invoice::where('status', 'unpaid')->where(function($q) use ($today) {
+                $q->where('due_date', '>=', $today)->orWhereNull('due_date');
+            })->sum('total');
 
             // 4. Trend Analysis via DataAggregatorService
             $trendService = app(DataAggregatorService::class);
@@ -122,7 +127,8 @@ class AutoReportService
     {
         try {
             $urgentInvoices = Invoice::with('client')
-                ->where('status', 'overdue')
+                ->where('status', 'unpaid')
+                ->where('due_date', '<', Carbon::today()->toDateString())
                 ->where('total', '>', 10000000)
                 ->get();
 

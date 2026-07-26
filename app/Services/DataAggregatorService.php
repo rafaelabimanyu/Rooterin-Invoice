@@ -76,7 +76,7 @@ class DataAggregatorService
         $tomorrowEnd = Carbon::tomorrow()->endOfDay()->toDateTimeString();
 
         $invoices = Invoice::with('client')
-            ->whereIn('status', ['sent', 'pending', 'dp'])
+            ->where('status', 'unpaid')
             ->whereBetween('due_date', [$tomorrowStart, $tomorrowEnd])
             ->get();
 

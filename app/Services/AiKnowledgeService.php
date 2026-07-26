@@ -579,7 +579,7 @@ class AiKnowledgeService
     public function getOverdueList(): array
     {
         $overdueInvoices = \App\Models\Invoice::with('client')
-            ->whereIn('status', ['sent', 'pending', 'dp'])
+            ->where('status', 'unpaid')
             ->where('due_date', '<', Carbon::now())
             ->get();
         return [
@@ -608,7 +608,7 @@ class AiKnowledgeService
             $tomorrowStart = Carbon::tomorrow()->startOfDay()->toDateTimeString();
             $tomorrowEnd = Carbon::tomorrow()->endOfDay()->toDateTimeString();
             $invoices = \App\Models\Invoice::with('client')
-                ->whereIn('status', ['sent', 'pending', 'dp'])
+                ->where('status', 'unpaid')
                 ->whereBetween('due_date', [$tomorrowStart, $tomorrowEnd])
                 ->get();
             return [

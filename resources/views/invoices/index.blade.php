@@ -246,30 +246,33 @@
                         <span class="text-[10px] font-bold text-slate-650 bg-slate-100 px-2 py-0.5 rounded uppercase tracking-wider">{{ $invoice->businessUnit ? $invoice->businessUnit->name : '-' }}</span>
                     </div>
                     <!-- Fourth Row: Actions -->
-                    <div class="flex items-center justify-end mt-2 pt-2 border-t border-slate-100 gap-2">
+                    <div class="flex items-center justify-end mt-2 pt-2 border-t border-slate-100 gap-1.5">
                         <a 
                             href="{{ route('invoices.show', $invoice) }}"
                             @click.stop=""
-                            class="px-3 py-1.5 bg-slate-50 hover:bg-gold-50/50 text-slate-500 hover:text-gold-600 rounded-xl transition-all text-xs font-bold flex items-center gap-1.5 duration-300"
+                            class="p-2 sm:px-3 sm:py-1.5 bg-slate-50 hover:bg-gold-50/50 text-slate-500 hover:text-gold-600 rounded-xl transition-all text-xs font-bold flex items-center justify-center gap-1.5 duration-300"
+                            title="{{ app()->getLocale() == 'en' ? 'View' : 'Lihat' }}"
                         >
-                            <i data-lucide="eye" class="w-3.5 h-3.5"></i>
-                            <span>{{ app()->getLocale() == 'en' ? 'View' : 'Lihat' }}</span>
+                            <i data-lucide="eye" class="w-4 h-4 sm:w-3.5 sm:h-3.5"></i>
+                            <span class="hidden sm:inline">{{ app()->getLocale() == 'en' ? 'View' : 'Lihat' }}</span>
                         </a>
                         <button 
                             type="button"
                             @click.stop="$dispatch('download-pdf', { url: '{{ route('invoices.pdf', $invoice) }}', filename: 'Invoice-{{ $invoice->invoice_number }}.pdf' })"
-                            class="px-3 py-1.5 bg-slate-50 hover:bg-gold-50/50 text-slate-500 hover:text-gold-600 rounded-xl transition-all text-xs font-bold flex items-center gap-1.5 duration-300"
+                            class="p-2 sm:px-3 sm:py-1.5 bg-slate-50 hover:bg-gold-50/50 text-slate-500 hover:text-gold-600 rounded-xl transition-all text-xs font-bold flex items-center justify-center gap-1.5 duration-300"
+                            title="PDF"
                         >
-                            <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                            <span>PDF</span>
+                            <i data-lucide="download" class="w-4 h-4 sm:w-3.5 sm:h-3.5"></i>
+                            <span class="hidden sm:inline">PDF</span>
                         </button>
                         <a 
                             href="{{ route('invoices.edit', $invoice->id) }}"
                             @click.stop=""
-                            class="px-3 py-1.5 bg-slate-50 hover:bg-gold-50/50 text-slate-500 hover:text-amber-600 rounded-xl transition-all text-xs font-bold flex items-center gap-1.5 duration-300"
+                            class="p-2 sm:px-3 sm:py-1.5 bg-slate-50 hover:bg-gold-50/50 text-slate-500 hover:text-amber-600 rounded-xl transition-all text-xs font-bold flex items-center justify-center gap-1.5 duration-300"
+                            title="{{ app()->getLocale() == 'en' ? 'Edit' : 'Ubah' }}"
                         >
-                            <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
-                            <span>{{ app()->getLocale() == 'en' ? 'Edit' : 'Ubah' }}</span>
+                            <i data-lucide="edit-3" class="w-4 h-4 sm:w-3.5 sm:h-3.5"></i>
+                            <span class="hidden sm:inline">{{ app()->getLocale() == 'en' ? 'Edit' : 'Ubah' }}</span>
                         </a>
                         @can('delete', $invoice)
                         <form 
@@ -284,10 +287,11 @@
                             <button 
                                 type="button"
                                 onclick="confirmDeleteInvoice('delete-form-mobile-{{ $invoice->id }}')"
-                                class="px-3 py-1.5 bg-slate-50 hover:bg-rose-50 text-slate-500 hover:text-rose-600 rounded-xl transition-all text-xs font-bold flex items-center gap-1.5 duration-300"
+                                class="p-2 sm:px-3 sm:py-1.5 bg-slate-50 hover:bg-rose-50 text-slate-500 hover:text-rose-600 rounded-xl transition-all text-xs font-bold flex items-center justify-center gap-1.5 duration-300"
+                                title="{{ app()->getLocale() == 'en' ? 'Delete' : 'Hapus' }}"
                             >
-                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                                <span>{{ app()->getLocale() == 'en' ? 'Delete' : 'Hapus' }}</span>
+                                <i data-lucide="trash-2" class="w-4 h-4 sm:w-3.5 sm:h-3.5"></i>
+                                <span class="hidden sm:inline">{{ app()->getLocale() == 'en' ? 'Delete' : 'Hapus' }}</span>
                             </button>
                         </form>
                         @endcan

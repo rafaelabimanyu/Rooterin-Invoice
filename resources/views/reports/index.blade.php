@@ -342,12 +342,12 @@
                                             <td class="px-8 py-4 text-xs font-medium text-slate-500">{{ $payment->payment_date->format('M d, Y') }}</td>
                                             <td class="px-8 py-4">
                                                 <div class="flex flex-col">
-                                                    <span class="text-xs font-bold text-slate-900">{{ $payment->invoice->client->nama_client }}</span>
-                                                    <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">{{ $payment->invoice->client->nama_perusahaan }}</span>
+                                                    <span class="text-xs font-bold text-slate-900">{{ $payment->invoice ? $payment->invoice->client?->nama_client : '-' }}</span>
+                                                    <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">{{ $payment->invoice ? $payment->invoice->client?->nama_perusahaan : '-' }}</span>
                                                 </div>
                                             </td>
                                             <td class="px-8 py-4">
-                                                <span class="text-xs font-bold text-gold-600">{{ $payment->invoice->invoice_number }}</span>
+                                                <span class="text-xs font-bold text-gold-600">{{ $payment->invoice ? $payment->invoice->invoice_number : '-' }}</span>
                                             </td>
                                             <td class="px-8 py-4 text-right">
                                                 <span class="text-xs font-black text-slate-900">Rp {{ number_format($payment->amount, 0, ',', '.') }}</span>

@@ -434,7 +434,15 @@
                 <a href="#solutions" class="text-[11px] font-black text-slate-500 hover:text-white uppercase tracking-widest transition-colors">Solutions</a>
                 <a href="#ai-solutions" class="text-[11px] font-black text-slate-500 hover:text-white uppercase tracking-widest transition-colors">AI Solutions</a>
             </div>
-            <p class="text-[11px] text-slate-600 uppercase tracking-[0.5em] font-black reveal-section">© 2026 jnjgroup.com Enterprise Operating System. All Nodes Operational.</p>
+            <div class="flex flex-col items-center gap-4 reveal-section">
+                <p class="text-[11px] text-slate-600 uppercase tracking-[0.5em] font-black">© 2026 jnjgroup.com Enterprise Operating System. All Nodes Operational.</p>
+                <p class="text-[10px] text-slate-700/80 uppercase tracking-[0.3em] font-bold">Engineered by Rafael Abimanyu</p>
+                <div class="flex items-center gap-6 mt-2">
+                    <a href="{{ route('privacy.index') }}" class="text-[10px] font-bold text-slate-500 hover:text-white uppercase tracking-widest transition-colors duration-200">Privacy Policy</a>
+                    <div class="h-3 w-px bg-slate-800/80"></div>
+                    <a href="{{ route('terms.index') }}" class="text-[10px] font-bold text-slate-500 hover:text-white uppercase tracking-widest transition-colors duration-200">Terms of Service</a>
+                </div>
+            </div>
         </div>
     </footer>
 

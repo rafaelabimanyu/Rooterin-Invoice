@@ -3,9 +3,14 @@
         <div class="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-8">
             <!-- Left Side: Copyright & Version -->
             <div class="flex flex-wrap justify-center sm:justify-start items-center gap-3 md:gap-6">
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-tight text-center sm:text-left">
-                    &copy; {{ date('Y') }} <span class="text-slate-700">J&J GROUP System Operational.</span> <span class="hidden md:inline">All rights reserved.</span>
-                </p>
+                <div class="flex flex-col">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-tight text-center sm:text-left">
+                        &copy; {{ date('Y') }} <span class="text-slate-700">J&J GROUP System Operational.</span> <span class="hidden md:inline">All rights reserved.</span>
+                    </p>
+                    <span class="text-[9px] font-semibold text-slate-400/80 tracking-tight text-center sm:text-left mt-0.5">
+                        Engineered by Rafael Abimanyu
+                    </span>
+                </div>
                 
                 <div class="hidden md:block h-3 w-px bg-slate-200/60"></div>
                 

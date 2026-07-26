@@ -166,13 +166,24 @@ class BackupService
         $query = \App\Models\InvoiceAttachment::query();
 
         if ($startDate && $endDate) {
-            $query->whereBetween('created_at', [
-                Carbon::parse($startDate)->startOfDay(),
-                Carbon::parse($endDate)->endOfDay()
-            ]);
+            $start = Carbon::parse($startDate)->startOfDay();
+            $end = Carbon::parse($endDate)->endOfDay();
+
+            $query->where(function($q) use ($start, $end) {
+                // 1. Attachment uploaded during the period
+                $q->whereBetween('created_at', [$start, $end])
+                  // 2. Or the invoice was created during the period
+                  ->orWhereHas('invoice', function($invQuery) use ($start, $end) {
+                      $invQuery->whereBetween('created_at', [$start, $end])
+                               // 3. Or the associated receipt payment_date was during the period
+                               ->orWhereHas('receipt', function($rcptQuery) use ($start, $end) {
+                                   $rcptQuery->whereBetween('payment_date', [$start, $end]);
+                               });
+                  });
+            });
         }
 
-        $attachments = $query->with('invoice')->get();
+        $attachments = $query->with(['invoice.receipt'])->get();
 
         if ($attachments->isEmpty() && !$isAuto) {
             throw new \Exception(app()->getLocale() == 'en' ? "No job documentation attachments found for the specified period." : "Tidak ada foto dokumentasi ditemukan untuk periode tersebut.");
@@ -181,17 +192,48 @@ class BackupService
         $zip = new ZipArchive();
         if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
             $addedFiles = 0;
+            $filenameCounts = [];
+
             foreach ($attachments as $attachment) {
                 $filePath = $attachment->file_path;
                 // Look in the 'public' storage directory
                 $fullPath = storage_path('app/public/' . $filePath);
 
                 if (file_exists($fullPath)) {
-                    $invoiceNumber = $attachment->invoice ? $attachment->invoice->invoice_number : 'INV';
-                    // Sanitize invoice number for filename
-                    $safeInvoiceNumber = preg_replace('/[^A-Za-z0-9_\-]/', '_', $invoiceNumber);
-                    $fileNameInZip = $safeInvoiceNumber . '_' . basename($filePath);
+                    $invoice = $attachment->invoice;
+                    $receipt = $invoice ? $invoice->receipt : null;
                     
+                    if ($receipt) {
+                        $prefixNumber = $receipt->receipt_number;
+                    } elseif ($invoice) {
+                        $prefixNumber = $invoice->invoice_number;
+                    } else {
+                        $prefixNumber = 'DOC';
+                    }
+
+                    // Sanitize prefix number for filename
+                    $safePrefixNumber = preg_replace('/[^A-Za-z0-9_\-]/', '_', $prefixNumber);
+                    
+                    // Format upload timestamp (created_at of the attachment)
+                    $uploadedAt = $attachment->created_at 
+                        ? Carbon::parse($attachment->created_at)->format('d-m-Y_H-i') 
+                        : date('d-m-Y_H-i');
+                    
+                    // Get original file extension
+                    $extension = pathinfo($filePath, PATHINFO_EXTENSION);
+                    
+                    // Base name without extension
+                    $baseName = $safePrefixNumber . '_' . $uploadedAt;
+                    
+                    // Check for duplicate names in the ZIP
+                    if (isset($filenameCounts[$baseName])) {
+                        $filenameCounts[$baseName]++;
+                        $fileNameInZip = $baseName . '_' . $filenameCounts[$baseName] . '.' . $extension;
+                    } else {
+                        $filenameCounts[$baseName] = 1;
+                        $fileNameInZip = $baseName . '.' . $extension;
+                    }
+
                     $zip->addFile($fullPath, $fileNameInZip);
                     $addedFiles++;
                 } else {

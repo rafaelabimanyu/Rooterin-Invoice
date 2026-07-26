@@ -267,4 +267,98 @@ class DatabaseBackupTest extends TestCase
         }
         @unlink($fullPath);
     }
+
+    /**
+     * Test filename format and receipt inclusion in ZIP backup.
+     */
+    public function test_backup_service_formats_and_collates_filenames_correctly()
+    {
+        $filePath1 = 'attachments/test_file_1.jpg';
+        $fullPath1 = storage_path('app/public/' . $filePath1);
+        @mkdir(dirname($fullPath1), 0755, true);
+        file_put_contents($fullPath1, 'content 1');
+
+        $filePath2 = 'attachments/test_file_2.png';
+        $fullPath2 = storage_path('app/public/' . $filePath2);
+        file_put_contents($fullPath2, 'content 2');
+
+        $businessUnit = \App\Models\BusinessUnit::create([
+            'name' => 'BU 3',
+            'slug' => 'bu-3',
+        ]);
+        $client = \App\Models\Client::create([
+            'kode_client' => 'CL-003',
+            'nama_client' => 'Client 3',
+            'nama_perusahaan' => 'Company 3',
+            'client_type' => 'corporate',
+            'industry_sector' => 'tech',
+            'status' => 'aktif',
+        ]);
+
+        // Invoice 1 (Unpaid, no receipt)
+        $invoice1 = \App\Models\Invoice::create([
+            'invoice_number' => 'INV-2026-0003',
+            'business_unit_id' => $businessUnit->id,
+            'client_id' => $client->id,
+            'subtotal' => 50000,
+            'total' => 50000,
+            'status' => 'unpaid',
+            'due_date' => now()->addDays(5),
+        ]);
+        $attachment1 = $invoice1->attachments()->create([
+            'file_path' => $filePath1,
+        ]);
+
+        // Invoice 2 (Paid, has receipt)
+        $invoice2 = \App\Models\Invoice::create([
+            'invoice_number' => 'INV-2026-0004',
+            'business_unit_id' => $businessUnit->id,
+            'client_id' => $client->id,
+            'subtotal' => 60000,
+            'total' => 60000,
+            'status' => 'paid',
+            'due_date' => now(),
+        ]);
+        $receipt = \App\Models\Receipt::create([
+            'receipt_number' => 'KWT-2026-0004',
+            'invoice_id' => $invoice2->id,
+            'amount_received' => 60000,
+            'payment_date' => now(),
+        ]);
+        $attachment2 = $invoice2->attachments()->create([
+            'file_path' => $filePath2,
+        ]);
+
+        // Generate backup
+        $backupService = new BackupService();
+        $zipPath = $backupService->generateDocsBackup(false, now()->subDay()->format('Y-m-d'), now()->addDay()->format('Y-m-d'));
+
+        $this->assertTrue(file_exists($zipPath));
+
+        // Open ZIP and inspect files inside
+        $zip = new \ZipArchive();
+        if ($zip->open($zipPath) === true) {
+            $filesInZip = [];
+            for ($i = 0; $i < $zip->numFiles; $i++) {
+                $filesInZip[] = $zip->getNameIndex($i);
+            }
+            $zip->close();
+
+            // Expected formats
+            $dateStr1 = $attachment1->created_at->format('d-m-Y_H-i');
+            $dateStr2 = $attachment2->created_at->format('d-m-Y_H-i');
+            $expectedName1 = "INV-2026-0003_{$dateStr1}.jpg";
+            $expectedName2 = "KWT-2026-0004_{$dateStr2}.png";
+
+            $this->assertContains($expectedName1, $filesInZip);
+            $this->assertContains($expectedName2, $filesInZip);
+        } else {
+            $this->fail("Failed to open ZIP backup");
+        }
+
+        // Clean up
+        @unlink($zipPath);
+        @unlink($fullPath1);
+        @unlink($fullPath2);
+    }
 }

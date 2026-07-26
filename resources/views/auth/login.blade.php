@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-guest-layout :title="'Authorized Portal Access'">
     <style>
         .cinematic-ease {
             transition-timing-function: cubic-bezier(0.85, 0, 0.15, 1);

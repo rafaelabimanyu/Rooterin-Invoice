@@ -21,10 +21,6 @@ class PaymentController extends Controller
     {
         $invoice = Invoice::findOrFail($request->invoice_id);
 
-        if (auth()->user()->role === 'staff') {
-            \Illuminate\Support\Facades\Gate::authorize('update', $invoice);
-        }
-
         $remaining = $invoice->amount_due;
 
         $request->validate([

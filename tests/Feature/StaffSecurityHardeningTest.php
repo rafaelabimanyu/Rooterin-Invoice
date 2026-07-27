@@ -134,7 +134,7 @@ class StaffSecurityHardeningTest extends TestCase
         $response->assertStatus(403);
     }
 
-    public function test_staff_cannot_record_payment_on_other_users_invoice(): void
+    public function test_staff_can_record_payment_on_other_users_invoice(): void
     {
         $invoice = Invoice::create([
             'invoice_number' => 'INV-SEC-003',
@@ -156,9 +156,13 @@ class StaffSecurityHardeningTest extends TestCase
             'payment_method' => 'Transfer Bank',
         ]);
 
-        $response->assertStatus(403);
+        $response->assertRedirect();
+        $this->assertDatabaseHas('payments', [
+            'invoice_id' => $invoice->id,
+            'amount' => 50000,
+        ]);
     }
-    public function test_staff_cannot_record_payment_on_own_invoice_older_than_24_hours(): void
+    public function test_staff_can_record_payment_on_own_invoice_older_than_24_hours(): void
     {
         $invoice = Invoice::create([
             'invoice_number' => 'INV-SEC-004',
@@ -181,7 +185,11 @@ class StaffSecurityHardeningTest extends TestCase
             'payment_method' => 'Transfer Bank',
         ]);
 
-        $response->assertStatus(403);
+        $response->assertRedirect();
+        $this->assertDatabaseHas('payments', [
+            'invoice_id' => $invoice->id,
+            'amount' => 50000,
+        ]);
     }
 
     public function test_staff_cannot_access_settings_pages(): void

@@ -40,14 +40,55 @@
                     </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="space-y-2">
-                            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ __('Business Unit') }}</label>
-                            <select name="business_unit_id" required class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200/60 rounded-lg text-sm text-slate-900 outline-none focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 transition-all">
-                                <option value="">{{ __('Choose Business Unit...') }}</option>
+                        <div class="space-y-2" x-data="{
+                            open: false,
+                            search: '',
+                            selectedId: '',
+                            selectedLabel: '',
+                            options: [
                                 @foreach($businessUnits as $bu)
-                                    <option value="{{ $bu->id }}">{{ $bu->name }}</option>
+                                    { id: '{{ $bu->id }}', name: '{{ addslashes($bu->name) }}' },
                                 @endforeach
-                            </select>
+                            ],
+                            get filteredOptions() {
+                                if (!this.search) return this.options;
+                                return this.options.filter(o =>
+                                    o.name.toLowerCase().includes(this.search.toLowerCase())
+                                );
+                            },
+                            select(option) {
+                                this.selectedId = option.id;
+                                this.selectedLabel = option.name;
+                                this.open = false;
+                                this.search = '';
+                            }
+                        }">
+                            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ __('Business Unit') }}</label>
+                            <input type="hidden" name="business_unit_id" :value="selectedId" required>
+
+                            <div class="relative">
+                                <button type="button" @click="open = !open" @click.away="open = false" class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200/60 rounded-lg text-sm text-slate-900 text-left outline-none focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 flex justify-between items-center transition-all">
+                                    <span x-text="selectedLabel || '{{ __('Choose Business Unit...') }}'" :class="selectedLabel ? 'text-slate-900 font-semibold' : 'text-slate-400'"></span>
+                                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400"></i>
+                                </button>
+
+                                <div x-show="open" class="absolute z-50 w-full mt-2 bg-white border border-slate-200 rounded-lg shadow-xl max-h-60 overflow-y-auto" x-cloak>
+                                    <div class="p-2 border-b border-slate-100 sticky top-0 bg-white z-10">
+                                        <input type="text" x-model="search" @click.stop placeholder="{{ app()->getLocale() == 'en' ? 'Type to search...' : 'Ketik untuk mencari...' }}" class="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-md text-xs outline-none focus:border-gold-500 focus:bg-white transition-colors">
+                                    </div>
+
+                                    <div class="p-1">
+                                        <template x-for="option in filteredOptions" :key="option.id">
+                                            <button type="button" @click="select(option)" class="w-full text-left px-3 py-2 rounded-md text-xs font-medium hover:bg-gold-50 hover:text-gold-700 transition-colors" :class="selectedId == option.id ? 'bg-gold-50 text-gold-700 font-bold' : 'text-slate-700'">
+                                                <span x-text="option.name" class="font-semibold"></span>
+                                            </button>
+                                        </template>
+                                        <div x-show="filteredOptions.length === 0" class="p-3 text-center text-xs text-slate-400 font-medium">
+                                            {{ app()->getLocale() == 'en' ? 'No results found' : 'Tidak ada hasil ditemukan' }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="space-y-2" x-data="{
                             open: false,
@@ -84,7 +125,7 @@
                                 
                                 <div x-show="open" class="absolute z-50 w-full mt-2 bg-white border border-slate-200 rounded-lg shadow-xl max-h-60 overflow-y-auto" x-cloak>
                                     <div class="p-2 border-b border-slate-100 sticky top-0 bg-white z-10">
-                                        <input type="text" x-model="search" placeholder="{{ app()->getLocale() == 'en' ? 'Type to search...' : 'Ketik untuk mencari...' }}" class="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-md text-xs outline-none focus:border-gold-500 focus:bg-white transition-colors">
+                                        <input type="text" x-model="search" @click.stop placeholder="{{ app()->getLocale() == 'en' ? 'Type to search...' : 'Ketik untuk mencari...' }}" class="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-md text-xs outline-none focus:border-gold-500 focus:bg-white transition-colors">
                                     </div>
                                     
                                     <div class="p-1">

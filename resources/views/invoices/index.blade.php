@@ -201,7 +201,7 @@
                                 <form id="delete-form-{{ $invoice->id }}" action="{{ route('invoices.destroy', $invoice) }}" method="POST" class="inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="button" onclick="confirmDeleteInvoice('delete-form-{{ $invoice->id }}')" class="p-1 text-slate-400 hover:text-rose-600 transition-colors duration-300" title="{{ app()->getLocale() == 'en' ? 'Delete' : 'Hapus' }}">
+                                    <button type="button" onclick="confirmDeleteInvoice('delete-form-{{ $invoice->id }}', '{{ $invoice->status }}')" class="p-1 text-slate-400 hover:text-rose-600 transition-colors duration-300" title="{{ app()->getLocale() == 'en' ? 'Delete' : 'Hapus' }}">
                                         <i data-lucide="trash-2" class="w-4 h-4"></i>
                                     </button>
                                 </form>
@@ -286,7 +286,7 @@
                             @method('DELETE')
                             <button 
                                 type="button"
-                                onclick="confirmDeleteInvoice('delete-form-mobile-{{ $invoice->id }}')"
+                                onclick="confirmDeleteInvoice('delete-form-mobile-{{ $invoice->id }}', '{{ $invoice->status }}')"
                                 class="p-2 sm:px-3 sm:py-1.5 bg-slate-50 hover:bg-rose-50 text-slate-500 hover:text-rose-600 rounded-xl transition-all text-xs font-bold flex items-center justify-center gap-1.5 duration-300"
                                 title="{{ app()->getLocale() == 'en' ? 'Delete' : 'Hapus' }}"
                             >
@@ -326,8 +326,31 @@
                 form.submit();
             }
 
-            function confirmDeleteInvoice(formId) {
+            function confirmDeleteInvoice(formId, status) {
                 const isEnglish = {{ app()->getLocale() == 'en' ? 'true' : 'false' }};
+
+                if (status === 'paid') {
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            title: isEnglish ? 'Cannot Delete Invoice' : 'Tidak Dapat Menghapus Invoice',
+                            text: isEnglish 
+                                ? 'This invoice is already PAID and has a Receipt. Please delete the related Receipt data first to be able to delete this invoice.'
+                                : 'Invoice ini sudah LUNAS dan memiliki Kwitansi. Silakan hapus data Kwitansi terkait terlebih dahulu untuk dapat menghapus invoice ini.',
+                            icon: 'error',
+                            confirmButtonText: 'OK',
+                            customClass: {
+                                confirmButton: 'px-5 py-2.5 bg-slate-500 hover:bg-slate-650 text-white rounded-xl font-bold text-xs uppercase tracking-wider text-center transition-all duration-300'
+                            },
+                            buttonsStyling: false
+                        });
+                    } else {
+                        alert(isEnglish 
+                            ? 'This invoice is already PAID and has a Receipt. Please delete the related Receipt data first to be able to delete this invoice.'
+                            : 'Invoice ini sudah LUNAS dan memiliki Kwitansi. Silakan hapus data Kwitansi terkait terlebih dahulu untuk dapat menghapus invoice ini.');
+                    }
+                    return;
+                }
+
                 const title = isEnglish ? 'Select Deletion Reason' : 'Pilih Alasan Penghapusan';
                 const text = isEnglish 
                     ? 'This invoice will be soft-deleted and moved to trash.'

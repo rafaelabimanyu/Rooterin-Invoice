@@ -194,9 +194,11 @@
                                 <button type="button" @click.prevent="$dispatch('download-pdf', { url: '{{ route('invoices.pdf', $invoice) }}', filename: 'Invoice-{{ $invoice->invoice_number }}.pdf' })" class="p-1 text-slate-400 hover:text-gold-600 transition-colors duration-300 focus:outline-none" title="{{ app()->getLocale() == 'en' ? 'Download PDF' : 'Unduh PDF' }}">
                                     <i data-lucide="download" class="w-4 h-4"></i>
                                 </button>
+                                @can('update', $invoice)
                                 <a href="{{ route('invoices.edit', $invoice->id) }}" class="p-1 text-slate-400 hover:text-amber-600 transition-colors duration-300" title="{{ __('ui.edit') }}">
                                     <i data-lucide="edit-3" class="w-4 h-4"></i>
                                 </a>
+                                @endcan
                                 @can('delete', $invoice)
                                 <form id="delete-form-{{ $invoice->id }}" action="{{ route('invoices.destroy', $invoice) }}" method="POST" class="inline">
                                     @csrf
@@ -265,6 +267,7 @@
                             <i data-lucide="download" class="w-4 h-4 sm:w-3.5 sm:h-3.5"></i>
                             <span class="hidden sm:inline">PDF</span>
                         </button>
+                        @can('update', $invoice)
                         <a 
                             href="{{ route('invoices.edit', $invoice->id) }}"
                             @click.stop=""
@@ -274,6 +277,7 @@
                             <i data-lucide="edit-3" class="w-4 h-4 sm:w-3.5 sm:h-3.5"></i>
                             <span class="hidden sm:inline">{{ app()->getLocale() == 'en' ? 'Edit' : 'Ubah' }}</span>
                         </a>
+                        @endcan
                         @can('delete', $invoice)
                         <form 
                             id="delete-form-mobile-{{ $invoice->id }}"

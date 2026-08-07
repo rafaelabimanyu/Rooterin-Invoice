@@ -19,10 +19,12 @@
                     </button>
                 </div>
             </div>
+            @can('update', $invoice)
             <a href="{{ route('invoices.edit', $invoice->id) }}" class="hidden md:inline-flex px-6 py-3 bg-amber-500 text-slate-950 rounded-xl text-sm font-bold hover:bg-amber-600 transition-all shadow-lg hover:shadow-amber-500/20 items-center justify-center gap-2 active:scale-95">
                 <i data-lucide="edit-3" class="w-4 h-4"></i>
                 <span class="whitespace-nowrap">{{ __('ui.edit') ?? 'Edit' }}</span>
             </a>
+            @endcan
             <button type="button" @click="$dispatch('download-pdf', { url: '{{ route('invoices.pdf', $invoice) }}', filename: 'Invoice-{{ $invoice->invoice_number }}.pdf' })" title="Download PDF" class="w-full sm:w-auto px-6 py-3 bg-[#0F2A44] text-white rounded-xl text-sm font-bold hover:bg-slate-800 transition-all shadow-lg hover:shadow-[#0F2A44]/30 flex items-center justify-center gap-2 active:scale-95">
                 <i data-lucide="download" class="w-4 h-4 text-[#D4AF37]"></i>
                 <span class="whitespace-nowrap">Download PDF</span>
@@ -514,10 +516,12 @@
                 <x-badge :status="$invoice->status" class="scale-90" />
             </div>
             <div class="flex gap-2">
+                @can('update', $invoice)
                 <a href="{{ route('invoices.edit', $invoice->id) }}" class="px-4 py-2.5 bg-amber-500 text-slate-950 rounded-xl text-xs font-bold transition-all active:scale-95 flex items-center gap-1">
                     <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
                     <span>{{ __('ui.edit') ?? 'Edit' }}</span>
                 </a>
+                @endcan
                 <button type="button" @click="$dispatch('download-pdf', { url: '{{ route('invoices.pdf', $invoice) }}', filename: 'Invoice-{{ $invoice->invoice_number }}.pdf' })" class="px-4 py-2.5 bg-white text-[#0F2A44] rounded-xl text-xs font-bold transition-all active:scale-95 flex items-center gap-1">
                     <i data-lucide="download" class="w-3.5 h-3.5 text-[#D4AF37]"></i>
                     <span>PDF</span>

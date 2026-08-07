@@ -12,7 +12,7 @@ class ReceiptPolicy
      */
     public function before(User $user, string $ability): bool|null
     {
-        if ($user->role === 'owner' || $user->role === 'admin') {
+        if (in_array($user->role, ['owner', 'admin', 'staff'])) {
             return true;
         }
 

@@ -126,16 +126,20 @@
                                     <i data-lucide="download" class="w-4 h-4"></i>
                                 </button>
                                 @if($receipt->status !== 'invoiced')
-                                <a href="{{ route('receipts.edit', $receipt->id) }}" class="p-1 text-slate-400 hover:text-amber-600 transition-colors duration-300" title="{{ app()->getLocale() == 'en' ? 'Edit' : 'Ubah' }}">
-                                    <i data-lucide="edit-3" class="w-4 h-4"></i>
-                                </a>
+                                    @can('update', $receipt)
+                                    <a href="{{ route('receipts.edit', $receipt->id) }}" class="p-1 text-slate-400 hover:text-amber-600 transition-colors duration-300" title="{{ app()->getLocale() == 'en' ? 'Edit' : 'Ubah' }}">
+                                        <i data-lucide="edit-3" class="w-4 h-4"></i>
+                                    </a>
+                                    @endcan
                                 @endif
+                                @can('delete', $receipt)
                                 <form id="delete-form-{{ $receipt->id }}" action="{{ route('receipts.destroy', $receipt) }}" method="POST" class="inline">
                                     @csrf @method('DELETE')
                                     <button type="button" onclick="confirmDeleteReceipt('delete-form-{{ $receipt->id }}')" class="p-1 text-slate-400 hover:text-rose-600 transition-colors duration-300" title="{{ app()->getLocale() == 'en' ? 'Delete' : 'Hapus' }}">
                                         <i data-lucide="trash-2" class="w-4 h-4"></i>
                                     </button>
                                 </form>
+                                @endcan
                             </div>
                         </div>
                     </div>

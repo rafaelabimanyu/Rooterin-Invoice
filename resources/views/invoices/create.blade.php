@@ -774,4 +774,37 @@
             }
         }
     </script>
+
+    @if(request()->query('alert') === 'receipt_procedure')
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const isEnglish = {{ app()->getLocale() == 'en' ? 'true' : 'false' }};
+            const title = isEnglish ? 'System Operational Procedure' : 'Prosedur Operasional Sistem';
+            const htmlMsg = isEnglish 
+                ? `<div class="text-left space-y-3 text-xs leading-relaxed text-slate-600">
+                    <p>According to administrative standards, regular Receipts can only be issued to settle an existing Invoice. Please create an Invoice first if the client has not completed payment.</p>
+                    <p class="pt-2 border-t border-slate-100 font-medium">For immediate on-site payment transactions, you can return and use the <b>Instant Receipt</b> feature.</p>
+                   </div>`
+                : `<div class="text-left space-y-3 text-xs leading-relaxed text-slate-600">
+                    <p>Sesuai standar administrasi, Kwitansi reguler hanya dapat diterbitkan untuk melunasi Invoice yang sudah ada. Silakan buat Invoice terlebih dahulu jika klien belum melakukan pembayaran.</p>
+                    <p class="pt-2 border-t border-slate-100 font-medium">Untuk transaksi lunas di tempat, Anda dapat kembali dan menggunakan fitur <b>Kwitansi Instan</b>.</p>
+                   </div>`;
+
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: title,
+                    html: htmlMsg,
+                    icon: 'info',
+                    confirmButtonText: isEnglish ? 'I Understand' : 'Saya Mengerti',
+                    customClass: {
+                        confirmButton: 'px-6 py-2.5 bg-[#0F2A44] hover:bg-slate-800 text-white rounded-xl font-bold text-xs uppercase tracking-wider text-center transition-all duration-300 shadow-md'
+                    },
+                    buttonsStyling: false
+                });
+            }
+        });
+    </script>
+    @endpush
+    @endif
 </x-app-layout>

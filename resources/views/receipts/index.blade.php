@@ -16,7 +16,7 @@
                     <i data-lucide="zap" class="w-5 h-5"></i>
                     <span>{{ app()->getLocale() == 'en' ? 'Instant Receipt' : 'Kwitansi Instan' }}</span>
                 </a>
-                <a href="{{ route('receipts.create') }}" class="btn-premium-glass group transition-all duration-300">
+                <a href="{{ route('invoices.create', ['alert' => 'receipt_procedure']) }}" class="btn-premium-glass group transition-all duration-300">
                     <i data-lucide="plus" class="w-5 h-5"></i>
                     <span>{{ app()->getLocale() == 'en' ? 'New Receipt' : 'Kwitansi Baru' }}</span>
                 </a>

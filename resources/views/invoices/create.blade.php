@@ -717,12 +717,12 @@
                     } else {
                         let invalidItem = false;
                         this.items.forEach(item => {
-                            if (!item.deskripsi || !item.deskripsi.trim() || !item.qty || parseFloat(item.qty) <= 0 || !item.harga || parseFloat(item.harga) <= 0) {
+                            if (!item.deskripsi || !item.deskripsi.trim() || !item.qty || parseFloat(item.qty) <= 0 || item.harga === '' || item.harga === null || isNaN(parseFloat(item.harga)) || parseFloat(item.harga) < 0) {
                                 invalidItem = true;
                             }
                         });
                         if (invalidItem) {
-                            missing.push('{{ app()->getLocale() == "en" ? "Complete Item Line Details (Description, Qty > 0, Rate > 0)" : "Rincian Item (Deskripsi, Qty > 0, Harga > 0)" }}');
+                            missing.push('{{ app()->getLocale() == "en" ? "Complete Item Line Details (Description, Qty > 0, Rate >= 0)" : "Rincian Item (Deskripsi, Qty > 0, Harga >= 0)" }}');
                         }
                     }
 
@@ -779,6 +779,10 @@
     @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('receipt_procedure_seen')) {
+                return;
+            }
+
             const isEnglish = {{ app()->getLocale() == 'en' ? 'true' : 'false' }};
             const title = isEnglish ? 'System Operational Procedure' : 'Prosedur Operasional Sistem';
             const htmlMsg = isEnglish 
@@ -796,12 +800,22 @@
                     title: title,
                     html: htmlMsg,
                     icon: 'info',
-                    confirmButtonText: isEnglish ? 'I Understand' : 'Saya Mengerti',
+                    showCancelButton: true,
+                    confirmButtonText: isEnglish ? 'Continue to Invoice' : 'Lanjut Buat Invoice',
+                    cancelButtonText: isEnglish ? 'Instant Receipt' : 'Kwitansi Instan',
                     customClass: {
-                        confirmButton: 'px-6 py-2.5 bg-[#0F2A44] hover:bg-slate-800 text-white rounded-xl font-bold text-xs uppercase tracking-wider text-center transition-all duration-300 shadow-md'
+                        confirmButton: 'px-5 py-2.5 bg-[#0F2A44] hover:bg-slate-800 text-white rounded-xl font-bold text-xs uppercase tracking-wider text-center mr-2 transition-all duration-300 shadow-md',
+                        cancelButton: 'px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-bold text-xs uppercase tracking-wider text-center transition-all duration-300 shadow-md'
                     },
                     buttonsStyling: false
+                }).then((result) => {
+                    localStorage.setItem('receipt_procedure_seen', 'true');
+                    if (result.dismiss === Swal.DismissReason.cancel) {
+                        window.location.href = "{{ route('receipts.create_instant') }}";
+                    }
                 });
+            } else {
+                localStorage.setItem('receipt_procedure_seen', 'true');
             }
         });
     </script>

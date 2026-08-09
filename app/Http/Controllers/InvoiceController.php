@@ -66,7 +66,7 @@ class InvoiceController extends Controller
             'status' => 'nullable|string|in:paid,unpaid',
             'items' => 'required|array|min:1',
             'items.*.deskripsi' => 'required|string',
-            'items.*.qty' => 'required|numeric|min:1',
+            'items.*.qty' => 'required|numeric|min:0.01',
             'items.*.harga' => 'required|numeric|min:0',
             'discount' => 'nullable|numeric|min:0',
             'ppn' => 'nullable|numeric|min:0',
@@ -74,7 +74,7 @@ class InvoiceController extends Controller
             'cause_of_problem' => 'nullable|string',
             'notes' => 'nullable|string',
             'technician_names' => 'nullable|string',
-            'warranty_value' => 'nullable|integer|min:1',
+            'warranty_value' => 'nullable|numeric|min:1',
             'warranty_unit' => 'nullable|string|in:Hari,Bulan,Tahun,Days,Months,Years',
             'attachments' => 'nullable|array',
             'attachments.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
@@ -115,7 +115,7 @@ class InvoiceController extends Controller
                 'pph' => $pphNominal,
                 'total' => $total,
                 'status' => $request->input('status', 'unpaid'),
-                'due_date' => $request->due_date,
+                'due_date' => $request->due_date ?: now()->toDateString(),
                 'cause_of_problem' => $request->cause_of_problem,
                 'notes' => $request->notes,
                 'technician_names' => $request->technician_names,
@@ -155,10 +155,10 @@ class InvoiceController extends Controller
 
             \App\Models\ActivityLog::log('created_invoice', "Issued new invoice #{$invoice->invoice_number}", $invoice);
 
-            return redirect()->route('invoices.index')->with('success', 'Invoice created successfully.');
+            return redirect()->route('invoices.index')->with('success', app()->getLocale() == 'en' ? 'Invoice created successfully.' : 'Invoice berhasil dibuat.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Something went wrong: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', (app()->getLocale() == 'en' ? 'Failed to create invoice: ' : 'Gagal membuat invoice: ') . $e->getMessage());
         }
     }
 

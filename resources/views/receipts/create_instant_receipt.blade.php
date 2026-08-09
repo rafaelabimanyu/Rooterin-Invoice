@@ -16,6 +16,13 @@
         </div>
     </div>
 
+    @if (session('error'))
+        <div class="mb-8 p-4 bg-rose-50 border border-rose-100 rounded-xl text-rose-600 text-sm font-semibold flex items-center gap-2">
+            <i data-lucide="alert-circle" class="w-5 h-5 shrink-0"></i>
+            <span>{{ session('error') }}</span>
+        </div>
+    @endif
+
     @if ($errors->any())
         <div class="mb-8 p-4 bg-rose-50 border border-rose-100 rounded-xl text-rose-600 text-sm">
             <ul class="list-disc list-inside">
@@ -700,12 +707,12 @@
                     } else {
                         let invalidItem = false;
                         this.items.forEach(item => {
-                            if (!item.deskripsi || !item.deskripsi.trim() || !item.qty || parseFloat(item.qty) <= 0 || !item.harga || parseFloat(item.harga) <= 0) {
+                            if (!item.deskripsi || !item.deskripsi.trim() || !item.qty || parseFloat(item.qty) <= 0 || item.harga === '' || item.harga === null || isNaN(parseFloat(item.harga)) || parseFloat(item.harga) < 0) {
                                 invalidItem = true;
                             }
                         });
                         if (invalidItem) {
-                            missing.push('{{ app()->getLocale() == "en" ? "Complete Item Line Details (Description, Qty > 0, Rate > 0)" : "Rincian Item (Deskripsi, Qty > 0, Harga > 0)" }}');
+                            missing.push('{{ app()->getLocale() == "en" ? "Complete Item Line Details (Description, Qty > 0, Rate >= 0)" : "Rincian Item (Deskripsi, Qty > 0, Harga >= 0)" }}');
                         }
                     }
 

@@ -70,7 +70,7 @@ class ReceiptController extends Controller
             'cause_of_problem' => 'nullable|string',
             'notes' => 'nullable|string',
             'technician_names' => 'nullable|string',
-            'warranty_value' => 'nullable|integer|min:1',
+            'warranty_value' => 'nullable|numeric|min:1',
             'warranty_unit' => 'nullable|string|in:Hari,Bulan,Tahun,Days,Months,Years',
             'attachments' => 'nullable|array',
             'attachments.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
@@ -172,11 +172,11 @@ class ReceiptController extends Controller
                 ));
             }
 
-            return $this->downloadPdf($request, $receipt);
+            return redirect()->route('receipts.index')->with('success', app()->getLocale() == 'en' ? 'Instant receipt generated successfully.' : 'Kwitansi instan berhasil dibuat.');
 
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\DB::rollBack();
-            return back()->withInput()->with('error', 'Something went wrong: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', (app()->getLocale() == 'en' ? 'Failed to generate instant receipt: ' : 'Gagal menyimpan kwitansi instan: ') . $e->getMessage());
         }
     }
 

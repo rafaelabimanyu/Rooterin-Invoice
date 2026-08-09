@@ -10,7 +10,7 @@
             <p class="text-slate-500 mt-1">{{ __('Configure billing details and items for your client.') }}</p>
         </div>
         <div class="flex items-center gap-3">
-            <a href="{{ route('invoices.index') }}" class="px-5 py-2.5 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-all">
+            <a href="{{ route('invoices.index') }}" @click="localStorage.removeItem('draft_invoice_data')" class="px-5 py-2.5 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-all">
                 {{ __('Discard') }}
             </a>
         </div>
@@ -43,13 +43,23 @@
                         <div class="space-y-2" x-data="{
                             open: false,
                             search: '',
-                            selectedId: '',
+                            selectedId: '{{ old('business_unit_id') }}',
                             selectedLabel: '',
                             options: [
                                 @foreach($businessUnits as $bu)
                                     { id: '{{ $bu->id }}', name: '{{ addslashes($bu->name) }}' },
                                 @endforeach
                             ],
+                            init() {
+                                this.updateLabel();
+                                this.$watch('selectedId', () => this.updateLabel());
+                            },
+                            updateLabel() {
+                                if (this.selectedId) {
+                                    let found = this.options.find(o => o.id == this.selectedId);
+                                    if (found) this.selectedLabel = found.name;
+                                }
+                            },
                             get filteredOptions() {
                                 if (!this.search) return this.options;
                                 return this.options.filter(o =>
@@ -100,6 +110,16 @@
                                     { id: '{{ $client->id }}', name: '{{ addslashes($client->nama_client) }}', company: '{{ addslashes($client->nama_perusahaan) }}' },
                                 @endforeach
                             ],
+                            init() {
+                                this.updateLabel();
+                                this.$watch('selectedId', () => this.updateLabel());
+                            },
+                            updateLabel() {
+                                if (this.selectedId) {
+                                    let found = this.options.find(o => o.id == this.selectedId);
+                                    if (found) this.selectedLabel = found.name + (found.company ? ' (' + found.company + ')' : '');
+                                }
+                            },
                             get filteredOptions() {
                                 if (!this.search) return this.options;
                                 return this.options.filter(o => 
@@ -151,7 +171,7 @@
                     <div class="grid grid-cols-1 gap-8 mt-8">
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ __('Due Date') }}</label>
-                            <input type="date" name="due_date" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none text-sm text-slate-900 transition-all">
+                            <input type="date" name="due_date" value="{{ old('due_date') }}" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none text-sm text-slate-900 transition-all">
                         </div>
                     </div>
                 </div>
@@ -175,11 +195,11 @@
                                 </div>
                                 <div class="md:col-span-1 space-y-2">
                                     <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center block">{{ __('Qty') }}</label>
-                                    <input type="number" step="0.01" min="0.01" :name="`items[${index}][qty]`" x-model="item.qty" @input="calculateTotal()" required class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-900 font-semibold text-center">
+                                    <input type="number" step="any" min="0.01" :name="`items[${index}][qty]`" x-model="item.qty" @input="calculateTotal()" required class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-900 font-semibold text-center">
                                 </div>
                                 <div class="md:col-span-2 space-y-2 text-right">
                                     <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">{{ __('Rate') }}</label>
-                                    <input type="number" min="0.01" :name="`items[${index}][harga]`" x-model="item.harga" @input="calculateTotal()" required class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-900 font-semibold text-right">
+                                    <input type="number" step="any" min="0.01" :name="`items[${index}][harga]`" x-model="item.harga" @input="calculateTotal()" required class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-900 font-semibold text-right">
                                 </div>
                                 <div class="md:col-span-3 space-y-2 text-right">
                                     <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">{{ __('Line Total') }}</label>
@@ -264,16 +284,16 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div class="bg-slate-50/50 p-6 rounded-xl border border-slate-200/50 space-y-3 md:col-span-2">
                                 <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ app()->getLocale() == 'en' ? 'Field Technicians' : 'Teknisi Lapangan' }} <span class="text-rose-500">*</span></label>
-                                <input type="text" name="technician_names" required placeholder="Contoh: Budi, Andi" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none">
+                                <input type="text" name="technician_names" value="{{ old('technician_names') }}" required placeholder="Contoh: Budi, Andi" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none">
                             </div>
                             <div class="bg-slate-50/50 p-6 rounded-xl border border-slate-200/50 space-y-3 md:col-span-2">
                                 <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ __('Penyebab Mampet') }} <span class="text-rose-500">*</span></label>
-                                <input type="text" name="cause_of_problem" required placeholder="Contoh: Penyebab Mampet: Pasir dan Batu" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none">
+                                <input type="text" name="cause_of_problem" value="{{ old('cause_of_problem') }}" required placeholder="Contoh: Penyebab Mampet: Pasir dan Batu" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none">
                             </div>
                             <div class="bg-slate-50/50 p-6 rounded-xl border border-slate-200/50 space-y-3 md:col-span-2">
                                 <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ __('ui.additional_notes_label') }}</label>
                                 <p class="text-[11px] text-slate-400">{{ __('ui.additional_notes_hint') }}</p>
-                                <textarea name="notes" rows="3" placeholder="{{ __('ui.additional_notes_placeholder') }}" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none"></textarea>
+                                <textarea name="notes" rows="3" placeholder="{{ __('ui.additional_notes_placeholder') }}" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none">{{ old('notes') }}</textarea>
                             </div>
                             <div class="bg-slate-50/50 p-6 rounded-xl border border-slate-200/50 space-y-3">
                                 <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ app()->getLocale() == 'en' ? 'Bank Account Details' : 'Rincian Rekening Bank' }}</label>
@@ -305,15 +325,14 @@
                             </div>
                         </div>
 
-                        <!-- Warranty -->
                         <div class="bg-slate-50/50 p-6 rounded-xl border border-slate-200/50 space-y-2">
                             <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ __('Warranty Period') }} <span class="text-rose-500">*</span></label>
                             <div class="flex items-center gap-3">
-                                <input type="number" name="warranty_value" required min="1" placeholder="e.g. 1, 3, 6..." class="w-32 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 font-semibold focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none">
+                                <input type="number" name="warranty_value" value="{{ old('warranty_value') }}" required min="1" placeholder="e.g. 1, 3, 6..." class="w-32 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 font-semibold focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none">
                                 <select name="warranty_unit" required class="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 font-semibold focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none">
-                                    <option value="Hari">{{ app()->getLocale() == 'en' ? 'Days' : 'Hari' }}</option>
-                                    <option value="Bulan" selected>{{ app()->getLocale() == 'en' ? 'Months' : 'Bulan' }}</option>
-                                    <option value="Tahun">{{ app()->getLocale() == 'en' ? 'Years' : 'Tahun' }}</option>
+                                    <option value="Hari" {{ old('warranty_unit') == 'Hari' ? 'selected' : '' }}>{{ app()->getLocale() == 'en' ? 'Days' : 'Hari' }}</option>
+                                    <option value="Bulan" {{ old('warranty_unit', 'Bulan') == 'Bulan' ? 'selected' : '' }}>{{ app()->getLocale() == 'en' ? 'Months' : 'Bulan' }}</option>
+                                    <option value="Tahun" {{ old('warranty_unit') == 'Tahun' ? 'selected' : '' }}>{{ app()->getLocale() == 'en' ? 'Years' : 'Tahun' }}</option>
                                 </select>
                             </div>
                         </div>
@@ -503,11 +522,13 @@
 
         function invoiceForm() {
             return {
-                items: [{ deskripsi: '', qty: 1, harga: 0 }],
+                storageKey: 'draft_invoice_data',
+                hasOldInput: {!! old('_token') ? 'true' : 'false' !!},
+                items: {!! json_encode(old('items', [['deskripsi' => '', 'qty' => 1, 'harga' => 0]])) !!},
                 subtotal: 0,
-                discount: 0,
-                ppn: {{ (float)\App\Models\Setting::get('ppn_percent', 0) }},
-                pph: {{ (float)\App\Models\Setting::get('pph_percent', 0) }},
+                discount: {{ (float)old('discount_percent', 0) }},
+                ppn: {{ (float)old('tax_percent', \App\Models\Setting::get('ppn_percent', 0)) }},
+                pph: {{ (float)old('pph_percent', \App\Models\Setting::get('pph_percent', 0)) }},
                 discountNominal: 0,
                 dpp: 0,
                 ppnNominal: 0,
@@ -515,7 +536,106 @@
                 total: 0,
                 files: [],
                 init() {
+                    @if(session()->has('success'))
+                        this.clearDraft();
+                    @else
+                        if (!this.hasOldInput) {
+                            this.loadDraft();
+                        } else {
+                            this.saveDraft();
+                        }
+                    @endif
+
                     this.calculateTotal();
+
+                    this.$nextTick(() => {
+                        const formEl = document.querySelector('form[action="{{ route('invoices.store') }}"]');
+                        if (formEl) {
+                            formEl.addEventListener('input', () => this.saveDraft());
+                            formEl.addEventListener('change', () => this.saveDraft());
+                        }
+                    });
+                },
+                saveDraft() {
+                    try {
+                        const draft = {
+                            business_unit_id: document.querySelector('input[name="business_unit_id"]')?.value || '',
+                            client_id: document.querySelector('input[name="client_id"]')?.value || '',
+                            due_date: document.querySelector('input[name="due_date"]')?.value || '',
+                            items: this.items,
+                            discount: this.discount,
+                            ppn: this.ppn,
+                            pph: this.pph,
+                            technician_names: document.querySelector('input[name="technician_names"]')?.value || '',
+                            cause_of_problem: document.querySelector('input[name="cause_of_problem"]')?.value || '',
+                            notes: document.querySelector('textarea[name="notes"]')?.value || '',
+                            warranty_value: document.querySelector('input[name="warranty_value"]')?.value || '',
+                            warranty_unit: document.querySelector('select[name="warranty_unit"]')?.value || 'Bulan',
+                        };
+                        localStorage.setItem(this.storageKey, JSON.stringify(draft));
+                    } catch (e) {}
+                },
+                loadDraft() {
+                    try {
+                        const raw = localStorage.getItem(this.storageKey);
+                        if (!raw) return;
+                        const draft = JSON.parse(raw);
+                        if (!draft) return;
+
+                        if (draft.items && Array.isArray(draft.items) && draft.items.length > 0) {
+                            this.items = draft.items;
+                        }
+                        if (draft.discount !== undefined) this.discount = draft.discount;
+                        if (draft.ppn !== undefined) this.ppn = draft.ppn;
+                        if (draft.pph !== undefined) this.pph = draft.pph;
+
+                        this.$nextTick(() => {
+                            if (draft.business_unit_id) {
+                                const buInput = document.querySelector('input[name="business_unit_id"]');
+                                if (buInput) {
+                                    buInput.value = draft.business_unit_id;
+                                    buInput.dispatchEvent(new Event('input', { bubbles: true }));
+                                }
+                            }
+                            if (draft.client_id) {
+                                const clientInput = document.querySelector('input[name="client_id"]');
+                                if (clientInput) {
+                                    clientInput.value = draft.client_id;
+                                    clientInput.dispatchEvent(new Event('input', { bubbles: true }));
+                                }
+                            }
+                            if (draft.due_date) {
+                                const dueDate = document.querySelector('input[name="due_date"]');
+                                if (dueDate) dueDate.value = draft.due_date;
+                            }
+                            if (draft.technician_names) {
+                                const tech = document.querySelector('input[name="technician_names"]');
+                                if (tech) tech.value = draft.technician_names;
+                            }
+                            if (draft.cause_of_problem) {
+                                const cause = document.querySelector('input[name="cause_of_problem"]');
+                                if (cause) cause.value = draft.cause_of_problem;
+                            }
+                            if (draft.notes) {
+                                const notes = document.querySelector('textarea[name="notes"]');
+                                if (notes) notes.value = draft.notes;
+                            }
+                            if (draft.warranty_value) {
+                                const wVal = document.querySelector('input[name="warranty_value"]');
+                                if (wVal) wVal.value = draft.warranty_value;
+                            }
+                            if (draft.warranty_unit) {
+                                const wUnit = document.querySelector('select[name="warranty_unit"]');
+                                if (wUnit) wUnit.value = draft.warranty_unit;
+                            }
+                            this.calculateTotal();
+                        });
+                    } catch (e) {}
+                },
+                clearDraft() {
+                    try {
+                        localStorage.removeItem(this.storageKey);
+                    } catch (e) {}
                 },
                 addItem() {
                     this.items.push({ deskripsi: '', qty: 1, harga: 0 });
@@ -647,6 +767,9 @@
 
                         return false;
                     }
+
+                    // Form is valid and proceeding to submit -> Clear localStorage draft
+                    this.clearDraft();
                 }
             }
         }

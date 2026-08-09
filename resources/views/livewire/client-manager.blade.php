@@ -25,6 +25,10 @@
                 <button wire:click="$set('status', 'aktif')" class="relative z-10 flex-1 sm:flex-none sm:w-24 text-center px-4 py-2 rounded-lg text-[10px] sm:text-[11px] font-black uppercase tracking-widest transition-all duration-300" :class="activeTab === 'aktif' ? 'text-emerald-600 font-black' : 'text-slate-500 hover:text-slate-700'">{{ app()->getLocale() == 'en' ? 'Active' : 'Aktif' }}</button>
                 <button wire:click="$set('status', 'nonaktif')" class="relative z-10 flex-1 sm:flex-none sm:w-24 text-center px-4 py-2 rounded-lg text-[10px] sm:text-[11px] font-black uppercase tracking-widest transition-all duration-300" :class="activeTab === 'nonaktif' ? 'text-rose-600 font-black' : 'text-slate-500 hover:text-slate-700'">{{ app()->getLocale() == 'en' ? 'Inactive' : 'Nonaktif' }}</button>
             </div>
+            <a href="{{ route('clients.export', ['search' => $search, 'status' => $status]) }}" target="_blank" class="inline-flex items-center justify-center px-4 py-3 sm:py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl text-xs uppercase tracking-wider transition-all shadow-lg shadow-emerald-600/20 active:scale-95 whitespace-nowrap">
+                <i data-lucide="file-spreadsheet" class="w-4 h-4 mr-2"></i>
+                {{ app()->getLocale() == 'en' ? 'Export Excel' : 'Export Excel' }}
+            </a>
             <button wire:click="openCreate" @click="$wire.showEditModal = true" class="btn-premium whitespace-nowrap justify-center py-3 sm:py-2.5 w-full sm:w-auto">
                 <i data-lucide="user-plus" class="w-4 h-4 mr-2"></i>
                 {{ app()->getLocale() == 'en' ? 'Register Client' : 'Daftarkan Klien' }}

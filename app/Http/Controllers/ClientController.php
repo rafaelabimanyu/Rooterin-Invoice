@@ -146,4 +146,10 @@ class ClientController extends Controller
 
         return redirect()->route('clients.index')->with('success', 'Client deleted successfully.');
     }
+
+    public function exportExcel(Request $request)
+    {
+        $filename = 'data_klien_' . date('Y-m-d_H-i-s') . '.xlsx';
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\ClientExport($request->search, $request->status), $filename);
+    }
 }

@@ -50,7 +50,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/help-center', function () {
             return view('pages.help'); })->name('help.index');
 
-        // Clients (Show/Index/Create/Edit)
+        // Clients (Show/Index/Create/Edit/Export)
+        Route::get('clients/export/excel', [ClientController::class, 'exportExcel'])->name('clients.export');
         Route::resource('clients', ClientController::class);
         Route::post('api/clients', [\App\Http\Controllers\Api\ClientController::class, 'store'])->name('api.clients.store');
 

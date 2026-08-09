@@ -188,7 +188,7 @@ class ReceiptController extends Controller
     public function show(Receipt $receipt)
     {
 
-        $receipt->load(['invoice.client', 'invoice.items']);
+        $receipt->load(['invoice.client', 'invoice.items', 'invoice.attachments']);
         return view('receipts.show', compact('receipt'));
     }
 

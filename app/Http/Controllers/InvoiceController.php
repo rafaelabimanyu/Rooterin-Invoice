@@ -166,7 +166,7 @@ class InvoiceController extends Controller
     {
         \Illuminate\Support\Facades\Gate::authorize('view', $invoice);
 
-        $invoice->load(['client', 'items', 'receipt']);
+        $invoice->load(['client', 'items', 'receipt', 'attachments']);
         return view('invoices.show', compact('invoice'));
     }
 

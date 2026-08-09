@@ -230,8 +230,32 @@
                     </div>
                 </div>
             </div>
+        <!-- Job Documentation Section -->
+        @if($receipt->invoice && $receipt->invoice->attachments && $receipt->invoice->attachments->count() > 0)
+        <div class="px-6 md:px-16 py-8 bg-slate-50/50 border-t border-slate-100">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ app()->getLocale() == 'en' ? 'Job Documentation' : 'Dokumentasi Pekerjaan' }}</p>
+                    <p class="text-xs text-slate-500 mt-0.5">{{ app()->getLocale() == 'en' ? 'Uploaded site photos and work evidence.' : 'Foto lokasi dan bukti hasil pekerjaan yang diunggah.' }}</p>
+                </div>
+                <span class="text-[10px] font-black text-gold-600 bg-gold-50 px-2.5 py-1 rounded-full border border-gold-100">{{ $receipt->invoice->attachments->count() }} {{ app()->getLocale() == 'en' ? 'Photos' : 'Foto' }}</span>
+            </div>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-4">
+                @foreach($receipt->invoice->attachments as $attachment)
+                    <a href="{{ Storage::url($attachment->file_path) }}" target="_blank" class="group relative aspect-square rounded-2xl overflow-hidden border border-slate-200/80 bg-white shadow-sm hover:shadow-md transition-all duration-300">
+                        <img src="{{ Storage::url($attachment->file_path) }}" alt="{{ $attachment->caption ?: 'Dokumentasi Pekerjaan' }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        <div class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                            <span class="p-2 bg-white/90 rounded-full text-slate-900 shadow-md">
+                                <i data-lucide="maximize-2" class="w-4 h-4"></i>
+                            </span>
+                        </div>
+                    </a>
+                @endforeach
+            </div>
         </div>
-        
+        @endif
+
         <!-- Footer -->
         <div class="px-6 md:px-16 py-10 bg-slate-50 border-t border-slate-100">
             <div class="flex flex-col md:flex-row justify-between items-center gap-8">

@@ -396,9 +396,9 @@ class InvoiceController extends Controller
     {
         \Illuminate\Support\Facades\Gate::authorize('delete', $invoice);
 
-        // Security check: Verify receipt relation before starting deletion
+        // Security check: Verify active (non-soft-deleted) receipt relation before starting deletion
         if ($invoice->receipt()->exists()) {
-            return redirect()->route('invoices.index')->with('error', app()->getLocale() == 'en' 
+            return redirect()->back()->with('error', app()->getLocale() == 'en' 
                 ? 'This invoice cannot be deleted because it has an active receipt. Please delete the receipt first.'
                 : 'Invoice tidak dapat dihapus karena memiliki kwitansi yang aktif. Silakan hapus kwitansi terlebih dahulu.');
         }
@@ -436,11 +436,11 @@ class InvoiceController extends Controller
                 }
             }
 
-            return redirect()->route('invoices.index')->with('success', app()->getLocale() == 'en' 
+            return redirect()->back()->with('success', app()->getLocale() == 'en' 
                 ? 'Invoice moved to trash successfully.' 
                 : 'Invoice berhasil dipindahkan ke tempat sampah.');
         } catch (\Exception $e) {
-            return redirect()->route('invoices.index')->with('error', app()->getLocale() == 'en' 
+            return redirect()->back()->with('error', app()->getLocale() == 'en' 
                 ? 'Failed to move invoice to trash: ' . $e->getMessage() 
                 : 'Gagal memindahkan invoice ke tempat sampah: ' . $e->getMessage());
         }

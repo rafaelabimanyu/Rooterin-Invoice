@@ -86,6 +86,10 @@ class TrashController extends Controller
             'deletion_reason' => null,
         ]);
 
+        if ($receipt->invoice) {
+            $receipt->invoice->update(['status' => 'paid']);
+        }
+
         \App\Models\ActivityLog::log('restored_receipt', "Restored receipt #{$receipt->receipt_number}");
 
         return redirect()->route('trash.index')->with('success', app()->getLocale() == 'en' 

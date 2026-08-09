@@ -524,40 +524,57 @@ class ReceiptController extends Controller
     {
         \Illuminate\Support\Facades\Gate::authorize('delete', $receipt);
 
-        $num = $receipt->receipt_number;
+        try {
+            \Illuminate\Support\Facades\DB::beginTransaction();
 
-        $receipt->update([
-            'deleted_by' => auth()->id(),
-            'deletion_reason' => $request->input('deletion_reason')
-        ]);
+            $num = $receipt->receipt_number;
+            $invoice = $receipt->invoice;
 
-        $receipt->delete();
-
-        \App\Models\ActivityLog::log('deleted_receipt', "Soft deleted receipt #{$num}");
-
-        if (auth()->user()->role === 'staff') {
-            $reason = $request->input('deletion_reason') ?: '-';
-            \App\Models\SecurityLog::create([
-                'user_id' => auth()->id(),
-                'activity' => "Staff " . auth()->user()->name . " soft-deleted receipt #{$num} (Reason: {$reason})",
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
+            $receipt->update([
+                'deleted_by' => auth()->id(),
+                'deletion_reason' => $request->input('deletion_reason')
             ]);
 
-            $usersToNotify = \App\Models\User::whereIn('role', ['owner', 'admin'])->get();
-            foreach ($usersToNotify as $u) {
-                $u->notify(new \App\Notifications\SystemActivityNotification(
-                    'Receipt Deleted by Staff',
-                    "Staff " . auth()->user()->name . " soft-deleted receipt #{$num}. Reason: {$reason}",
-                    'security',
-                    route('trash.index')
-                ));
-            }
-        }
+            $receipt->delete();
 
-        return redirect()->route('receipts.index')->with('success', app()->getLocale() == 'en' 
-            ? 'Receipt moved to trash successfully.' 
-            : 'Kwitansi berhasil dipindahkan ke tempat sampah.');
+            if ($invoice) {
+                $invoice->update(['status' => 'unpaid']);
+                $invoice->payments()->delete();
+            }
+
+            \App\Models\ActivityLog::log('deleted_receipt', "Soft deleted receipt #{$num}");
+
+            if (auth()->user()->role === 'staff') {
+                $reason = $request->input('deletion_reason') ?: '-';
+                \App\Models\SecurityLog::create([
+                    'user_id' => auth()->id(),
+                    'activity' => "Staff " . auth()->user()->name . " soft-deleted receipt #{$num} (Reason: {$reason})",
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ]);
+
+                $usersToNotify = \App\Models\User::whereIn('role', ['owner', 'admin'])->get();
+                foreach ($usersToNotify as $u) {
+                    $u->notify(new \App\Notifications\SystemActivityNotification(
+                        'Receipt Deleted by Staff',
+                        "Staff " . auth()->user()->name . " soft-deleted receipt #{$num}. Reason: {$reason}",
+                        'security',
+                        route('trash.index')
+                    ));
+                }
+            }
+
+            \Illuminate\Support\Facades\DB::commit();
+
+            return redirect()->back()->with('success', app()->getLocale() == 'en' 
+                ? 'Receipt moved to trash successfully.' 
+                : 'Kwitansi berhasil dipindahkan ke tempat sampah.');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            return redirect()->back()->with('error', app()->getLocale() == 'en'
+                ? 'Failed to delete receipt: ' . $e->getMessage()
+                : 'Gagal menghapus kwitansi: ' . $e->getMessage());
+        }
     }
 
     private function sanitizeFilenameString($string)

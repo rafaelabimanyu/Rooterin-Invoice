@@ -203,7 +203,7 @@
                                 <form id="delete-form-{{ $invoice->id }}" action="{{ route('invoices.destroy', $invoice) }}" method="POST" class="inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="button" onclick="confirmDeleteInvoice('delete-form-{{ $invoice->id }}', '{{ $invoice->status }}')" class="p-1 text-slate-400 hover:text-rose-600 transition-colors duration-300" title="{{ app()->getLocale() == 'en' ? 'Delete' : 'Hapus' }}">
+                                    <button type="button" onclick="confirmDeleteInvoice('delete-form-{{ $invoice->id }}', '{{ $invoice->status }}', {{ $invoice->receipt()->exists() ? 'true' : 'false' }})" class="p-1 text-slate-400 hover:text-rose-600 transition-colors duration-300" title="{{ app()->getLocale() == 'en' ? 'Delete' : 'Hapus' }}">
                                         <i data-lucide="trash-2" class="w-4 h-4"></i>
                                     </button>
                                 </form>
@@ -290,7 +290,7 @@
                             @method('DELETE')
                             <button 
                                 type="button"
-                                onclick="confirmDeleteInvoice('delete-form-mobile-{{ $invoice->id }}', '{{ $invoice->status }}')"
+                                onclick="confirmDeleteInvoice('delete-form-mobile-{{ $invoice->id }}', '{{ $invoice->status }}', {{ $invoice->receipt()->exists() ? 'true' : 'false' }})"
                                 class="p-2 sm:px-3 sm:py-1.5 bg-slate-50 hover:bg-rose-50 text-slate-500 hover:text-rose-600 rounded-xl transition-all text-xs font-bold flex items-center justify-center gap-1.5 duration-300"
                                 title="{{ app()->getLocale() == 'en' ? 'Delete' : 'Hapus' }}"
                             >
@@ -330,10 +330,10 @@
                 form.submit();
             }
 
-            function confirmDeleteInvoice(formId, status) {
+            function confirmDeleteInvoice(formId, status, hasActiveReceipt) {
                 const isEnglish = {{ app()->getLocale() == 'en' ? 'true' : 'false' }};
 
-                if (status === 'paid') {
+                if (status === 'paid' && hasActiveReceipt) {
                     if (typeof Swal !== 'undefined') {
                         Swal.fire({
                             title: isEnglish ? 'Cannot Delete Invoice' : 'Tidak Dapat Menghapus Invoice',

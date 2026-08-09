@@ -26,7 +26,7 @@
         </div>
     @endif
 
-    <form action="{{ route('receipts.store_instant') }}" method="POST" x-data="invoiceForm()" enctype="multipart/form-data" class="pb-24 md:pb-0">
+    <form action="{{ route('receipts.store_instant') }}" method="POST" x-data="invoiceForm()" @submit="submitForm($event)" enctype="multipart/form-data" class="pb-24 md:pb-0">
         @csrf
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
             <!-- Left Side -->
@@ -168,11 +168,11 @@
                                 </div>
                                 <div class="md:col-span-1 space-y-2">
                                     <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center block">{{ __('Qty') }}</label>
-                                    <input type="number" step="0.01" :name="`items[${index}][qty]`" x-model="item.qty" @input="calculateTotal()" required class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-900 font-semibold text-center">
+                                    <input type="number" step="0.01" min="0.01" :name="`items[${index}][qty]`" x-model="item.qty" @input="calculateTotal()" required class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-900 font-semibold text-center">
                                 </div>
                                 <div class="md:col-span-2 space-y-2 text-right">
                                     <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">{{ __('Rate') }}</label>
-                                    <input type="number" :name="`items[${index}][harga]`" x-model="item.harga" @input="calculateTotal()" required class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-900 font-semibold text-right">
+                                    <input type="number" min="0.01" :name="`items[${index}][harga]`" x-model="item.harga" @input="calculateTotal()" required class="w-full bg-transparent border-none p-0 focus:ring-0 text-[13px] text-slate-900 font-semibold text-right">
                                 </div>
                                 <div class="md:col-span-3 space-y-2 text-right">
                                     <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">{{ __('Line Total') }}</label>
@@ -210,7 +210,7 @@
                 </div>
 
                 <!-- Accordion Container: Informasi Tambahan & Dokumen -->
-                <div x-data="{ isOpen: window.innerWidth >= 768 }" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-8">
+                <div x-data="{ isOpen: window.innerWidth >= 768 }" @open-accordion.window="isOpen = true" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-8">
                     <!-- Accordion Header -->
                     <button 
                         type="button" 
@@ -256,12 +256,12 @@
                         <!-- Terms, Cause of Problem, Notes & Bank Details -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div class="bg-slate-50/50 p-6 rounded-xl border border-slate-200/50 space-y-3 md:col-span-2">
-                                <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ app()->getLocale() == 'en' ? 'Field Technicians' : 'Teknisi Lapangan' }}</label>
-                                <input type="text" name="technician_names" placeholder="Contoh: Budi, Andi" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none">
+                                <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ app()->getLocale() == 'en' ? 'Field Technicians' : 'Teknisi Lapangan' }} <span class="text-rose-500">*</span></label>
+                                <input type="text" name="technician_names" required placeholder="Contoh: Budi, Andi" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none">
                             </div>
                             <div class="bg-slate-50/50 p-6 rounded-xl border border-slate-200/50 space-y-3 md:col-span-2">
-                                <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ __('Penyebab Mampet') }}</label>
-                                <input type="text" name="cause_of_problem" placeholder="Contoh: Penyebab Mampet: Pasir dan Batu" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none">
+                                <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ __('Penyebab Mampet') }} <span class="text-rose-500">*</span></label>
+                                <input type="text" name="cause_of_problem" required placeholder="Contoh: Penyebab Mampet: Pasir dan Batu" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none">
                             </div>
                             <div class="bg-slate-50/50 p-6 rounded-xl border border-slate-200/50 space-y-3 md:col-span-2">
                                 <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ __('ui.additional_notes_label') }}</label>
@@ -300,10 +300,10 @@
 
                         <!-- Warranty -->
                         <div class="bg-slate-50/50 p-6 rounded-xl border border-slate-200/50 space-y-2">
-                            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ __('Warranty Period') }}</label>
+                            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">{{ __('Warranty Period') }} <span class="text-rose-500">*</span></label>
                             <div class="flex items-center gap-3">
-                                <input type="number" name="warranty_value" placeholder="e.g. 1, 3, 6..." min="1" class="w-32 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 font-semibold focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none">
-                                <select name="warranty_unit" class="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 font-semibold focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none">
+                                <input type="number" name="warranty_value" required min="1" placeholder="e.g. 1, 3, 6..." class="w-32 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 font-semibold focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none">
+                                <select name="warranty_unit" required class="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 font-semibold focus:ring-2 focus:ring-gold-500/10 focus:border-gold-500 outline-none">
                                     <option value="Hari">{{ app()->getLocale() == 'en' ? 'Days' : 'Hari' }}</option>
                                     <option value="Bulan" selected>{{ app()->getLocale() == 'en' ? 'Months' : 'Bulan' }}</option>
                                     <option value="Tahun">{{ app()->getLocale() == 'en' ? 'Years' : 'Tahun' }}</option>
@@ -565,6 +565,75 @@
                     const input = document.querySelector('input[type="file"][name="attachments[]"]');
                     if (input) {
                         input.files = dt.files;
+                    }
+                },
+                submitForm(e) {
+                    let missing = [];
+
+                    const bu = document.querySelector('input[name="business_unit_id"]');
+                    if (!bu || !bu.value) {
+                        missing.push('{{ app()->getLocale() == "en" ? "Business Unit" : "Unit Bisnis" }}');
+                    }
+
+                    const client = document.querySelector('input[name="client_id"]');
+                    if (!client || !client.value) {
+                        missing.push('{{ app()->getLocale() == "en" ? "Client Account" : "Akun Klien" }}');
+                    }
+
+                    if (!this.items || this.items.length === 0) {
+                        missing.push('{{ app()->getLocale() == "en" ? "At least 1 Line Item" : "Minimal 1 Baris Item Penagihan" }}');
+                    } else {
+                        let invalidItem = false;
+                        this.items.forEach(item => {
+                            if (!item.deskripsi || !item.deskripsi.trim() || !item.qty || parseFloat(item.qty) <= 0 || !item.harga || parseFloat(item.harga) <= 0) {
+                                invalidItem = true;
+                            }
+                        });
+                        if (invalidItem) {
+                            missing.push('{{ app()->getLocale() == "en" ? "Complete Item Line Details (Description, Qty > 0, Rate > 0)" : "Rincian Item (Deskripsi, Qty > 0, Harga > 0)" }}');
+                        }
+                    }
+
+                    const tech = document.querySelector('input[name="technician_names"]');
+                    if (!tech || !tech.value.trim()) {
+                        missing.push('{{ app()->getLocale() == "en" ? "Field Technicians" : "Teknisi Lapangan" }}');
+                    }
+
+                    const cause = document.querySelector('input[name="cause_of_problem"]');
+                    if (!cause || !cause.value.trim()) {
+                        missing.push('{{ app()->getLocale() == "en" ? "Cause of Problem" : "Penyebab Mampet" }}');
+                    }
+
+                    const warrantyVal = document.querySelector('input[name="warranty_value"]');
+                    if (!warrantyVal || !warrantyVal.value || parseInt(warrantyVal.value) < 1) {
+                        missing.push('{{ app()->getLocale() == "en" ? "Warranty Period (min. 1)" : "Masa Garansi (min. 1)" }}');
+                    }
+
+                    if (missing.length > 0) {
+                        e.preventDefault();
+                        window.dispatchEvent(new CustomEvent('open-accordion'));
+
+                        const isEnglish = {{ app()->getLocale() == 'en' ? 'true' : 'false' }};
+                        const title = isEnglish ? 'Incomplete Form Data' : 'Data Form Belum Lengkap';
+                        const listItems = missing.map(m => `<li>${m}</li>`).join('');
+                        const htmlMsg = `<div class="text-left"><p class="text-sm font-semibold text-slate-700 mb-2">${isEnglish ? 'Please complete the following required fields:' : 'Mohon lengkapi kolom wajib berikut:'}</p><ul class="list-disc list-inside text-xs font-bold text-rose-600 space-y-1">${listItems}</ul></div>`;
+
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                title: title,
+                                html: htmlMsg,
+                                icon: 'warning',
+                                confirmButtonText: 'OK',
+                                customClass: {
+                                    confirmButton: 'px-5 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl font-bold text-xs uppercase tracking-wider text-center transition-all duration-300'
+                                },
+                                buttonsStyling: false
+                            });
+                        } else {
+                            alert(title + ':\n- ' + missing.join('\n- '));
+                        }
+
+                        return false;
                     }
                 }
             }

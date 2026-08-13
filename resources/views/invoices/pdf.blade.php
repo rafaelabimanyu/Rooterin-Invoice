@@ -6,10 +6,10 @@
     <title>{{ __('invoice.title') }} #{{ $invoice->invoice_number }}</title>
     <style>
         @page { 
-            margin-top: 50px; 
-            margin-bottom: 50px; 
-            margin-left: 50px; 
-            margin-right: 50px; 
+            margin-top: 35px; 
+            margin-bottom: 35px; 
+            margin-left: 40px; 
+            margin-right: 40px; 
         }
         body { 
             font-family: 'Helvetica', 'Arial', sans-serif; 
@@ -22,7 +22,6 @@
         }
         .container { 
             padding: 0; 
-            padding-bottom: 350px; 
             position: relative; 
             box-sizing: border-box;
         }
@@ -45,32 +44,31 @@
             padding: 0;
             position: relative;
             box-sizing: border-box;
-            min-height: 800px;
         }
 
-        .divider { border-top: 2px solid #f1f5f9; margin: 20px 0; clear: both; }
+        .divider { border-top: 2px solid #f1f5f9; margin: 15px 0; clear: both; }
 
         /* Addressing */
-        .addressing { margin-bottom: 30px; }
+        .addressing { margin-bottom: 20px; }
         .bill-to { float: left; width: 50%; }
         .status-box { float: right; width: 45%; text-align: right; }
-        .section-label { font-size: 8.5pt; font-weight: 900; color: #94a3b8; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; display: block; }
+        .section-label { font-size: 8.5pt; font-weight: 900; color: #94a3b8; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; display: block; }
         
-        .client-card { background: #f8fafc; padding: 20px; border-radius: 15px; border: 1px solid #f1f5f9; }
+        .client-card { background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #f1f5f9; }
         .client-name { font-size: 11pt; font-weight: 900; color: #0f172a; margin-bottom: 5px; }
         .client-details { font-size: 9pt; color: #64748b; line-height: 1.5; }
 
-        .badge { display: inline-block; padding: 8px 20px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; font-size: 9pt; border-radius: 50px; }
+        .badge { display: inline-block; padding: 6px 16px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; font-size: 8.5pt; border-radius: 50px; }
         .badge-paid { background: #ecfdf5; color: #059669; border: 1px solid #d1fae5; }
         .badge-unpaid { background: #fef2f2; color: #e11d48; border: 1px solid #fee2e2; }
 
         /* Items Table */
-        .items-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+        .items-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; page-break-inside: auto; }
         .items-table th { 
             background: #0f172a; 
             color: #fff; 
             text-align: left; 
-            padding: 15px; 
+            padding: 12px 15px; 
             font-size: 8.5pt; 
             font-weight: 900; 
             text-transform: uppercase; 
@@ -78,9 +76,13 @@
             border: 1px solid #334155;
         }
         .items-table td { 
-            padding: 18px 15px; 
+            padding: 12px 15px; 
             border: 1px solid #e2e8f0; 
             vertical-align: middle; 
+        }
+        .items-table tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
         }
         .items-table tr:nth-child(even) { background: #fcfdfe; }
         
@@ -88,33 +90,28 @@
         .item-desc-secondary { font-size: 8.5pt; color: #94a3b8; margin-top: 2px; }
         
         /* Financials Box Styling */
-        .bank-box { background: #f8fafc; padding: 20px; border-radius: 15px; border: 1px solid #e2e8f0; }
-        .bank-title { font-size: 9pt; font-weight: 900; color: #0f172a; text-transform: uppercase; margin-bottom: 12px; display: block; }
-        .bank-details { font-size: 9pt; color: #64748b; line-height: 1.6; }
+        .bank-box { background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; }
+        .bank-title { font-size: 9pt; font-weight: 900; color: #0f172a; text-transform: uppercase; margin-bottom: 10px; display: block; }
+        .bank-details { font-size: 9pt; color: #64748b; line-height: 1.5; }
         .bank-details b { color: #0f172a; }
 
         thead { display: table-header-group; }
         tfoot { display: table-footer-group; }
-        tr { page-break-inside: avoid; }
 
         .bottom-section {
-            position: absolute;
-            bottom: 30px;
-            left: 0;
-            right: 0;
+            margin-top: 20px;
+            page-break-inside: avoid;
         }
 
         .footer { 
-            position: absolute; 
-            bottom: 0px; 
-            left: 0; 
-            right: 0; 
+            margin-top: 25px;
             text-align: center; 
             font-size: 8pt;
             color: #94a3b8;
             border-top: 1px solid #f1f5f9;
-            padding-top: 15px;
+            padding-top: 10px;
             font-weight: bold;
+            page-break-inside: avoid;
         }
 
         .clearfix::after { content: ""; clear: both; display: table; }
